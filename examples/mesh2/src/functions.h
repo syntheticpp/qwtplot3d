@@ -171,7 +171,7 @@ public:
   {
     double x,y,z;
     double a = 2/3.;
-    double b = sqrt(2);
+    double b = sqrt(2.);
     
     x = a*(cos(u)*cos(2*v)+b*sin(u)*cos(v))*cos(u) / (b-sin(2*u)*sin(3*v));
     y = a*(cos(u)*sin(2*v)-b*sin(u)*sin(v))*cos(u) / (b-sin(2*u)*sin(3*v));
