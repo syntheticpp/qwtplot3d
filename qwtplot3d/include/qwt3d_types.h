@@ -17,10 +17,6 @@
 	#include <windows.h>
 #endif
 
-#ifndef WHEEL_DELTA
-	#define WHEEL_DELTA 120
-#endif
-
 #include "qwt3d_helper.h"
 #include "qwt3d_openglhelper.h"
 

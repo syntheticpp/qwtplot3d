@@ -3,17 +3,63 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt3d_plot.h"
+#include <float.h>
+#include "qwt3d_extglwidget.h"
 
 using namespace std;
 using namespace Qwt3D;
 
+#ifndef WHEEL_DELTA
+	#define WHEEL_DELTA 120
+#endif
+
+
+/*!
+  This should be the first call in your derived classes constructors.  
+*/
+ExtGLWidget::ExtGLWidget( QWidget* parent, const char* name )
+    : QGLWidget( parent, name )
+{  
+  xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
+  
+	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
+	xScale_ = yScale_ = zScale_ = 1.0;
+	zoom_ = 1;
+	ortho_ = true;
+	lastMouseMovePosition_ = QPoint(0,0);
+	mpressed_ = false;
+	mouse_input_enabled_ = true;
+	
+	assignMouse(Qt::LeftButton, 
+							Qt::LeftButton | Qt::ShiftButton,
+							Qt::LeftButton, 
+							Qt::LeftButton | Qt::AltButton, 
+							Qt::LeftButton | Qt::AltButton, 
+							Qt::LeftButton | Qt::AltButton | Qt::ShiftButton,
+							Qt::LeftButton | Qt::AltButton | Qt::ControlButton,
+							Qt::LeftButton | Qt::ControlButton, 
+							Qt::LeftButton | Qt::ControlButton);
+
+
+  kbd_input_enabled_ = true;
+  assignKeyboard(Qt::Key_Down, Qt::Key_Up,
+    Qt::ShiftButton + Qt::Key_Right, Qt::ShiftButton + Qt::Key_Left,
+    Qt::Key_Right, Qt::Key_Left,
+    Qt::AltButton + Qt::Key_Right, Qt::AltButton + Qt::Key_Left,
+    Qt::AltButton + Qt::Key_Down, Qt::AltButton + Qt::Key_Up,
+    Qt::AltButton + Qt::ShiftButton + Qt::Key_Down, Qt::AltButton + Qt::ShiftButton + Qt::Key_Up,
+    Qt::AltButton + Qt::ControlButton + Qt::Key_Down, Qt::AltButton + Qt::ControlButton + Qt::Key_Up,
+    Qt::ControlButton + Qt::Key_Right, Qt::ControlButton + Qt::Key_Left,
+    Qt::ControlButton + Qt::Key_Down, Qt::ControlButton + Qt::Key_Up
+   );
+   setKeySpeed(3,5,5);
+}
 
 /**
 	Standard mouse button Function. Prepares the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void Plot3D::mousePressEvent( QMouseEvent *e )
+void ExtGLWidget::mousePressEvent( QMouseEvent *e )
 {
 	lastMouseMovePosition_ = e->pos();
 	mpressed_ = true;
@@ -23,7 +69,7 @@ void Plot3D::mousePressEvent( QMouseEvent *e )
 	Standard mouse button Function. Completes the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void Plot3D::mouseReleaseEvent( QMouseEvent *e )
+void ExtGLWidget::mouseReleaseEvent( QMouseEvent *e )
 {
 	mpressed_ = false;
 }
@@ -32,7 +78,7 @@ void Plot3D::mouseReleaseEvent( QMouseEvent *e )
 	Standard mouse button Function
 	\see assignMouse()
 */
-void Plot3D::mouseMoveEvent( QMouseEvent *e )
+void ExtGLWidget::mouseMoveEvent( QMouseEvent *e )
 {
 	if (!mpressed_ || !mouseEnabled())
   {
@@ -50,7 +96,7 @@ void Plot3D::mouseMoveEvent( QMouseEvent *e )
 	lastMouseMovePosition_ = e->pos();
 }
 
-void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Rotation
 	double w = max(1,width());
@@ -73,7 +119,7 @@ void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Scale
 		double w = max(1,width());
@@ -99,7 +145,7 @@ void Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 			setZoom(max(0.0,zoom() - relyz));
 }
 
-void Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Shift
 	double w = max(1,width());
@@ -122,7 +168,7 @@ void Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 /**
 	Standard wheel Function - zoom (wheel only) or z-scale (shift+wheel)
 */
-void Plot3D::wheelEvent( QWheelEvent *e )
+void ExtGLWidget::wheelEvent( QWheelEvent *e )
 {
 	if (!mouseEnabled())
 		return;
@@ -156,7 +202,7 @@ void Plot3D::wheelEvent( QWheelEvent *e )
 
 	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
-void Plot3D::assignMouse(int xrot, int yrot, int zrot,
+void ExtGLWidget::assignMouse(int xrot, int yrot, int zrot,
 											 int xscale, int yscale, int zscale,
 											 int zoom, int xshift, int yshift)
 {
@@ -172,22 +218,24 @@ void Plot3D::assignMouse(int xrot, int yrot, int zrot,
 }
 
 /** 
-The function has no effect if you derive from Plot3D and overrides the mouse Function too careless.
+The function has no effect if you derive from ExtGLWidget and overrides the mouse Function too careless.
 In this case check first against mouseEnabled() in your version of mouseMoveEvent() and wheelEvent().
 A more fine grained input control can be achieved by combining assignMouse() with enableMouse(). 
 */
-void Plot3D::enableMouse(bool val) {mouse_input_enabled_ = val;}
+void ExtGLWidget::enableMouse(bool val) {mouse_input_enabled_ = val;}
 
 /** 
 \see enableMouse()
 */
-void Plot3D::disableMouse(bool val) {mouse_input_enabled_ = !val;}
-bool Plot3D::mouseEnabled() const {return mouse_input_enabled_;}
+void ExtGLWidget::disableMouse(bool val) {mouse_input_enabled_ = !val;}
+bool ExtGLWidget::mouseEnabled() const {return mouse_input_enabled_;}
 
 
-
-
-void Plot3D::keyPressEvent( QKeyEvent *e )
+/**
+	Standard keyboard handler. Uses the settings from setRotationKeyboard
+	in order to perform rotations, shifts etc.
+*/
+void ExtGLWidget::keyPressEvent( QKeyEvent *e )
 {
 	if (!keyboardEnabled())
   {
@@ -203,7 +251,7 @@ void Plot3D::keyPressEvent( QKeyEvent *e )
 	setShiftKeyboard(keyseq, kbd_shift_speed_);	
 }
 
-void Plot3D::setRotationKeyboard(int kseq, double speed)
+void ExtGLWidget::setRotationKeyboard(int kseq, double speed)
 {
 	// Rotation
 	double w = max(1,width());
@@ -232,7 +280,7 @@ void Plot3D::setRotationKeyboard(int kseq, double speed)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void Plot3D::setScaleKeyboard(int kseq, double speed)
+void ExtGLWidget::setScaleKeyboard(int kseq, double speed)
 {
 	// Scale
 		double w = max(1,width());
@@ -266,7 +314,7 @@ void Plot3D::setScaleKeyboard(int kseq, double speed)
 			setZoom(max(0.0,zoom() + relyz));
 }
 
-void Plot3D::setShiftKeyboard(int kseq, double speed)
+void ExtGLWidget::setShiftKeyboard(int kseq, double speed)
 {
 	// Shift
 	double w = max(1,width());
@@ -306,7 +354,7 @@ void Plot3D::setShiftKeyboard(int kseq, double speed)
 	shifting along z:     CTRL+[Key_Down, Key_Up]
 	\endverbatim
 */
-void Plot3D::assignKeyboard(
+void ExtGLWidget::assignKeyboard(
        int xrot_n, int xrot_p
       ,int yrot_n, int yrot_p
       ,int zrot_n, int zrot_p
@@ -341,22 +389,22 @@ void Plot3D::assignKeyboard(
 }
 
 /** 
-The function has no effect if you derive from Plot3D and overrides the keyboard Functions too careless.
+The function has no effect if you derive from ExtGLWidget and overrides the keyboard Functions too careless.
 In this case check first against keyboardEnabled() in your version of keyPressEvent()
 A more fine grained input control can be achieved by combining assignKeyboard() with enableKeyboard(). 
 */
-void Plot3D::enableKeyboard(bool val) {kbd_input_enabled_ = val;}
+void ExtGLWidget::enableKeyboard(bool val) {kbd_input_enabled_ = val;}
 
 /** 
 \see enableKeyboard()
 */
-void Plot3D::disableKeyboard(bool val) {kbd_input_enabled_ = !val;}
-bool Plot3D::keyboardEnabled() const {return kbd_input_enabled_;}
+void ExtGLWidget::disableKeyboard(bool val) {kbd_input_enabled_ = !val;}
+bool ExtGLWidget::keyboardEnabled() const {return kbd_input_enabled_;}
 
 /**
 Values < 0 are ignored. Default is (3,5,5)
 */
-void Plot3D::setKeySpeed(double rot, double scale, double shift)
+void ExtGLWidget::setKeySpeed(double rot, double scale, double shift)
 {
   if (rot > 0)
     kbd_rot_speed_ = rot;
@@ -366,9 +414,130 @@ void Plot3D::setKeySpeed(double rot, double scale, double shift)
     kbd_shift_speed_ = shift;
 }
 
-void Plot3D::keySpeed(double& rot, double& scale, double& shift) const
+void ExtGLWidget::keySpeed(double& rot, double& scale, double& shift) const
 {
   rot = kbd_rot_speed_;
   scale = kbd_scale_speed_;
   shift = kbd_shift_speed_;
+}
+
+/**
+  Set the rotation angle of the object. If you look along the respective axis towards ascending values,
+	the rotation is performed in mathematical \e negative sense 
+	\param xVal angle in \e degree to rotate around the X axis
+	\param yVal angle in \e degree to rotate around the Y axis
+	\param zVal angle in \e degree to rotate around the Z axis
+*/
+void ExtGLWidget::setRotation( double xVal, double yVal, double zVal )
+{
+  if (xRot_ == xVal && yRot_ == yVal && zRot_ == zVal)
+		return;
+	
+	xRot_ = xVal;
+	yRot_ = yVal;
+	zRot_ = zVal;
+  
+	updateGL();
+	emit rotationChanged(xVal, yVal, zVal);
+}
+
+/**
+  Set the shift in object (world) coordinates.
+	\param xVal shift along (world) X axis
+	\param yVal shift along (world) Y axis
+	\param zVal shift along (world) Z axis
+	\see setViewportShift()
+*/
+void ExtGLWidget::setShift( double xVal, double yVal, double zVal )
+{
+  if (xShift_ == xVal && yShift_ == yVal && zShift_ == zVal)
+		return;
+	
+	xShift_ = xVal;
+	yShift_ = yVal;
+	zShift_ = zVal;
+	updateGL();
+	emit shiftChanged(xVal, yVal, zVal);
+}
+
+/**
+  Performs shifting along screen axes. The values are limited to the interval [-1..1]
+	The shift moves points inside a sphere, which encloses the unscaled and unzoomed data
+	by multiples of the spheres diameter
+	
+	\param xVal shift along (view) X axis
+	\param yVal shift along (view) Y axis
+	\see setShift()
+*/
+void ExtGLWidget::setViewportShift( double xVal, double yVal )
+{
+  if (xVPShift_ == xVal && yVPShift_ == yVal)
+		return;
+	
+	double limit = 1;
+
+	if (xVal < -limit)
+		xVPShift_ = -limit;
+	else if (xVal > limit)
+		xVPShift_ = limit;
+	else
+		xVPShift_ = xVal;
+
+	if (yVal < -limit)
+		yVPShift_ = -limit;
+	else if (yVal > limit)
+		yVPShift_ = limit;
+	else
+		yVPShift_ = yVal;
+		
+	updateGL();
+	emit vieportShiftChanged(xVPShift_, yVPShift_);
+}
+
+/**
+  Set the scale in object (world) coordinates.
+	\param xVal scaling for X values
+	\param yVal scaling for Y values
+	\param zVal scaling for Z values 
+
+	A respective value of 1 represents no scaling;
+*/
+void ExtGLWidget::setScale( double xVal, double yVal, double zVal )
+{
+  if (xScale_ == xVal && yScale_ == yVal && zScale_ == zVal)
+		return;
+	
+	xScale_ = (xVal < DBL_EPSILON ) ? DBL_EPSILON : xVal;
+	yScale_ = (yVal < DBL_EPSILON ) ? DBL_EPSILON : yVal;
+	zScale_ = (zVal < DBL_EPSILON ) ? DBL_EPSILON : zVal;
+
+	updateGL();
+	emit scaleChanged(xVal, yVal, zVal);
+}
+
+/**
+  Set the (zoom in addition to scale).
+	\param val zoom value (value == 1 indicates no zooming)
+*/
+void ExtGLWidget::setZoom( double val )
+{
+  if (zoom_ == val)
+		return;
+
+	zoom_ = (val < DBL_EPSILON ) ? DBL_EPSILON : val;
+ 	updateGL();
+	emit zoomChanged(val);
+}
+
+/*!
+  Set up ortogonal or perspective mode and updates widget
+*/
+void ExtGLWidget::setOrtho( bool val )
+{
+	if (val == ortho_)
+		return;
+	ortho_ = val;
+	updateGL();
+	
+	emit projectionChanged(val);
 }

@@ -17,7 +17,7 @@ win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
 win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL 
 
 # Comment the next line, if you have zlib on your windows system
-win32:CONFIG -= zlib
+# win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
 unix:VERSION = 0.2.4
@@ -27,10 +27,9 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_color.cpp \
            src/qwt3d_coordsys.cpp \
            src/qwt3d_drawable.cpp \
-           src/qwt3d_mousekeyboard.cpp \
-           src/qwt3d_movements.cpp \
            src/qwt3d_lighting.cpp \
            src/qwt3d_colorlegend.cpp \
+           src/qwt3d_extglwidget.cpp \
            src/qwt3d_plot.cpp \
            src/qwt3d_label.cpp \
            src/qwt3d_types.cpp \
@@ -59,6 +58,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_label.h \
            include/qwt3d_openglhelper.h \
            include/qwt3d_colorlegend.h \
+           include/qwt3d_extglwidget.h \
            include/qwt3d_plot.h \
            include/qwt3d_enrichment.h \
            include/qwt3d_enrichment_std.h \
