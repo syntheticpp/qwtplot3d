@@ -168,9 +168,7 @@ void Plot3D::paintGL()
   glRotatef( yRot_, 0.0, 1.0, 0.0 ); 
   glRotatef( zRot_, 0.0, 0.0, 1.0 );
 
-  glEnable(GL_NORMALIZE);
 	glScalef( zoom_ * xScale_, zoom_ * yScale_, zoom_ * zScale_ );
-	glDisable(GL_NORMALIZE);
 	
 	glTranslatef(xShift_-center.x, yShift_-center.y, zShift_-center.z);
   
@@ -193,17 +191,19 @@ void Plot3D::paintGL()
 	}
 
   glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
- //glDisable(GL_DEPTH_TEST);
- //glEnable(GL_DEPTH_TEST);
- //glDepthMask(GL_FALSE);  
+  
+  if (lighting_enabled_)
+    glEnable(GL_NORMALIZE);
 
- for (unsigned i=0; i!= displaylists_p.size(); ++i)
+  for (unsigned i=0; i!= displaylists_p.size(); ++i)
 	{
 		if (i!=LegendObject)
 			glCallList( displaylists_p[i] );
 	}
   coordinates_p.draw();
- //glDepthMask(GL_TRUE); 
+	
+  if (lighting_enabled_)
+    glDisable(GL_NORMALIZE);
   
   glMatrixMode( GL_MODELVIEW );
   glPopMatrix();
