@@ -33,6 +33,7 @@ win32:QMAKE_CXXFLAGS     += -GX
 HEADERS += src/qwt_plot3d.h \
 					 src/reader.h \
 					 src/types.h \
+					 src/openglhelper.h \
 					 src/labelpixmap.h \
 					 src/axis.h \
 					 src/coordsys.h \
@@ -40,7 +41,8 @@ HEADERS += src/qwt_plot3d.h \
 					 src/plane.h \
 					 src/functiongenerator.h \
 					 src/colorgenerator.h \
-					 src/helper.h
+					 src/helper.h \
+					 src/vectorfield.h
 
 SOURCES += src/qwt_plot3d.cpp \
 					 src/reader.cpp \
@@ -58,4 +60,5 @@ SOURCES += src/qwt_plot3d.cpp \
 					 src/dataviews.cpp \
 					 src/dataviews_cell.cpp \
 					 src/dataviews_grid.cpp \
-					 src/helper.cpp
+					 src/helper.cpp \
+					 src/vectorfield.cpp

@@ -19,8 +19,8 @@
 	#define WHEEL_DELTA 120
 #endif
 
-#include <qgl.h>
 #include "helper.h"
+#include "openglhelper.h"
 
 
 namespace Qwt3D
@@ -220,13 +220,6 @@ public:
 	
 	double maximum() const { return hull().maxVertex.z;} //!< \return minimal z value
 	double minimum() const { return hull().minVertex.z;} //!< \return maximal z value 
-	
-//	double maximum() const { return max_;} //!< \return minimal z value
-//	double minimum() const { return min_;} //!< \return maximal z value 
-
-//	void setMin(double minv) {min_ = minv;} //!< set maximum for z, not immediately, but the different generators take care and will cut
-//	void setMax(double maxv) {max_ = maxv;} //!< set minimum for z, not immediately, but the different generators take care and will cut 
-
 
 	DataMatrix vertices;		//!< mesh vertices
 	DataMatrix normals;		//!< mesh normals
@@ -240,10 +233,6 @@ private:
 	GridData& operator=(GridData const&); //!< no copy
 
 	ParallelEpiped hull_;
-
-
-//	double				max_;		/* maximum height value in mesh */
-//	double				min_;		/* minimum height value in mesh */
 };
 
 
@@ -405,6 +394,10 @@ inline Triple normalizedcross(Triple const& u, Triple const& v)
 	}
 	
 	return n;
+}
+inline double dotProduct(Triple const& u, Triple const& v)
+{
+	return u.x*v.x + u.y*v.y + u.z*v.z;
 }
 
 void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src );

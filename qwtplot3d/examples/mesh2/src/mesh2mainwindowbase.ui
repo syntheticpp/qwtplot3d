@@ -471,6 +471,7 @@
         <action name="flooriso"/>
         <action name="floormesh"/>
         <action name="floornone"/>
+        <action name="normals"/>
     </toolbar>
 </toolbars>
 <customwidgets>
@@ -1119,6 +1120,20 @@
             <string>Open FEM files</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>normals</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image17</iconset>
+        </property>
+        <property name="text">
+            <string>Show normal vectors</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1172,6 +1187,9 @@
     <image name="image16">
         <data format="XPM.GZ" length="394">789c5d8ecb0ac2301045f7f98aa1d915e98344bb103f417129888bc9b4411755d0ba10f1dfede45153ef9064eee166923287c37e0b79291e030e17023ae31df2f6d9f7afe369f31659bd825ac1b8650b911540b0bb5d3beedbb197956abaaa628bce6a2eb6926dad352d9d356c7567ad0f135bab6c63951b1b25a5e42365d22d396321eb1922a6d7dd5f0c19f42ae23c24132a611199bf1cfe34cd6ba330e65214e6cd90677314d824ffee672dbe92b5620d</data>
     </image>
+    <image name="image17">
+        <data format="XPM.GZ" length="3954">789c9596c76e24470c86ef7a0a61795b1874e700c307e51c4659327c6027658dc2281a7e77933f7bb4bd3260c0f3ef62f1a158ac6228f6fefa7df664776bf6fbaf334f13995cd6b3f5853cce7e6f9e6f6fdffff8f3f7bf66be45e1acfe098b6236faf6cbcc37a6d97a767b7cd702ba215c0c613c846000920c57eae14a3a847800b43edc2343381f9abd0c1d1c0ee174b8e76cb8878730dc434743072703184d862b3f991d0fcfb956a0a0318177c0ad09c6f3e0ce84f5c6380c4ce0168c1ff8161c9b70c163706a02c35f9899601f827313f80a5c98c08fe0d204de078b09fe085c85497f5ed0b30a9c806b13d8cf6b4df07709ee4c88d7aa4851f0c91bce2670040e4d60f88b6213fcdf811313780d9c99705e0ece4de0145c98e00ff78f4a13d633b098c0eebfd27c219f7ce26c02df806b13f814dc69fcbe7fded904467ee2c084fbbe8263cd27e223dc2f4ea226427fc89ab396d7ed777a5681719f3833c1ff2eb83461ff13b836810fc08d09bc076e4dd8bf60acc54dddbf6c3a9bb03e0223e1381ffd91c47a1f1f05a867821ff6fb7a69823df29b545a6fef97185c9bc0a87f1a9bc035183ff8473c6969c2fa3358fb31f0fcdf3b9bc005d8facdeb7de66cc27ef4179e87e71ff166515225fe1edec07198fa7b956567ed58ef9755b06ef775427eb35cfbddebb1e13c3d8fdfc1459667de8feecfde9be777cfd9047f026e4d381ff9cf3a13f8c3388ff57ccfdf03384b8218fd27e7e03c0afbf86b67fb81f1def3322d52af1783eb300afc7e8760cd5e1f3fe64d1169befd7e984745ae42bcb2021613d691efa235c11fea8df1e2f1ce811130ec91efb28c537f5fb4ed9c26899fbfeb6c3fec47fdcb4aebe3f5daec59fa7a2c3beb8bf2f778e06c0f04eb637063827fc453b69fdcf4ac026f194b6082bf0938d2fba33f05f351d2bccc3d9f5dcf559f6fcc13c9c3dae73d2d818b24f7f74898c7526a3d3dffa8a7d426ecafc08d09eb98f7d29ab08e79a2e14ae2f743feaa2497fe3ec87795ab7fef4fd4abb2f7837cc88b731cfa7c65bc8faa35e17e17e04ef30d7f6c5f3aaa83a22c3c9f73ce65e4f526f4579dc68dcf3f3a77ce92d4fb03f9ad3313ce87ff3a4f329f5f847cd7a2ede1f1601ed6755dd5de1f98577563c27ec4db2426ac63fe3716afdf0ff3b9294cf087fc3795d6c3cfc3f7b9a925f5facabb7355565e5fd4a769f48be0f315dfb3a68debbe5f9d3b3dcfe709de0b9eafc707ff6dfeb98efe688bbaf4f869cfd9042ec1d60f3effd16fad5e2ff1f3769d4d8807f56bbba9bd2c39ebbcf0f7b668dc0559e3f924ccc74ea743e0f37cd5b96d5bcfe7c4d984fde8af2e0a73f7cf5bcefa5efdfb3c764e22ff5e89fbc30710f688a74ba6fb05dfcf2efdf4f7e16c02a3dff5f2fd3abd3b2765ecf9c1f7a0b3f7e3f5b977b606c3bafb2bb3c2bf1782f7d44999145eef15e7266dfcfe98275da5efdffbc5fd559d743e4f777a56813d9f7595f6efefade7b242bc82feec5aada7d7d7e3694d58c77cef3a2d90dff7a667e9fc7e8b3df7e7d1a867fd198f265331fd24f17fb152d9aa5b7365fa625d73c32d777ceeeb536bdb3db5ef775cf0255ff135dff02ddffdf035b5f6d37afbb15adef3033ff2134ff8995fa6f774ebe1fdf895dff89d3f788ee7798117798997a716436bdfc12bbcca6b6abdce1bbcc95bbccd3b43eb2f39b9e55d1ef11eeff3011ff2111ff3099ff299adff2b2701871c71cc89ee4a3527979c71ce059766f1734ed4359150a5aaf99e1a4ea9a58ecee9c2acddf73427a3095dd2155dd30dddd21d8de99e1ee8919e6842cff432bdc98f18e995dee89d3e688ee6698116698996698556698dd6bf46a975dba10ddaa42ddaa61ddaa5118df52e7baa7d3aa0c3deb7dff9888ee9844ee94c2d030a794411c594e8fe9432caa9e8a374eb52584884465271a35fa046874c27e77221977225d772e3d6de61722b7732967b799047799289de63519ee5455ee54ddee543e67ee48449e675682dc8a22cc9b2aca8ad6bac95fa90555993f541e5af654336d56a41b6908fde5ab635970bb2a3f5ba66ffdf5547c71cd299d6f88933d9a03bde935dfb56d25846ea654ff639950df66f572007722847722c27722a6774c290045af74b09f56f24b124bcf3b507ff4b92fe1f6b8df2efdf66fe0121ee7c22</data>
+    </image>
 </images>
 <connections>
     <connection>
@@ -1181,8 +1199,5 @@
         <slot>close()</slot>
     </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">mesh2mainwindowbase.ui.h</include>
-</includes>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

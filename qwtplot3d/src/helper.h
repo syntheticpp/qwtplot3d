@@ -22,7 +22,7 @@ inline double MAX(const std::vector<double>& data)
 inline bool isPracticallyZero(double a, double b = 0)
 {
   if (!b)
-		return (fabs (a) <=  DBL_EPSILON);	
+		return (fabs (a) <=  DBL_MIN);	
 
 	return (fabs (a - b) <= Min_(fabs(a), fabs(b))*DBL_EPSILON);	
 }

@@ -100,6 +100,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 		connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
 		connect(mouseinput, SIGNAL( toggled(bool) ), dataWidget, SLOT( enableMouse(bool)));
+		connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
 				
 		setStandardView();
 
@@ -577,4 +578,12 @@ void Mesh2MainWindow::openMesh()
 		}
 		
 		pickCoordSystem(activeCoordSystem);
+}
+
+void
+Mesh2MainWindow::showNormals(bool val)
+{
+	dataWidget->showNormals(val);
+	dataWidget->updateData();
+	dataWidget->updateGL();
 }

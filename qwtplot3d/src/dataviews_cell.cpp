@@ -4,6 +4,7 @@
 #endif
 
 #include "qwt_plot3d.h"
+#include "vectorfield.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -62,6 +63,10 @@ QwtPlot3D::updateCellData()
 			}
 		}
 		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+	if (normals())
+	{
+		CellNormals();
 	}
 }
 
@@ -198,4 +203,39 @@ QwtPlot3D::CellIsolines2Floor()
 			}
 		}
 	}
+}
+
+void 
+QwtPlot3D::CellNormals()
+{
+	if (!normals() || actualCellData_->empty())
+		return;
+
+	if (actualCellData_->nodes.size() != actualCellData_->normals.size())
+		return;
+
+	VectorField v(dataColor_);
+	v.bases = TripleVector(actualCellData_->normals.size());
+	v.tops = TripleVector(v.bases.size());
+	
+	unsigned t = v.bases.size(); 
+
+	Triple basev;
+	Triple topv;	
+	
+	double diag = (actualCellData_->hull().maxVertex-actualCellData_->hull().minVertex).length() / 60;
+
+	for (unsigned i = 0; i != v.bases.size(); ++i) 
+	{
+		basev = actualCellData_->nodes[i];
+		topv = basev + actualCellData_->normals[i];
+		
+		Triple norm = (topv-basev);
+		norm.normalize();
+		norm	*= diag;
+
+		v.bases[i] = basev;		
+		v.tops[i] = basev + norm;	
+	}
+	v.drawArrows();
 }

@@ -52,7 +52,10 @@ public:
 		Qwt3D::FLOORSTYLE floorStyle() const { return floorstyle_; }//!< \return Floor style 
 		void setIsolines(int isolines);
 		int isolines() const { return isolines_;} //!< \return Number of isolines
-		
+
+		void showNormals(bool); //!< draw normals to every vertex
+		bool normals() const { return datanormals_;} //!< \return true, if normal drawing is on
+	
 		void setBackgroundColor(RGBA rgba);
 		void setMeshColor(RGBA rgba);
 		RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
@@ -64,8 +67,8 @@ public:
 		void calculateHull();
 		ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
 
-		void showColorLegend(bool);
 		void createColorLegend(ColorVector const&, Triple a = Triple(), Triple b = Triple(), Triple c = Triple(), Triple d = Triple());
+		void	showColorLegend(bool);
 
 		void setCoordinateStyle(Qwt3D::COORDSTYLE st);
 		void setPolygonOffset(double d);
@@ -111,8 +114,8 @@ public slots:
 		void    setOrtho(bool);
 		void		setResolution( int );
 
-		void enableMouse(bool val=true); //!< Enable mouse input
-		void disableMouse(bool val =true); //!< Disable mouse input
+		void		enableMouse(bool val=true); //!< Enable mouse input
+		void		disableMouse(bool val =true); //!< Disable mouse input
 
 		bool    saveContent(QString fileName, QString format);
 
@@ -146,9 +149,12 @@ private:
 	  void updateCellData();
 
 		void updateFloorData();
+		
+		void GridNormals();
 		void GridData2Floor();
 		void GridIsolines2Floor();
 		void Grid2Floor();
+		void CellNormals();
 		void CellData2Floor();
 		void CellIsolines2Floor();
 		void Cell2Floor();
@@ -161,7 +167,7 @@ private:
 		bool ortho_;
 		double polygonOffset_;
 		int isolines_;
-
+		bool datanormals_;
 
 		enum OBJECTS
 		{
