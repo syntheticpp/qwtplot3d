@@ -12,7 +12,7 @@ MOC_DIR         = moc
 OBJECTS_DIR     = obj 
 INCLUDEPATH    += ../../include 
 
-win32:LIBS     += qwtplot3d.lib opengl32.lib glu32.lib
+win32:LIBS     += ql2ps.lib qwtplot3d.lib opengl32.lib glu32.lib
 unix:LIBS += -lqwtplot3d -lGLU -lGL -L/home/micha/programming/lib
 
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions

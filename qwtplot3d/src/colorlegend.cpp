@@ -6,6 +6,11 @@
 
 using namespace Qwt3D;
 
+/**
+Contructs a legend object with an axis at the left
+side. The legend resides in the top-right area 
+and has no caption. Scale numbering is shown.
+*/
 ColorLegend::ColorLegend()
 {
 	axis_.setNumbers(true);
@@ -14,11 +19,24 @@ ColorLegend::ColorLegend()
 	axis_.setNumberAnchor(LabelPixmap::CenterRight);
 	axis_.setNumberFont(QFont("Courier",8));
 
-	caption.setFont("Courier", 10, QFont::Bold);
-	caption.setColor(RGBA(0,0,0,1));
-	//axis_.setAutoScale(false);
+	caption_.setFont("Courier", 10, QFont::Bold);
+	caption_.setColor(RGBA(0,0,0,1));
 	axisposition_ = ColorLegend::Left;
 	orientation_ = ColorLegend::BottomTop;
+	showaxis_ = true;
+	setRelPosition(Tuple(0.94, 1-0.36),Tuple(0.97, 1-0.04));
+}
+
+void 
+ColorLegend::setCaptionString(QString const& s) 
+{ 
+	caption_.setString(s); 
+}
+
+void 
+ColorLegend::setCaptionFont(QString const& family, int pointSize, int weight, bool italic) 
+{ 
+	caption_.setFont(family, pointSize, weight, italic);
 }
 
 void 
@@ -39,9 +57,15 @@ ColorLegend::setMinors(int minors)
 	axis_.setMinors(minors);
 }
 
+void 
+ColorLegend::setAutoScale(bool val)
+{
+	axis_.setAutoScale(val);
+}
+
 
 void
-ColorLegend::setOrientation(ORIENTATION or, POSITION pos)
+ColorLegend::setOrientation(ORIENTATION or, SCALEPOSITION pos)
 {
 	orientation_ = or;
 	axisposition_ = pos;
@@ -60,13 +84,20 @@ ColorLegend::setOrientation(ORIENTATION or, POSITION pos)
 }
 
 void 
-ColorLegend::setGeometry(Tuple relMin, Tuple relMax)
+ColorLegend::setRelPosition(Tuple relMin, Tuple relMax)
+{
+	relMin_ = relMin;
+	relMax_ = relMax;
+}
+
+void 
+ColorLegend::setGeometryInternal()
 {
 	double ot = .99;
 
 	getMatrices(modelMatrix, projMatrix, viewport);
-	pe_.minVertex = relativePosition(Triple(relMin.x, relMin.y, ot));
-	pe_.maxVertex = relativePosition(Triple(relMax.x, relMax.y, ot));
+	pe_.minVertex = relativePosition(Triple(relMin_.x, relMin_.y, ot));
+	pe_.maxVertex = relativePosition(Triple(relMax_.x, relMax_.y, ot));
 
 	double diff;
 	Triple b;
@@ -117,8 +148,8 @@ ColorLegend::setGeometry(Tuple relMin, Tuple relMax)
 	c.z += (pe_.maxVertex.z-pe_.minVertex.z)/20;
 	c.y = pe_.maxVertex.y;
 
-	caption.setPosition(c, LabelPixmap::BottomCenter);	
-	caption.update();
+	caption_.setPosition(c, LabelPixmap::BottomCenter);	
+	caption_.update();
 }
 
 void 
@@ -126,6 +157,8 @@ ColorLegend::draw()
 {
 	if (colors.empty())
 		return;
+
+	setGeometryInternal();
 
 	saveGLState();
   	
@@ -185,6 +218,8 @@ ColorLegend::draw()
 			
 	restoreGLState();
 	
-	axis_.draw();
-	caption.draw();
+	if (showaxis_)
+		axis_.draw();
+	
+	caption_.draw();
 }

@@ -27,6 +27,9 @@
 #include "colormapreader.h"
 #include "../../../include/qwt3d_io.h"
 
+// #include <gl2ps.h>
+
+
 using namespace Qwt3D;
 
 
@@ -155,7 +158,6 @@ void Mesh2MainWindow::open()
 			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
 		}
 		
-		dataWidget->legend()->caption.setString("Elev.");
 		updateColorLegend(4,5);
 		pickCoordSystem(activeCoordSystem);
 		dataWidget->showColorLegend(legend_);
@@ -438,7 +440,7 @@ void Mesh2MainWindow::pickDataColor()
 
 void Mesh2MainWindow::adaptDataColors(const QString& fileName)
 {
-	ColorField cv;
+	ColorVector cv;
 	
 	if (!openColorMap(cv, fileName))
 		return;
@@ -508,6 +510,31 @@ void Mesh2MainWindow::dumpImage()
 
 	QString name = QString("dump_") + QString::number(counter++) + ".png";
 	dataWidget->saveContent(name,"PNG");
+
+/*
+
+FILE *fp = fopen("MyFile.ps", "w");
+GLint buffsize = 0, state = GL2PS_OVERFLOW;
+GLint viewport[4];
+
+glGetIntegerv(GL_VIEWPORT, viewport);
+
+while( state == GL2PS_OVERFLOW ){ 
+  buffsize += 1024*1024;
+  gl2psBeginPage ( "MyTitle", "MySoftware", viewport,
+                   GL2PS_EPS, GL2PS_BSP_SORT,
+                   GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT |
+                   GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT,
+                   GL_RGBA, 0, NULL, 0, 0, 0, buffsize,
+                   fp, NULL );
+ gl2psLineWidth(1);
+ dataWidget->updateGL(); 
+  state = gl2psEndPage();
+
+}
+
+fclose(fp);
+*/
 }
 
 /*!
@@ -576,7 +603,7 @@ Mesh2MainWindow::setPolygonOffset(int val)
 }
 
 void
-Mesh2MainWindow::createColorLegend(ColorField const& col)
+Mesh2MainWindow::createColorLegend(ColorVector const& col)
 {
 }
 
@@ -660,7 +687,7 @@ Mesh2MainWindow::setNormalQuality(int val)
 }
 
 bool
-Mesh2MainWindow::openColorMap(ColorField& cv, QString fname)
+Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 {	
 	ifstream file(fname.latin1());
 

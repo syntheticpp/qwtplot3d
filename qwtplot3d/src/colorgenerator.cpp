@@ -14,7 +14,7 @@ StandardColor::StandardColor(Plot3D* data, int size)
 
 void StandardColor::reset(int size)
 {
-	colors_ = ColorField(size);
+	colors_ = ColorVector(size);
 	RGBA elem;
 
 	double dsize = size;
@@ -30,9 +30,9 @@ void StandardColor::reset(int size)
 }
 
 /**
-	Assign new ColorField (overwrites the constructors size argument)
+	Assign new ColorVector (overwrites the constructors size argument)
 */
-void StandardColor::setColorVector(ColorField const& cv)
+void StandardColor::setColorVector(ColorVector const& cv)
 {
 	colors_ = cv;
 }

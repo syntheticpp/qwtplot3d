@@ -20,7 +20,7 @@ class QWT3D_EXPORT Color
 public:
 	virtual Qwt3D::RGBA operator()(double x, double y, double z) = 0; //!< Implement your color model here
 	virtual void setAlpha(double a) {}; //!< Sometimes you need an alpha channel, the default does nothing
-	virtual void createField(Qwt3D::ColorField& vec, unsigned size=0, Triple xyz=Triple()) = 0;
+	virtual void createVector(Qwt3D::ColorVector& vec, unsigned size=0, Triple xyz=Triple()) {};
 
 	void destroy() const { delete this;}
 
@@ -33,21 +33,21 @@ protected:
 class Plot3D;
 //! Standard color model for Plot3D - implements the data driven operator()(double x, double y, double z)
 /*!
-The class has a ColorField representing z values, which will be used by operator()(double x, double y, double z)
+The class has a ColorVector representing z values, which will be used by operator()(double x, double y, double z)
 */
 class QWT3D_EXPORT StandardColor : public Color
 {
 public:
-	//! Initialize with data and set up a ColorField with a size of 100 z values (default);
+	//! Initialize with data and set up a ColorVector with a size of 100 z values (default);
 	explicit StandardColor(Plot3D* data, int size = 100);
-	Qwt3D::RGBA operator()(double x, double y, double z); //!< get z dependend Color from ColorField
-	void setColorVector(Qwt3D::ColorField const& cv);
+	Qwt3D::RGBA operator()(double x, double y, double z); //!< get z dependend Color from ColorVector
+	void setColorVector(Qwt3D::ColorVector const& cv);
 	void reset(int size=100); //!< reset the standard colors; 
 	void setAlpha(double a);
-	void createField(Qwt3D::ColorField& vec, unsigned size=0, Triple xyz=Triple()) {vec = colors_;}
+	void createVector(Qwt3D::ColorVector& vec, unsigned size=0, Triple xyz=Triple()) {vec = colors_;}
 
 protected:
-	Qwt3D::ColorField colors_;
+	Qwt3D::ColorVector colors_;
 	Qwt3D::Plot3D* data_;
 };
 

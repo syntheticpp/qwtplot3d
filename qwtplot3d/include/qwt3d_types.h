@@ -284,7 +284,7 @@ struct QWT3D_EXPORT RGBA
 };
 
 //! A Color field
-typedef std::vector<RGBA> ColorField;
+typedef std::vector<RGBA> ColorVector;
 
 #ifndef QWT3D_PRIVATE
 

@@ -43,8 +43,7 @@ SOURCES += src/axis.cpp \
            src/surfaceplot.cpp \
            src/types.cpp \
            src/vectorfield.cpp \
-           src/autoscaler.cpp \
-           src/text.cpp
+           src/autoscaler.cpp
 
 HEADERS += include/qwt3d_color.h \
            include/qwt3d_function.h \
@@ -63,5 +62,4 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
            include/qwt3d_reader.h \
-           include/qwt3d_autoscaler.h \
-           include/qwt3d_text.h 
+           include/qwt3d_autoscaler.h

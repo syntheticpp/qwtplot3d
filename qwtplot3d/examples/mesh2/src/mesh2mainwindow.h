@@ -45,7 +45,7 @@ public slots:
 	void toggleShader(bool val);
 	void rotate();
 	void setPolygonOffset(int);
-	void createColorLegend(Qwt3D::ColorField const&);
+	void createColorLegend(Qwt3D::ColorVector const&);
 
 	void showRotate(double x, double y, double z);
 	void showShift(double x, double y);
@@ -54,7 +54,7 @@ public slots:
 	void showNormals(bool val);
 	void setNormalQuality(int);
 	void setNormalLength(int);
-	bool openColorMap(Qwt3D::ColorField& cv, QString fname);
+	bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
 	void adaptDataColors(const QString&);
 	void updateColorLegend(int majors, int minors);
 
