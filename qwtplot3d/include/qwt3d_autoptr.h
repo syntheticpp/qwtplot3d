@@ -7,8 +7,9 @@ namespace Qwt3D
 //! Simple Auto pointer providing deep copies for raw pointer  
 /*!
   Requirements: \n
-  T* T::clone() const;\n
-  T::destroy() const; instead public destructor;\n\n
+  virtual T* T::clone() const;\n
+  T::destroy() const;
+  virtual ~T() private/protected\n\n
   clone() is necessary for the pointer to preserve polymorphic behaviour.
   The pointer requires also heap based objects with regard to the template 
   argument in order to be able to get ownership and control over destruction.
@@ -18,14 +19,14 @@ class  qwt3d_ptr
 {
 public:
   //! Standard ctor
-  qwt3d_ptr(T* ptr = 0)
+  explicit qwt3d_ptr(T* ptr = 0)
   :rawptr_(ptr)
   {
   }
   //! Dtor (calls T::destroy)
   ~qwt3d_ptr()
   {
-    rawptr_->destroy();
+    destroyRawPtr();
   }
 
   //! Copy ctor (calls (virtual) clone())
@@ -40,7 +41,7 @@ public:
     if (this == &val)
       return *this;
 
-    rawptr_->destroy();
+    destroyRawPtr();
     rawptr_ = val.rawptr_->clone();
 
     return *this;
@@ -61,6 +62,12 @@ public:
 
 private:
   T* rawptr_;
+  void destroyRawPtr() 
+  {
+    if (rawptr_) 
+      rawptr_->destroy();
+    rawptr_ = 0;
+  }
 };  
 
 } // ns
