@@ -3,7 +3,10 @@
 
 using namespace Qwt3D;
 
-double AutoScaler::floorExt( int& exponent, double x, std::vector<double>& sortedmantissi)
+namespace
+{
+
+double floorExt( int& exponent, double x, std::vector<double>& sortedmantissi)
 {
     if (x == 0.0) 
     {
@@ -35,14 +38,14 @@ double AutoScaler::floorExt( int& exponent, double x, std::vector<double>& sorte
     return sign * fr;
 } 
 
-/*!
+/*
   \brief Find the largest value out of {1,2,5}*10^n with an integer number n
   which is smaller than or equal to x
   \param exponent n
   \param x Input value
   \return Mantissa
 */
-double AutoScaler::floor125( int& exponent, double x)
+double floor125( int& exponent, double x)
 {
   std::vector<double> m(2);
   m[0] = 1;
@@ -51,20 +54,35 @@ double AutoScaler::floor125( int& exponent, double x)
   return floorExt(exponent, x, m);
 }
 
-//! Initialize with interval [0,1] and one requested interval
+} // anon ns
+
+
+//! Initializes with an {1,2,5} sequence of mantissas
 LinearAutoScaler::LinearAutoScaler()
 {
-	init(0,1,1);
+  init(0,1,1);
   mantissi_ = std::vector<double>(3);
   mantissi_[0] = 1;
   mantissi_[1] = 2;
   mantissi_[2] = 5;
 }
-
-LinearAutoScaler::LinearAutoScaler(std::vector<double>& mantissi)
+//! Initialize with interval [0,1] and one requested interval 
+/*!
+val mantisse A increasing ordered vector of values representing 
+mantisse values between 1 and 9. 
+*/
+LinearAutoScaler::LinearAutoScaler(std::vector<double>& mantisse)
 {
   init(0,1,1);
-  mantissi_ = mantissi;
+  if (mantisse.empty())
+  {
+    mantissi_ = std::vector<double>(3);
+    mantissi_[0] = 1;
+    mantissi_[1] = 2;
+    mantissi_[2] = 5;
+    return;
+  }
+  mantissi_ = mantisse;
 }
 
 

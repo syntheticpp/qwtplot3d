@@ -18,8 +18,6 @@ protected:
   //! To implement from subclasses
   virtual int execute(double& a, double& b, double start, double stop, int ivals) = 0;
   virtual ~AutoScaler(){}
-  static double floor125( int& exponent, double x);
-  static double floorExt( int& exponent, double x, std::vector<double>& sortedmantissi);
 
 private:
   void destroy() const {delete this;} //!< Used by qwt3d_ptr      
@@ -31,7 +29,8 @@ class QWT3D_EXPORT LinearAutoScaler : public AutoScaler
 friend class LinearScale;
 protected:
   LinearAutoScaler();
-  explicit LinearAutoScaler(std::vector<double>& mantisses); // mantisses increasing sorted !
+  explicit LinearAutoScaler(std::vector<double>& mantisses);
+  //! Returns a new heap based object utilized from qwt3d_ptr
   AutoScaler* clone() const {return new LinearAutoScaler(*this);}
 	int execute(double& a, double& b, double start, double stop, int ivals);
 

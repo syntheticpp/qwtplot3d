@@ -185,13 +185,17 @@ private:
 };
 
 //! Provides Qt's Pixmap output facilities
-class PixmapWriter : public IO::Functor
+class QWT3D_EXPORT PixmapWriter : public IO::Functor
 {
 friend class IO;
+public:  
+  PixmapWriter() : quality_(-1) {}
+  void setQuality(int val);
 private:
   IO::Functor* clone() const {return new PixmapWriter(*this);}
   bool operator()(Plot3D* plot, QString const& fname);
   QString fmt_;
+  int quality_;
 };
 
 } //ns
