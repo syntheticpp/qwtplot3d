@@ -75,7 +75,7 @@ public:
 		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
 
-		Data const& data() const {return actualData_;}
+		GridData const& data() const {return actualData_;}
 
 signals:
 		
@@ -144,7 +144,7 @@ private:
 
 		std::vector<GLuint> objectList_;
 
-		Data actualData_;
+		GridData actualData_;
 		Triple datafirst_, datasecond_;
 
 		Color* dataColor_;
