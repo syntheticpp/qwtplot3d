@@ -133,7 +133,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		colormappv_ = new ColorMapPreview;
 		datacolordlg_ = new QFileDialog( this );
-    lightingdlg_ = new LightingDlg( this );
+    lightingdlg_ = new LightingDlg();
     lightingdlg_->assign( dataWidget);
 		
 		QDir dir("../../data/colormaps");
@@ -151,6 +151,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		filetypeCB->setCurrentText("png");
 
     dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
+
+    grids->setEnabled(false);
 }
 
 void Mesh2MainWindow::open()
@@ -212,9 +214,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		
 		hat.setMesh(51,72);
 		hat.setDomain(-1.5,1.5,-1.5,1.5);
-
-		//hat.setMaxZ(1.1);
-
 		hat.create();	
 	}
 	else if (name == QString("Ripple")) 
@@ -230,9 +229,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		saddle.setMesh(71,71);
 		double dom = 2.5;
 		saddle.setDomain(-dom, dom, -dom, dom);
-		
-		//hat.setMaxZ(1.1);
-
 		saddle.assign(*dataWidget);
 		saddle.create();
 	}
@@ -243,9 +239,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		mex.setMesh(91,91);
 		double dom = 15;
 		mex.setDomain(-dom, dom, -dom, dom);
-		
-		//hat.setMaxZ(1.1);
-
 		mex.create(*dataWidget);
 	}
 
@@ -262,8 +255,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
 
 	updateColorLegend(7,5);
-
-  static int z=0;
 
 	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
   dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
@@ -742,11 +733,6 @@ Mesh2MainWindow::setPolygonOffset(int val)
 	dataWidget->setPolygonOffset(val / 10.0);
 	dataWidget->updateData();
 	dataWidget->updateGL();
-}
-
-void
-Mesh2MainWindow::createColorLegend(ColorVector const& col)
-{
 }
 
 void

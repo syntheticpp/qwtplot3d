@@ -16,6 +16,14 @@ ParametricSurface::ParametricSurface(SurfacePlot& pw)
   vperiodic_ = false;
 }
 
+ParametricSurface::ParametricSurface(SurfacePlot* pw)
+:GridMapping()
+{
+	plotwidget_p = pw;
+  uperiodic_ = false;
+  vperiodic_ = false;
+}
+
 void ParametricSurface::setPeriodic(bool u, bool v)
 {
   uperiodic_ = u;
@@ -26,6 +34,12 @@ void ParametricSurface::assign(SurfacePlot& plotWidget)
 {
 	if (&plotWidget != plotwidget_p)
 		plotwidget_p = &plotWidget;
+}
+
+void ParametricSurface::assign(SurfacePlot* plotWidget)
+{
+	if (plotWidget != plotwidget_p)
+		plotwidget_p = plotWidget;
 }
 
 /**

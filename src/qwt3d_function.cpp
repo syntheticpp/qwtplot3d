@@ -14,10 +14,22 @@ Function::Function(SurfacePlot& pw)
   plotwidget_p = &pw;
 }
 
+Function::Function(SurfacePlot* pw)
+:GridMapping()
+{
+  plotwidget_p = pw;
+}
+
 void Function::assign(SurfacePlot& plotWidget)
 {
 	if (&plotWidget != plotwidget_p)
 		plotwidget_p = &plotWidget;
+}
+
+void Function::assign(SurfacePlot* plotWidget)
+{
+	if (plotWidget != plotwidget_p)
+		plotwidget_p = plotWidget;
 }
 
 void Function::	setMinZ(double val)

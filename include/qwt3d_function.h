@@ -20,6 +20,7 @@ public:
 	
   Function(); //!< Constructs Function object w/o assigned SurfacePlot.
   explicit Function(Qwt3D::SurfacePlot& plotWidget); //!< Constructs Function object and assign a SurfacePlot
+  explicit Function(Qwt3D::SurfacePlot* plotWidget); //!< Constructs Function object and assign a SurfacePlot
 	virtual double operator()(double x, double y) = 0; //!< Overwrite this.
 		
 	void setMinZ(double val); //!< Sets minimal z value.
@@ -29,7 +30,10 @@ public:
 	virtual bool create(Qwt3D::SurfacePlot& plotWidget);
 	//! Creates data representation for the actual assigned SurfacePlot.
 	virtual bool create();
-  void assign(Qwt3D::SurfacePlot& plotWidget); //!< Assigns the object to another widget. To see the changes, you have to call this function before create(0).
+  //! Assigns the object to another widget. To see the changes, you have to call this function before create().
+  void assign(Qwt3D::SurfacePlot& plotWidget); 
+  //! Assigns the object to another widget. To see the changes, you have to call this function before create().
+  void assign(Qwt3D::SurfacePlot* plotWidget); 
 };
 
 } // ns
