@@ -483,9 +483,8 @@ CoordinateSystem::setLabelColor(RGBA val)
 void 
 CoordinateSystem::setLineWidth(double val, double majfac, double minfac)
 {
-	lineWidth_ = val;
-	majLineWidth_ = majfac * val;
-	minLineWidth_ = minfac * val;
+	for (unsigned i=0; i!=axes.size(); ++i)
+		axes[i].setLineWidth(val, majfac, minfac);
 }
 
 void 

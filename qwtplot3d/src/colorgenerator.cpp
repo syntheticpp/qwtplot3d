@@ -30,7 +30,7 @@ void StandardColor::reset(int size)
 }
 
 /**
-	Assign new ColorVector (overwrites the constructors size argument)
+	Assigns a new ColorVector (Also overwrites the constructors size argument)
 */
 void StandardColor::setColorVector(ColorVector const& cv)
 {

@@ -19,20 +19,20 @@ class QWT3D_EXPORT Function
 
 public:
 	
-  Function(); //!< Construct Function object w/o assigned SurfacePlot
-  explicit Function(SurfacePlot* plotWidget); //!< Construct Function object and assign a SurfacePlot
-	virtual ~Function(); 
-	virtual double operator()(double x, double y) = 0; //!< Overwrite this
-	virtual QString name() const { return QString(""); } //!< Issue a String descriptor
+  Function(); //!< Constructs Function object w/o assigned SurfacePlot.
+  explicit Function(SurfacePlot* plotWidget); //!< Constructs Function object and assign a SurfacePlot
+	virtual ~Function(); //!< Destructor.
+	virtual double operator()(double x, double y) = 0; //!< Overwrite this.
+	virtual QString name() const { return QString(""); } //!< Issues a String descriptor.
 		
-	//! Create data representation for plotWidget or the actual assigned SurfacePlot (if plotWidget == 0)
+	//! Creates data representation for plotWidget or the actual assigned SurfacePlot (if plotWidget == 0).
 	virtual bool create(SurfacePlot* plotWidget = 0);
 
-	void setMesh(unsigned int columns, unsigned int rows); //!< Set number of rows and columns 
-	void setDomain(double minx, double maxx, double miny, double maxy); //!< Set x-y domain boundaries
-	void setMinZ(double val); //!< Set minimal z value
-	void setMaxZ(double val); //!< Set maximal z value
-	void assign(SurfacePlot* plotWidget); //!< Assign to other widget. To see the changes, you have to call this function before create(0)
+	void setMesh(unsigned int columns, unsigned int rows); //!< Sets number of rows and columns. 
+	void setDomain(double minx, double maxx, double miny, double maxy); //!< Sets x-y domain boundaries.
+	void setMinZ(double val); //!< Sets minimal z value.
+	void setMaxZ(double val); //!< Sest maximal z value.
+	void assign(SurfacePlot* plotWidget); //!< Assigns the object to another widget. To see the changes, you have to call this function before create(0).
 
 private:
 	SurfacePlot* plotwidget_;

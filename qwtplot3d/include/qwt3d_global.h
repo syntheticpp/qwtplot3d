@@ -4,8 +4,13 @@
 #include <qmodules.h>
 #include <qglobal.h>
 
-#define QWT3D_VERSION       013
-#define QWT3D_VERSION_STR   "0.1.3"
+
+#if defined (QWT3D_GL2PS)
+	#include <gl2ps.h>
+	#if ((GL2PS_MAJOR_VERSION << 16) + (GL2PS_MINOR_VERSION  << 8) + GL2PS_PATCH_VERSION)  >= 0x0903	
+		#define QWT3D_GL2PDF 
+	#endif
+#endif
 
 //
 // Create Qwt3d DLL if QWT3D_DLL is defined (Windows only)
@@ -14,9 +19,10 @@
 #if defined(Q_WS_WIN)
 
 #if defined(_MSC_VER) /* MSVC Compiler */
-/* template-class specialization 'identifier' is already instantiated */
-#pragma warning(disable: 4660)
 #pragma warning(disable: 4251) // dll interface required for stl templates
+	//pragma warning(disable: 4244) // 'conversion' conversion from 'type1' to 'type2', possible loss of data
+#pragma warning(disable: 4786) // truncating debug info after 255 characters
+#pragma warning(disable: 4660) // template-class specialization 'identifier' is already instantiated
 #endif
 
 #if defined(QWT3D_NODLL)
@@ -48,9 +54,5 @@
 #define QWT3D_EXPORT
 #endif
 
-#if QT_VERSION < 300
-// Use old QArray instead of QMemArray
-#define QWT3D_NO_MEMARRAY 
-#endif
 
 #endif // QWT3D_GLOBAL_H

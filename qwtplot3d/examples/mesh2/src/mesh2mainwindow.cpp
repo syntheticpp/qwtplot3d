@@ -27,9 +27,6 @@
 #include "colormapreader.h"
 #include "../../../include/qwt3d_io.h"
 
-// #include <gl2ps.h>
-
-
 using namespace Qwt3D;
 
 
@@ -115,9 +112,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		dataWidget->coordinates()->setLineSmooth(true);
 		dataWidget->enableMouse(true);
 
-
 		colormappv_ = new ColorMapPreview;
-
 		datacolordlg_ = new QFileDialog( this );
 		
 		QDir dir("../../data/colormaps");
@@ -129,6 +124,20 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		datacolordlg_->setPreviewMode( QFileDialog::Contents );
   
 		connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
+		connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
+
+#ifdef QWT3D_GL2PS
+		filetypeCB->insertItem("eps");
+		filetypeCB->insertItem("ps");
+	#ifdef QWT3D_GL2PDF
+			filetypeCB->insertItem("pdf");
+			filetype_ = "pdf";
+			filetypeCB->setCurrentText("pdf");
+	#endif
+#else
+		filetype_ = "png";
+		filetypeCB->setCurrentText("png");
+#endif
 }
 
 void Mesh2MainWindow::open()
@@ -253,9 +262,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	dataWidget->coordinates()->axes[Z2].setLabelString(QString("Z2"));
 	dataWidget->coordinates()->axes[Z3].setLabelString(QString("Z3"));
 	dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
-
-
-	//dataWidget->showColorLegend(legend_);
 }
 
 void Mesh2MainWindow::pickCoordSystem( QAction* action)
@@ -507,40 +513,48 @@ void Mesh2MainWindow::dumpImage()
 	static int counter = 0;
 	if (!dataWidget)
 		return;
-
-	QString name = QString("dump_") + QString::number(counter++) + ".png";
-	dataWidget->saveContent(name,"PNG");
-
-/*
-
-FILE *fp = fopen("MyFile.ps", "w");
-GLint buffsize = 0, state = GL2PS_OVERFLOW;
-GLint viewport[4];
-
-glGetIntegerv(GL_VIEWPORT, viewport);
-
-while( state == GL2PS_OVERFLOW ){ 
-  buffsize += 1024*1024;
-  gl2psBeginPage ( "MyTitle", "MySoftware", viewport,
-                   GL2PS_EPS, GL2PS_BSP_SORT,
-                   GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT |
-                   GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT,
-                   GL_RGBA, 0, NULL, 0, 0, 0, buffsize,
-                   fp, NULL );
- gl2psLineWidth(1);
- dataWidget->updateGL(); 
-  state = gl2psEndPage();
-
-}
-
-fclose(fp);
-*/
+	QString name;
+	
+	if (filetype_ == QString("png"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".png";
+		dataWidget->saveContent(name,"PNG");
+	}
+	else if (filetype_ == QString("bmp"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".bmp";
+		dataWidget->saveContent(name,"BMP");
+	}
+	else if (filetype_ == QString("xpm"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".xpm";
+		dataWidget->saveContent(name,"XPM");
+	}
+	else if (filetype_ == QString("ppm"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".ppm";
+		dataWidget->saveContent(name,"PPM");
+	}
+	else if (filetype_ == QString("eps"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".eps";
+		dataWidget->saveContent(name,"EPS");
+	}
+	else if (filetype_ == QString("ps"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".ps";
+		dataWidget->saveContent(name,"PS");
+	}
+	else if (filetype_ == QString("pdf"))
+	{
+		name = QString("dump_") + QString::number(counter++) + ".pdf";
+		dataWidget->saveContent(name,"PDF");
+	}
 }
 
 /*!
   Turns animation on or off
 */
-
 void Mesh2MainWindow::toggleAnimation(bool val)
 {
 	if ( val )
@@ -725,3 +739,8 @@ Mesh2MainWindow::updateColorLegend(int majors, int minors)
 	dataWidget->coordinates()->axes[Z1].limits(start,stop);
 	dataWidget->legend()->setLimits(start, stop);
 }		
+
+void Mesh2MainWindow::setFileType(QString const& name)
+{
+	filetype_ = name;	
+}

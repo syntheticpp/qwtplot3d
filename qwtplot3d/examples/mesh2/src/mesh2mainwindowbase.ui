@@ -561,6 +561,48 @@
         <action name="dump"/>
         <widget class="QComboBox">
             <property name="name">
+                <cstring>filetypeCB</cstring>
+            </property>
+            <item>
+                <property name="text">
+                    <string>png</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>bmp</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>ppm</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>xpm</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="Spacer">
+            <property name="name">
+                <cstring>Spacer3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Fixed</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>20</height>
+                </size>
+            </property>
+        </widget>
+        <widget class="QComboBox">
+            <property name="name">
                 <cstring>functionCB</cstring>
             </property>
             <property name="minimumSize">

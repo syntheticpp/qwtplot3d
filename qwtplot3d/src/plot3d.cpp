@@ -176,9 +176,10 @@ Plot3D::paintGL()
 		if (i!=LegendObject && i!=CoordObject)
 			glCallList( DisplayLists[i] );
 	}
+	
+	coord.draw();
 
-  coord.draw();
-
+ 
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();
 }
@@ -255,8 +256,55 @@ Plot3D::showColorLegend( bool show )
 bool 
 Plot3D::saveContent(QString fileName, QString format)
 {
-	QImage im = grabFrameBuffer(true);
-	return im.save(fileName,format);
+#ifdef QWT3D_GL2PS
+	GLint gl2ps_format;
+	if (format == QString("EPS"))
+	{
+		gl2ps_format = GL2PS_EPS;
+	}
+	else if (format == QString("PS"))
+	{
+		gl2ps_format = GL2PS_PS;
+	}
+	else if (format == QString("PDF"))
+	{
+		gl2ps_format = GL2PS_PDF;
+	}
+
+	if ((gl2ps_format == GL2PS_EPS) || (gl2ps_format == GL2PS_PS) || (gl2ps_format == GL2PS_PDF))
+	{
+		FILE *fp = fopen(fileName.latin1(), "wb");
+		if (!fp)
+			return false;
+
+		GLint bufsize = 0, state = GL2PS_OVERFLOW;
+		GLint viewport[4];
+
+		glGetIntegerv(GL_VIEWPORT, viewport);
+
+		while( state == GL2PS_OVERFLOW )
+		{ 
+			bufsize += 1024*1024;
+			gl2psBeginPage ( "---", "qwtplot3d", viewport,
+											 gl2ps_format, GL2PS_SIMPLE_SORT,
+											 GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
+											 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT,
+											 GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
+											 fp, NULL );
+			updateGL(); 
+			state = gl2psEndPage();
+		}
+		fclose(fp);
+		
+		return true;
+	}
+	else
+#endif
+	
+	{
+		QImage im = grabFrameBuffer(true);
+		return im.save(fileName,format);
+	}
 }
 
 void 
@@ -283,15 +331,6 @@ Plot3D::setDataColor( Color* col )
 	dataColor->destroy();
 	dataColor = col;
 	updateColorLegend();
-}
-
-/*!
-  <tt>(experimental)</tt>
-*/
-void 
-Plot3D::setColorAlpha(double d)
-{
-	dataColor->setAlpha(d);
 }
 
 /*!

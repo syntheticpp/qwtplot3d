@@ -4,9 +4,12 @@
 # Qt >= 3.x: qmake qwt.pro 
 #
 
+# Define, if you have gl2ps 
+DEFINES          += QWT3D_GL2PS
+
 TARGET            = qwtplot3d
 TEMPLATE          = lib
-#VERSION           = 0.1.3
+#VERSION           = 0.1.4
 CONFIG           += qt warn_on thread
 MOC_DIR           = moc
 OBJECTS_DIR       = obj
@@ -19,7 +22,7 @@ win32:DESTDIR      = ../../lib
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll 
 win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
-win32:LIBS     += opengl32.lib glu32.lib
+win32:LIBS     += gl2ps.lib opengl32.lib glu32.lib
  
 win32:QMAKE_CXXFLAGS     += -GX 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
@@ -62,4 +65,5 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
            include/qwt3d_reader.h \
-           include/qwt3d_autoscaler.h
+           include/qwt3d_autoscaler.h \
+           include/qwt3d_gl2ps.h

@@ -14,25 +14,8 @@ SurfacePlot::updateGridData()
 {
 	int i, j;
 	RGBA col;
-	int cstep = resolution();
-	int rstep = resolution();
-	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
-	{
-		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
-
-		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
-		{
-			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-			{
-				glBegin(GL_LINE_LOOP);
-					glVertex3dv(actualGridData_->vertices[i][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
-					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
-				glEnd();
-			}
-		}
-	}
+	const int cstep = resolution();
+	const int rstep = resolution();
 	
 	if (plotStyle() != WIREFRAME)
 	{
@@ -72,6 +55,24 @@ SurfacePlot::updateGridData()
 		}
 		glEnd();
 		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
+	{
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
+
+		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+		{
+			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
+			{
+				glBegin(GL_LINE_LOOP);
+					glVertex3dv(actualGridData_->vertices[i][j]);
+					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
+					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
+					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
+				glEnd();
+			}
+		}
 	}
 }
 

@@ -11,25 +11,8 @@ using namespace Qwt3D;
 
 void 
 SurfacePlot::updateCellData()
-{
+{		
 	int idx = 0;
-	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
-	{
-		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
-		{
-			for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
-			{
-				glBegin(GL_LINE_LOOP);
-				for (unsigned j=0; j!=actualCellData_->cells[i].size(); ++j)
-				{
-					idx = actualCellData_->cells[i][j];
-					glVertex3d( actualCellData_->nodes[idx].x, actualCellData_->nodes[idx].y, actualCellData_->nodes[idx].z );
-				}
-				glEnd();
-			}
-		}
-	}
-		
 	if (plotStyle() != WIREFRAME)
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -58,6 +41,24 @@ SurfacePlot::updateCellData()
 		}
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
+
+	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
+	{
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
+		{
+			for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
+			{
+				glBegin(GL_LINE_LOOP);
+				for (unsigned j=0; j!=actualCellData_->cells[i].size(); ++j)
+				{
+					idx = actualCellData_->cells[i][j];
+					glVertex3d( actualCellData_->nodes[idx].x, actualCellData_->nodes[idx].y, actualCellData_->nodes[idx].z );
+				}
+				glEnd();
+			}
+		}
+	}
+
 }
 
 // ci = cell index

@@ -58,7 +58,6 @@ private:
 	Qwt3D::COORDSTYLE style_;
 	
 	double ared_, agreen_, ablue_; 
-	double lineWidth_, majLineWidth_, minLineWidth_;
 
 	bool smooth_;
 

@@ -116,7 +116,7 @@ Axis::draw()
 	saveGLState();
 
 	glEnable(GL_LINE_SMOOTH);
-	glLineWidth( lineWidth_ );
+	setDeviceLineWidth( lineWidth_ );
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(color.r,color.g,color.b,color.a);		
 
@@ -175,13 +175,13 @@ Axis::drawTics()
 	
 	for (mj = 0; mj <= majorintervals_; ++mj) 
 	{
-		glLineWidth(majLineWidth_);
+		setDeviceLineWidth(majLineWidth_);
 		double t = double(mj) / majorintervals_;
 		drawTic(beg + t * runningpoint, lmaj_);
 		drawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_, mj);
 		if (t==1.0)
 			break;
-		glLineWidth(minLineWidth_);
+		setDeviceLineWidth(minLineWidth_);
 		for (int mi=1; mi < minorintervals_; ++mi)
 		{
 			double tt = double(mi)  / (minorintervals_ * majorintervals_);
@@ -204,6 +204,7 @@ Axis::drawTics()
 	
 	if (runningpoint.length())
 	{
+		setDeviceLineWidth(minLineWidth_);
 		while (runningpoint.length() < residuum.length())
 		{
 			drawTic(beg - runningpoint, lmin_);								
