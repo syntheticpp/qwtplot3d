@@ -1,5 +1,5 @@
-#include "colorgenerator.h"
-#include "qwt_plot3d.h"
+#include "qwt3d_color.h"
+#include "qwt3d_plot.h"
 
 using namespace Qwt3D;
 
@@ -7,13 +7,19 @@ StandardColor::StandardColor(Plot3D* data, int size)
 			: data_(data)
 {
 	Q_ASSERT(data_);
-	colors_ = ColorVector(size);
+	Q_ASSERT(size>=0);
+	
+	reset(size);
+}
+
+void StandardColor::reset(int size)
+{
+	colors_ = ColorField(size);
 	RGBA elem;
 
 	double dsize = size;
-
-/*
-	for (unsigned int i=0; i!=colors_.size(); ++i)
+	
+	for (unsigned int i=0; i!=size; ++i)
 	{
 		elem.r = i / dsize;
 		elem.g = i / dsize / 4;
@@ -21,15 +27,14 @@ StandardColor::StandardColor(Plot3D* data, int size)
 		elem.a = 1;
 		colors_[i] = elem;
 	}
+}
+
+/**
+	Assign new ColorField (overwrites the constructors size argument)
 */
-	for (unsigned int i=0; i!=colors_.size(); ++i)
-	{
-		elem.r = i / dsize / 4;
-		elem.g = i / dsize;
-		elem.b = 0.5 - i/dsize;
-		elem.a = 1;
-		colors_[i] = elem;
-	}
+void StandardColor::setColorVector(ColorField const& cv)
+{
+	colors_ = cv;
 }
 
 void
@@ -59,4 +64,3 @@ StandardColor::operator()(double x, double y, double z)
 		index = (int)(colors_.size() - 1);
 	return colors_[index];
 }
-	

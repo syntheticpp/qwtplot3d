@@ -3,19 +3,19 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt_plot3d.h"
-#include "vectorfield.h"
+#include "qwt3d_surfaceplot.h"
+#include "qwt3d_vectorfield.h"
 
 using namespace std;
 using namespace Qwt3D;
 
 void 
-Plot3D::updateCellData()
+SurfacePlot::updateCellData()
 {
 	int idx = 0;
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
 	{
-		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 		{
 			for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
 			{
@@ -36,19 +36,19 @@ Plot3D::updateCellData()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(polygonOffset_,1.0);
+		glPolygonOffset(polygonOffset(),1.0);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
-		col = bgcolor_;
+		col = backgroundRGBAColor();
 
-		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 		{
 			for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
 			{
 				if(!hl)
 				{
 					idx = actualCellData_->cells[i][0];
-					col = (*dataColor_)(
+					col = (*dataColor)(
 						actualCellData_->nodes[idx].x, actualCellData_->nodes[idx].y, actualCellData_->nodes[idx].z);
 				}
 				glColor4d(col.r, col.g, col.b, col.a);
@@ -67,7 +67,7 @@ Plot3D::updateCellData()
 }
 
 void 
-Plot3D::CellData2Floor()
+SurfacePlot::CellData2Floor()
 {	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
@@ -80,7 +80,7 @@ Plot3D::CellData2Floor()
 		for (unsigned i = 0; i!=actualCellData_->cells.size(); ++i)
 		{
 			idx = actualCellData_->cells[i][0];
-			col = (*dataColor_)(
+			col = (*dataColor)(
 				actualCellData_->nodes[idx].x, actualCellData_->nodes[idx].y, actualCellData_->nodes[idx].z);
 			glColor4d(col.r, col.g, col.b, col.a);
 			glBegin(GL_POLYGON);
@@ -96,14 +96,14 @@ Plot3D::CellData2Floor()
 
 
 void 
-Plot3D::Cell2Floor()
+SurfacePlot::Cell2Floor()
 {
 	if (actualCellData_->empty() || meshtype() == GRID)
 		return;
 	
 	double zshift = actualCellData_->minimum();
 
-	glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
+	glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 	for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
 	{
 		glBegin(GL_LINE_LOOP);
@@ -117,24 +117,24 @@ Plot3D::Cell2Floor()
 }
 
 void 
-Plot3D::CellIsolines2Floor()
+SurfacePlot::CellIsolines2Floor()
 {
-	if (isolines_ <= 0 || actualCellData_->empty())
+	if (isolines() <= 0 || actualCellData_->empty())
 		return;
 
-	double step = (actualCellData_->maximum() - actualCellData_->minimum()) / isolines_;		
+	double step = (actualCellData_->maximum() - actualCellData_->minimum()) / isolines();		
 
 	RGBA col;
 
 	double zshift = actualCellData_->minimum();
 		
-	TripleVector nodes;
-	TripleVector intersection;
+	TripleField nodes;
+	TripleField intersection;
 	
 	int hit = -1;
 	double lambda = 0;
 	
-	for (int k = 0; k != isolines_; ++k) 
+	for (int k = 0; k != isolines(); ++k) 
 	{
 		double val = zshift + k * step;		
 				
@@ -169,7 +169,7 @@ Plot3D::CellIsolines2Floor()
 
 			if (!intersection.empty())
 			{
-				col = (*dataColor_)(nodes[0].x,nodes[0].y,nodes[0].z);
+				col = (*dataColor)(nodes[0].x,nodes[0].y,nodes[0].z);
   			glColor4d(col.r, col.g, col.b, col.a);
 				if (intersection.size()>2)
 				{
@@ -202,7 +202,7 @@ Plot3D::CellIsolines2Floor()
 }
 
 void 
-Plot3D::updateCellNormals()
+SurfacePlot::updateCellNormals()
 {
 	if (!normals() || actualCellData_->empty())
 		return;
@@ -210,19 +210,18 @@ Plot3D::updateCellNormals()
 	if (actualCellData_->nodes.size() != actualCellData_->normals.size())
 		return;
 
-	VectorField v(dataColor_);
+	VectorField v(dataColor);
 	v.setQuality(normalQuality());
-	v.bases = TripleVector(actualCellData_->normals.size());
-	v.tops = TripleVector(v.bases.size());
+	v.elements = FreeVectorField(actualCellData_->normals.size());
 	
-	unsigned t = v.bases.size(); 
+	unsigned t = v.elements.size(); 
 
 	Triple basev;
 	Triple topv;	
 	
 	double diag = (actualCellData_->hull().maxVertex-actualCellData_->hull().minVertex).length() * normalLength();
 
-	for (unsigned i = 0; i != v.bases.size(); ++i) 
+	for (unsigned i = 0; i != v.elements.size(); ++i) 
 	{
 		basev = actualCellData_->nodes[i];
 		topv = basev + actualCellData_->normals[i];
@@ -231,8 +230,8 @@ Plot3D::updateCellNormals()
 		norm.normalize();
 		norm	*= diag;
 
-		v.bases[i] = basev;		
-		v.tops[i] = basev + norm;	
+		v.elements[i].base = basev;		
+		v.elements[i].top = basev + norm;	
 	}
 	v.drawArrows();
 }

@@ -11,6 +11,8 @@
 
 #include <string>
 
+#include "qwt3d_global.h"
+
 #ifdef _WIN32
 	#include <windows.h>
 #endif
@@ -19,71 +21,90 @@
 	#define WHEEL_DELTA 120
 #endif
 
-#include "helper.h"
-#include "openglhelper.h"
+#include "qwt3d_helper.h"
+#include "qwt3d_openglhelper.h"
 
-
+//! Common namespace for all QwtPlot3D classes
 namespace Qwt3D
 {
 
+//! Plotting style
 enum PLOTSTYLE
 {
-	NOPLOT,
-	WIREFRAME,
-	HIDDENLINE,
-	FILLED,
-	FILLEDMESH
+	NOPLOT,      //!< No visible data, used in SurfacePlot to show normals only
+	WIREFRAME,   //!< Wireframe style
+	HIDDENLINE,  //!< Hidden Line style
+	FILLED,      //!< Color filled polygons w/o edges 
+	FILLEDMESH   //!< Color filled polygons w/ separately colored edges
 };
 
+//! Style of Coordinate system
 enum COORDSTYLE
 {
-	NOCOORD,
-	BOX,
-	FRAME		
+	NOCOORD, //!< Coordinate system is not visible 
+	BOX,     //!< Boxed
+	FRAME		 //!< Frame - 3 visible axes
 };
 
+//! Plotting style for floor data (projections)
 enum FLOORSTYLE
 {
-	NOFLOOR,
-	FLOORMESH,
-	FLOORISO,
-	FLOORDATA,
+	NOFLOOR,   //!< Empty floor
+	FLOORMESH, //!< Mesh visible
+	FLOORISO,  //!< Isoline projections visible
+	FLOORDATA, //!< Projected polygons visible
 };
 
+//! Mesh type
+enum MESHTYPE
+{
+	GRID,		//!< Rectangular grid
+	POLYGON //!< Convex polygon
+};	
+
+
 //! The 12 axes
+/**
+\image html axes.png 
+*/
 enum AXIS
 {
-	X1 = 0,
-	X2 = 3,
-	X3 = 4,
-	X4 = 5,
-	Y1 = 1,
-	Y2 = 8,
-	Y3 = 7,
-	Y4 = 6,
-	Z1 = 2,
-	Z2 = 9,
-	Z3 = 11,
-	Z4 = 10
+	X1 = 0,   //!<  1st x-axis
+	X2 = 3,   //!<  2nd x-axis
+	X3 = 4,   //!<  3th x-axis
+	X4 = 5,   //!<  4th x-axis
+	Y1 = 1,   //!<  1st y-axis
+	Y2 = 8,   //!<  2nd y-axis
+	Y3 = 7,   //!<  3th y-axis
+	Y4 = 6,   //!<  4th y-axis
+	Z1 = 2,   //!<  1st z-axis
+	Z2 = 9,   //!<  2nd z-axis
+	Z3 = 11,  //!<  3th z-axis
+	Z4 = 10   //!<  4th z-axis
 };
 
 //! Tuple <tt>[x,y]</tt>
-struct Tuple
+struct QWT3D_EXPORT Tuple
 {
-	Tuple() : x(0), y(0) {}
-	Tuple(double X, double Y) : x(X), y(Y) {}
-	double x,y;
+	Tuple() : x(0), y(0) {} //!< Calls Tuple(0,0)
+	Tuple(double X, double Y) : x(X), y(Y) {} //!< Initialize Tuple with x and y
+	double x,y; //!< Tuple coordinates
 };
 
 //! Triple <tt>[x,y,z]</tt>
-struct Triple
+/**
+Consider Triples also as vectors in R^3
+*/
+struct QWT3D_EXPORT Triple
 {
-	explicit Triple(double xv = 0,double yv = 0,double zv = 0)
+	//! Initialize Triple with x,y and z
+	explicit Triple(double xv = 0,double yv = 0,double zv = 0) 
 		: x(xv), y(yv), z(zv)
 	{
 	}
 	
-	double x,y,z;
+	//! Triple coordinates
+	double x,y,z; 
 
 	Triple& operator+=(Triple t)
 	{
@@ -180,12 +201,25 @@ inline const Triple operator*(const Triple& t, const Triple& t2)
 	return Triple(t) *= t2;
 }
 
-struct ParallelEpiped
+//! Parallelepiped spanned by 2 Triples
+/**
+Please use \em normalized Parallelepipeds:\n\n
+minVertex.x <= maxVertex.x\n
+minVertex.y <= maxVertex.y\n
+minVertex.z <= maxVertex.z\n
+*/
+struct QWT3D_EXPORT ParallelEpiped
 {
+	//! Construct non-initialized Parallelepiped
 	ParallelEpiped()
 	{
 	}
 
+	//! Construct initialized Parallelepiped
+	/**
+		minv -> minVertex\n
+		maxv -> maxVertex\n
+	*/
 	ParallelEpiped(Triple minv, Triple maxv)
 	: minVertex(minv), maxVertex(maxv)
 	{
@@ -195,6 +229,60 @@ struct ParallelEpiped
 	Triple maxVertex;
 };
 
+//! Free vector
+/**
+	FreeVectors represent objects like normal vectors and other vector fields inside R^3 
+*/
+struct QWT3D_EXPORT FreeVector
+{
+	FreeVector()
+	{
+	}
+
+	//! Construct initialized vector
+	/**
+		b -> base\n
+		e -> top\n
+	*/
+	FreeVector(Triple b, Triple t)
+	: base(b), top(t)
+	{
+	}
+	
+	Triple base;
+	Triple top;
+};
+
+//! A free vector field in R^3
+typedef std::vector<FreeVector> FreeVectorField;
+
+//! A point field in R^3
+typedef std::vector<Triple> TripleField;
+//! Holds indices in a TripleField interpreted as counterclockwise node numbering for a convex polygon
+typedef std::vector<unsigned> Cell;
+//! Vector of convex polygons. You need a TripleField as base for the node data
+typedef std::vector<Cell> CellField;
+//! Returns the sum over the sizes of the single cells
+unsigned tesselationSize(Qwt3D::CellField const& t);
+
+//! Red-Green-Blue-Alpha value
+struct QWT3D_EXPORT RGBA
+{
+	RGBA() 
+		{}
+	explicit RGBA(double rr, double gg, double bb, double aa = 1)
+		: r(rr), g(gg), b(bb), a(aa)
+		{}
+	double r,g,b,a;
+};
+
+//! A Color field
+typedef std::vector<RGBA> ColorField;
+
+#ifndef QWT3D_PRIVATE
+
+QWT3D_EXPORT QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
+QWT3D_EXPORT Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
 
 typedef double *Vertex;
 typedef std::vector<Vertex> DataRow;
@@ -234,14 +322,6 @@ private:
 };
 
 
-typedef std::vector<Triple> TripleVector;
-//! Helds indexes in a TripleVector interpreted as node numbers for a convex polygon
-typedef std::vector<unsigned> Cell;
-//! Vector of convex polygons. You need a TripleVector as base for the node data
-typedef std::vector<Cell> Tesselation;
-//! returns the sum over the sizes of the single cells
-unsigned tesselationSize(Qwt3D::Tesselation const& t);
-
 //! Implements a graph-like cell structure with limit access functions 
 class CellData
 {
@@ -259,9 +339,9 @@ public:
 	
 	//	ParallelEpiped hull() const;
 
-	Tesselation cells;   //!< polygon/cell mesh 
-	TripleVector    nodes;
-	TripleVector    normals; //!< mesh normals
+	CellField cells;   //!< polygon/cell mesh 
+	TripleField    nodes;
+	TripleField    normals; //!< mesh normals
 
 	ParallelEpiped hull() const;
 	void setHull(ParallelEpiped h) { hull_ = h; }
@@ -273,27 +353,6 @@ private:
 
 	ParallelEpiped hull_;
 };
-
-
-// colors
-
-//! Red-Green-Blue-Alpha value
-struct RGBA
-{
-	RGBA() 
-		{}
-	explicit RGBA(double rr, double gg, double bb, double aa = 1)
-		: r(rr), g(gg), b(bb), a(aa)
-		{}
-	double r,g,b,a;
-};
-
-typedef std::vector<RGBA> ColorVector;
-
-
-QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
-Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
-
 
 //! simplified glut routine (glProject): object coord --> windows coord 
 inline Triple World2ViewPort(Triple obj,	bool* err = 0)
@@ -334,31 +393,6 @@ inline Triple ViewPort2World(Triple win, bool* err = 0)
 	return obj;
 }
 
-inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
-{
-  GLdouble l;
-
-  /* compute the cross product (u x v for right-handed [ccw]) */
-  n[0] = u[1] * v[2] - u[2] * v[1];
-  n[1] = u[2] * v[0] - u[0] * v[2];
-  n[2] = u[0] * v[1] - u[1] * v[0];
-
-  /* normalize */
-  l = (GLdouble)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-  if (l)
-	{
-		n[0] /= l;
-		n[1] /= l;
-		n[2] /= l;
-	}
-	else
-	{
-		n[0] = 0;
-		n[1] = 0;
-		n[2] = 0;
-	}
-}
-
 inline Triple normalizedcross(Triple const& u, Triple const& v)
 {
 	Triple n;
@@ -388,6 +422,9 @@ inline double dotProduct(Triple const& u, Triple const& v)
 }
 
 void convexhull2d( std::vector<int>& idx, const std::vector<Qwt3D::Tuple>& src );
+
+
+#endif // QWT3D_PRIVATE 
 
 } // ns
 

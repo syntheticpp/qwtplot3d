@@ -1,16 +1,22 @@
-#include "qwt_plot3d.h"
-#include "functiongenerator.h"
+#include "qwt3d_surfaceplot.h"
+#include "qwt3d_function.h"
 
 using namespace Qwt3D;
 
-Function::Function(Plot3D* pw)
+Function::Function()
 {
-	if (!pw)
-	{
-		fprintf(stderr,"Function: no valid Plot3D Widget");
-		return;
-	}
-	plotwidget_ = pw;
+	init(0);
+}
+
+Function::Function(SurfacePlot* pw)
+{
+	init(pw);
+}
+
+void 
+Function::init(SurfacePlot* plotWidget)
+{
+	plotwidget_ = plotWidget;
 	setMesh(0,0);
 	setDomain(0,0,0,0);
 	setMinZ(-DBL_MAX);
@@ -22,9 +28,10 @@ Function::~Function()
 }
 
 void
-Function::assign(Plot3D* plotWidget)
+Function::assign(SurfacePlot* plotWidget)
 {
-	if (plotWidget && plotWidget != plotwidget_)
+	Q_ASSERT(plotWidget);
+	if (plotWidget && (plotWidget != plotwidget_))
 		plotwidget_ = plotWidget;
 }
 
@@ -56,9 +63,15 @@ Function::	setMaxZ(double val)
 	maxz_ = val;
 }
 
+/**
+For plotWidget != 0 the function permanently assigns her argument (In fact, assign(plotWidget) is called)
+*/
 bool 
-Function::create()
+Function::create(SurfacePlot* plotWidget)
 {
+	if (plotWidget)
+		assign(plotWidget);
+
 	if ((xmesh_<=2) || (ymesh_<=2) || !plotwidget_)
 		return false;
 	
@@ -89,7 +102,15 @@ Function::create()
 		}
 	}
 
-	plotwidget_->createDataRepresentation(data, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_);
+	Q_ASSERT(plotwidget_);
+	if (!plotwidget_)
+	{
+		fprintf(stderr,"Function: no valid Plot3D Widget assigned");
+	}
+	else
+	{
+		plotwidget_->createDataRepresentation(data, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_);
+	}
 
 	for ( i = 0; i < xmesh_; i++) 
 	{

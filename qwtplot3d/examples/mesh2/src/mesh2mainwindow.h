@@ -1,10 +1,12 @@
+#include "qwt3d_plot3d.h"
 #include "mesh2mainwindowbase.h"
-#include "qwt_plot3d.h"
 
 
 class QLabel;
 class QTimer;
 class QAction;
+class QFileDialog;
+class ColorMapPreview;
 
 class Mesh2MainWindow : public Mesh2MainWindowBase
 {
@@ -28,6 +30,7 @@ public slots:
 	void pickNumberColor();
 	void pickLabelColor();
 	void pickTitleColor();
+	void pickDataColor();
 	void resetColors();
 	void pickNumberFont();
 	void pickLabelFont();
@@ -41,7 +44,7 @@ public slots:
 	void toggleAutoScale(bool val);
 	void rotate();
 	void setPolygonOffset(int);
-	void createColorLegend(Qwt3D::ColorVector const&);
+	void createColorLegend(Qwt3D::ColorField const&);
 
 	void showRotate(double x, double y, double z);
 	void showShift(double x, double y);
@@ -50,6 +53,8 @@ public slots:
 	void showNormals(bool val);
 	void setNormalQuality(int);
 	void setNormalLength(int);
+	bool openColorMap(Qwt3D::ColorField& cv, QString fname);
+	void adaptDataColors(const QString&);
 
 private:
 	QLabel *filenameWidget,
@@ -61,7 +66,9 @@ private:
 	QAction* activeCoordSystem;
 
 	bool legend_;
+	Qwt3D::StandardColor* col_;
 
-
+	QFileDialog* datacolordlg_;
+	ColorMapPreview* colormappv_; 
 };
 

@@ -1,4 +1,4 @@
-#include "coordsys.h"
+#include "qwt3d_coordsys.h"
 
 using namespace std;
 using namespace Qwt3D;

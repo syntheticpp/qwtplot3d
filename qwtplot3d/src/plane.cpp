@@ -2,7 +2,8 @@
 #pragma warning ( disable : 4305 )
 #endif
 
-#include "plane.h"
+#include "qwt3d_plane.h"
+
 using namespace Qwt3D;
 
 

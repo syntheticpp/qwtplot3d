@@ -1,5 +1,5 @@
 #include "qbitmap.h"
-#include "labelpixmap.h"
+#include "qwt3d_labelpixmap.h"
 
 using namespace Qwt3D;
 

@@ -3,13 +3,14 @@
 
 
 #include <list>
-#include "types.h"
+#include "qwt3d_global.h"
+#include "qwt3d_types.h"
 
 namespace Qwt3D
 {
 
 //! ABC for Drawables
-class Drawable 
+class QWT3D_EXPORT Drawable 
 {
 
 public:

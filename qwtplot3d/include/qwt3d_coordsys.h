@@ -1,14 +1,15 @@
 #ifndef __COORDSYS_H__
 #define __COORDSYS_H__
 
-#include "axis.h"
-#include "plane.h"
+#include "qwt3d_global.h"
+#include "qwt3d_axis.h"
+#include "qwt3d_plane.h"
 
 namespace Qwt3D
 {
 
 //! A coordinate system with different styles (BOX, FRAME)
-class CoordinateSystem : public Drawable
+class QWT3D_EXPORT CoordinateSystem : public Drawable
 {
 
 public:
