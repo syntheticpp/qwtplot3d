@@ -17,14 +17,24 @@
 #include <math.h>
 
 
+namespace Qwt3d
+{
 
 enum PLOTSTYLE
 {
-	NOPLOTDATA,
+	NOPLOT,
 	WIREFRAME,
 	HIDDENLINE,
 	FILLED,
-	FILLEDMESH		
+	FILLEDMESH
+};
+
+enum ELEMENTTYPE
+{
+	POINT,
+	TRIANGLE,
+  TRIANGLE2,
+	QUAD
 };
 
 enum COORDSTYLE
@@ -57,6 +67,8 @@ enum AXIS
 	Z3 = 11,
 	Z4 = 10
 };
+
+} // ns
 
 inline int round(double d)
 {

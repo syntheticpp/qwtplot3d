@@ -41,7 +41,7 @@ Axis::init()
 	drawTics_ = false;
 	autoscale_ = true;
 	markerLabel_.clear();
-	numberfont_ = QFont("Helvetica",12);
+	numberfont_ = QFont("Times",12);
 	numbercolor_ = RGBA(0,0,0,0);
 
 	setNumberAnchor(LabelPixmap::Center);

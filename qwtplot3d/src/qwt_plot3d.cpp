@@ -4,7 +4,6 @@
 #endif
 
 #include "qwt_plot3d.h"
-#include "labeltexture.h"
 #include "colorgenerator.h"
 
 #include <qimage.h>
@@ -28,11 +27,12 @@ SaveGlDeleteLists(GLuint& list, GLsizei range)
 } // private
 
 
+using namespace Qwt3d;
 	
 /*!
-  Create a QwtPlot3d widget
+  Create a QwtPlot3D widget
 */
-QwtPlot3d::QwtPlot3d( QWidget* parent, const char* name )
+QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name )
     : QGLWidget( parent, name )
 {
 	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
@@ -57,13 +57,17 @@ QwtPlot3d::QwtPlot3d( QWidget* parent, const char* name )
 	}
 
 	dataColor_ = new StandardColor(actualData_);
+	title_.setFont("Times", 18, QFont::Bold);
+	title_.setString("");
+
+	setCaptionPosition(0.95);
 }
 
 /*!
   Release allocated resources
 */
 
-QwtPlot3d::~QwtPlot3d()
+QwtPlot3D::~QwtPlot3D()
 {
 	SaveGlDeleteLists( objectList_[0], objectList_.size() );
 	delete dataColor_;
@@ -74,7 +78,7 @@ QwtPlot3d::~QwtPlot3d()
   Generate an OpenGL display list for the object to be shown
 */
 void 
-QwtPlot3d::updateData()
+QwtPlot3D::updateData()
 {
 	int i, j;
 	RGBA col;
@@ -86,7 +90,7 @@ QwtPlot3d::updateData()
 
 	SaveGlDeleteLists(objectList_[DataObject], 1); // nur Daten
 	
-	if (plotStyle() == NOPLOTDATA)
+	if (plotStyle() == NOPLOT)
 		return;
 
 	objectList_[DataObject] = glGenLists(1);
@@ -159,7 +163,7 @@ QwtPlot3d::updateData()
 */
 
 void 
-QwtPlot3d::paintGL()
+QwtPlot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -221,6 +225,11 @@ QwtPlot3d::paintGL()
 	
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();  
+
+	int vp[4];
+	glGetIntegerv(GL_VIEWPORT, vp);
+	title_.setPosition(Triple(ViewPort2World(Triple((titlerelx_-vp[0])*vp[2],(titlerely_-vp[1])*vp[3],0))),titleanchor_);
+	title_.draw();
 }
 
 /*!
@@ -228,13 +237,12 @@ QwtPlot3d::paintGL()
 */
 
 void 
-QwtPlot3d::resizeGL( int w, int h )
+QwtPlot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
 
+//	title.setPosition(Triple(ViewPort2World(Triple(w/2,h-h/15,0))),LabelPixmap::TopCenter);
 	paintGL();
-
-	emit viewportChanged();
 }
 
 /*!
@@ -242,7 +250,7 @@ QwtPlot3d::resizeGL( int w, int h )
 */
 
 void 
-QwtPlot3d::initializeGL()
+QwtPlot3D::initializeGL()
 {
 	// Set up the lights
 
@@ -275,7 +283,7 @@ QwtPlot3d::initializeGL()
 */
 
 void 
-QwtPlot3d::setRotation( double xVal, double yVal, double zVal )
+QwtPlot3D::setRotation( double xVal, double yVal, double zVal )
 {
   if (xRot_ == xVal && yRot_ == yVal && zRot_ == zVal)
 		return;
@@ -289,7 +297,7 @@ QwtPlot3d::setRotation( double xVal, double yVal, double zVal )
 }
 
 void 
-QwtPlot3d::setShift( double xVal, double yVal, double zVal )
+QwtPlot3D::setShift( double xVal, double yVal, double zVal )
 {
   if (xShift_ == xVal && yShift_ == yVal && zShift_ == zVal)
 		return;
@@ -302,7 +310,7 @@ QwtPlot3d::setShift( double xVal, double yVal, double zVal )
 }
 
 void 
-QwtPlot3d::setScale( double xVal, double yVal, double zVal )
+QwtPlot3D::setScale( double xVal, double yVal, double zVal )
 {
   if (xScale_ == xVal && yScale_ == yVal && zScale_ == zVal)
 		return;
@@ -315,7 +323,7 @@ QwtPlot3d::setScale( double xVal, double yVal, double zVal )
 }
 
 void 
-QwtPlot3d::setZoom( double val )
+QwtPlot3D::setZoom( double val )
 {
   if (zoom_ == val)
 		return;
@@ -326,7 +334,7 @@ QwtPlot3d::setZoom( double val )
 }
 
 void 
-QwtPlot3d::setResolution( int res )
+QwtPlot3D::setResolution( int res )
 {
 	if ((resolution_ == res) || res < 1)
 		return;
@@ -339,7 +347,7 @@ QwtPlot3d::setResolution( int res )
 }
 
 void 
-QwtPlot3d::updateCoordinates()
+QwtPlot3D::updateCoordinates()
 {
 	SaveGlDeleteLists(objectList_[CoordSystemObject], 1);
 	
@@ -357,7 +365,7 @@ QwtPlot3d::updateCoordinates()
 
 
 void 
-QwtPlot3d::updateFloorData(double zshift)
+QwtPlot3D::updateFloorData(double zshift)
 {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
@@ -381,7 +389,7 @@ QwtPlot3d::updateFloorData(double zshift)
 
 
 void 
-QwtPlot3d::calcFloorListAsData(double zshift)
+QwtPlot3D::calcFloorListAsData(double zshift)
 {
 	RGBA col;
 	int cstep = resolution_;
@@ -412,7 +420,7 @@ QwtPlot3d::calcFloorListAsData(double zshift)
 }
 
 void 
-QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
+QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
 {
 	if (steps <= 0)
 		return;
@@ -420,18 +428,19 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 	double step = (actualData_.maximum() - actualData_.minimum()) / steps;		
 
 	RGBA col;
+	int cstep = resolution_;
+	int rstep = resolution_;
 
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-	static Triple lp;
 	for (int k = steps; k > 0; --k) 
 	{
 		double hi = actualData_.minimum() + k * step;
 		double lo = hi - step;
 		
-		for (int i = 1; i < actualData_.columns()-1; ++i) 
+		for (int i = cstep; i < actualData_.columns()-cstep; i+=cstep) 
 		{
-			for (int j = 1; j < actualData_.rows()-1; ++j) 
+			for (int j = rstep; j < actualData_.rows()-rstep; j+=rstep) 
 			{
 				col = (*dataColor_)(
 					actualData_.vertices[i][j][0],
@@ -445,9 +454,8 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 															actualData_.vertices[i][j][2]);
 				if ( lo<=thi.z && thi.z<=hi)
 				{
-					bool lastconnected = false;
-					for (int ii = i-1; ii <= i+1; ++ii)
-						for (int  jj = j-1; jj <= j+1; ++jj)
+					for (int ii = i-cstep; ii <= i+cstep; ii+=cstep)
+						for (int  jj = j-rstep; jj <= j+rstep; jj+=rstep)
 						{
 							{
 								Triple tlo = Triple(	actualData_.vertices[ii][jj][0],
@@ -455,30 +463,11 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 																		actualData_.vertices[ii][jj][2]);
 								if (tlo.z <= lo)
 								{
-									if (thi.z - tlo.z)
-									{
-										Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
-										if (lastconnected)
-										{
-											glBegin(GL_LINES);
-												glVertex3f(lp.x, lp.y, zshift);
-												glVertex3f(rp.x, rp.y, zshift);
-											glEnd();
-										}
-										else
-										{
-											glBegin(GL_POINTS);
-												glVertex3f(rp.x, rp.y, zshift);
-												//glVertex3f(rp.x, rp.y, rp.z);
-											glEnd();
-										}
-										lastconnected = true;
-										lp = rp;
-									}
-								}
-								else
-								{
-									lastconnected = false;
+									Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
+										glBegin(GL_POINTS);
+											glVertex3f(rp.x, rp.y, zshift);
+											//glVertex3f(rp.x, rp.y, rp.z);
+										glEnd();
 								}
 							}
 						}
@@ -489,7 +478,7 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 }
 
 void 
-QwtPlot3d::showColorLegend( bool show )
+QwtPlot3D::showColorLegend( bool show )
 {
  	SaveGlDeleteLists(objectList_[LegendObject], 1);
 	
@@ -507,33 +496,33 @@ QwtPlot3d::showColorLegend( bool show )
 }
 
 void 
-QwtPlot3d::mouseMoveEvent( QMouseEvent *e )
+QwtPlot3D::mouseMoveEvent( QMouseEvent *e )
 {
 	QPoint p = e->pos();
 	emit screenpositionChanged(p.x(), p.y()); 
 }
 
 bool 
-QwtPlot3d::dump(QString fileName, QString format)
+QwtPlot3D::dump(QString fileName, QString format)
 {
 	QImage im = grabFrameBuffer(true);
 	return im.save(fileName,format);
 }
 
 void 
-QwtPlot3d::setMeshColor(RGBA rgba)
+QwtPlot3D::setMeshColor(RGBA rgba)
 {
 	meshcolor_ = rgba;
 }
 
 void 
-QwtPlot3d::setBackgroundColor(RGBA rgba)
+QwtPlot3D::setBackgroundColor(RGBA rgba)
 {
 	bgcolor_ = rgba;
 }
 
 void
-QwtPlot3d::createCoordinateSystem()
+QwtPlot3D::createCoordinateSystem()
 {
 	if (actualData_.empty())
 		return;
@@ -545,13 +534,13 @@ QwtPlot3d::createCoordinateSystem()
 }
 
 void
-QwtPlot3d::createCoordinateSystem( Triple beg, Triple end )
+QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
 {
 	coord.init(beg, end);
 }
 
 void 
-QwtPlot3d::calculateHull()
+QwtPlot3D::calculateHull()
 {
 	datafirst_ = Triple(0,0,0);
 	datasecond_ = Triple(0,0,0);
@@ -570,7 +559,7 @@ QwtPlot3d::calculateHull()
 }
 
 void 
-QwtPlot3d::assignData( Data const& data )
+QwtPlot3D::assignData( Data const& data )
 {
 	actualData_ = data;
 
@@ -580,20 +569,20 @@ QwtPlot3d::assignData( Data const& data )
 }
 
 void 
-QwtPlot3d::assignDataColor( Color* col )
+QwtPlot3D::assignDataColor( Color* col )
 {
 	delete dataColor_;
 	dataColor_ = col;
 }
 
 void 
-QwtPlot3d::modifyStandardColorAlpha(double d)
+QwtPlot3D::modifyStandardColorAlpha(double d)
 {
 	dataColor_->setAlpha(d);
 }
 
 void
-QwtPlot3d::setOrtho( bool val )
+QwtPlot3D::setOrtho( bool val )
 {
 	if (val == ortho_)
 		return;
@@ -604,20 +593,20 @@ QwtPlot3d::setOrtho( bool val )
 }
 
 void 
-QwtPlot3d::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
+QwtPlot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
 {
 		legend_.setPosition(a,b,c,d);
 		legend_.colors = col;
 }
 
 void 
-QwtPlot3d::setCoordinateStyle(COORDSTYLE st)
+QwtPlot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coord.setStyle(st);
 }
 
 void
-QwtPlot3d::setPlotStyle( PLOTSTYLE val )
+QwtPlot3D::setPlotStyle( PLOTSTYLE val )
 {
 	if (val == plotstyle_)
 		return;
@@ -628,7 +617,7 @@ QwtPlot3d::setPlotStyle( PLOTSTYLE val )
 }
 
 void
-QwtPlot3d::setFloorStyle( FLOORSTYLE val )
+QwtPlot3D::setFloorStyle( FLOORSTYLE val )
 {
 	if (val == floorstyle_)
 		return;
@@ -640,7 +629,7 @@ QwtPlot3d::setFloorStyle( FLOORSTYLE val )
 }
 
 void 
-QwtPlot3d::setIsolines(int steps)
+QwtPlot3D::setIsolines(int steps)
 {
 	if (steps < 0)
 		return;
@@ -650,10 +639,25 @@ QwtPlot3d::setIsolines(int steps)
 
 
 void
-QwtPlot3d::setPolygonOffset( double val )
+QwtPlot3D::setPolygonOffset( double val )
 {
 	if (val < 0 || val>1)
 		return;
 	
 	polygonOffset_ = val;
+}
+
+void 
+QwtPlot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
+{
+	titlerely_= (rely<0 || rely>1) ? 0.5 : rely;
+	titlerelx_= (relx<0 || relx>1) ? 0.5 : relx;
+
+	titleanchor_ = anchor;
+}
+
+void 
+QwtPlot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool italic)
+{ 
+	title_.setFont(family, pointSize, weight, italic);
 }

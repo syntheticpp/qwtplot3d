@@ -3,6 +3,7 @@
 const double CoordinateSystem::SQRT1_2 = 0.70710678118654752440084436210485;
 
 using namespace std;
+using namespace Qwt3d;
 
 CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 {
@@ -12,7 +13,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 
 	setLineWidth(1.5);
 	setAxesColor(RGBA(0,0,0,1));
-	setNumberFont("Helvetica", 10);
+	setNumberFont("Times", 12);
 	setNumberColor(RGBA(0,0.0,0));
 }
 
@@ -74,7 +75,7 @@ CoordinateSystem::init(Triple first, Triple second)
 	axes[Z4].setTicOrientation(-SQRT1_2,-SQRT1_2,0);
 	axes[Z3].setTicOrientation(-SQRT1_2,SQRT1_2,0);
 
-	setLabelFont("Times", 12, QFont::Bold);
+	setLabelFont("Times", 14, QFont::Bold);
 	
 	setStyle(style_);
 }

@@ -29,14 +29,14 @@
 
 class Color;
 
-class QwtPlot3d : public QGLWidget
+class QwtPlot3D : public QGLWidget
 {
     Q_OBJECT
 
 public:
 		
-    QwtPlot3d( QWidget* parent, const char* name );
-    virtual ~QwtPlot3d();
+    QwtPlot3D( QWidget* parent, const char* name );
+    virtual ~QwtPlot3D();
 
 		void updateCoordinates();
 	  void updateData();
@@ -60,10 +60,10 @@ public:
 		//@}
 
 		bool ortho() const { return ortho_; } 
-		void		setPlotStyle( PLOTSTYLE val );
-		PLOTSTYLE plotStyle() const { return plotstyle_; } 
-		void		setFloorStyle( FLOORSTYLE val );
-		FLOORSTYLE floorStyle() const { return floorstyle_; } 
+		void		setPlotStyle( Qwt3d::PLOTSTYLE val );
+		Qwt3d::PLOTSTYLE plotStyle() const { return plotstyle_; } 
+		void		setFloorStyle( Qwt3d::FLOORSTYLE val );
+		Qwt3d::FLOORSTYLE floorStyle() const { return floorstyle_; } 
 		void setIsolines(int isolines);
 		int isolines() const { return isolines_;}
 		
@@ -82,11 +82,16 @@ public:
 		void showColorLegend(bool);
 		void createColorLegend(ColorVector const&, Triple a = Triple(), Triple b = Triple(), Triple c = Triple(), Triple d = Triple());
 
-		void setCoordinateStyle(COORDSTYLE st);
+		void setCoordinateStyle(Qwt3d::COORDSTYLE st);
 		void setPolygonOffset(double d);
 		double polygonOffset() const {return polygonOffset_;}
+		CoordinateSystem* coordinates() { return &coord; }
+		
+		void setCaptionPosition(double rely, double relx = 0.5, LabelPixmap::ANCHOR = LabelPixmap::TopCenter);
+		void setCaptionFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
+		void setCaptionColor(RGBA col) {title_.setColor(col);}
+		void setTitle(const QString& title) {title_.setString(title);}
 
-		CoordinateSystem coord;
 
 
 signals:
@@ -99,8 +104,6 @@ signals:
 		void screenpositionChanged(double, double);
 		void resolutionChanged(double);
 		void projectionChanged(bool);
-
-		void viewportChanged();
 
 public slots:
 
@@ -121,6 +124,9 @@ protected:
     void		paintGL();
     void		resizeGL( int w, int h );
 
+		CoordinateSystem coord;
+
+
 private:
 
     GLfloat xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_;
@@ -131,8 +137,8 @@ private:
 		int resolution_;
 		RGBA meshcolor_;
 		RGBA bgcolor_;
-		PLOTSTYLE plotstyle_;
-		FLOORSTYLE floorstyle_;
+		Qwt3d::PLOTSTYLE plotstyle_;
+		Qwt3d::FLOORSTYLE floorstyle_;
 		bool ortho_;
 		double polygonOffset_;
 		int isolines_;
@@ -154,6 +160,10 @@ private:
 
 		Color* dataColor_;
 		ColorLegend legend_;
+
+		LabelPixmap title_;
+		double titlerelx_, titlerely_;
+		LabelPixmap::ANCHOR titleanchor_;
 
 		void calcFloorListAsData(double zshift);
 		void calcFloorListAsIsolines(int steps, double zshift);

@@ -15,7 +15,6 @@ win32:QMAKE_CXXFLAGS     += -GX
 HEADERS += src/qwt_plot3d.h \
 					 src/reader.h \
 					 src/types.h \
-					 src/labeltexture.h \
 					 src/labelpixmap.h \
 					 src/axis.h \
 					 src/coordsys.h \
@@ -28,7 +27,6 @@ HEADERS += src/qwt_plot3d.h \
 SOURCES += src/compares.cpp \
 					 src/qwt_plot3d.cpp \
 					 src/reader.cpp \
-					 src/labeltexture.cpp \
 					 src/labelpixmap.cpp \
 					 src/types.cpp \
 					 src/axis.cpp \
