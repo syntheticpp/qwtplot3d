@@ -99,15 +99,15 @@ SurfacePlot::updateGridData()
 void
 SurfacePlot::setColorFromGridVertex(int ix, int iy, bool skip)
 {
-		if (skip)
-			return;
+	if (skip)
+		return;
 
-		RGBA col = (*dataColor)(
-			actualGridData_->vertices[ix][iy][0],
-			actualGridData_->vertices[ix][iy][1],
-			actualGridData_->vertices[ix][iy][2]);
-			
-		glColor4d(col.r, col.g, col.b, col.a);
+	RGBA col = (*dataColor)(
+		actualGridData_->vertices[ix][iy][0],
+		actualGridData_->vertices[ix][iy][1],
+		actualGridData_->vertices[ix][iy][2]);
+		
+	glColor4d(col.r, col.g, col.b, col.a);
 }
 
 void 
