@@ -12,7 +12,7 @@
 
 #include <qgl.h>
 #include "qwt3d_types.h"
-#include <gl2ps.h>
+#include "../3rdparty/gl2ps/gl2ps.h"
 
 namespace Qwt3D
 {
@@ -22,6 +22,8 @@ GLint drawDevicePixels(GLsizei width, GLsizei height,
                        GLenum format, GLenum type,
                        const void *pixels, bool printerfonts);
 GLint drawDeviceText(const char* str, const char* fontname, int fontsize, Qwt3D::Triple pos, Qwt3D::ANCHOR align, Qwt3D::Triple gap);
+void setDevicePolygonOffset(GLfloat factor, GLfloat units);
+
 
 } // ns
 

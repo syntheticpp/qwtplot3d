@@ -1,4 +1,5 @@
 #include "qwt3d_coordsys.h"
+#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -118,6 +119,9 @@ CoordinateSystem::draw()
 
 	if (autoDecoration())
 		chooseAxes();
+
+	drawMajorGrid();
+	drawMinorGrid();
 	
 	Drawable::draw();
 
@@ -520,4 +524,21 @@ CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_
 		default:
 			break;
 	}
+}
+
+void 
+CoordinateSystem::drawMajorGrid()
+{
+	setDeviceLineWidth(axes[X1].majLineWidth());
+
+	glBegin( GL_LINES );
+//		glVertex3d( beg_.x, beg_.y, beg_.z); 
+//		glVertex3d( end_.x, end_.y, end_.z);
+	glEnd();
+	
+}
+
+void 
+CoordinateSystem::drawMinorGrid()
+{
 }

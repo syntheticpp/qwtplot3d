@@ -2,9 +2,11 @@
 #include <qlayout.h>
 #include <qcombobox.h>
 #include <qaction.h>
+#include <qslider.h>
 
 #include "printmainwindow.h"
 #include "../../../include/qwt3d_function.h"
+#include "../../../include/qwt3d_gl2ps.h"
 
 using namespace Qwt3D;
 
@@ -47,10 +49,10 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 {
 	filetype_ = "tex (both)";
 	filetypeCB->setCurrentText("tex (both)");
-
-	connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
-  connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
 	
+	sortingtype_ = GL2PS_BSP_SORT;
+	sortingtypeCB->setCurrentText("BSP");
+
 	setCaption("print");
 	QSplitter* spl = new QSplitter(QSplitter::Horizontal, frame);
   QGridLayout* layout = new QGridLayout( frame, 1, 1, 2, 0); 
@@ -101,13 +103,26 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	plot[0]->setTitle("Rosenbrock");
 	plot[1]->setTitle("Hat");
 
+	plot[0]->setMeshLineWidth(1 / 10.0);
+	plot[0]->coordinates()->setLineWidth(1 / 10.0);
   plot[0]->makeCurrent();
 	plot[0]->updateData();
   plot[0]->updateGL();
+
+	plot[1]->setMeshLineWidth(1 / 10.0);
+	plot[1]->coordinates()->setLineWidth(1 / 10.0);
 	plot[1]->makeCurrent();
   plot[1]->updateData();
   plot[1]->updateGL();
 
+
+	connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
+	connect(sortingtypeCB, SIGNAL(activated(const QString&)), this, SLOT(setSortingType(const QString&)));
+  connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
+
+	connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
+	connect( meshlineSlider, SIGNAL(valueChanged(int)), this, SLOT(setMeshLineWidth(int)) );
+	connect( coordSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoordLineWidth(int)) );
 
 	LabelPixmap::usePrinterFonts(true);
 }
@@ -129,51 +144,100 @@ void printMainWindow::dumpImage()
 
 	if (filetype_ == QString("eps"))
 	{
-		plot[0]->saveVector( "dump0a.eps", "EPS");
-		plot[1]->saveVector( "dump0b.eps", "EPS");
+		plot[0]->saveVector( "dump0a.eps", "EPS",false,sortingtype_);
+		plot[1]->saveVector( "dump0b.eps", "EPS",false,sortingtype_);
 	}
 	else if (filetype_ == QString("ps"))
 	{
-		plot[0]->saveVector( "dump0a.ps", "PS");
-		plot[1]->saveVector( "dump0b.ps", "PS");
+		plot[0]->saveVector( "dump0a.ps", "PS",false,sortingtype_);
+		plot[1]->saveVector( "dump0b.ps", "PS",false,sortingtype_);
 	}
 	else if (filetype_ == QString("pdf"))
 	{
 		plot[0]->makeCurrent();
-		plot[0]->saveVector( "dump0a.pdf", "PDF");
+		plot[0]->saveVector( "dump0a.pdf", "PDF",false,sortingtype_);
 		plot[1]->makeCurrent();
-		plot[1]->saveVector( "dump0b.pdf", "PDF");
+		plot[1]->saveVector( "dump0b.pdf", "PDF",false,sortingtype_);
 	}
 	else if (filetype_ == QString("latex"))
 	{
 		plot[0]->saveVector( "dump1a.tex", "TEX");
 		plot[1]->saveVector( "dump1b.tex", "TEX");
-		plot[0]->saveVector( "dump1a.eps", "EPS",true);
-		plot[1]->saveVector( "dump1b.eps", "EPS",true);
+		plot[0]->saveVector( "dump1a.eps", "EPS",true,sortingtype_);
+		plot[1]->saveVector( "dump1b.eps", "EPS",true,sortingtype_);
 	}
 	else if (filetype_ == QString("pdftex"))
 	{
 		plot[0]->saveVector( "dump2a.tex", "TEX");
 		plot[1]->saveVector( "dump2b.tex", "TEX");
-		plot[0]->saveVector( "dump2a.pdf", "PDF",true);
-		plot[1]->saveVector( "dump2b.pdf", "PDF",true);
+		plot[0]->saveVector( "dump2a.pdf", "PDF",true,sortingtype_);
+		plot[1]->saveVector( "dump2b.pdf", "PDF",true,sortingtype_);
 	}
 	else if (filetype_ == QString("tex (both)"))
 	{
 		plot[0]->saveVector( "dump3a.tex", "TEX");
 		plot[1]->saveVector( "dump3b.tex", "TEX");
-		plot[0]->saveVector( "dump3a.pdf", "PDF",true);
-		plot[1]->saveVector( "dump3b.pdf", "PDF",true);
-		plot[0]->saveVector( "dump3a.eps", "EPS",true);
-		plot[1]->saveVector( "dump3b.eps", "EPS",true);
+		plot[0]->saveVector( "dump3a.pdf", "PDF",true,sortingtype_);
+		plot[1]->saveVector( "dump3b.pdf", "PDF",true,sortingtype_);
+		plot[0]->saveVector( "dump3a.eps", "EPS",true,sortingtype_);
+		plot[1]->saveVector( "dump3b.eps", "EPS",true,sortingtype_);
 	}
 
 	plot[0]->setTitle("Rosenbrock");
  	plot[1]->setTitle("Hat");
-
 }
 
 void printMainWindow::setFileType(QString const& name)
 {
 	filetype_ = name;	
+}
+
+void printMainWindow::setSortingType(QString const& name)
+{
+	if (name == QString("unsorted"))
+	{
+		sortingtype_ = GL2PS_NO_SORT;
+	}
+	else if (name == QString("simple"))
+	{
+		sortingtype_ = GL2PS_SIMPLE_SORT;
+	}
+	else if (name == QString("BSP"))
+	{
+		sortingtype_ = GL2PS_BSP_SORT;
+	}
+}
+
+void printMainWindow::setPolygonOffset(int val)
+{
+	plot[0]->makeCurrent();
+	plot[0]->setPolygonOffset(val / 10.0);
+	plot[0]->updateData();
+	plot[0]->updateGL();
+  plot[1]->makeCurrent();
+	plot[1]->setPolygonOffset(val / 10.0);
+	plot[1]->updateData();
+	plot[1]->updateGL();
+}
+
+void printMainWindow::setMeshLineWidth(int val)
+{
+  plot[0]->makeCurrent();
+	plot[0]->setMeshLineWidth(val / 10.0);
+	plot[0]->updateData();
+	plot[0]->updateGL();
+  plot[1]->makeCurrent();
+	plot[1]->setMeshLineWidth(val / 10.0);
+	plot[1]->updateData();
+	plot[1]->updateGL();
+}
+
+void printMainWindow::setCoordLineWidth(int val)
+{
+  plot[0]->makeCurrent();
+	plot[0]->coordinates()->setLineWidth(val / 10.0);
+	plot[0]->updateGL();
+  plot[1]->makeCurrent();
+	plot[1]->coordinates()->setLineWidth(val / 10.0);
+	plot[1]->updateGL();
 }

@@ -27,7 +27,7 @@
         </property>
         <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
-                <cstring>Layout28</cstring>
+                <cstring>Layout12</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -39,23 +39,6 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer7</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>295</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>Layout20</cstring>
@@ -75,7 +58,7 @@
                                 <cstring>TextLabel1_2</cstring>
                             </property>
                             <property name="enabled">
-                                <bool>false</bool>
+                                <bool>true</bool>
                             </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
@@ -86,7 +69,7 @@
                                 </sizepolicy>
                             </property>
                             <property name="text">
-                                <string>Resolution</string>
+                                <string>Polygon Offset</string>
                             </property>
                             <property name="alignment">
                                 <set>AlignCenter</set>
@@ -94,10 +77,10 @@
                         </widget>
                         <widget class="QSlider">
                             <property name="name">
-                                <cstring>resSlider</cstring>
+                                <cstring>offsSlider</cstring>
                             </property>
                             <property name="enabled">
-                                <bool>false</bool>
+                                <bool>true</bool>
                             </property>
                             <property name="minimumSize">
                                 <size>
@@ -106,13 +89,19 @@
                                 </size>
                             </property>
                             <property name="minValue">
-                                <number>1</number>
+                                <number>0</number>
                             </property>
                             <property name="maxValue">
-                                <number>100</number>
+                                <number>10</number>
                             </property>
                             <property name="lineStep">
                                 <number>1</number>
+                            </property>
+                            <property name="pageStep">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>5</number>
                             </property>
                             <property name="orientation">
                                 <enum>Horizontal</enum>
@@ -121,7 +110,7 @@
                                 <enum>Right</enum>
                             </property>
                             <property name="tickInterval">
-                                <number>5</number>
+                                <number>1</number>
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>Set data resolution (no effect for nonrectangular data)</string>
@@ -129,26 +118,136 @@
                         </widget>
                     </vbox>
                 </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer7</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>323</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </spacer>
             </hbox>
         </widget>
-        <widget class="QFrame" row="0" column="0">
+        <widget class="QLayoutWidget" row="0" column="0">
             <property name="name">
-                <cstring>frame</cstring>
+                <cstring>Layout6</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QFrame">
+                    <property name="name">
+                        <cstring>frame</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>7</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="frameShape">
+                        <enum>StyledPanel</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout5</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLayoutWidget" row="1" column="0">
+                            <property name="name">
+                                <cstring>Layout3</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>meshlineSlider</cstring>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>20</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>10</number>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="tickmarks">
+                                        <enum>Right</enum>
+                                    </property>
+                                </widget>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>coordSlider</cstring>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>20</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>10</number>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="tickmarks">
+                                        <enum>Right</enum>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>TextLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Line widths</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignCenter</set>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </hbox>
         </widget>
     </grid>
 </widget>
@@ -201,6 +300,32 @@
             <item>
                 <property name="text">
                     <string>tex (both)</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>sortingtypeCB</cstring>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Sorting type</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>Sorting type</string>
+            </property>
+            <item>
+                <property name="text">
+                    <string>unsorted</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>simple</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>BSP</string>
                 </property>
             </item>
         </widget>

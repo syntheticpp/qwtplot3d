@@ -5,6 +5,7 @@
 
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_vectorfield.h"
+#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -17,12 +18,15 @@ SurfacePlot::updateGridData()
 	const int cstep = resolution();
 	const int rstep = resolution();
 	
+	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
+	setDevicePolygonOffset(polygonOffset(),1.0);
+
+	//glEnable(GL_LINE_SMOOTH);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	if (plotStyle() != WIREFRAME)
 	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(polygonOffset(), 1.0);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
 		if (hl)
@@ -31,47 +35,61 @@ SurfacePlot::updateGridData()
 			glColor4d(col.r, col.g, col.b, col.a);
 		}
 
-		glBegin(GL_QUADS);
 		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
 		{
-			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-			{
-				setColorFromGridVertex(i, j, hl);
-				glNormal3dv(actualGridData_->normals[i][j]);
-				glVertex3dv(actualGridData_->vertices[i][j]);
-				
-				setColorFromGridVertex(i+cstep, j, hl);
-				glNormal3dv(actualGridData_->normals[i+cstep][j]);
-				glVertex3dv(actualGridData_->vertices[i+cstep][j]);
-				
-				setColorFromGridVertex(i+cstep, j+rstep, hl);
-				glNormal3dv(actualGridData_->normals[i+cstep][j+rstep]);
-				glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
-				
-				setColorFromGridVertex(i,j+rstep, hl);
-				glNormal3dv(actualGridData_->normals[i][j+rstep]);
-				glVertex3dv(actualGridData_->vertices[i][j+rstep]);
-			}
+		  glBegin(GL_TRIANGLE_STRIP);
+				setColorFromGridVertex(i, 0, hl);
+				glNormal3dv(actualGridData_->normals[i][0]);
+				glVertex3dv(actualGridData_->vertices[i][0]);
+					
+				setColorFromGridVertex(i+cstep, 0, hl);
+				glNormal3dv(actualGridData_->normals[i+cstep][0]);
+				glVertex3dv(actualGridData_->vertices[i+cstep][0]);
+
+				for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
+				{				
+					setColorFromGridVertex(i,j+rstep, hl);
+					glNormal3dv(actualGridData_->normals[i][j+rstep]);
+					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
+
+					setColorFromGridVertex(i+cstep, j+rstep, hl);
+					glNormal3dv(actualGridData_->normals[i+cstep][j+rstep]);
+					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
+				}
+			glEnd();
 		}
-		glEnd();
-		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
 	{
-		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);		
 
-		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
-		{
+		// utmost frame
+		glBegin(GL_LINE_LOOP);
+			for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+				glVertex3dv(actualGridData_->vertices[i][0]);		
 			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-			{
-				glBegin(GL_LINE_LOOP);
-					glVertex3dv(actualGridData_->vertices[i][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
-					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
-				glEnd();
-			}
+				glVertex3dv(actualGridData_->vertices[i][j]);			
+			for (; i > 0; i -= cstep) 
+				glVertex3dv(actualGridData_->vertices[i][j]);			
+			for (; j > 0; j -= rstep) 
+				glVertex3dv(actualGridData_->vertices[0][j]);			
+		glEnd();
+
+		// weaving
+		for (i = cstep; i < actualGridData_->columns() - cstep; i += cstep) 
+		{		
+			glBegin(GL_LINE_STRIP);
+				for (j = 0; j < actualGridData_->rows(); j += rstep) 
+					glVertex3dv(actualGridData_->vertices[i][j]);			
+			glEnd();
+		}
+		for (j = rstep; j < actualGridData_->rows() - rstep; j += rstep) 
+		{		
+			glBegin(GL_LINE_STRIP);
+				for (i = 0; i < actualGridData_->columns(); i += cstep) 
+					glVertex3dv(actualGridData_->vertices[i][j]);			
+			glEnd();
 		}
 	}
 }
@@ -103,23 +121,25 @@ SurfacePlot::GridData2Floor()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
-	glBegin(GL_QUADS);
-		double zshift = actualGridData_->minimum();
-		for (unsigned int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
-		{
+	double zshift = actualGridData_->minimum();
+	for (unsigned int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+	{
+		glBegin(GL_TRIANGLE_STRIP);
+  		setColorFromGridVertex(i, 0);
+			glVertex3d(actualGridData_->vertices[i][0][0], actualGridData_->vertices[i][0][1], zshift);
+			
+			setColorFromGridVertex(i+cstep, 0);
+			glVertex3d(actualGridData_->vertices[i+cstep][0][0],actualGridData_->vertices[i+cstep][0][1], zshift);
 			for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
 			{
-				setColorFromGridVertex(i, j);
-				glVertex3d(actualGridData_->vertices[i][j][0], actualGridData_->vertices[i][j][1], zshift);
-				setColorFromGridVertex(i+cstep, j);
-				glVertex3d(actualGridData_->vertices[i+cstep][j][0],actualGridData_->vertices[i+cstep][j][1], zshift);
-				setColorFromGridVertex(i+cstep, j+rstep);
-				glVertex3d(actualGridData_->vertices[i+cstep][j+rstep][0],actualGridData_->vertices[i+cstep][j+rstep][1], zshift);
 				setColorFromGridVertex(i, j+rstep);
 				glVertex3d(actualGridData_->vertices[i][j+rstep][0],actualGridData_->vertices[i][j+rstep][1], zshift);
+				
+				setColorFromGridVertex(i+cstep, j+rstep);
+				glVertex3d(actualGridData_->vertices[i+cstep][j+rstep][0],actualGridData_->vertices[i+cstep][j+rstep][1], zshift);				
 			}
-		}
-	glEnd();
+		glEnd();
+	}
 }
 
 void 

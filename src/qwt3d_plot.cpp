@@ -31,6 +31,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 	setPolygonOffset(0.5);
 	setMeshColor(RGBA(0.0,0.0,0.0));
+	setMeshLineWidth(1);
 	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 
 	DisplayLists = std::vector<GLuint>(5);
@@ -174,10 +175,11 @@ Plot3D::paintGL()
 	
 	for (unsigned i=0; i!= DisplayLists.size(); ++i)
 	{
-		if (i!=LegendObject && i!=CoordObject)
+		if (i!=LegendObject && i!=CoordObject /*&& i!=DataObject*/)
 			glCallList( DisplayLists[i] );
 	}
 	
+//	createData();
 	coord.draw();
 
  
@@ -199,11 +201,6 @@ Plot3D::resizeGL( int w, int h )
 void 
 Plot3D::updateCoordinateSystem()
 {
-/*
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_LINE_SMOOTH);
-*/
-
 	SaveGlDeleteLists(DisplayLists[CoordObject], 1);
 			
 	DisplayLists[CoordObject] = glGenLists(1);
@@ -288,11 +285,11 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
-	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
+	GLint options = /*GL2PS_SIMPLE_LINE_OFFSET |*/ GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
 										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT;
 
-	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
-		options |= GL2PS_LANDSCAPE;
+//	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
+//		options |= GL2PS_LANDSCAPE;
 
 	if (notext)
 		options |= GL2PS_NO_PIXMAP | GL2PS_NO_TEXT;
@@ -310,6 +307,7 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
 										 fp, NULL );
 		
+		updateData();
 		updateGL(); 
 		state = gl2psEndPage();
 	}
@@ -440,18 +438,24 @@ Plot3D::setIsolines(int steps)
 /*!
   Set Polygon offset. The function affects the OpenGL rendering process. 
 	Try different values for surfaces with polygons only and with mesh and polygons
-	The value is clamped to [0..1]
 */
 void
 Plot3D::setPolygonOffset( double val )
 {
-	Q_ASSERT(val>=0 && val<=1);
-
-	if (val < 0 || val>1)
-		return;
-	
 	polygonOffset_ = val;
 }
+
+void
+Plot3D::setMeshLineWidth( double val )
+{
+	Q_ASSERT(val>=0);
+
+	if (val < 0)
+		return;
+	
+	meshLineWidth_ = val;
+}
+
 
 /*!
 Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen

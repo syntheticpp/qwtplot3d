@@ -94,7 +94,7 @@ Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
   <li>... </li>
   <li>PS, EPS output through <a href="http://www.geuz.org/gl2ps/"
  target="_blank">gl2ps</a>&nbsp;<span style="font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-// but see <a
+    <span style="color: rgb(102, 102, 102);">// but see</span> <a
  href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html">here</a></span><a
  href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html"><br>
     </a></li>
@@ -106,7 +106,15 @@ Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
 <h3></h3>
 <ul>
   <li>...</li>
-  <li>C++ sources with <span style="font-family: monospace;">qwt3d_ </span>prefixed
+  <li>[Rectangular meshes]: Performance improvement for drawing of
+filled polygons (uses&nbsp; GL_TRIANGLE_STRIP now)</li>
+  <li>[Rectangular meshes]: Mesh drawing algorithm complexity is <span
+ style="font-style: italic;">O(m+n)</span> instead <span
+ style="font-style: italic;">O(mn)</span> where&nbsp; <span
+ style="font-style: italic;">m </span>and&nbsp; <span
+ style="font-style: italic;">n</span> are the row and column number<br>
+  </li>
+  <li>C++ sources by <span style="font-family: monospace;">qwt3d_ </span>prefixed
 (consistent with header naming scheme)<br>
   </li>
   <li>Plot3D::setPlotStyle, Plot3D::setFloorStyle call not longer
@@ -204,8 +212,8 @@ Autoswitching axes scales (axes in front get automatically a scale) </li>
 documentation is not longer supported as download from the sourceforge
 download area. Instead, you can get them from QwtPlot3D's <a
  href="http://qwtplot3d.sourceforge.net/" target="_blank">Homepage</a>
-as zip or tgz archive. The best choice however, is to create the
-documentation from the sources. A doxygen configuration exists in
+as zip archive. The best choice however, is to create the
+API part from the sources. A doxygen configuration exists in
 doc/Doxyfile.doxygen.<br>
 <br>
 <code></code></div>

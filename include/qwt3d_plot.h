@@ -55,11 +55,13 @@ public:
 		void setIsolines(int isolines);
 		int isolines() const { return isolines_;} //!< \return Number of isolines
 	
-		void setBackgroundColor(Qwt3D::RGBA rgba);
-		RGBA backgroundRGBAColor() const {return bgcolor_;}
-		void setMeshColor(Qwt3D::RGBA rgba);
+		void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
+		RGBA backgroundRGBAColor() const {return bgcolor_;} //!< \return The widgets background color
+		void setMeshColor(Qwt3D::RGBA rgba); //!< Sets color for data mesh
 		Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
-		void setDataColor(Color* col);
+		void setMeshLineWidth(double lw); //!< Sets line width for data mesh
+		double meshLineWidth() const {return meshLineWidth_;} //!< \return line width for data mesh
+		void setDataColor(Color* col); //!< Sets new data color object
 		virtual bool hasData() const = 0;
 		
 		virtual void calculateHull() = 0;
@@ -68,7 +70,7 @@ public:
 		void showColorLegend(bool);
 		void updateColorLegend();
 		
-		void setCoordinateStyle(Qwt3D::COORDSTYLE st);
+		void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system. See Qwt3D::COORDSTYLE
 		void setPolygonOffset(double d);
 		double polygonOffset() const {return polygonOffset_;} //!< \return Relative value for polygon offset [0..1] \see setPolygonOffset()
 		
@@ -108,8 +110,8 @@ public slots:
 		void		enableMouse(bool val=true); //!< Enable mouse input
 		void		disableMouse(bool val =true); //!< Disable mouse input
 		
-		bool    savePixmap(QString fileName, QString format); //!  Saves content to pixmap format
-		bool    saveVector(QString fileName, QString format, bool notext = false, int sorttype = -1); //!  Saves content to vector format
+		bool    savePixmap(QString fileName, QString format); //!<  Saves content to pixmap format
+		bool    saveVector(QString fileName, QString format, bool notext = false, int sorttype = -1); //!<  Saves content to vector format
 
 protected:
 
@@ -149,6 +151,7 @@ private:
     GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		Qwt3D::RGBA meshcolor_;
+		double meshLineWidth_;
 		Qwt3D::RGBA bgcolor_;
 		Qwt3D::PLOTSTYLE plotstyle_;
 		Qwt3D::SHADINGSTYLE shading_;

@@ -59,6 +59,9 @@ public:
 	int minors() const { return minorintervals_; }
 
 	void setLineWidth(double val, double majfac = 1, double minfac = 0.5);
+	double lineWidth() const { return lineWidth_;} //!< \return Line width for axis body
+	double majLineWidth() const { return majLineWidth_;} //!< \return Line width for major tics
+	double minLineWidth() const { return minLineWidth_;} //!< \return Line width for minor tics
 
 	void setLimits(double start, double stop) {start_=start; stop_=stop;}
 	void limits(double& start, double& stop) const {start = start_; stop = stop_;}

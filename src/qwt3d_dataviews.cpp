@@ -14,14 +14,12 @@ using namespace Qwt3D;
 void 
 Plot3D::updateData()
 {
+	GLStateBewarer dt(GL_DEPTH_TEST, true);
+	GLStateBewarer ls(GL_LINE_SMOOTH, true);
+
 	calculateHull();
 	updateFloorData();
 	
-	glDisable(GL_LINE_SMOOTH);
-	glEnable(GL_DEPTH_TEST);
-
-	GLStateBewarer ls(GL_LINE_SMOOTH, false);
-	GLStateBewarer dt(GL_DEPTH_TEST, true);
 
 	SaveGlDeleteLists(DisplayLists[DataObject], 1); // nur Daten
 	
@@ -44,9 +42,6 @@ Plot3D::updateData()
 void 
 Plot3D::updateFloorData()
 {
-	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_LINE_SMOOTH);
-
 	SaveGlDeleteLists(DisplayLists[FloorObject], 1);
 	
 	if (floorStyle() == NOFLOOR)
