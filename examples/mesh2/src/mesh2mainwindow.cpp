@@ -78,7 +78,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 		
-		QLabel* info = new QLabel("Plot3D <by krischnamurti 2003>", statusBar());       
+		QLabel* info = new QLabel("qwtplot3d <by krischnamurti 2003>", statusBar());       
 		info->setPaletteForegroundColor(Qt::darkBlue);
 		statusBar()->addWidget(info, 0, false);
 		filenameWidget = new QLabel("                                  ", statusBar());

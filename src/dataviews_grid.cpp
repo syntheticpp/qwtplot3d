@@ -39,38 +39,54 @@ SurfacePlot::updateGridData()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(polygonOffset(),1.0);
+		glPolygonOffset(polygonOffset(), 1.0);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
-		col = backgroundRGBAColor();
+		if (hl)
+		{
+			col = backgroundRGBAColor();
+			glColor4d(col.r, col.g, col.b, col.a);
+		}
 
 		glBegin(GL_QUADS);
-			for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+		{
+			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
 			{
-				for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-				{
-					if(!hl)
-					{
-						col = (*dataColor)(
-							actualGridData_->vertices[i][j][0],
-							actualGridData_->vertices[i][j][1],
-							actualGridData_->vertices[i][j][2]);
-					}
-					glColor4d(col.r, col.g, col.b, col.a);
-					
-					glNormal3dv(actualGridData_->normals[i][j]);
-					glVertex3dv(actualGridData_->vertices[i][j]);
-					glNormal3dv(actualGridData_->normals[i+cstep][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
-					glNormal3dv(actualGridData_->normals[i+cstep][j+rstep]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
-					glNormal3dv(actualGridData_->normals[i][j+rstep]);
-					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
-				}
+				setColorFromGridVertex(i, j, hl);
+				glNormal3dv(actualGridData_->normals[i][j]);
+				glVertex3dv(actualGridData_->vertices[i][j]);
+				
+				setColorFromGridVertex(i+cstep, j, hl);
+				glNormal3dv(actualGridData_->normals[i+cstep][j]);
+				glVertex3dv(actualGridData_->vertices[i+cstep][j]);
+				
+				setColorFromGridVertex(i+cstep, j+rstep, hl);
+				glNormal3dv(actualGridData_->normals[i+cstep][j+rstep]);
+				glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
+				
+				setColorFromGridVertex(i,j+rstep, hl);
+				glNormal3dv(actualGridData_->normals[i][j+rstep]);
+				glVertex3dv(actualGridData_->vertices[i][j+rstep]);
 			}
+		}
 		glEnd();
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
+}
+
+void
+SurfacePlot::setColorFromGridVertex(int ix, int iy, bool skip)
+{
+		if (skip)
+			return;
+
+		RGBA col = (*dataColor)(
+			actualGridData_->vertices[ix][iy][0],
+			actualGridData_->vertices[ix][iy][1],
+			actualGridData_->vertices[ix][iy][2]);
+			
+		glColor4d(col.r, col.g, col.b, col.a);
 }
 
 void 
@@ -92,16 +108,13 @@ SurfacePlot::GridData2Floor()
 		{
 			for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
 			{
-				col = (*dataColor)(
-					actualGridData_->vertices[i][j][0],
-					actualGridData_->vertices[i][j][1],
-					actualGridData_->vertices[i][j][2]);
-
-				glColor4d(col.r, col.g, col.b, col.a);
-				
+				setColorFromGridVertex(i, j);
 				glVertex3d(actualGridData_->vertices[i][j][0], actualGridData_->vertices[i][j][1], zshift);
+				setColorFromGridVertex(i+cstep, j);
 				glVertex3d(actualGridData_->vertices[i+cstep][j][0],actualGridData_->vertices[i+cstep][j][1], zshift);
+				setColorFromGridVertex(i+cstep, j+rstep);
 				glVertex3d(actualGridData_->vertices[i+cstep][j+rstep][0],actualGridData_->vertices[i+cstep][j+rstep][1], zshift);
+				setColorFromGridVertex(i, j+rstep);
 				glVertex3d(actualGridData_->vertices[i][j+rstep][0],actualGridData_->vertices[i][j+rstep][1], zshift);
 			}
 		}
@@ -114,7 +127,6 @@ SurfacePlot::Grid2Floor()
 	if (actualGridData_->empty())
 		return;
 	
-	RGBA col;
 	unsigned int cstep = resolution();
 	unsigned int rstep = resolution();
 	

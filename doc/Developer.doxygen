@@ -70,7 +70,7 @@ EXCLUDE_PATTERNS       = moc_*
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 
 EXAMPLE_RECURSIVE      = NO
-IMAGE_PATH             = images
+IMAGE_PATH             = doxygenimages
 INPUT_FILTER           = 
 FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
