@@ -422,9 +422,8 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 	RGBA col;
 
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	glBegin(GL_POINTS);
-	
+		
+	static Triple lp;
 	for (int k = steps; k > 0; --k) 
 	{
 		double hi = actualData_.minimum() + k * step;
@@ -446,22 +445,40 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 															actualData_.vertices[i][j][2]);
 				if ( lo<=thi.z && thi.z<=hi)
 				{
+					bool lastconnected = false;
 					for (int ii = i-1; ii <= i+1; ++ii)
 						for (int  jj = j-1; jj <= j+1; ++jj)
 						{
-							if ( !( (ii-i) && (jj-j) ) )
 							{
 								Triple tlo = Triple(	actualData_.vertices[ii][jj][0],
 																		actualData_.vertices[ii][jj][1],
 																		actualData_.vertices[ii][jj][2]);
-								if (tlo.z < lo)
+								if (tlo.z <= lo)
 								{
 									if (thi.z - tlo.z)
 									{
 										Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
-//										glVertex3f(rp.x, rp.y, rp.z);
-										glVertex3f(rp.x, rp.y, zshift);
+										if (lastconnected)
+										{
+											glBegin(GL_LINES);
+												glVertex3f(lp.x, lp.y, zshift);
+												glVertex3f(rp.x, rp.y, zshift);
+											glEnd();
+										}
+										else
+										{
+											glBegin(GL_POINTS);
+												glVertex3f(rp.x, rp.y, zshift);
+												//glVertex3f(rp.x, rp.y, rp.z);
+											glEnd();
+										}
+										lastconnected = true;
+										lp = rp;
 									}
+								}
+								else
+								{
+									lastconnected = false;
 								}
 							}
 						}
@@ -469,7 +486,6 @@ QwtPlot3d::calcFloorListAsIsolines(int steps, double zshift)
 			}
 		}
 	}
-	glEnd();
 }
 
 void 
