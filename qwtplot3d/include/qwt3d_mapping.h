@@ -18,7 +18,7 @@ class QWT3D_EXPORT Mapping
 public:
 	
   virtual ~Mapping(){} //!< Destructor.
-	virtual QString name() const { return QString(""); } //!< Issues a String descriptor.
+	virtual QString name() const { return QString(""); } //!< Descriptive String.
 };
 
 

@@ -54,7 +54,6 @@ public slots:
 	void toggleShader(bool val);
 	void rotate();
 	void setPolygonOffset(int);
-	void createColorLegend(Qwt3D::ColorVector const&);
 
 	void showRotate(double x, double y, double z);
 	void showShift(double x, double y);

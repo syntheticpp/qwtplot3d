@@ -107,11 +107,11 @@ int AutoScaler::segments(int& l_intervals, int& r_intervals, double start, doubl
 	double val =  m * pow(10.0, n);
 	double delta = (stop - anchor) / val;
 	
-	r_intervals = floor(delta); // right side intervals
+	r_intervals = (int)floor(delta); // right side intervals
 	
 	delta = (anchor - start) / val;
 
-	l_intervals = floor(delta); // left side intervals
+	l_intervals = (int)floor(delta); // left side intervals
 
 	return r_intervals + l_intervals; 
 }

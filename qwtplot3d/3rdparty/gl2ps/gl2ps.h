@@ -41,11 +41,7 @@
 
 /* To generate a Windows dll, define GL2PSDLL at compile time */
 
-#ifdef _WIN32
-/* Shut up warning due to bad windows header file */
-#  if defined(_MSC_VER) 
-#    pragma warning(disable:4115)
-#  endif
+#ifdef WIN32
 #  include <windows.h>
 #  ifdef GL2PSDLL
 #    ifdef GL2PSDLL_EXPORTS
@@ -78,8 +74,8 @@
 /* Version number */
 
 #define GL2PS_MAJOR_VERSION 1
-#define GL2PS_MINOR_VERSION 2
-#define GL2PS_PATCH_VERSION 0
+#define GL2PS_MINOR_VERSION 1
+#define GL2PS_PATCH_VERSION 2
 
 #define GL2PS_VERSION (GL2PS_MAJOR_VERSION + \
                        0.01 * GL2PS_MINOR_VERSION + \
@@ -118,7 +114,6 @@
 #define GL2PS_POLYGON_OFFSET_FILL 1
 #define GL2PS_POLYGON_BOUNDARY    2
 #define GL2PS_LINE_STIPPLE        3
-#define GL2PS_BLEND               4
 
 /* Magic numbers */
 
@@ -184,10 +179,6 @@
 #define GL2PS_END_LINE_STIPPLE          6
 #define GL2PS_SET_POINT_SIZE            7
 #define GL2PS_SET_LINE_WIDTH            8
-#define GL2PS_BEGIN_BLEND               9
-#define GL2PS_END_BLEND                10
-#define GL2PS_SRC_BLEND                11
-#define GL2PS_DST_BLEND                12
 
 typedef GLfloat GL2PSrgba[4];
 typedef GLfloat GL2PSxyz[3];
@@ -218,10 +209,7 @@ typedef struct {
   GL2PSrgba rgba;
 } GL2PSvertex;
 
-typedef struct {
-  GL2PSvertex vertex[3];
-	int prop;
-} GL2PStriangle;
+typedef GL2PSvertex GL2PStriangle[3];
 
 typedef struct {
   GLshort fontsize;
@@ -256,14 +244,12 @@ typedef struct {
 } GL2PScompress;
 
 typedef struct {
-  /* General */
+  /* general */
   GLint format, sort, options, colorsize, colormode, buffersize;
-  char *title, *producer, *filename;
+  const char *title, *producer, *filename;
   GLboolean boundary;
   GLfloat *feedback, offset[2], lastlinewidth;
   GLint viewport[4];
-  GLenum blendfunc[2];
-  GLboolean blending;
   GL2PSrgba *colormap, lastrgba, threshold;
   GL2PSlist *primitives;
   FILE *stream;
@@ -272,20 +258,24 @@ typedef struct {
   /* BSP-specific */
   GLint maxbestroot;
 
-  /* Occlusion culling-specific */
+  /* occlusion culling-specific */
   GLboolean zerosurfacearea;
   GL2PSbsptree2d *imagetree;
   GL2PSprimitive *primitivetoadd;
   
   /* PDF-specific */
+  int cref[GL2PS_FIXED_XREF_ENTRIES];
   int streamlength;
+  GL2PSlist *tlist, *tidxlist, *ilist, *slist; 
+  int lasttype, consec_cnt, consec_inner_cnt;
+  int line_width_diff, line_rgb_diff, last_line_finished, last_triangle_finished;
 } GL2PScontext;
 
-/* Private prototypes */
+/* private prototypes */
 
 GLint gl2psPrintPrimitives(void);
 
-/* Public functions */
+/* public functions */
 
 #ifdef __cplusplus
 extern "C" {
@@ -308,12 +298,10 @@ GL2PSDLL_API GLint gl2psEnable(GLint mode);
 GL2PSDLL_API GLint gl2psDisable(GLint mode);
 GL2PSDLL_API GLint gl2psPointSize(GLfloat value);
 GL2PSDLL_API GLint gl2psLineWidth(GLfloat value);
-GL2PSDLL_API GLint gl2psBlendFunc(GLenum sfactor, GLenum dfactor);
 
 /* Undocumented */
 GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname, GLshort fontsize,
                                 GLint align, GL2PSrgba color);
-
 
 #ifdef __cplusplus
 };
