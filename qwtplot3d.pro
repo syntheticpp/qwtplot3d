@@ -10,6 +10,7 @@ OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
 DESTDIR      			= lib
+#unix:LIBS += -L/usr/X11R6/lib
 #DESTDIR = ../../lib
 
 win32:TEMPLATE    = vclib
@@ -21,7 +22,7 @@ win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL
 # win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
-unix:VERSION = 0.2.0-beta
+unix:VERSION = 0.2.3-beta
 
 # Input
 SOURCES += src/qwt3d_axis.cpp \

@@ -72,7 +72,6 @@ enum DATATYPE
 	POLYGON //!< Convex polygon
 };	
 
-
 //! The 12 axes
 /**
 \image html axes.png 

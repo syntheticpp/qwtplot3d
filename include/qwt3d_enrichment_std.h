@@ -9,7 +9,7 @@ namespace Qwt3D
 class Plot3D;
 
 //! The Cross Hair Style
-class QWT3D_EXPORT CrossHair : public Qwt3D::Enrichment
+class QWT3D_EXPORT CrossHair : public Qwt3D::VertexEnrichment
 {
 public:
   CrossHair();
@@ -29,7 +29,7 @@ private:
 };
 
 //! The Point Style
-class QWT3D_EXPORT Dot : public Qwt3D::Enrichment
+class QWT3D_EXPORT Dot : public Qwt3D::VertexEnrichment
 {
 public: 
   Dot();
@@ -49,7 +49,7 @@ private:
 };
 
 //! The Cone Style
-class QWT3D_EXPORT Cone : public Qwt3D::Enrichment
+class QWT3D_EXPORT Cone : public Qwt3D::VertexEnrichment
 {
 public:
   Cone();
@@ -75,7 +75,7 @@ private:
 	The arrows can be configured in different aspects (color, shape, painting quality).
 	
 */
-class QWT3D_EXPORT Arrow : public Enrichment
+class QWT3D_EXPORT Arrow : public VertexEnrichment
 {
 public:
 	

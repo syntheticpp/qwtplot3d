@@ -19,8 +19,8 @@ class QWT3D_EXPORT Function : public Qwt3D::GridMapping
 public:
 	
   Function(); //!< Constructs Function object w/o assigned SurfacePlot.
-  explicit Function(Qwt3D::SurfacePlot& plotWidget); //!< Constructs Function object and assign a SurfacePlot
-  explicit Function(Qwt3D::SurfacePlot* plotWidget); //!< Constructs Function object and assign a SurfacePlot
+  explicit Function(Qwt3D::SurfacePlot& plotWidget); //!< Constructs Function object and assigns a SurfacePlot
+  explicit Function(Qwt3D::SurfacePlot* plotWidget); //!< Constructs Function object and assigns a SurfacePlot
 	virtual double operator()(double x, double y) = 0; //!< Overwrite this.
 		
 	void setMinZ(double val); //!< Sets minimal z value.

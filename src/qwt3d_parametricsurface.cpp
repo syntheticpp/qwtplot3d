@@ -64,8 +64,6 @@ bool ParametricSurface::create()
 	double du = (maxu_p - minu_p) / (umesh_p - 1);
 	double dv = (maxv_p - minv_p) / (vmesh_p - 1);
 	
-  double dz = DBL_MAX;
-
   for (i = 0; i < umesh_p; ++i) 
 	{
 		for (j = 0; j < vmesh_p; ++j) 

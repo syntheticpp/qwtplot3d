@@ -147,23 +147,30 @@ void SurfacePlot::createPoints()
   createEnrichment(pt);
 }
 
-void SurfacePlot::createEnrichment(Qwt3D::Enrichment& p)
+void SurfacePlot::createEnrichment(Enrichment& p)
 {
 	if (!actualData_p)
     return;
+  
+  //todo future work
+  if (p.type() != Enrichment::VERTEXENRICHMENT)
+    return;
+  
   p.assign(*this);
 	p.drawBegin();
+
+  VertexEnrichment* ve = (VertexEnrichment*)&p; 
   if (actualData_p->datatype == Qwt3D::POLYGON)
   {	
     for (unsigned i = 0; i != actualDataC_->normals.size(); ++i) 
-	    p.draw(actualDataC_->nodes[i]);
+	    ve->draw(actualDataC_->nodes[i]);
   }
   else if (actualData_p->datatype == Qwt3D::GRID)
  	{
     int step = resolution();
     for (int i = 0; i <= actualDataG_->columns() - step; i += step) 
       for (int j = 0; j <= actualDataG_->rows() - step; j += step) 
-  			p.draw(Triple(actualDataG_->vertices[i][j][0],
+  			ve->draw(Triple(actualDataG_->vertices[i][j][0],
 										              actualDataG_->vertices[i][j][1],
                                   actualDataG_->vertices[i][j][2]));
   }

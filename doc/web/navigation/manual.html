@@ -60,11 +60,9 @@ mode with 24 or 32 bits color depth.</p>
 <p>The API Documentation has been created using <a
  href="http://www.doxygen.org" target="_parent">doxygen</a>. If you
 prefer to generate your own version, you will find the configuration in
-<code>./doc/Doxyfile.doxygen.</code>
-Also, a developer version&nbsp; has been placed under&nbsp; <code>./doc/Developer.doxygen.</code><b
- style="font-family: monospace;"><br>
-</b></p>
-<p><br>
+<span style="font-family: monospace;">./doc/Doxyfile.doxygen</span> in
+the <a href="http://qwtplot3d.sourceforge.net/qwtplot3d-doc.zip">offline
+documentation</a>.<br>
 <span style="font-style: italic;">Remark:</span><br>
 </p>
 <p>You can test almost all abilities of QwtPlot3D&nbsp; from within the
@@ -82,8 +80,7 @@ including:<br>
 The <span style="font-family: monospace;">print </span>example
 demonstrates vector graphics output utilizing&nbsp; <a target="_parent"
  href="http://www.geuz.org/gl2ps/">gl2ps</a>. That
-means EPS, PS, TeX and&nbsp; PDF. See <a
- href="pdf.html">here</a>
+means EPS, PS, TeX and&nbsp; PDF. See <a href="pdf.html">here</a>
 for an
 extensive discussion. gl2ps
 uses optionally
@@ -340,36 +337,28 @@ member: <br>
   <tbody>
     <tr>
       <td class="memItemLeft" nowrap="nowrap" align="right" valign="top">bool&nbsp;</td>
-      <td class="memItemRight" valign="bottom"><a
- href="../doxygen/a00059.html#a6"
- class="el">createDataRepresentation</a>
+      <td class="memItemRight" valign="bottom"><span class="el">createDataRepresentation</span>
 (double **data, unsigned int columns, unsigned int rows, double minx,
 double maxx, double miny, double maxy)</td>
     </tr>
     <tr>
       <td class="memItemLeft" nowrap="nowrap" align="right" valign="top">bool&nbsp;</td>
-      <td class="memItemRight" valign="bottom"><a
- href="../doxygen/a00059.html#a5"
- class="el">createDataRepresentation</a>
-(<a href="../doxygen/a00060.html"
- class="el">Qwt3D::Triple</a>
+      <td class="memItemRight" valign="bottom"><span class="el">createDataRepresentation</span>
+(<span class="el">Qwt3D::Triple</span>
 **data, unsigned int columns, unsigned int rows, bool uperiodic=false,
 bool vperiodic=false)</td>
     </tr>
     <tr>
       <td class="memItemLeft" nowrap="nowrap" align="right" valign="top">bool&nbsp;</td>
-      <td class="memItemRight" valign="bottom"><a class="el"
- href="file:///v:/cvs/qwtplot3d/doc/web/doxygen/a00059.html#a7">createDataRepresentation</a>
-(<a class="el"
- href="file:///v:/cvs/qwtplot3d/doc/web/doxygen/a00115.html#a2">Qwt3D::TripleField</a>
-const &amp;data, <a class="el"
- href="file:///v:/cvs/qwtplot3d/doc/web/doxygen/a00115.html#a4">Qwt3D::CellField</a>
+      <td class="memItemRight" valign="bottom"><span class="el">createDataRepresentation</span>
+(<span class="el">Qwt3D::TripleField</span>
+const &amp;data, <span class="el">Qwt3D::CellField</span>
 const &amp;poly)</td>
     </tr>
   </tbody>
 </table>
 <span style="color: rgb(255, 0, 0);"></span>
-<p>The 3 functions are of increasing generality:<br>
+<p>The 3 functions in this order have ascending generality:<br>
 </p>
 <p>The first one deals with data on top of&nbsp;
 plane grids:&nbsp; z=f(x,y) ;<br>
