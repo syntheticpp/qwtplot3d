@@ -21,7 +21,8 @@ void Axis::init()
 {
 	detachAll();
 
-  digitmap_ = qwt3d_ptr<Axis::Item>(new Axis::Number);
+  scale_ = qwt3d_ptr<Scale>(new LinearScale);
+
   beg_ = Triple(0.0, 0.0, 0.0);  
   end_ = beg_;
 	
@@ -65,9 +66,6 @@ void Axis::setMajors(int val)
 		return;
 	
 	majorintervals_ = (val<=0) ? 1 : val; // always >= 1
-
-	markerLabel_.clear();
-	markerLabel_ = std::vector<Label>(majorintervals_+1);
 }
 
 void Axis::setMinors(int val)
@@ -82,7 +80,6 @@ void Axis::setTicLength(double majorl, double minorl)
 {
 	lmaj_ = majorl;
 	lmin_ = minorl;
-
 }
 
 void Axis::setTicOrientation(double tx, double ty, double tz)
@@ -180,208 +177,95 @@ void Axis::drawBase()
 	glEnd();
 }	
 
-void Axis::recalculateTics()
+bool Axis::prepTicCalculation(Triple& startpoint)
 {
   if (isPracticallyZero(start_, stop_))
-		return;
+		return false;
 
 	autostart_ = start_;
 	autostop_ = stop_;
 
  	if (autoScale()) 
   {  
-		as_.init(start_, stop_, majors());
-		setMajors(as_.execute(autostart_, autostop_));
-	}
-  if (isPracticallyZero(autostart_, autostop_))
-		return;
+    setMajors(scale_->autoscale(autostart_, autostop_, start_, stop_, majors()));
+    if (isPracticallyZero(autostart_, autostop_))
+		  return false;
+  }
+  
+  scale_->setLimits(start_,stop_);
+  scale_->setMajors(majors());
+  scale_->setMinors(minors());
+  scale_->setMajorLimits(autostart_,autostop_);
+  scale_->create();
 
 	Triple normal = (end_ - beg_);
 	//normal.normalize();
 	Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
 	Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
 
-	Triple runningpoint = end - beg;
+	startpoint = end_ - beg_;
 
 	majorpos_.clear();
 	minorpos_.clear();
-		
-	int mj;
-	
-	for (mj = 0; mj <= majorintervals_; ++mj) 
-	{
-		double t = double(mj) / majorintervals_;
-		majorpos_.push_back(beg + t * runningpoint);
-		if (t==1.0)
-			break;
-		for (int mi=1; mi < minorintervals_; ++mi)
-		{
-			double tt = double(mi)  / (minorintervals_ * majorintervals_);
-			minorpos_.push_back(beg + (t+tt)*runningpoint);		
-		}
-	}
 
-	if (minorintervals_ < 1)
-		return;
-
-	// remaining minor tics
-	
-	// beg_          beg
-	//  |_____________|_____ _ _ _
-	
-	Triple step = (end-beg) / (majorintervals_ * minorintervals_);
-	int ii = 1;
-	Triple residuum = beg_ - beg;
-	runningpoint = step;
-	
-	if (runningpoint.length())
-	{
-		while (runningpoint.length() < residuum.length())
-		{
-			minorpos_.push_back(beg - runningpoint);								
-			runningpoint = (++ii) * step;
-		}
-	}
-	
-	//     end           end_
-	// _ _ _|_____________|
-
-	ii = 1;
-	residuum = end_ - end;
-	runningpoint = step;
-	
-	if (runningpoint.length())
-	{
-		while (runningpoint.length() < residuum.length()) 
-		{ 
-			minorpos_.push_back(end + runningpoint);								
-			runningpoint = (++ii) * step;
-		}
-	}	
+  return true;
 }
 
+void Axis::recalculateTics()
+{
+  Triple runningpoint;
+  if (false==prepTicCalculation(runningpoint))
+    return;
+
+	unsigned int i;
+	
+	for (i = 0; i != scale_->majors_p.size(); ++i) 
+	{
+		double t = (scale_->majors_p[i] - start_) / (stop_-start_);
+		majorpos_.push_back(beg_ + t * runningpoint);
+	}
+	for (i = 0; i != scale_->minors_p.size(); ++i) 
+	{
+		double t = (scale_->minors_p[i] - start_) / (stop_-start_);
+		minorpos_.push_back(beg_ + t * runningpoint);
+	}
+}
 
 void Axis::drawTics()
 {
-	if (!drawTics_)
+	Triple runningpoint;
+  if (!drawTics_ || false==prepTicCalculation(runningpoint))
 		return;
-
-  if (isPracticallyZero(start_, stop_))
-		return;
-
-	autostart_ = start_;
-	autostop_ = stop_;
-
- 	if (autoScale()) 
-  {  
-		as_.init(start_, stop_, majors());
-		setMajors(as_.execute(autostart_, autostop_));
-	}
-  if (isPracticallyZero(autostart_, autostop_))
-		return;
-
-	Triple normal = (end_ - beg_);
-	//normal.normalize();
-	Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
-	Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
-
-	Triple runningpoint = end - beg;
-
-	majorpos_.clear();
-	minorpos_.clear();
-		
-	int mj;
+  
+	unsigned int i;
   Triple nadir;
 	
-	for (mj = 0; mj <= majorintervals_; ++mj) 
+  markerLabel_.resize(scale_->majors_p.size());
+	setDeviceLineWidth(majLineWidth_);
+	for (i = 0; i != scale_->majors_p.size(); ++i) 
 	{
-		setDeviceLineWidth(majLineWidth_);
-		double t = double(mj) / majorintervals_;
-		nadir = beg + t * runningpoint;
+		double t = (scale_->majors_p[i] - start_) / (stop_-start_);
+    nadir = beg_ + t * runningpoint;
     majorpos_.push_back(drawTic(nadir, lmaj_));
-		drawNumber(nadir + 1.2 * lmaj_ * orientation_, mj);
-		if (t==1.0)
-			break;
-		setDeviceLineWidth(minLineWidth_);
-		for (int mi=1; mi < minorintervals_; ++mi)
-		{
-			double tt = double(mi)  / (minorintervals_ * majorintervals_);
-			minorpos_.push_back(drawTic(nadir + tt*runningpoint, lmin_));		
-		}
-	}
-
-	if (minorintervals_ < 1)
-		return;
-
-	// remaining minor tics
-	
-	// beg_          beg
-	//  |_____________|_____ _ _ _
-	
-	Triple step = (end-beg) / (majorintervals_ * minorintervals_);
-	int ii = 1;
-	Triple residuum = beg_ - beg;
-	runningpoint = step;
-	
-	if (runningpoint.length())
+		drawTicLabel(nadir + 1.2 * lmaj_ * orientation_, i);
+  }
+	setDeviceLineWidth(minLineWidth_);
+	for (i = 0; i != scale_->minors_p.size(); ++i) 
 	{
-		setDeviceLineWidth(minLineWidth_);
-		while (runningpoint.length() < residuum.length())
-		{
-			minorpos_.push_back(drawTic(beg - runningpoint, lmin_));								
-			runningpoint = (++ii) * step;
-		}
-	}
-	
-	//     end           end_
-	// _ _ _|_____________|
-
-	ii = 1;
-	residuum = end_ - end;
-	runningpoint = step;
-	
-	if (runningpoint.length())
-	{
-		while (runningpoint.length() < residuum.length()) 
-		{ 
-			minorpos_.push_back(drawTic(end + runningpoint, lmin_));								
-			runningpoint = (++ii) * step;
-		}
-	}	
+		double t = (scale_->minors_p[i] - start_) / (stop_-start_);
+		nadir = beg_ + t * runningpoint;
+    minorpos_.push_back(drawTic(nadir, lmin_));
+  }
 }
 
-double Axis::TicValue(int mtic) const
+void Axis::drawTicLabel(Triple pos, int mtic)
 {
-	if ((mtic < 0) || (mtic >= int(markerLabel_.size())))
-		return 0;
-
-  double t = double(mtic) / majorintervals_;
-  double anumber;
-  if (autoScale())
-  {
-    anumber = autostart_ + t * (autostop_-autostart_);
-		if (isPracticallyZero(autostart_ , -t * (autostop_-autostart_))) // prevent rounding errors near zero
-			anumber = 0;
-  }
-  else
-  {
-    anumber = start_ + t * (stop_ - start_);
-  }
-  return anumber;
-}
-
-void Axis::drawNumber(Triple pos, int mtic)
-{
-	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
+	if (!drawNumbers_ || (mtic < 0))
 		return;
 	
-
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
-  
-  digitmap_->tics_ = markerLabel_.size();
-  markerLabel_[mtic].setString((*digitmap_)(TicValue(mtic),mtic));	  
-  
+  markerLabel_[mtic].setString(scale_->ticLabel(mtic));	  
   markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
 	markerLabel_[mtic].adjust(numbergap_);
 	markerLabel_[mtic].draw();
@@ -471,9 +355,24 @@ Triple Axis::biggestNumberString()
   Use with a heap based initialized pointer only.
   The axis adopts ownership 
 */
-
-void Axis::setMap(Axis::Item* map)
+void Axis::setScale(Scale* val)
 {
-  digitmap_ = qwt3d_ptr<Axis::Item>(map); 
+  scale_ = qwt3d_ptr<Scale>(val); 
 }
 
+/*!
+  Sets one of the predefined scaling types.
+*/
+void Axis::setScale(Qwt3D::SCALETYPE val)
+{
+  switch(val) {
+  case Qwt3D::LINEARSCALE:
+    setScale(new LinearScale);
+  	break;
+  case Qwt3D::LOG10SCALE:
+    setScale(new LogScale);
+  	break;
+  default:
+    break;
+  }
+}

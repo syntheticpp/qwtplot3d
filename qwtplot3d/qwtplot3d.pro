@@ -16,7 +16,7 @@ win32:CONFIG     += dll
 win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
 win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL 
 
-# Comment this out, if you have zlib on your windows system
+# Comment the next line, if you have zlib on your windows system
 # win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
@@ -37,7 +37,8 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_enrichment_std.cpp \
            src/qwt3d_autoscaler.cpp \
            src/qwt3d_io_reader.cpp \
-           src/qwt3d_io.cpp 
+           src/qwt3d_io.cpp \
+           src/qwt3d_scale.cpp
 
 SOURCES += src/qwt3d_gridmapping.cpp \
 					 src/qwt3d_parametricsurface.cpp \
@@ -64,7 +65,8 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_autoscaler.h \
            include/qwt3d_autoptr.h \
            include/qwt3d_io.h \
-           include/qwt3d_io_reader.h
+           include/qwt3d_io_reader.h \
+           include/qwt3d_scale.h
 						
 HEADERS += include/qwt3d_mapping.h \
 					 include/qwt3d_gridmapping.h \

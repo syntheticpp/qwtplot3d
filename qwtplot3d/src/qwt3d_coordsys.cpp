@@ -36,6 +36,9 @@ void CoordinateSystem::destroy()
 void CoordinateSystem::init(Triple first, Triple second)
 {
 	destroy();
+	
+  for (unsigned i=0; i!=axes.size(); ++i)
+    axes[i].setScale(LINEARSCALE);
 		
 	Triple dv = second - first;
 	
@@ -141,7 +144,7 @@ void CoordinateSystem::chooseAxes()
 		src[i] = Tuple(beg[i].x, beg[i].y);
 		src[axes.size()+i] = Tuple(end[i].x, end[i].y);
 
-		axes[i].setScale(false);
+		axes[i].setScaling(false);
 		axes[i].setNumbers(false);
 		axes[i].setLabel(false);
 	}
@@ -307,7 +310,7 @@ void CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 	if (!s)
 		return;
 
-	ax.setScale(true);
+	ax.setScaling(true);
 	ax.setNumbers(true);
 	ax.setLabel(true);
 
@@ -448,10 +451,10 @@ void CoordinateSystem::setNumberColor(RGBA val)
 		axes[i].setNumberColor( val);
 }
 
-void CoordinateSystem::setStandardNumbering()
+void CoordinateSystem::setStandardScale()
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
-    axes[i].setMap(new Axis::Number);
+    axes[i].setScale(new LinearScale);
 }
 
 void CoordinateSystem::setLabelFont(QFont const& font)
@@ -514,6 +517,8 @@ void CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS f
 }
 
 /**
+The axis used for tic calculation is chosen randomly from the respective pair.
+For most cases an identical tic distribution is therefore recommended.
 \param majors  Draw grid between major tics
 \param minors  Draw grid between minor tics
 \param sides   Side(s), where the grid should be drawn
