@@ -42,7 +42,7 @@ int main(int argc, char **argv)
   SurfacePlot plot;
   TripleField pos;
   CellField poly;
-  createCone(pos, poly);
+  createTetrahedron(pos, poly);
   plot.loadFromData(pos, poly);
   plot.setRotation(30,0,15);
   for (unsigned i=0; i!=plot.coordinates()->axes.size(); ++i)
