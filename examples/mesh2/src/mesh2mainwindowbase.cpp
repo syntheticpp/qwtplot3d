@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Do 17. Apr 18:23:17 2003
+** Created: Fr 18. Apr 22:35:44 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1835,8 +1835,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     nodata->setToggleAction( TRUE );
     nodata->setOn( FALSE );
     nodata->setIconSet( QIconSet( image11 ) );
-    nodata->setText( trUtf8( "No Data" ) );
-    nodata->setToolTip( trUtf8( "No Data" ) );
+    nodata->setText( trUtf8( "No GridData" ) );
+    nodata->setToolTip( trUtf8( "No GridData" ) );
     color = new QActionGroup( this, "color" );
     color->setText( trUtf8( "Color" ) );
     color->setMenuText( trUtf8( "&Color" ) );
@@ -1864,13 +1864,17 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     labelcolor->setText( trUtf8( "Label" ) );
     labelcolor->setMenuText( trUtf8( "&Label" ) );
     labelcolor->setToolTip( trUtf8( "Label" ) );
+    titlecolor = new QAction( color, "titlecolor" );
+    titlecolor->setText( trUtf8( "Caption" ) );
+    titlecolor->setToolTip( trUtf8( "Caption" ) );
     resetcolor = new QAction( color, "resetcolor" );
     resetcolor->setText( trUtf8( "Reset" ) );
+    resetcolor->setMenuText( trUtf8( "&Reset" ) );
     resetcolor->setToolTip( trUtf8( "Reset" ) );
     alpha = new QAction( color, "alpha" );
-    alpha->setText( trUtf8( "Alpha Values" ) );
-    alpha->setMenuText( trUtf8( "Alpha Values ..." ) );
-    alpha->setToolTip( trUtf8( "Alpha Values" ) );
+    alpha->setText( trUtf8( "Alpha values" ) );
+    alpha->setMenuText( trUtf8( "Alpha values ..." ) );
+    alpha->setToolTip( trUtf8( "Alpha values" ) );
     font = new QActionGroup( this, "font" );
     font->setText( trUtf8( "Fonts" ) );
     font->setMenuText( trUtf8( "&Fonts" ) );
@@ -1884,6 +1888,10 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     labelfont->setText( trUtf8( "Axis label" ) );
     labelfont->setMenuText( trUtf8( "&Axis label" ) );
     labelfont->setToolTip( trUtf8( "Axis label" ) );
+    titlefont = new QAction( font, "titlefont" );
+    titlefont->setText( trUtf8( "Caption" ) );
+    titlefont->setMenuText( trUtf8( "&Caption" ) );
+    titlefont->setToolTip( trUtf8( "Caption" ) );
     resetfont = new QAction( font, "resetfont" );
     resetfont->setText( trUtf8( "Reset" ) );
     resetfont->setMenuText( trUtf8( "&Reset" ) );
@@ -1894,8 +1902,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     floordata = new QAction( floorstyle, "floordata" );
     floordata->setToggleAction( TRUE );
     floordata->setIconSet( QIconSet( image12 ) );
-    floordata->setText( trUtf8( "Floor Data Projection" ) );
-    floordata->setToolTip( trUtf8( "Floor Data Projection" ) );
+    floordata->setText( trUtf8( "Floor GridData Projection" ) );
+    floordata->setToolTip( trUtf8( "Floor GridData Projection" ) );
     flooriso = new QAction( floorstyle, "flooriso" );
     flooriso->setToggleAction( TRUE );
     flooriso->setIconSet( QIconSet( image13 ) );
@@ -1928,6 +1936,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     functionCB->insertItem( trUtf8( "---" ) );
     functionCB->insertItem( trUtf8( "Hat" ) );
     functionCB->insertItem( trUtf8( "Rosenbrock" ) );
+    functionCB->insertItem( trUtf8( "Gauss" ) );
     animation->addTo( Toolbar );
     Toolbar->addSeparator();
     Box->addTo( Toolbar );
@@ -1963,7 +1972,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     meshcolor->addTo( PopupMenu_3 );
     numbercolor->addTo( PopupMenu_3 );
     labelcolor->addTo( PopupMenu_3 );
-    PopupMenu_3->insertSeparator();
+    titlecolor->addTo( PopupMenu_3 );
     resetcolor->addTo( PopupMenu_3 );
     PopupMenu_3->insertSeparator();
     alpha->addTo( PopupMenu_3 );
@@ -1972,6 +1981,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     PopupMenu = new QPopupMenu( this ); 
     numberfont->addTo( PopupMenu );
     labelfont->addTo( PopupMenu );
+    titlefont->addTo( PopupMenu );
     resetfont->addTo( PopupMenu );
     menubar->insertItem( trUtf8( "&Font" ), PopupMenu );
 
@@ -1982,7 +1992,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     connect( zoomWheel, SIGNAL( valueChanged(double) ), LCDNumber1, SLOT( display(double) ) );
     connect( yS, SIGNAL( valueChanged(double) ), LCDNumber2_6, SLOT( display(double) ) );
     connect( xS, SIGNAL( valueChanged(double) ), LCDNumber2, SLOT( display(double) ) );
-    connect( alpha, SIGNAL( activated() ), this, SLOT( showAlphaDlg() ) );
     connect( xR, SIGNAL( valueChanged(double) ), LCDNumber2_4, SLOT( display(double) ) );
     connect( yR, SIGNAL( valueChanged(double) ), LCDNumber2_3, SLOT( display(double) ) );
     connect( zR, SIGNAL( valueChanged(double) ), LCDNumber2_2, SLOT( display(double) ) );

@@ -1,7 +1,7 @@
 #include "colorgenerator.h"
 
 
-StandardColor::StandardColor(Data const& data, int size)
+StandardColor::StandardColor(GridData const& data, int size)
 			: data_(data)
 {
 	colors_ = ColorVector(size);

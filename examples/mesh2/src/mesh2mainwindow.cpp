@@ -55,9 +55,11 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect( meshcolor, SIGNAL( activated() ), this, SLOT( pickMeshColor() ) );
 		connect( numbercolor, SIGNAL( activated() ), this, SLOT( pickNumberColor() ) );
 		connect( labelcolor, SIGNAL( activated() ), this, SLOT( pickLabelColor() ) );
+		connect( titlecolor, SIGNAL( activated() ), this, SLOT( pickTitleColor() ) );
 		connect( resetcolor, SIGNAL( activated() ), this, SLOT( resetColors() ) );
  		connect( numberfont, SIGNAL( activated() ), this, SLOT( pickNumberFont() ) );
 		connect( labelfont, SIGNAL( activated() ), this, SLOT( pickLabelFont() ) );
+		connect( titlefont, SIGNAL( activated() ), this, SLOT( pickTitleFont() ) );
 		connect( resetfont, SIGNAL( activated() ), this, SLOT( resetFonts() ) );
 		connect( animation, SIGNAL( toggled(bool) ) , this, SLOT( toggleAnimation(bool) ) );
     connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
@@ -153,7 +155,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 void Mesh2MainWindow::open()
 {
-    QString s( QFileDialog::getOpenFileName( "../../data", "Data Files (*.mes *.MES)", this ) );
+    QString s( QFileDialog::getOpenFileName( "../../data", "GridData Files (*.mes *.MES)", this ) );
  
 		if ( s.isEmpty() || !dataWidget)
         return;
@@ -346,17 +348,14 @@ void Mesh2MainWindow::pickLabelColor()
 	dataWidget->coordinates()->setLabelColor(rgb);
 	dataWidget->updateCoordinates();
 }
-
-void Mesh2MainWindow::pickLabelFont()
+void Mesh2MainWindow::pickTitleColor()
 {
-	bool ok;
-	QFont font = QFontDialog::getFont(&ok, this );
-	if ( !ok ) 
-	{
+ 	QColor c = QColorDialog::getColor( white, this );
+  if ( !c.isValid() )
 		return;
-	} 
-	dataWidget->coordinates()->setLabelFont(font);
-	dataWidget->updateCoordinates();
+	RGBA rgb = Qt2GL(c);
+	dataWidget->setCaptionColor(rgb);
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickNumberFont()
@@ -369,6 +368,27 @@ void Mesh2MainWindow::pickNumberFont()
 	} 
 	dataWidget->coordinates()->setNumberFont(font);
 	dataWidget->updateCoordinates();
+}
+void Mesh2MainWindow::pickLabelFont()
+{
+	bool ok;
+	QFont font = QFontDialog::getFont(&ok, this );
+	if ( !ok ) 
+	{
+		return;
+	} 
+	dataWidget->coordinates()->setLabelFont(font);
+	dataWidget->updateCoordinates();
+}
+void Mesh2MainWindow::pickTitleFont()
+{
+	bool ok;
+	QFont font = QFontDialog::getFont(&ok, this );
+	if ( !ok ) 
+	{
+		return;
+	} 
+	dataWidget->setCaptionFont(font.family(), font.pointSize(), font.weight(), font.italic());
 }
 
 void Mesh2MainWindow::resetFonts()
@@ -609,6 +629,17 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		//hat.setMaxZ(1.1);
 
 		hat.create();		
+	}
+	else if (name == QString("Gauss")) 
+	{
+		Gauss gauss(dataWidget);
+		
+		gauss.setMesh(71,71);
+		gauss.setDomain(-2.5,2.5,-2.5,2.5);
+		
+		//hat.setMaxZ(1.1);
+
+		gauss.create();
 	}
 
 	createColorLegend(StandardColor(dataWidget->data()).colVector());

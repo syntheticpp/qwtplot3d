@@ -497,7 +497,7 @@ CoordinateSystem::setLineWidth(double val, double majfac, double minfac)
 }
 
 void 
-CoordinateSystem::setStyle(COORDSTYLE s) 
+CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_3) 
 { 
 	style_ = s;
 
@@ -519,9 +519,12 @@ CoordinateSystem::setStyle(COORDSTYLE s)
 			{
 				for (unsigned i=0; i!=axes.size(); ++i)
 					detach (&axes[i]);
-//				attach(&axes[X1]);
-//				attach(&axes[Y1]);
-//				attach(&axes[Z1]);
+				if (!autoDecoration())
+				{
+					attach(&axes[frame_1]);
+					attach(&axes[frame_2]);
+					attach(&axes[frame_3]);
+				}
 			}
 			break;
 		default:

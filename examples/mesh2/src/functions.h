@@ -41,5 +41,22 @@ public:
 	QString name() const { return QString("Hat"); }
 };
 
+class Gauss : public Function
+{
+public:
+
+	Gauss(QwtPlot3D* pw)
+	:Function(pw)
+	{
+	//	setMaxZ(0.8);     
+	}
+	
+	double operator()(double x, double y)
+	{
+		return exp(-(x*x+y*y)/2);
+	}
+
+	QString name() const { return QString("Gauss"); }
+};
 
 #endif // __EXAMPLE_H__

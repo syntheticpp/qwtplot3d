@@ -1292,7 +1292,7 @@
         <action name="meshcolor"/>
         <action name="numbercolor"/>
         <action name="labelcolor"/>
-        <separator/>
+        <action name="titlecolor"/>
         <action name="resetcolor"/>
         <separator/>
         <action name="alpha"/>
@@ -1300,6 +1300,7 @@
     <item text="&amp;Font" name="PopupMenu">
         <action name="numberfont"/>
         <action name="labelfont"/>
+        <action name="titlefont"/>
         <action name="resetfont"/>
     </item>
 </menubar>
@@ -1338,6 +1339,11 @@
             <item>
                 <property name="text">
                     <string>Rosenbrock</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>Gauss</string>
                 </property>
             </item>
         </widget>
@@ -1721,10 +1727,24 @@
         </action>
         <action>
             <property name="name">
+                <cstring>titlecolor</cstring>
+            </property>
+            <property name="text">
+                <string>Caption</string>
+            </property>
+            <property name="toolTip">
+                <string>Caption</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
                 <cstring>resetcolor</cstring>
             </property>
             <property name="text">
                 <string>Reset</string>
+            </property>
+            <property name="menuText">
+                <string>&amp;Reset</string>
             </property>
             <property name="toolTip">
                 <string>Reset</string>
@@ -1735,13 +1755,13 @@
                 <cstring>alpha</cstring>
             </property>
             <property name="text">
-                <string>Alpha Values</string>
+                <string>Alpha values</string>
             </property>
             <property name="menuText">
-                <string>Alpha Values ...</string>
+                <string>Alpha values ...</string>
             </property>
             <property name="toolTip">
-                <string>Alpha Values</string>
+                <string>Alpha values</string>
             </property>
         </action>
     </actiongroup>
@@ -1787,6 +1807,20 @@
             </property>
             <property name="toolTip">
                 <string>Axis label</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>titlefont</cstring>
+            </property>
+            <property name="text">
+                <string>Caption</string>
+            </property>
+            <property name="menuText">
+                <string>&amp;Caption</string>
+            </property>
+            <property name="toolTip">
+                <string>Caption</string>
             </property>
         </action>
         <action>
@@ -1967,12 +2001,6 @@
         <signal>valueChanged(double)</signal>
         <receiver>LCDNumber2</receiver>
         <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>alpha</sender>
-        <signal>activated()</signal>
-        <receiver>Mesh2MainWindowBase</receiver>
-        <slot>showAlphaDlg()</slot>
     </connection>
     <connection>
         <sender>xR</sender>

@@ -14,7 +14,9 @@ public:
   ~CoordinateSystem();	
 	
 	void init(Triple beg = Triple(0,0,0), Triple end = Triple(0,0,0));
-	void setStyle(Qwt3d::COORDSTYLE s);
+	void setStyle(Qwt3d::COORDSTYLE s,	Qwt3d::AXIS frame_1 = Qwt3d::X1, 
+																			Qwt3d::AXIS frame_2 = Qwt3d::Y1, 
+																			Qwt3d::AXIS frame_3 = Qwt3d::Z1);
 	Qwt3d::COORDSTYLE style() const { return style_;}
 	void setPosition(Triple first, Triple second); //!< first == front_left_bottom, second == back_right_top
 	

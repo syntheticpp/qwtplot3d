@@ -26,9 +26,11 @@ public slots:
 	void pickMeshColor();
 	void pickNumberColor();
 	void pickLabelColor();
+	void pickTitleColor();
 	void resetColors();
 	void pickNumberFont();
 	void pickLabelFont();
+	void pickTitleFont();
 	void resetFonts();
  	void setStandardView();
 	void showPosition(double,double);
