@@ -7,22 +7,22 @@
 #include "types.h"
 #include <algorithm>
 
-Data::Data()
+GridData::GridData()
 {
 	setSize(0,0);
 }
 
-Data::Data(unsigned int columns, unsigned int rows)
+GridData::GridData(unsigned int columns, unsigned int rows)
 {
 	setSize(columns,rows);
 }
 
-Data::~Data()
+GridData::~GridData()
 {
 	clear();		
 }
 
-Data::Data(Data const& rhs)
+GridData::GridData(GridData const& rhs)
 {
 	setSize(rhs.columns(), rhs.rows());
 	for ( int i=0; i!=columns(); ++i)
@@ -42,7 +42,7 @@ Data::Data(Data const& rhs)
 }
 
 
-Data& Data::operator=(Data const& rhs)
+GridData& GridData::operator=(GridData const& rhs)
 {
 	if (this == &rhs)
 		return *this;
@@ -69,19 +69,19 @@ Data& Data::operator=(Data const& rhs)
 
 
 int 
-Data::columns() const 
+GridData::columns() const 
 { 
 	return (int)vertices.size();	
 }
 
 int 
-Data::rows() const 
+GridData::rows() const 
 { 
 	return (empty()) ? 0 : (int)vertices[0].size();	
 }
 
 void 
-Data::clear()
+GridData::clear()
 {
 	{
 		for (unsigned i=0; i!=vertices.size(); ++i)
@@ -115,7 +115,7 @@ Data::clear()
 
 
 void 
-Data::setSize(unsigned int columns, unsigned int rows)
+GridData::setSize(unsigned int columns, unsigned int rows)
 {
 	clear();
 	vertices = std::vector<DataRow>(columns);
@@ -142,11 +142,11 @@ Data::setSize(unsigned int columns, unsigned int rows)
 	}
 }
 
-double Data::maximum() const { return max_;}
-double Data::minimum() const { return min_;}
+double GridData::maximum() const { return max_;}
+double GridData::minimum() const { return min_;}
 
-void Data::setMin(double minv) {min_ = minv;}
-void Data::setMax(double maxv) {max_ = maxv;}
+void GridData::setMin(double minv) {min_ = minv;}
+void GridData::setMax(double maxv) {max_ = maxv;}
 
 
 QColor 
@@ -233,7 +233,6 @@ double round125( double x)
 	
 	return c;
 }
-
 
 // convex hull
 
