@@ -65,16 +65,12 @@ private:
 	void init();
 	void drawBase();
 	void drawTics();
-	void drawNumber(int mtic);
-	void postDrawNumber(Triple Pos, int mtic);
-	void postDrawNumbers();
+	void drawNumber(Triple Pos, int mtic);
 
 	void buildAutoScale(double& a, double& b);
 
 	void drawTic(Triple nadir, double length);
 	
-
-	void postDraw();
 	
 	LabelPixmap label_;
 	std::vector<LabelPixmap> markerLabel_;

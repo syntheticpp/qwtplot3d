@@ -117,7 +117,10 @@ Axis::draw()
 
 	drawBase();
 	drawTics();
-	
+		
+	if (drawLabel_)
+		label_.draw();
+
 	restoreGLState();
 }
 
@@ -140,7 +143,6 @@ void
 Axis::drawTics()
 {
 	if (!drawTics_)
-
 		return;
 
 	autostart_ = start_;
@@ -162,7 +164,7 @@ Axis::drawTics()
 		glLineWidth(majLineWidth_);
 		double t = double(mj) / tmaj_;
 		drawTic(beg + t * runningpoint, lmaj_);
-		drawNumber(mj);
+		drawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_, mj);
 		if (t==1.0)
 			break;
 		glLineWidth(minLineWidth_);
@@ -213,7 +215,7 @@ Axis::drawTics()
 }
 
 void 
-Axis::drawNumber(int mtic)
+Axis::drawNumber(Triple pos, int mtic)
 {
 	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
 		return;
@@ -233,40 +235,10 @@ Axis::drawNumber(int mtic)
 	}
 	else
 		markerLabel_[mtic].setString(QString::number(start_ + t * (stop_ - start_)));
-}
-
-void 
-Axis::postDrawNumber(Triple pos, int mtic)
-{
-	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
-		return;
+	
 	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
 	markerLabel_[mtic].draw();
 }
-
-
-void 
-Axis::postDrawNumbers()
-{
-	Triple normal = (end_ - beg_);
-	normal.normalize();
-	Triple beg = beg_ + (autostart_ - start_) * normal;
-	Triple end = end_ - (stop_ - autostop_) * normal;
-
-	Triple runningpoint = end - beg;
-
-	int mj;
-	
-	postDrawNumber(beg + 1.2 * lmaj_ * orientation_,0);
-
-	for (mj = 1; mj <= tmaj_; ++mj) 
-	{
-		glLineWidth(majLineWidth_);
-		double t = double(mj) / tmaj_;
-		postDrawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_,mj);
-	}
-}
-
 
 void 
 Axis::drawTic(Triple nadir, double length)
@@ -347,22 +319,4 @@ Axis::buildAutoScale (double& a, double& b)
 	b = y * floor(stop_/y);
 
 	setMajors(round((b-a) / y));
-}
-
-void 
-Axis::postDraw()
-{
-	saveGLState();
-
-//	glEnable(GL_LINE_SMOOTH);
-	glLineWidth( lineWidth_ );
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4d(color.r,color.g,color.b,color.a);		
-
-	postDrawNumbers();
-	
-	if (drawLabel_)
-	label_.draw();
-	
-	restoreGLState();
 }
