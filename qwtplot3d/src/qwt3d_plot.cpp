@@ -275,8 +275,13 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 	{
 		gl2ps_format = GL2PS_PDF;
 	}
+	else
+	{
+		Label::useDeviceFonts(false);
+		return false;
+	}
 
-	FILE *fp = fopen(fileName.latin1(), "wb");
+	FILE *fp = fopen(fileName.latin1(), "wb");	
 	if (!fp)
 		return false;
 
@@ -373,7 +378,7 @@ void
 Plot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coord.setStyle(st);
-	updateCoordinateSystem();
+//	updateCoordinateSystem();
 	updateGL();
 }
 

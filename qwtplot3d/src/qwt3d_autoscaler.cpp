@@ -128,7 +128,7 @@ AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double st
 	\param b Stop value after scaling  (always <= stop)
 
 	If the given interval has zero length the function returns the current 
-	interval number and a and b remain unchanged
+	interval number and a and b remain unchanged.
 */
 int 
 AutoScaler::execute(double& a, double& b)

@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "QwtPlot3D API"
-PROJECT_NUMBER         = "0.1.4 pre-beta"
+PROJECT_NUMBER         = "0.2.0 beta"
 OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES

@@ -99,7 +99,7 @@ ColorLegend::setGeometryInternal()
 	pe_.minVertex = relativePosition(Triple(relMin_.x, relMin_.y, ot));
 	pe_.maxVertex = relativePosition(Triple(relMax_.x, relMax_.y, ot));
 
-	double diff;
+	double diff = 0;
 	Triple b;
 	Triple e;
 
@@ -149,7 +149,6 @@ ColorLegend::setGeometryInternal()
 	c.y = pe_.maxVertex.y;
 
 	caption_.setPosition(c, BottomCenter);	
-	caption_.update();
 }
 
 void 

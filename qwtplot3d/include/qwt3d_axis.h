@@ -57,8 +57,8 @@ public:
 	void setAutoScale(bool val = true) {autoscale_ = val;} //!< Turns Autoscaling on or off
 	bool autoScale() const { return autoscale_;} //!< actual Autoscaling mode
 
-	void setMajors(int val); //! Requests major intervals (maybe changed, if autoscaling is present)
-	void setMinors(int val); //! Requests minor intervals
+	void setMajors(int val); //!< Requests major intervals (maybe changed, if autoscaling is present)
+	void setMinors(int val); //!< Requests minor intervals
 	int majors() const { return majorintervals_; } //!< Returns number of major intervals
 	int minors() const { return minorintervals_; } //!< Returns number of minor intervals
 	Qwt3D::TripleField const& majorPositions() const {return majorpos_;} //!< Returns positions for actual major tics (also if invisible)

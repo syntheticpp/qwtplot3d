@@ -19,8 +19,8 @@ class QWT3D_EXPORT Color
 {
 public:
 	virtual Qwt3D::RGBA operator()(double x, double y, double z) = 0; //!< Implement your color model here
-	//! Creates a color vector used from ColorLegend. The default implementation is empty.
-	virtual void createVector(Qwt3D::ColorVector& vec, unsigned size=0) {};
+	//! Should create a color vector usable by ColorLegend. The default implementation is empty.
+	virtual Qwt3D::ColorVector& createVector(Qwt3D::ColorVector& vec) { return vec; }
 
 	void destroy() const { delete this;}
 
@@ -38,18 +38,19 @@ The class has a ColorVector representing z values, which will be used by operato
 class QWT3D_EXPORT StandardColor : public Color
 {
 public:
-	//! Initialize with data and set up a ColorVector with a size of 100 z values (default);
-	explicit StandardColor(Plot3D* data, int size = 100);
-	Qwt3D::RGBA operator()(double x, double y, double z); //!< Receive z-dependend Color from ColorVector
+	//! Initializes with data and set up a ColorVector with a size of 100 z values (default);
+	explicit StandardColor(Plot3D* data, unsigned size = 100);
+	Qwt3D::RGBA operator()(double x, double y, double z); //!< Receives z-dependend color from ColorVector
 	void setColorVector(Qwt3D::ColorVector const& cv);
-	void reset(int size=100); //!< Reset the standard colors; 
+	void reset(unsigned size=100); //!< Resets the standard colors; 
 	void setAlpha(double a); //!< Sets unitary alpha value for all colors
 	/** 
 		\brief Creates color vector
 		
 		Creates a color vector used by ColorLegend. This is essentially a copy from the internal used vector.
+		\return The vector created
 	*/
-	void createVector(Qwt3D::ColorVector& vec, unsigned size=0) {vec = colors_;}
+	Qwt3D::ColorVector& createVector(Qwt3D::ColorVector& vec) {vec = colors_; return vec;}
 
 protected:
 	Qwt3D::ColorVector colors_;

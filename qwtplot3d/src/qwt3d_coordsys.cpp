@@ -150,7 +150,7 @@ CoordinateSystem::chooseAxes()
 		axes[i].setLabel(false);
 	}
 
-	vector<int> idx;
+	vector<unsigned> idx;
 	convexhull2d(idx,src);
 
 	int rem_x = -1;

@@ -204,7 +204,7 @@ int _ch2d(coord **P, int n)  {
 
 
 void 
-Qwt3D::convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
+Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& src )
 {
     idx.clear();
     if (src.empty())

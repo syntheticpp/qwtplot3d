@@ -40,6 +40,11 @@
 #  else
 #    define GL2PSDLL_API
 #  endif
+#  if defined(_MSC_VER) /* MSVC Compiler */
+#  pragma warning(disable: 4244)  /* 'conversion' conversion from 'type1' to 'type2', possible loss of data */
+#  pragma warning(disable: 4761)  /* integral size mismatch in argument : conversion supplied */
+#  pragma warning(disable: 4305)  /* 'identifier' : truncation from 'type1' to 'type2' */
+#  endif
 #else
 #  define GL2PSDLL_API
 #endif

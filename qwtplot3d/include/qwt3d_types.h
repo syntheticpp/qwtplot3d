@@ -403,7 +403,7 @@ inline double dotProduct(Triple const& u, Triple const& v)
 	return u.x*v.x + u.y*v.y + u.z*v.z;
 }
 
-void convexhull2d( std::vector<int>& idx, const std::vector<Qwt3D::Tuple>& src );
+void convexhull2d( std::vector<unsigned>& idx, const std::vector<Qwt3D::Tuple>& src );
 
 
 #endif // QWT3D_PRIVATE 
