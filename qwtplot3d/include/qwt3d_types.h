@@ -132,7 +132,8 @@ struct QWT3D_EXPORT Tuple
 {
 	Tuple() : x(0), y(0) {} //!< Calls Tuple(0,0)
 	Tuple(double X, double Y) : x(X), y(Y) {} //!< Initialize Tuple with x and y
-	double x,y; //!< Tuple coordinates
+	//! Tuple coordinates
+  double x,y; 
 };
 
 //! Triple <tt>[x,y,z]</tt>
