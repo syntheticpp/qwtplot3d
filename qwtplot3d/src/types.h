@@ -21,7 +21,7 @@
 	#define WHEEL_DELTA 120
 #endif
 
-namespace Qwt3d
+namespace Qwt3D
 {
 
 enum PLOTSTYLE

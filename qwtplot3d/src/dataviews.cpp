@@ -5,7 +5,7 @@
 
 #include "qwt_plot3d.h"
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 /*!
   Generate an OpenGL display list for the object to be shown
@@ -20,8 +20,8 @@ QwtPlot3D::updateData()
 
 	updateFloorData();
 	
-	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
+	glEnable(GL_DEPTH_TEST);
 
 	SaveGlDeleteLists(objectList_[DataObject], 1); // nur Daten
 	
@@ -34,11 +34,10 @@ QwtPlot3D::updateData()
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
 	{
 		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
-		
+
 		for (i = 0; i < actualData_.columns() - cstep; i += cstep) 
 		{
 			for (j = 0; j < actualData_.rows() - rstep; j += rstep) 
-
 			{
 				glBegin(GL_LINE_LOOP);
 					glVertex3dv(actualData_.vertices[i][j]);
@@ -88,7 +87,6 @@ QwtPlot3D::updateData()
 		glEnd();
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
-
 	glEndList();
 }
 
