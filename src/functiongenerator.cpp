@@ -93,6 +93,9 @@ Function::create()
 	{
 		delete [] data[i];
 	}
+
+	delete data;
+
 	return true;
 }
 

@@ -226,7 +226,7 @@ Axis::drawNumber(int mtic)
 	if (autoScale())
 	{
 		double anumber = autostart_ + t * (autostop_-autostart_);
-		if (fabs(anumber) < DBL_EPSILON) // prevent rounding errors near zero
+		if (isZero(anumber)) // prevent rounding errors near zero
 			anumber = 0;
 		markerLabel_[mtic].setString(QString::number(anumber));		
 	}

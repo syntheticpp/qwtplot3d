@@ -76,7 +76,7 @@ int main(int argc, char **argv)
 		plot1->setBackgroundColor(RGBA(1,1, 157./255));
 
 
-		Plot* plot2 = new Plot(spl,50);
+		Plot* plot2 = new Plot(spl,80);
 		plot2->setPlotStyle(FILLED);
 		plot2->setFloorStyle(FLOORISO);
 		plot2->setCoordinateStyle(FRAME);
