@@ -292,7 +292,8 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
-										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_TRANSPARENCY | GL2PS_COMPRESS;
+										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_COMPRESS;
+//										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_TRANSPARENCY | GL2PS_COMPRESS;
 
 	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
 		options |= GL2PS_LANDSCAPE;

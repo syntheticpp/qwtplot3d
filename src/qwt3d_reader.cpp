@@ -135,7 +135,7 @@ namespace
 	{
  		double** data         = new double* [columns] ;
  
-		for (int i = 0; i < columns; ++i) 
+		for ( int i = 0; i < columns; ++i) 
 		{
 			data[i]         = new double [rows];
 		}
@@ -144,7 +144,7 @@ namespace
 	
 	void deleteData(double**data, int columns)
 	{
-		for ( unsigned int i = 0; i < columns; i++) 
+		for ( int i = 0; i < columns; i++) 
 		{
 			delete [] data[i];
 		}
