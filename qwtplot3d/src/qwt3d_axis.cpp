@@ -1,3 +1,4 @@
+#include "qwt3d_gl2ps.h"
 #include "qwt3d_axis.h"
 
 using namespace Qwt3D;
@@ -44,7 +45,7 @@ Axis::init()
 	numberfont_ = QFont("Courier",12);
 	numbercolor_ = RGBA(0,0,0,0);
 
-	setNumberAnchor(LabelPixmap::Center);
+	setNumberAnchor(Center);
 
 	makeSimpleLabels(true);
 
@@ -116,7 +117,6 @@ Axis::draw()
 	saveGLState();
 
 	glEnable(GL_LINE_SMOOTH);
-	setDeviceLineWidth( lineWidth_ );
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(color.r,color.g,color.b,color.a);		
 
@@ -132,16 +132,11 @@ Axis::draw()
 void 
 Axis::drawBase()
 {
-
+	setDeviceLineWidth( lineWidth_ );
 	glBegin( GL_LINES );
 	glVertex3d( beg_.x, beg_.y, beg_.z); 
 	glVertex3d( end_.x, end_.y, end_.z);
 	glEnd();
-//
-//	GLUquadricObj  *cone;
-//	cone = gluNewQuadric();
-//  gluCylinder(cone, 0.005, 0.005, 1., 36, 36);
-//  gluDeleteQuadric(cone);
 }	
 
 void 
@@ -308,7 +303,7 @@ Axis::setLabelString(QString const& name)
 }
 
 void 
-Axis::setLabelPosition(const Triple& pos,LabelPixmap::ANCHOR an)
+Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 {
 	label_.setPosition(pos, an);
 }

@@ -12,7 +12,6 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	setLineSmooth(false);
 	init(first,second);
 
-	setLineWidth(1.5);
 	setAxesColor(RGBA(0,0,0,1));
 	setNumberFont("Courier", 12);
 	setNumberColor(RGBA(0,0,0));
@@ -96,7 +95,7 @@ CoordinateSystem::init(Triple first, Triple second)
 }
 
 void 
-CoordinateSystem::positionateLabel(Axis& ax, LabelPixmap::ANCHOR an)
+CoordinateSystem::positionateLabel(Axis& ax, Qwt3D::ANCHOR an)
 {
   Triple diff = ax.end() - ax.begin();
 	Triple center = ax.begin() + diff/2;
@@ -325,86 +324,86 @@ CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 	{
 		if ( diff.x >= 0 && diff.y >= 0 && sina < SQRT_2)          // 0..Pi/4 
 		{
-			positionateLabel(ax, LabelPixmap::BottomCenter);
-			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+			positionateLabel(ax, BottomCenter);
+			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x >= 0 && diff.y >= 0  && !left)            // octant 2
 		{
-			positionateLabel(ax, LabelPixmap::CenterRight);
-			ax.setNumberAnchor(LabelPixmap::CenterRight);
+			positionateLabel(ax, CenterRight);
+			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2)    // octant 3
 		{
-			positionateLabel(ax, LabelPixmap::CenterRight);
-			ax.setNumberAnchor(LabelPixmap::CenterRight);
+			positionateLabel(ax, CenterRight);
+			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0 )                      // octant 4
 		{
-			positionateLabel(ax, LabelPixmap::TopCenter);
-			ax.setNumberAnchor(LabelPixmap::TopCenter);
+			positionateLabel(ax, TopCenter);
+			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2)    // octant 5
 		{
-			positionateLabel(ax, LabelPixmap::BottomCenter);
-			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+			positionateLabel(ax, BottomCenter);
+			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0)                      // octant 6
 		{
-			positionateLabel(ax, LabelPixmap::CenterRight);
-			ax.setNumberAnchor(LabelPixmap::CenterRight);
+			positionateLabel(ax, CenterRight);
+			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2)    // octant 7
 		{
-			positionateLabel(ax, LabelPixmap::CenterRight);
-			ax.setNumberAnchor(LabelPixmap::CenterRight);
+			positionateLabel(ax, CenterRight);
+			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0)                      // octant 8
 		{
-			positionateLabel(ax, LabelPixmap::TopCenter);
-			ax.setNumberAnchor(LabelPixmap::TopCenter);
+			positionateLabel(ax, TopCenter);
+			ax.setNumberAnchor(TopCenter);
 		}
 	}	
 	else // rightmost axis
 	{
 		if ( diff.x >= 0 && diff.y >= 0 && sina <= SQRT_2)
 		{
-			positionateLabel(ax, LabelPixmap::TopCenter);
-			ax.setNumberAnchor(LabelPixmap::TopCenter);
+			positionateLabel(ax, TopCenter);
+			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x >= 0 && diff.y >= 0  && !left) 
 		{
-			positionateLabel(ax, LabelPixmap::CenterLeft);
-			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+			positionateLabel(ax, CenterLeft);
+			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2) 
 		{
-			positionateLabel(ax, LabelPixmap::CenterLeft);
-			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+			positionateLabel(ax, CenterLeft);
+			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0) 
 		{
-			positionateLabel(ax, LabelPixmap::BottomCenter);
-			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+			positionateLabel(ax, BottomCenter);
+			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2) 
 		{
-			positionateLabel(ax, LabelPixmap::TopCenter);
-			ax.setNumberAnchor(LabelPixmap::TopCenter);
+			positionateLabel(ax, TopCenter);
+			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0) 
 		{
-			positionateLabel(ax, LabelPixmap::CenterLeft);
-			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+			positionateLabel(ax, CenterLeft);
+			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2) 
 		{
-			positionateLabel(ax, LabelPixmap::CenterLeft);
-			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+			positionateLabel(ax, CenterLeft);
+			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0) 
 		{
-			positionateLabel(ax, LabelPixmap::BottomCenter);
-			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+			positionateLabel(ax, BottomCenter);
+			ax.setNumberAnchor(BottomCenter);
 		}
 	}
 }
