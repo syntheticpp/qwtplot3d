@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: So 27. Apr 21:42:48 2003
+** Created: Di 29. Apr 00:50:51 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -39,11 +39,12 @@ public:
     QSlider* offsSlider;
     QLabel* TextLabel1_2;
     QSlider* resSlider;
+    QFrame* Frame3;
+    QwtPlot3D* dataWidget;
     QCheckBox* projection;
     QCheckBox* colorlegend;
     QCheckBox* autoscale;
-    QFrame* Frame3;
-    QwtPlot3D* dataWidget;
+    QCheckBox* mouseinput;
     QComboBox* functionCB;
     QMenuBar *menubar;
     QPopupMenu *file;
@@ -89,9 +90,9 @@ protected:
     QHBoxLayout* Layout5;
     QVBoxLayout* Layout10;
     QVBoxLayout* Layout9;
-    QVBoxLayout* Layout21;
-    QVBoxLayout* Layout14;
     QGridLayout* Frame3Layout;
+    QVBoxLayout* Layout7;
+    QVBoxLayout* Layout6;
 };
 
 #endif // MESH2MAINWINDOWBASE_H

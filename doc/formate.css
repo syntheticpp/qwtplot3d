@@ -1,14 +1,15 @@
 /* Formatdatei */
 
 p,li,ul,body {font-family:arial,helvetica; font-size:9pt; color:#404040;}
-td {font-family:arial,helvetica; font-size:10pt; color:#000000;}
 pre {font-family:monospace; font-size:9pt; color:#404040;}
+td {font-family:arial,helvetica; font-size:10pt; color:#000000;}
+td.md {font-weight:bold}
 
-p.sub {font-family:arial,helvetica; font-size:8pt; color:#333399;}
+#p.sub {font-family:arial,helvetica; font-size:8pt; color:#333399;}
 
-h1 {font-family:arial,helvetica; font-size:12pt; color:#333399;text-align: center;}
-h2 {font-family:arial,helvetica; font-size:11pt; color:#333399;}
-h3 {font-family:arial,helvetica; font-size:10pt; color:#333399;}
+h1 {font-family:arial,helvetica; font-size:12pt; color:#000040;text-align: center;}
+h2 {font-family:arial,helvetica; font-size:11pt; color:#000040;}
+h3 {font-family:arial,helvetica; font-size:10pt; color:#000040;}
 
 
 	a:link {color:#333399;}
@@ -21,7 +22,5 @@ h3 {font-family:arial,helvetica; font-size:10pt; color:#333399;}
 	a.sub:hover {color:#CC0000; text-decoration:underline}
 	a.sub {text-decoration:none;font-size:8pt;}
 	
-	#s {font-size:8pt;}
-
 span.comment       { color: #008000 }
 /* span.preprocessor  { color: #0000a0 } */
