@@ -17,7 +17,7 @@ win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
 win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL 
 
 # Comment the next line, if you have zlib on your windows system
-# win32:CONFIG -= zlib
+win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
 unix:VERSION = 0.2.4
