@@ -16,7 +16,7 @@ class Color
 {
 public:
 	virtual RGBA operator()(double x, double y, double z) = 0; //!< implement your color model here
-	virtual void setAlpha(double a) = 0; //!< sometimes you need an alpha channel
+	virtual void setAlpha(double a) {}; //!< sometimes you need an alpha channel, the default doues nothing
 
 	void destroy() const { delete this;}
 

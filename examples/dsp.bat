@@ -4,3 +4,5 @@ cd ../simpleplot
 qmake simpleplot.pro -o simpleplot.dsp
 cd ../autoswitch
 qmake autoswitch.pro -o autoswitch.dsp
+cd ../colormodels
+qmake colormodels.pro -o colormodels.dsp

@@ -501,14 +501,18 @@ QwtPlot3D::calcFloorListAsIsolines()
 	
 	unsigned i,j;
 	double zshift = actualData_.minimum();
+	int cols = actualData_.columns();
+	int rows = actualData_.rows();
+	
 	for (int k = isolines_; k > 0; --k) 
 	{
 		double hi = actualData_.minimum() + k * step;
 		double lo = hi - step;
 		
-		for (i = cstep; i < actualData_.columns() - cstep; i += cstep) 
+
+		for (i = 0; i <= cols-cstep; i += cstep) 
 		{
-			for (j = rstep; j < actualData_.rows() - rstep; j += rstep) 
+			for (j = 0; j <= rows-rstep; j += rstep) 
 			{
 				col = (*dataColor_)(
 					actualData_.vertices[i][j][0],
@@ -523,35 +527,127 @@ QwtPlot3D::calcFloorListAsIsolines()
 				if ( lo<thi.z && thi.z<hi)
 				{
 					Triple tlo[8];
-					tlo[0] = Triple(actualData_.vertices[i+cstep][j][0],
-												 	actualData_.vertices[i+cstep][j][1],
-										  		actualData_.vertices[i+cstep][j][2]);
-					tlo[1] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
-									  			actualData_.vertices[i+cstep][j+rstep][1],
-								  				actualData_.vertices[i+cstep][j+rstep][2]);
-					tlo[2] = Triple(actualData_.vertices[i][j+rstep][0],
-													actualData_.vertices[i][j+rstep][1],
-								 					actualData_.vertices[i][j+rstep][2]);
-					tlo[3] = Triple(actualData_.vertices[i-cstep][j+rstep][0],
-													actualData_.vertices[i-cstep][j+rstep][1],
-								 					actualData_.vertices[i-cstep][j+rstep][2]);
-					tlo[4] = Triple(actualData_.vertices[i-cstep][j][0],
-													actualData_.vertices[i-cstep][j][1],
-								 					actualData_.vertices[i-cstep][j][2]);
-					tlo[5] = Triple(actualData_.vertices[i-cstep][j-rstep][0],
-												 	actualData_.vertices[i-cstep][j-rstep][1],
-										  		actualData_.vertices[i-cstep][j-rstep][2]);
-					tlo[6] = Triple(actualData_.vertices[i][j-rstep][0],
-									  			actualData_.vertices[i][j-rstep][1],
-								  				actualData_.vertices[i][j-rstep][2]);
-					tlo[7] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
-													actualData_.vertices[i+cstep][j-rstep][1],
-								 					actualData_.vertices[i+cstep][j-rstep][2]);
 					
+					if (i<cols-cstep)
+					{
+						tlo[0] = Triple(actualData_.vertices[i+cstep][j][0],
+							actualData_.vertices[i+cstep][j][1],
+							actualData_.vertices[i+cstep][j][2]);
+					}
+					if (i<cols-cstep && j<rows-rstep)
+					{
+						tlo[1] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
+							actualData_.vertices[i+cstep][j+rstep][1],
+							actualData_.vertices[i+cstep][j+rstep][2]);
+					}
+					if (j<rows-rstep)
+					{
+						tlo[2] = Triple(actualData_.vertices[i][j+rstep][0],
+														actualData_.vertices[i][j+rstep][1],
+														actualData_.vertices[i][j+rstep][2]);
+					}
+					if (i>0 && j<rows-rstep)
+					{
+						tlo[3] = Triple(actualData_.vertices[i-cstep][j+rstep][0],
+														actualData_.vertices[i-cstep][j+rstep][1],
+														actualData_.vertices[i-cstep][j+rstep][2]);
+					}
+					if (i>0)
+					{
+						tlo[4] = Triple(actualData_.vertices[i-cstep][j][0],
+														actualData_.vertices[i-cstep][j][1],
+														actualData_.vertices[i-cstep][j][2]);
+					}
+					if (i>0 && j>0)
+					{
+						tlo[5] = Triple(actualData_.vertices[i-cstep][j-rstep][0],
+							actualData_.vertices[i-cstep][j-rstep][1],
+							actualData_.vertices[i-cstep][j-rstep][2]);
+					}
+					if (j>0)
+					{
+						tlo[6] = Triple(actualData_.vertices[i][j-rstep][0],
+							actualData_.vertices[i][j-rstep][1],
+							actualData_.vertices[i][j-rstep][2]);
+					}
+					if (i<cols-cstep && j>0)
+					{
+						tlo[7] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
+														actualData_.vertices[i+cstep][j-rstep][1],
+														actualData_.vertices[i+cstep][j-rstep][2]);
+					}										
+					
+					unsigned k1,k2;
+					
+					if (i>0 && i<cols-cstep && j>0 && j<rows-rstep)
+					{
+						k1 = 0;
+						k2 = 7;
+					}
+					else if (i==0 && j>0 && j<rows-rstep)
+					{
+						tlo[0] = Triple(actualData_.vertices[i][j-rstep][0],
+							actualData_.vertices[i][j-rstep][1],
+							actualData_.vertices[i][j-rstep][2]);
+						tlo[1] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
+							actualData_.vertices[i+cstep][j-rstep][1],
+							actualData_.vertices[i+cstep][j-rstep][2]);
+						tlo[2] = Triple(actualData_.vertices[i+cstep][j][0],
+							actualData_.vertices[i+cstep][j][1],
+							actualData_.vertices[i+cstep][j][2]);
+						tlo[3] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
+							actualData_.vertices[i+cstep][j+rstep][1],
+							actualData_.vertices[i+cstep][j+rstep][2]);
+						tlo[4] = Triple(actualData_.vertices[i][j+rstep][0],
+							actualData_.vertices[i][j+rstep][1],
+							actualData_.vertices[i][j+rstep][2]);
+						k1 = 0;
+						k2 = 3;
+					}
+					else if (i>0 && i<cols-cstep && j==rows-rstep)
+					{
+						k1 = 4;
+						k2 = 7;
+					}
+					else if (i==cols-cstep && j>0 && j<rows-rstep)
+					{
+						k1 = 2;
+						k2 = 5;
+					}
+					else if (i>0 && i<cols-cstep && j==0)
+					{
+						k1 = 0;
+						k2 = 3;
+					}
+					else if (i==0 && j==0)
+					{
+						k1 = 0;
+						k2 = 1;
+					}
+					else if (i==0 && j==rows-rstep)
+					{
+						k1 = 6;
+						k2 = 7;
+					}
+					else if (i==cols-cstep && j==rows-rstep)
+					{
+						k1 = 4;
+						k2 = 5;
+					}
+					else if (i==cols-cstep && j==0)
+					{
+						k1 = 2;
+						k2 = 3;
+					}
+					else
+					{
+						k1 = 0;
+						k2 = 7;
+					}
 					Triple tlo0 = tlo[0]; // remember for last step in while
-					
-					unsigned k=0;
-					while (k<8)
+
+					int k = k1;
+					while (k1<=k && k<=k2)
 					{
 						tlo[0] = tlo[k];
 						tlo[1] = (k<7) ? tlo[k+1] : tlo0;
@@ -676,7 +772,7 @@ QwtPlot3D::calculateHull()
 	assign a new coloring object for the data.
 */
 void 
-QwtPlot3D::assignDataColor( Color* col )
+QwtPlot3D::setDataColor( Color* col )
 {
 	dataColor_->destroy();
 	dataColor_ = col;
