@@ -41,13 +41,15 @@ public slots:
 	void toggleAutoScale(bool val);
 	void rotate();
 	void setPolygonOffset(int);
-	void createColorLegend(ColorVector const&);
+	void createColorLegend(Qwt3D::ColorVector const&);
 
 	void showRotate(double x, double y, double z);
 	void showShift(double x, double y);
 	void showScale(double x, double y, double z);
 	void showZoom(double z);
 	void showNormals(bool val);
+	void setNormalQuality(int);
+	void setNormalLength(int);
 
 private:
 	QLabel *filenameWidget,

@@ -3,6 +3,9 @@
 
 #include <qgl.h>
 
+namespace Qwt3D
+{
+
 class GLStateBewarer
 {
 public:
@@ -46,6 +49,18 @@ private:
 
 };
 
+inline const GLubyte* gl_error()
+{
+	GLenum errcode;
+	const GLubyte* err = 0;
+	
+	if ((errcode = glGetError()) != GL_NO_ERROR)
+	{
+		err = gluErrorString(errcode);
+	}
+	return err;
+}
 
+} // ns
 
 #endif  // __openglhelper_2003_06_06_15_49__

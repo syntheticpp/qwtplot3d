@@ -25,6 +25,7 @@ SOURCES =  \
 		src/mesh2mainwindow.cpp
 
 HEADERS =  \
+		src/qwt3d_plot3d.h \
 		src/mesh2mainwindow.h \
 		src/functions.h \
 		src/femreader.h

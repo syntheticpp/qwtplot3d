@@ -15,7 +15,7 @@
     <property name="minimumSize">
         <size>
             <width>336</width>
-            <height>198</height>
+            <height>301</height>
         </size>
     </property>
     <property name="caption">
@@ -31,7 +31,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
                 <cstring>Layout5</cstring>
             </property>
@@ -213,9 +213,53 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
+        <widget class="QFrame" row="0" column="0" rowspan="2" colspan="1">
             <property name="name">
-                <cstring>Layout7</cstring>
+                <cstring>Frame4</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="Qwt3D_Plot3D" row="0" column="0">
+                    <property name="name">
+                        <cstring>dataWidget</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <spacer row="1" column="1" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>Spacer4</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>0</width>
+                    <height>135</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLayoutWidget" row="0" column="1">
+            <property name="name">
+                <cstring>Layout8</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -328,51 +372,99 @@
                         </widget>
                     </vbox>
                 </widget>
-                <spacer>
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Spacer4</cstring>
+                        <cstring>Layout7</cstring>
                     </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>0</width>
-                            <height>390</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
-        </widget>
-        <widget class="QFrame" row="0" column="0">
-            <property name="name">
-                <cstring>Frame4</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QwtPlot3D" row="0" column="0">
-                    <property name="name">
-                        <cstring>dataWidget</cstring>
-                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLayoutWidget" row="1" column="0">
+                            <property name="name">
+                                <cstring>Layout6</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>normalsquality</cstring>
+                                    </property>
+                                    <property name="minValue">
+                                        <number>3</number>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>32</number>
+                                    </property>
+                                    <property name="pageStep">
+                                        <number>4</number>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="tickmarks">
+                                        <enum>Left</enum>
+                                    </property>
+                                    <property name="tickInterval">
+                                        <number>1</number>
+                                    </property>
+                                </widget>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>normalslength</cstring>
+                                    </property>
+                                    <property name="minValue">
+                                        <number>1</number>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>100</number>
+                                    </property>
+                                    <property name="pageStep">
+                                        <number>5</number>
+                                    </property>
+                                    <property name="value">
+                                        <number>8</number>
+                                    </property>
+                                    <property name="tracking">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Vertical</enum>
+                                    </property>
+                                    <property name="tickmarks">
+                                        <enum>Left</enum>
+                                    </property>
+                                    <property name="tickInterval">
+                                        <number>5</number>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>TextLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Normals</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
     </grid>
 </widget>
@@ -476,8 +568,8 @@
 </toolbars>
 <customwidgets>
     <customwidget>
-        <class>QwtPlot3D</class>
-        <header location="global">../../../src/qwt_plot3d.h</header>
+        <class>Qwt3D_Plot3D</class>
+        <header location="local">qwt3d_plot3d.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -1188,7 +1280,7 @@
         <data format="XPM.GZ" length="394">789c5d8ecb0ac2301045f7f98aa1d915e98344bb103f417129888bc9b4411755d0ba10f1dfede45153ef9064eee166923287c37e0b79291e030e17023ae31df2f6d9f7afe369f31659bd825ac1b8650b911540b0bb5d3beedbb197956abaaa628bce6a2eb6926dad352d9d356c7567ad0f135bab6c63951b1b25a5e42365d22d396321eb1922a6d7dd5f0c19f42ae23c24132a611199bf1cfe34cd6ba330e65214e6cd90677314d824ffee672dbe92b5620d</data>
     </image>
     <image name="image17">
-        <data format="XPM.GZ" length="3954">789c9596c76e24470c86ef7a0a61795b1874e700c307e51c4659327c6027658dc2281a7e77933f7bb4bd3260c0f3ef62f1a158ac6228f6fefa7df664776bf6fbaf334f13995cd6b3f5853cce7e6f9e6f6fdffff8f3f7bf66be45e1acfe098b6236faf6cbcc37a6d97a767b7cd702ba215c0c613c846000920c57eae14a3a847800b43edc2343381f9abd0c1d1c0ee174b8e76cb8878730dc434743072703184d862b3f991d0fcfb956a0a0318177c0ad09c6f3e0ce84f5c6380c4ce0168c1ff8161c9b70c163706a02c35f9899601f827313f80a5c98c08fe0d204de078b09fe085c85497f5ed0b30a9c806b13d8cf6b4df07709ee4c88d7aa4851f0c91bce2670040e4d60f88b6213fcdf811313780d9c99705e0ece4de0145c98e00ff78f4a13d633b098c0eebfd27c219f7ce26c02df806b13f814dc69fcbe7fded904467ee2c084fbbe8263cd27e223dc2f4ea226427fc89ab396d7ed777a5681719f3833c1ff2eb83461ff13b836810fc08d09bc076e4dd8bf60acc54dddbf6c3a9bb03e0223e1381ffd91c47a1f1f05a867821ff6fb7a69823df29b545a6fef97185c9bc0a87f1a9bc035183ff8473c6969c2fa3358fb31f0fcdf3b9bc005d8facdeb7de66cc27ef4179e87e71ff166515225fe1edec07198fa7b956567ed58ef9755b06ef775427eb35cfbddebb1e13c3d8fdfc1459667de8feecfde9be777cfd9047f026e4d381ff9cf3a13f8c3388ff57ccfdf03384b8218fd27e7e03c0afbf86b67fb81f1def3322d52af1783eb300afc7e8760cd5e1f3fe64d1169befd7e984745ae42bcb2021613d691efa235c11fea8df1e2f1ce811130ec91efb28c537f5fb4ed9c26899fbfeb6c3fec47fdcb4aebe3f5daec59fa7a2c3beb8bf2f778e06c0f04eb637063827fc453b69fdcf4ac026f194b6082bf0938d2fba33f05f351d2bccc3d9f5dcf559f6fcc13c9c3dae73d2d818b24f7f74898c7526a3d3dffa8a7d426ecafc08d09eb98f7d29ab08e79a2e14ae2f743feaa2497fe3ec87795ab7fef4fd4abb2f7837cc88b731cfa7c65bc8faa35e17e17e04ef30d7f6c5f3aaa83a22c3c9f73ce65e4f526f4579dc68dcf3f3a77ce92d4fb03f9ad3313ce87ff3a4f329f5f847cd7a2ede1f1601ed6755dd5de1f98577563c27ec4db2426ac63fe3716afdf0ff3b9294cf087fc3795d6c3cfc3f7b9a925f5facabb7355565e5fd4a769f48be0f315dfb3a68debbe5f9d3b3dcfe709de0b9eafc707ff6dfeb98efe688bbaf4f869cfd9042ec1d60f3effd16fad5e2ff1f3769d4d8807f56bbba9bd2c39ebbcf0f7b668dc0559e3f924ccc74ea743e0f37cd5b96d5bcfe7c4d984fde8af2e0a73f7cf5bcefa5efdfb3c764e22ff5e89fbc30710f688a74ba6fb05dfcf2efdf4f7e16c02a3dff5f2fd3abd3b2765ecf9c1f7a0b3f7e3f5b977b606c3bafb2bb3c2bf1782f7d44999145eef15e7266dfcfe98275da5efdffbc5fd559d743e4f777a56813d9f7595f6efefade7b242bc82feec5aada7d7d7e3694d58c77cef3a2d90dff7a667e9fc7e8b3df7e7d1a867fd198f265331fd24f17fb152d9aa5b7365fa625d73c32d777ceeeb536bdb3db5ef775cf0255ff135dff02ddffdf035b5f6d37afbb15adef3033ff2134ff8995fa6f774ebe1fdf895dff89d3f788ee7798117798997a716436bdfc12bbcca6b6abdce1bbcc95bbccd3b43eb2f39b9e55d1ef11eeff3011ff2111ff3099ff299adff2b2701871c71cc89ee4a3527979c71ce059766f1734ed4359150a5aaf99e1a4ea9a58ecee9c2acddf73427a3095dd2155dd30dddd21d8de99e1ee8919e6842cff432bdc98f18e995dee89d3e688ee6698116698996698556698dd6bf46a975dba10ddaa42ddaa61ddaa5118df52e7baa7d3aa0c3deb7dff9888ee9844ee94c2d030a794411c594e8fe9432caa9e8a374eb52584884465271a35fa046874c27e77221977225d772e3d6de61722b7732967b799047799289de63519ee5455ee54ddee543e67ee48449e675682dc8a22cc9b2aca8ad6bac95fa90555993f541e5af654336d56a41b6908fde5ab635970bb2a3f5ba66ffdf5547c71cd299d6f88933d9a03bde935dfb56d25846ea654ff639950df66f572007722847722c27722a6774c290045af74b09f56f24b124bcf3b507ff4b92fe1f6b8df2efdf66fe0121ee7c22</data>
+        <data format="XPM.GZ" length="3668">789c8d96c76e1c471086ef7c8a85ea2618a5c901860fcc39891249c9f0a1263473dc5d26c3efeeaabf662542c9de5f12f0a1abbb2bf6e8dddbd1f1def6e8edbbb9f1442667eda83d95fbd1db6e7a75f5fce75f7ffc3df7268947fa272e8a51f2e6b7b937fb93513bdab9b9ee0db857a0a83381d7c0bdc958aec1c18475318e2313b801e3073e01a726635a07e726f01db830c1fe005c9ac01db832812fc0b509bc0516133806377136dcb73db00abc0f6e4de01d706fc2fe161c4c88f7c13889bef0a3b309bc018e4d60c497a4269c0fff93cc047e021726dcf7095c9ac047e0ca84f390ffa43661fd182c26f029b8d17c219fbcef6c0207706b02bf07078ddff74f9d4de043e33432c1df4b70aaf9447c84fd69967409fa43a6ce5a5eb75f1c5805467ed2c284f3919fb436613ffa2d6d4de0157067022f817b13f6a31e5adcdccf97276713d6711fd28de6a65570aafe8019fe65f861ff32b836c11efd97355a6fef973d706b023f1be7a909e76560fcc0c8575e9b608f7ecdb51f23cfff99b309fc196cfde6f55e753661ffae31c6c3f3ff024eb226f379c0fc14699cfbbceaa883b563bd5fe6c1baddd709fd5494daef5e8f25e7d97decfbaba22cbc1f116f61f3e6f9dd74368113706fc2fdc86f114c60e4a34cf57ecf1fde83b2c8a214fd47c85f5926b1c74f91b3fdb01ff353d679957b3f613eca364e22f70ff35b6af686f8d9b84a34dfee5f012e558857c66031e13cbc1f556f82fd47633c2f1eef048c80617f05aed3dce78b169cf32cf3fb07b61ff6e3bdac1bad8fd76b796019ea3175d689f279dc76b601c13ae6a3ee4c60e4bbeebf703cb00af7a35e1299701efc9544fdf7f716ef87e4655d7a3ed3819b21df042ee3d6df7b42fc5265a5cf23f97aadf5f4fc9f835b13d6d1cfd299b08ef991de84f3d1ff1aae64ee1ffabdc94a717f04fe36a59eeffd897e6f6c7e900f39754e637f5ff903b837816b70d07ce33cc6fcb45155579ecf5be73af17a13ce6bf3b41bdebfcab9c872af470e2e4cb0772eb3c2df2fc27cb5a2ede1f1a0fe6ddb36adf707e6a9ed4cf01ff1749909ebf0bfb378dd3fcc575799701edeb7aed17af87df8de76ade45e5fb9706eeac6eb5b823bfd22b83dfabfebd376e857cc4717f43e7f4ff0bdc3f87a7c88bf2f67eb8cf3faaaad87f8579c4d607c2f7aeb077fffd10fbdba97f97d4bce269c77030e337bb973d6f7c2efc3f7354445e7f924cc63d0d721f2f7dcd7e3beef3d9fc1d984fda86f48e2d2cfe715679d57ff3e8b7396f8f74a26ce26d8e3fd09d96c3fa19f42fee5bcb1b3098c7950e767f6d7ce599d7a7ed0efc1e607f6d2385b83611df9087551f9f742508f20755679fd1e9cbbbc73fff17e8646e7dffbc5e36f8204e457e60756813d1f6d930ff3773e70dd205ef1fb7bada7cf5bea6cc2f9f8ff49085a20f7b7195882fb371e78b88f9607d69ff1fee4bfc564ffba3593e93b0be16666fbdafa7b7b6eb9e39e039ff0e9d7b5d79e7cb557cb333ee70bbee42bbee69b99c5b77eeb8e5bbee37b1ef384a7fcc08ffcc4cf3fb356fb179ee705b55ee4255ee6155ee5b55f589ff03a6ff0266ff136eff02eeff13ebf7f6dfd3a463ee00ffc910f75d711371aed317fe2cf1c99c5b739e198134e5599c699ab7dc125575c9bf5b79ee80622a1865aeaa8a74027744a67744e173ff29b2ee98aaee9866ee98eee694c139ad2033dd2d38fac798d9ee985e6698116698996a9e7235a51add2dacc7ae633add3066dd2965a6ed30e6fd02eedd1beee7f4f07f4813e7a946e4d877444c7f4494ffccc4211c594504a19e554504915d5b39cd8c9a22622d2e897aad3c728e8aeb19cc8a99cc9b95cc8a55cbdf65baeb9901bb9953bb997b1daba7aadd45826329587573dd8cba33ca9d5bd3c231f83b5bc682eef655eebd5cfac699d0f684b6b7cc9c7f2481d6fca82fa1deb13b9a8a72cc9321fc9231fbab5ac7ccda2acd28676864ad6b4eeadacebdf0dcfefff9db49ff5e02fadfff97dee5f5fa75acb</data>
     </image>
 </images>
 <connections>

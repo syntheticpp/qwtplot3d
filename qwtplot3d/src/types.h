@@ -67,8 +67,6 @@ enum AXIS
 	Z4 = 10
 };
 
-} // ns
-
 //! Tuple <tt>[x,y]</tt>
 struct Tuple
 {
@@ -242,7 +240,7 @@ typedef std::vector<unsigned> Cell;
 //! Vector of convex polygons. You need a TripleVector as base for the node data
 typedef std::vector<Cell> Tesselation;
 //! returns the sum over the sizes of the single cells
-unsigned tesselationSize(Tesselation const& t);
+unsigned tesselationSize(Qwt3D::Tesselation const& t);
 
 //! Implements a graph-like cell structure with limit access functions 
 class CellData
@@ -294,7 +292,7 @@ typedef std::vector<RGBA> ColorVector;
 
 
 QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
-RGBA Qt2GL(QColor col); //!< QColor -> RGBA
+Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
 
 
 //! simplified glut routine (glProject): object coord --> windows coord 
@@ -334,18 +332,6 @@ inline Triple ViewPort2World(Triple win, bool* err = 0)
 	if (err)
 		*err = (res) ? false : true;
 	return obj;
-}
-
-inline const GLubyte* gl_error()
-{
-	GLenum errcode;
-	const GLubyte* err = 0;
-	
-	if ((errcode = glGetError()) != GL_NO_ERROR)
-	{
-		err = gluErrorString(errcode);
-	}
-	return err;
 }
 
 inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
@@ -395,11 +381,14 @@ inline Triple normalizedcross(Triple const& u, Triple const& v)
 	
 	return n;
 }
+
 inline double dotProduct(Triple const& u, Triple const& v)
 {
 	return u.x*v.x + u.y*v.y + u.z*v.z;
 }
 
-void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src );
+void convexhull2d( std::vector<int>& idx, const std::vector<Qwt3D::Tuple>& src );
+
+} // ns
 
 #endif

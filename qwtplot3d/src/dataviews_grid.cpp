@@ -10,7 +10,7 @@ using namespace std;
 using namespace Qwt3D;
 
 void 
-QwtPlot3D::updateGridData()
+Plot3D::updateGridData()
 {
 	int i, j;
 	RGBA col;
@@ -71,14 +71,10 @@ QwtPlot3D::updateGridData()
 		glEnd();
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
-	if (normals())
-	{
-		GridNormals();
-	}
 }
 
 void 
-QwtPlot3D::GridData2Floor()
+Plot3D::GridData2Floor()
 {
 	if (actualGridData_->empty())
 		return;
@@ -113,7 +109,7 @@ QwtPlot3D::GridData2Floor()
 }
 
 void 
-QwtPlot3D::Grid2Floor()
+Plot3D::Grid2Floor()
 {
 	if (actualGridData_->empty())
 		return;
@@ -141,7 +137,7 @@ QwtPlot3D::Grid2Floor()
 
 
 void 
-QwtPlot3D::GridIsolines2Floor()
+Plot3D::GridIsolines2Floor()
 {
 	if (isolines_ <= 0 || actualGridData_->empty())
 		return;
@@ -244,12 +240,13 @@ QwtPlot3D::GridIsolines2Floor()
 
 
 void 
-QwtPlot3D::GridNormals()
+Plot3D::updateGridNormals()
 {
 	if (!normals() || actualGridData_->empty())
 		return;
 
 	VectorField v(dataColor_);
+	v.setQuality(normalQuality());
 	v.bases = TripleVector(actualGridData_->columns()*actualGridData_->rows());
 	v.tops = TripleVector(v.bases.size());
 	
@@ -259,7 +256,7 @@ QwtPlot3D::GridNormals()
 	int cstep = resolution_;
 	int rstep = resolution_;
 
-	double diag = (actualGridData_->hull().maxVertex-actualGridData_->hull().minVertex).length() / 60;
+	double diag = (actualGridData_->hull().maxVertex-actualGridData_->hull().minVertex).length() * normalLength();
 
 	for (int i = 0; i <= actualGridData_->columns() - cstep; i += cstep) 
 	{

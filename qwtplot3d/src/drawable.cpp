@@ -1,5 +1,7 @@
 #include "drawable.h"
 
+using namespace Qwt3D;
+
 Drawable::~Drawable()
 {
   detachAll();

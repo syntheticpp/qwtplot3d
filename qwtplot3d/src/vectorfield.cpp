@@ -2,6 +2,8 @@
 #include "colorgenerator.h"
 #include "vectorfield.h"
 
+using namespace Qwt3D;
+
 const double VectorField::PI = 3.14159265358979323846264338328;
 
 VectorField::VectorField(Color* col)
@@ -60,6 +62,11 @@ void VectorField::configureArrows(int segs, double relconelength, double relcone
 	rel_cone_length = relconelength;
 	rel_cone_radius = relconerad;
 	rel_stem_radius = relstemrad;	
+}
+
+void VectorField::setQuality(int val)
+{
+	segments = val;
 }
 
 void VectorField::drawArrow(Triple const& beg, Triple const& end)

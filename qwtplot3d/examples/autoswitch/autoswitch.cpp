@@ -4,6 +4,7 @@
 
 #include "autoswitch.h"
 
+using namespace Qwt3D;
 
 //--------------------------------------------------------------------
 //              autoswitch.cpp
@@ -12,7 +13,7 @@
 //--------------------------------------------------------------------
 
 Plot::Plot(QWidget* pw, int updateinterval)
-:QwtPlot3D(pw)
+:Plot3D(pw)
 {
 	setRotation(30,0,15);
 	setScale(1,1,1);

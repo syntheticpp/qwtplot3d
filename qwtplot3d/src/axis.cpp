@@ -1,5 +1,7 @@
 #include "axis.h"
 
+using namespace Qwt3D;
+
 Axis::Axis()
 {
 	init();
@@ -149,6 +151,9 @@ Axis::drawTics()
 	autostop_ = stop_;
 
 	buildAutoScale(autostart_, autostop_); // changes tmaj_
+
+  if (isPracticallyZero(autostart_, autostop_))
+		return;
 
 	Triple normal = (end_ - beg_);
 	normal.normalize();

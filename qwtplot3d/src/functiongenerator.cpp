@@ -1,11 +1,13 @@
 #include "qwt_plot3d.h"
 #include "functiongenerator.h"
 
-Function::Function(QwtPlot3D* pw)
+using namespace Qwt3D;
+
+Function::Function(Plot3D* pw)
 {
 	if (!pw)
 	{
-		fprintf(stderr,"Function: no valid QwtPlot3D Widget");
+		fprintf(stderr,"Function: no valid Plot3D Widget");
 		return;
 	}
 	plotwidget_ = pw;
@@ -20,7 +22,7 @@ Function::~Function()
 }
 
 void
-Function::assign(QwtPlot3D* plotWidget)
+Function::assign(Plot3D* plotWidget)
 {
 	if (plotWidget && plotWidget != plotwidget_)
 		plotwidget_ = plotWidget;

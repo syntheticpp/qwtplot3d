@@ -1,6 +1,8 @@
 #include "qbitmap.h"
 #include "labelpixmap.h"
 
+using namespace Qwt3D;
+
 LabelPixmap::LabelPixmap()
 {
 	init();

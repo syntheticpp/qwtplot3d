@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------
 //              simpleplot.cpp
 //
-//      A simple example which shows how to use QwtPlot3D
+//      A simple example which shows how to use Plot3D
 //-----------------------------------------------------------------
 
 using namespace Qwt3D;
@@ -15,7 +15,7 @@ class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(QwtPlot3D* pw)
+	Rosenbrock(Plot3D* pw)
 	:Function(pw)
 	{
 		setMinZ(-100);
@@ -30,7 +30,7 @@ public:
 };
 
 
-class Plot : public QwtPlot3D
+class Plot : public Plot3D
 {
 public:
     Plot();
@@ -39,7 +39,7 @@ public:
 
 Plot::Plot()
 {
-  setTitle("A Simple QwtPlot3D Demonstration");
+  setTitle("A Simple Plot3D Demonstration");
 	Rosenbrock rosenbrock(this);
 	
 	rosenbrock.setMesh(41,31);

@@ -2,10 +2,11 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-
 #include "float.h"
 #include "types.h"
 #include <algorithm>
+
+using namespace Qwt3D;
 
 GridData::GridData()
 {
@@ -129,13 +130,14 @@ CellData::hull() const
 
 
 QColor 
-GL2Qt(GLdouble r, GLdouble g, GLdouble b)
+Qwt3D::GL2Qt(GLdouble r, GLdouble g, GLdouble b)
 {
 	return QColor(round(r * 255), round(g * 255), round(b * 255));	
 }
 
  
-RGBA Qt2GL(QColor col)
+RGBA 
+Qwt3D::Qt2GL(QColor col)
 {
 	QRgb qrgb = col.rgb();
 	RGBA rgba;
@@ -201,7 +203,7 @@ int _ch2d(coord **P, int n)  {
 } // ns anon
 
 
-void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
+void Qwt3D::convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
 {
     idx.clear();
     if (src.empty())
@@ -234,7 +236,7 @@ void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
 		delete [] P;
 }
 
-unsigned tesselationSize(Tesselation const& t)
+unsigned Qwt3D::tesselationSize(Tesselation const& t)
 {
 	unsigned ret = 0;
 	

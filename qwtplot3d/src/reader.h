@@ -4,15 +4,17 @@
 #include <float.h>
 #include <qstring.h>
 
+namespace Qwt3D
+{
 
-class QwtPlot3D;
+class Plot3D;
 
 class NativeReader
 {
 
 public:
 		
-	explicit NativeReader(QwtPlot3D* plotWidget, QString fname = "");
+	explicit NativeReader(Plot3D* plotWidget, QString fname = "");
 
 	void setFileName(QString fname) {fileName_ = fname;}
 	bool read(double minz = -DBL_MAX, double maxz = DBL_MAX);
@@ -24,12 +26,12 @@ public:
 
 private:
 	QString fileName_;
-	QwtPlot3D* plotwidget_;
+	Plot3D* plotwidget_;
 	bool collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh, 
 									 double& minx, double& maxx, double& miny, double& maxy);
 };
 
 
-
+} // ns
 
 #endif

@@ -76,7 +76,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 		
-		QLabel* info = new QLabel("QwtPlot3D <by krischnamurti 2003>", statusBar());       
+		QLabel* info = new QLabel("Plot3D <by krischnamurti 2003>", statusBar());       
 		info->setPaletteForegroundColor(Qt::darkBlue);
 		statusBar()->addWidget(info, 0, false);
 		filenameWidget = new QLabel("                                  ", statusBar());
@@ -101,6 +101,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
 		connect(mouseinput, SIGNAL( toggled(bool) ), dataWidget, SLOT( enableMouse(bool)));
 		connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
+		connect(normalsquality,  SIGNAL(valueChanged(int)), this, SLOT(setNormalQuality(int)) );
+		connect(normalslength,  SIGNAL(valueChanged(int)), this, SLOT(setNormalLength(int)) );
 				
 		setStandardView();
 
@@ -184,7 +186,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	{
 		Mex mex(dataWidget);
 		
-		mex.setMesh(90,90);
+		mex.setMesh(91,91);
 		double dom = 15;
 		mex.setDomain(-dom, dom, -dom, dom);
 		
@@ -564,7 +566,7 @@ void Mesh2MainWindow::openMesh()
 
 		TripleVector vdata;
 		Tesselation vpoly;
-
+		
 		readNodes(vdata, data, NodeFilter());
 		readConnections(vpoly, edges, CellFilter());
 		
@@ -584,6 +586,22 @@ void
 Mesh2MainWindow::showNormals(bool val)
 {
 	dataWidget->showNormals(val);
+	dataWidget->updateData();
+	dataWidget->updateGL();
+}
+
+void
+Mesh2MainWindow::setNormalLength(int val)
+{
+	dataWidget->setNormalLength(val / 400.);
+	dataWidget->updateData();
+	dataWidget->updateGL();
+}
+
+void
+Mesh2MainWindow::setNormalQuality(int val)
+{
+	dataWidget->setNormalQuality(val);
 	dataWidget->updateData();
 	dataWidget->updateGL();
 }

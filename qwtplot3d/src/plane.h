@@ -4,6 +4,9 @@
 #include "drawable.h"
 #include "colorgenerator.h"
 
+namespace Qwt3D
+{
+
 class Quad : public Drawable
 {
 
@@ -11,14 +14,14 @@ public:
 	
 	Quad();
 	virtual void draw();
-	virtual void setPosition(Triple one, Triple two, Triple three, Triple four);
-	Triple one() const { return one_;}
-	Triple two() const { return two_;}
-	Triple three() const { return three_;}
-	Triple four() const { return four_;}
+	virtual void setPosition(Qwt3D::Triple one, Qwt3D::Triple two, Qwt3D::Triple three, Qwt3D::Triple four);
+	Qwt3D::Triple one() const { return one_;}
+	Qwt3D::Triple two() const { return two_;}
+	Qwt3D::Triple three() const { return three_;}
+	Qwt3D::Triple four() const { return four_;}
 
 protected:
-	Triple one_, two_, three_, four_;
+	Qwt3D::Triple one_, two_, three_, four_;
 };
 
 class ColorLegend : public Quad
@@ -30,8 +33,9 @@ public:
 
 	void draw();
 
-	ColorVector colors;
+	Qwt3D::ColorVector colors;
 };
 
+} // ns
 
 #endif // __PLANE_H__

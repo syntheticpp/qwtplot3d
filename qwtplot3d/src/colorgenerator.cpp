@@ -1,8 +1,9 @@
 #include "colorgenerator.h"
 #include "qwt_plot3d.h"
 
+using namespace Qwt3D;
 
-StandardColor::StandardColor(QwtPlot3D* data, int size)
+StandardColor::StandardColor(Plot3D* data, int size)
 			: data_(data)
 {
 	Q_ASSERT(data_);
@@ -11,11 +12,21 @@ StandardColor::StandardColor(QwtPlot3D* data, int size)
 
 	double dsize = size;
 
+/*
 	for (unsigned int i=0; i!=colors_.size(); ++i)
 	{
 		elem.r = i / dsize;
 		elem.g = i / dsize / 4;
 		elem.b = 1 - i/dsize;
+		elem.a = 1;
+		colors_[i] = elem;
+	}
+*/
+	for (unsigned int i=0; i!=colors_.size(); ++i)
+	{
+		elem.r = i / dsize / 4;
+		elem.g = i / dsize;
+		elem.b = 0.5 - i/dsize;
 		elem.a = 1;
 		colors_[i] = elem;
 	}
