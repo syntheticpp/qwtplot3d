@@ -41,7 +41,9 @@ GL2PS::GL2PS()
   to get the final output.\n
   \param fname Optional, used only in conjunction with TeX output; file name
   for the generated TeX file. If not set, a file called "OUTPUT.FOR.tex" 
-  will be generated, where "OUTPUT.FOR" describes the file name argument for IO::save().
+  will be generated, where "OUTPUT.FOR" describes the file name argument for IO::save().\n\n
+  (04/05/27: On Linux platforms, pdflatex seems a file named 'dump_0.pdf.tex' mistakenly to 
+  identify as PDF file.)
 */
 void GL2PS::setTextMode(TEXTMODE val, QString fname)
 {
@@ -97,7 +99,7 @@ bool GL2PS::setFormat(QString const& format)
 }
 
 //! Performs actual output
-bool GL2PS::operator()(Plot3D* plot, QString const& fname, QString const& format)
+bool GL2PS::operator()(Plot3D* plot, QString const& fname)
 {
   if (formaterror_)
     return false;
@@ -119,31 +121,31 @@ bool GL2PS::operator()(Plot3D* plot, QString const& fname, QString const& format
 
   switch (landscape_) 
   {
-  case GL2PS::AUTO:
-  	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
+    case GL2PS::AUTO:
+  	  if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
+        options |= GL2PS_LANDSCAPE;
+      break;
+    case GL2PS::ON:
       options |= GL2PS_LANDSCAPE;
-    break;
-  case GL2PS::ON:
-    options |= GL2PS_LANDSCAPE;
-  	break;
-  default:
-    break;
+  	  break;
+    default:
+      break;
   }
   
   int sortmode = GL2PS_SIMPLE_SORT;
   switch (sortmode_) 
   {
-  case GL2PS::NOSORT:
-    sortmode = GL2PS_NO_SORT;
-    break;
-  case GL2PS::SIMPLESORT:
-    sortmode = GL2PS_SIMPLE_SORT;
-  	break;
-  case GL2PS::BSPSORT:
-    sortmode = GL2PS_BSP_SORT;
-  	break;
-  default:
-    break;
+    case GL2PS::NOSORT:
+      sortmode = GL2PS_NO_SORT;
+      break;
+    case GL2PS::SIMPLESORT:
+      sortmode = GL2PS_SIMPLE_SORT;
+  	  break;
+    case GL2PS::BSPSORT:
+      sortmode = GL2PS_BSP_SORT;
+  	  break;
+    default:
+      break;
   }
   
   switch (textmode_) 

@@ -15,12 +15,14 @@ namespace Qwt3D
  */
 class QWT3D_EXPORT GL2PS : public IO::Functor
 {
+friend class IO;
+
 public:
   //! The possible output formats for the text parts of the scene
   enum TEXTMODE
   {
     PIXMAP, //!< All text will be converted to pixmaps
-    NATIVE, //!< Text output in the native output formst
+    NATIVE, //!< Text output in the native output format
     TEX //!< Text output in additional tex-file as an overlay
   };
   //! The possible behaviour for landscape settings 
@@ -38,10 +40,8 @@ public:
     SIMPLESORT, //!< A more simple (yet quicker) algorithm (default)
     BSPSORT //!< BSP SORT (best and slow!)
   };
-
-  IO::Functor* clone() const;
   
-  explicit GL2PS(); 
+  GL2PS(); 
 
   void setLandscape(LANDSCAPEMODE val) {landscape_ = val;} //!< Sets landscape mode.
   LANDSCAPEMODE landscape() const {return landscape_;} //!< Returns the current landscape mode
@@ -59,9 +59,11 @@ public:
   bool compressed() const {return compressed_;} 
 
   bool setFormat(QString const& format);
-  bool operator()(Plot3D* plot, QString const& fname, QString const& format);
 
 private:
+  IO::Functor* clone() const;
+  bool operator()(Plot3D* plot, QString const& fname);
+
   GLint gl2ps_format_;
   bool formaterror_;
   bool compressed_;

@@ -175,7 +175,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
     //handler->setLandscape();
     handler = (GL2PS*)IO::outputHandler("EPS");
     handler->setTextMode(GL2PS::TEX);
-    handler->setSortMode(GL2PS::BSPSORT);
+    //handler->setSortMode(GL2PS::BSPSORT);
     handler = (GL2PS*)IO::outputHandler("EPS_GZ");
     handler->setTextMode(GL2PS::TEX);
     //handler->setSortMode(GL2PS::BSPSORT);

@@ -185,7 +185,7 @@ bool NativeReader::collectInfo(FILE*& file, QString const& fname, unsigned& xmes
 }
 
 
-bool NativeReader::operator()(Plot3D* plot, QString const& fname, QString const& format)
+bool NativeReader::operator()(Plot3D* plot, QString const& fname)
 {
 	
 	FILE* file;
