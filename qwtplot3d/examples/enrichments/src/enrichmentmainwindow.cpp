@@ -35,7 +35,7 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
 	: enrichmentMainWindowBase( parent, name, f )
 {
 	setCaption("enrichment");
-  QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+  QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
 
   plot = new SurfacePlot(frame);
   grid->addWidget( plot, 0, 0 );

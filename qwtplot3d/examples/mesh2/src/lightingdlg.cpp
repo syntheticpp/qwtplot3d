@@ -124,7 +124,7 @@ void Pointer::drawBegin()
 LightingDlg::LightingDlg(QWidget *parent)
 :lightingdlgbaseBase(parent)
 {
-  QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+  QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
 
   dataPlot = 0;
   

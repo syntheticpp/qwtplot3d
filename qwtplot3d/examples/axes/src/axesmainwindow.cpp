@@ -40,7 +40,7 @@ AxesMainWindow::AxesMainWindow( QWidget* parent, const char* name, WFlags f )
 {
 	setCaption("axes");
  
-  QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+  QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
   plot = new SurfacePlot(frame);
   grid->addWidget( plot, 0, 0 );
 
