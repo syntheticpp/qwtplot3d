@@ -38,8 +38,9 @@ double AutoScaler::floorExt( int& exponent, double x, std::vector<double>& sorte
 /*!
   \brief Find the largest value out of {1,2,5}*10^n with an integer number n
   which is smaller than or equal to x
-  
+  \param exponent n
   \param x Input value
+  \return Mantissa
 */
 double AutoScaler::floor125( int& exponent, double x)
 {
@@ -140,6 +141,10 @@ int LinearAutoScaler::segments(int& l_intervals, int& r_intervals, double start,
 	from the requested interval number!  Always >0.
 	\param a Start value after scaling (always >= start)
 	\param b Stop value after scaling  (always <= stop)
+  \param start Start value
+  \param stop Stop value
+  \param ivals Requested intervals
+  \return Number of intervals after autoscaling
 
 	If the given interval has zero length the function returns the current 
 	interval number and a and b remain unchanged.
