@@ -22,6 +22,9 @@
 	- Apr 14 2003: CVS: added qwt independent example 
 	<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/simpleplot">simpleplot</a> 
 
+	See also \ref changes	
+
+
   \section screenshotsonmainpage Screenshots
   
   Screenshots are on a separate page, \ref screenshots.
@@ -44,21 +47,19 @@
  	 
  	 Next release:
  	 
- 	 -# More topic specific examples
- 	 -# Autoswitching axes scales (axes in front should automatically get a scale)
- 	 -# General input interface for matrix-like data structures (all the things representable as <tt> data[i][j] </tt> and appropriate iterators)
+ 	 -# <b style="color:#228B22;padding-right: 2em;">CVS</b> More topic specific examples 
+ 	 -# <b style="color:#228B22;padding-right: 2em;">CVS</b> Autoswitching axes scales (axes in front should automatically get a scale)
  	 -# Reader plugin (Interface to other data sources)
 	 -# Input: FEM files providing nodes and triangulation 
  	 -# Performance (reading)
- 	 -# Documentation improvement 
- 	 -# Finish isoline contouring  
+ 	 -# Documentation improvement
+ 	 -# <b style="color:#228B22;padding-right: 2em;">CVS</b> Finish isoline contouring
 
 	
 	 Subsequent releases:
 
 	 -# Native Delaunay triangulation for <tt>(x,y,z)</tt>-triples with irregularly distributed <tt>(x,y)</tt>-tuples )	 
  	 -# Interactive mouse handling (picking)
- 	 -# Grey scale (PGM) file format native
  	 -# Configurable illumination model	
  	 -# Labeling and proper scaling (mipmapping) of user defined pixmaps (i.e. TeX/DVI screenshots)
  	 -# Math function parser ? 	 
@@ -88,7 +89,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   Install notes are on a separate page, \ref install.
   
   \section author Author:
-	Micha Bieber \<krischnamurti_a-t_users_sourceforge_net\>
+	Micha Bieber < krischnamurti <b>(at)</b> users <b>(dot)</b> sourceforge <b>(dot)</b> net >
 
 */
 
@@ -108,10 +109,14 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 	With qwtplot3d.pro you can create a static library VC6 project for windows and a shared library for POSIX systems. I will change
 	the Windows type to DLL in the future.
 	
-	QwtPlot3D has been tested with Qt version 3.0.5 for Windows and with version 3.1.? on Debian Linux. Older Qt versions are likely working.
+	QwtPlot3D runs with Qt version 3.0.5 for Windows and with version 3.1.? on Debian Linux. Older Qt versions are likely working.
 	If I'm wrong with the latter guess, please don't hesitate to contact me. I'll try to provide a code fix in this case. 
 	
 	The library requires OpenGL >= 1.1 and a true color mode with 24 or 32 bits color depth.
+	
+	Documentation has been created by <a href="http://www.doxygen.org">doxygen</a>. You will find the configuration in
+	<tt>./doc/Doxyfile.doxygen</tt>
+ 
 */
 
 
@@ -129,10 +134,10 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 /*!
   \page datatopics Data Input Topics
 
-	QwtPlot3D supports two special forms of native data input:
+	QwtPlot3D supports a general and two special forms of native data input:
 	
   \par Mesh data files:
-  
+   
   You can read a special simple form of ASCII files containing z-values and domain information, organized in the following
   way (C++ comments only for this documentation):
   
@@ -153,11 +158,13 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   Setup a function object. To do so, inherit from the Function class and 
   write your own version of Function::operator()(double x, double y)
   Set the domain and perhaps limitations for the range and call Function::create().
-  Thats all.
-  
-	See also Function and the implementation of concrete functions in examples/Mesh2/functions.h
+  Thats all.See also Function and the implementation of concrete functions in 'examples'
 
-	A more general approach is provided by QwtPlot3D::createInternalRepresentation(). I'll extend this in the future.
+	A general approach has been provided with the specific member 
+	
+	QwtPlot3D::createInternalRepresentation().
+	
+	For the present, you can feed the function with a <tt>double**</tt> pointer to your data. I'll extend this in the future.
 
 */
 

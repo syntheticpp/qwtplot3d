@@ -77,7 +77,7 @@ inline int round(double d)
 	return (d>0) ? int(d+0.5) : int(d-0.5);
 }
 
-inline bool isZero(double a, double b)
+inline bool isZero(double a, double b = 0.)
 {
   return (fabs (a - b) <= min (fabs(a), fabs(b))*DBL_EPSILON);	
 }
@@ -148,7 +148,7 @@ struct Triple
 	double length() const
 	{
 		double l2 = x*x + y*y + z*z;
-		return (l2>DBL_EPSILON) ? sqrt(l2) : 0;
+		return (isZero(l2)) ? 0 :sqrt(l2);
 	}
 	
 	void normalize()

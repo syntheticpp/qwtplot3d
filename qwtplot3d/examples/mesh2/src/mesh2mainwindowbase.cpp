@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Fr 18. Apr 22:35:44 2003
+** Created: Sa 19. Apr 19:37:11 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1835,8 +1835,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     nodata->setToggleAction( TRUE );
     nodata->setOn( FALSE );
     nodata->setIconSet( QIconSet( image11 ) );
-    nodata->setText( trUtf8( "No GridData" ) );
-    nodata->setToolTip( trUtf8( "No GridData" ) );
+    nodata->setText( trUtf8( "No Data" ) );
+    nodata->setToolTip( trUtf8( "No Data" ) );
     color = new QActionGroup( this, "color" );
     color->setText( trUtf8( "Color" ) );
     color->setMenuText( trUtf8( "&Color" ) );
@@ -1902,8 +1902,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     floordata = new QAction( floorstyle, "floordata" );
     floordata->setToggleAction( TRUE );
     floordata->setIconSet( QIconSet( image12 ) );
-    floordata->setText( trUtf8( "Floor GridData Projection" ) );
-    floordata->setToolTip( trUtf8( "Floor GridData Projection" ) );
+    floordata->setText( trUtf8( "Floor Data Projection" ) );
+    floordata->setToolTip( trUtf8( "Floor Data Projection" ) );
     flooriso = new QAction( floorstyle, "flooriso" );
     flooriso->setToggleAction( TRUE );
     flooriso->setIconSet( QIconSet( image13 ) );
