@@ -139,9 +139,20 @@ IO::Functor* IO::outputHandler(QString const& format)
 bool PixmapWriter::operator()(Plot3D* plot, QString const& fname)
 {
   QImage im = plot->grabFrameBuffer(true);
-  return im.save(fname, (const char*)fmt_.local8Bit());
+  
+  QImageIO iio;
+  iio.setImage(im);
+  iio.setFormat((const char*)fmt_.local8Bit());
+  iio.setQuality(quality_);
+  iio.setFileName(fname);
+  return iio.write();
 }
 
+//! Calls Qt's QImageIO::setQuality() function.
+void PixmapWriter::setQuality(int val)
+{
+  quality_ = val;  
+}
 
 void IO::setupHandler()
 {

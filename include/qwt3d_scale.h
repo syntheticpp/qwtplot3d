@@ -10,7 +10,7 @@ namespace Qwt3D
 {
 
 /*! 
-The class encapsulates nonvisual scales. 
+The class encapsulates non-visual scales. 
 She is utilized by Axis and also collaborates closely with AutoScaler.
 A Scale allows control over all aspects of tic generation including 
 arbitrary transformations of tic values into corresponding strings. 
@@ -25,6 +25,7 @@ class QWT3D_EXPORT Scale
 
   protected:
     Scale();
+    virtual ~Scale(){}
     virtual QString ticLabel(unsigned int idx) const;
 
     virtual void setLimits(double start, double stop); 
@@ -47,7 +48,6 @@ class QWT3D_EXPORT Scale
     double mstart_p, mstop_p;
   
   private:
-    virtual ~Scale(){}
     void destroy() const {delete this;} //!< Used by qwt3d_ptr   
 };
 

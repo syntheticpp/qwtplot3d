@@ -191,8 +191,9 @@ void LogScale::setupCounter(double& k, int& step)
 
 /*! Creates major and minor vectors for the scale.
 \warning If the interval is too small, the scale becomes empty
-or will contain only a single major tic. Better switch to linear 
-scales in such cases.
+or will contain only a single major tic. There is no automatism 
+(also not planned for now) for an 'intelligent' guess, what to do. 
+Better switch manually to linear to scales in such cases.
 */
 void LogScale::calculate()
 {

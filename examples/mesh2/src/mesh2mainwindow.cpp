@@ -171,6 +171,9 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
     grids->setEnabled(false);
 
+    PixmapWriter* pmhandler = (PixmapWriter*)IO::outputHandler("JPEG");
+    if (pmhandler)
+      pmhandler->setQuality(70);
     VectorWriter* handler = (VectorWriter*)IO::outputHandler("PDF");
     handler->setTextMode(VectorWriter::TEX);
     handler = (VectorWriter*)IO::outputHandler("EPS");
