@@ -2,6 +2,6 @@ TEMPLATE = subdirs
 SUBDIRS = \
 	simpleplot \
 	autoswitch \
-	colormodels \
+	enrichments \
 	print \
 	mesh2
