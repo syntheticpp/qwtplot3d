@@ -33,6 +33,9 @@ public:
 		double yShift() const { return yShift_;}
 		double zShift() const { return zShift_;}
 		
+		double xViewportShift() const { return xVPShift_;}
+		double yViewportShift() const { return yVPShift_;}
+		
 		double xScale() const { return xScale_;}
 		double yScale() const { return yScale_;}
 		double zScale() const { return zScale_;}
@@ -72,6 +75,12 @@ public:
 		void setCaptionColor(RGBA col) {title_.setColor(col);}
 		void setTitle(const QString& title) {title_.setString(title);}
 
+		
+		void assignMouse(int xrot, int yrot, int zrot,
+										 int xscale, int yscale, int zscale,
+										 int zoom, int xshift, int yshift); 
+
+
 		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
 
@@ -81,10 +90,10 @@ signals:
 		
 		void rotationChanged( double xAngle, double yAngle, double zAngle );
 		void shiftChanged( double xShift, double yShift, double zShift );
+		void vieportShiftChanged( double xShift, double yShift );
 		void scaleChanged( double xScale, double yScale, double zScale );
 		void zoomChanged(double);
 		
-		void screenpositionChanged(double, double);
 		void resolutionChanged(double);
 		void projectionChanged(bool);
 
@@ -92,6 +101,7 @@ public slots:
 
 		void		setRotation( double xAngle, double yAngle, double zAngle );
 		void		setShift( double xShift, double yShift, double zShift );
+		void		setViewportShift( double xShift, double yShift );
 		void		setScale( double x, double y, double z);
 		void		setZoom( double );
 		
@@ -111,6 +121,11 @@ protected:
     void		paintGL();
     void		resizeGL( int w, int h );
 
+		void mousePressEvent( QMouseEvent *e );
+		void mouseReleaseEvent( QMouseEvent *e );
+		void mouseMoveEvent( QMouseEvent *e );
+		void wheelEvent( QWheelEvent *e );		
+		
 		CoordinateSystem coord;
 
 
@@ -118,7 +133,7 @@ private:
 
 		MESHTYPE meshtype_;
 		
-    GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_;
+    GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		void createCoordinateSystem();
 		void updateFloorData();
@@ -132,7 +147,6 @@ private:
 		double polygonOffset_;
 		int isolines_;
 
-		void mouseMoveEvent( QMouseEvent *e );
 
 		enum OBJECTS
 		{
@@ -156,6 +170,35 @@ private:
 
 		void calcFloorListAsData();
 		void calcFloorListAsIsolines();
+
+		QPoint lastMouseMovePosition_;
+		bool mpressed_;
+
+
+		int xrot_mstate_, 
+				yrot_mstate_, 
+				zrot_mstate_, 
+				xscale_mstate_, 
+				yscale_mstate_, 
+				zscale_mstate_,
+        zoom_mstate_,
+				xshift_mstate_,
+				yshift_mstate_;
+
+		void setRotationMouse(ButtonState bstate, double accel, QPoint diff);
+		void setScaleMouse(ButtonState bstate, double accel, QPoint diff);
+		void setShiftMouse(ButtonState bstate, double accel, QPoint diff);
+
+
+		void SaveGlDeleteLists(GLuint& list, GLsizei range)
+		{
+			if (glIsList(list))
+				glDeleteLists(list, range);
+			list = 0;
+		}
+
+
+
 };
  
 #endif // GLTEXOBJ_H

@@ -24,8 +24,9 @@ public:
 
 private:
 	QString fileName_;
-
 	QwtPlot3D* plotwidget_;
+	bool collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh, 
+									 double& minx, double& maxx, double& miny, double& maxy);
 };
 
 

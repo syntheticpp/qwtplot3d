@@ -33,31 +33,24 @@ public slots:
 	void pickTitleFont();
 	void resetFonts();
  	void setStandardView();
-	void showPosition(double,double);
 	void dumpImage();
 	void toggleAnimation(bool);
 	void toggleProjectionMode(bool);
 	void toggleColorLegend(bool);
 	void toggleAutoScale(bool val);
 	void rotate();
-	void xRotate(double);
-	void yRotate(double);
-	void zRotate(double);
-	void xShift(double);
-	void yShift(double);
-	void zShift(double);
-	void xScale(double);
-	void yScale(double);
-	void zScale(double);
-	void setResolution(double);
-	void setPolygonOffset(double val);
+	void setResolution(int);
+	void setPolygonOffset(int);
 	void createColorLegend(ColorVector const&);
 
-	void setPolygonsAlpha(double d);
-	void setMeshAlpha(double d);
+	void showRotate(double x, double y, double z);
+	void showShift(double x, double y);
+	void showScale(double x, double y, double z);
+	void showZoom(double z);
 
 private:
-	QLabel* positionWidget, *filenameWidget;
+	QLabel *filenameWidget,
+		*rotateLabel, *shiftLabel, *scaleLabel, *zoomLabel;
 	
 	QTimer* timer;
 	int redrawWait;

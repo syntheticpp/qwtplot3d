@@ -3,6 +3,7 @@
 #endif
 
 #include <stdio.h>
+#include <qtextstream.h>
 
 #include "qwt_plot3d.h"
 #include "reader.h"
@@ -129,17 +130,25 @@ namespace
 		return true;
 	}
 
-	GLdouble** allocateData(int columns, int rows)
+	double** allocateData(int columns, int rows)
 	{
- 		GLdouble** data         = new GLdouble* [columns] ;
+ 		double** data         = new double* [columns] ;
  
 		for (int i = 0; i < columns; ++i) 
 		{
-			data[i]         = new GLdouble [rows];
+			data[i]         = new double [rows];
 		}
 		return data;
 	}
-
+	
+	void deleteData(double**data, int columns)
+	{
+		for ( unsigned int i = 0; i < columns; i++) 
+		{
+			delete [] data[i];
+		}
+		delete data;
+	}
 }
 
 NativeReader::NativeReader(QwtPlot3D* pw, QString fname)
@@ -154,30 +163,45 @@ NativeReader::NativeReader(QwtPlot3D* pw, QString fname)
 	setFileName(fname);
 }
 
-bool 
-NativeReader::read(double minz, double maxz)
+bool NativeReader::collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh, 
+															 double& minx, double& maxx, double& miny, double& maxy)
 {
 	if (fileName_.isEmpty() || !plotwidget_)
 		return false;
 	
-	FILE* file = open(fileName_);
-
+	file = open(fileName_);
+	
 	if (!file)
 		return false;
+	
+	
+	if (
+				(!check_magic(file, magicstring))
+			||(!check_type(file, "MESH"))
+			||(!extract_info(file, xmesh, ymesh, minx, maxx, miny, maxy))
+		 )
+	{
+		fclose(file);
+		return false;
+	}
+ 
+	return true;
+}
 
 
-	if (!check_magic(file, magicstring))
-		return false;
-	if (!check_type(file, "MESH"))
-		return false;
- 	/* get the extents of the mesh */
- 	unsigned int xmesh, ymesh;
+bool 
+NativeReader::read(double minz, double maxz)
+{
+	
+	FILE* file;
+	unsigned int xmesh, ymesh;
 	double minx, maxx, miny, maxy;
-	if (!extract_info(file, xmesh, ymesh, minx, maxx, miny, maxy))
+	
+	if ( !collectInfo(file, xmesh, ymesh, minx, maxx, miny, maxy) )
 		return false;
 	
 	/* allocate some space for the mesh */
- 	GLdouble** data = allocateData(xmesh, ymesh);
+ 	double** data = allocateData(xmesh, ymesh);
 
 	for (unsigned int j = 0; j < ymesh; j++) 
 	{
@@ -200,12 +224,7 @@ NativeReader::read(double minz, double maxz)
   fclose(file);
 
 	plotwidget_->createInternalRepresentation(data, xmesh, ymesh, minx, maxx, miny, maxy);
-
-	for ( unsigned int i = 0; i < xmesh; i++) 
-	{
-		delete [] data[i];
-	}
-	delete data;
+	deleteData(data,xmesh);
 
 	return true;
 }

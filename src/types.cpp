@@ -71,7 +71,7 @@ GridData& GridData::operator=(GridData const& rhs)
 int 
 GridData::columns() const 
 { 
-	return (int)vertices.size();	
+	return (int)vertices.size();
 }
 
 int 

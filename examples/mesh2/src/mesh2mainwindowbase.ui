@@ -8,14 +8,14 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>904</width>
-            <height>586</height>
+            <width>906</width>
+            <height>585</height>
         </rect>
     </property>
     <property name="minimumSize">
         <size>
-            <width>778</width>
-            <height>456</height>
+            <width>336</width>
+            <height>181</height>
         </size>
     </property>
     <property name="caption">
@@ -31,38 +31,11 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QFrame" row="0" column="1" rowspan="1" colspan="3">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
-                <cstring>Frame3</cstring>
+                <cstring>Layout5</cstring>
             </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QwtPlot3D" row="0" column="0">
-                    <property name="name">
-                        <cstring>dataWidget</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>Layout19</cstring>
-            </property>
-            <vbox>
+            <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -72,9 +45,40 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>normButton</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>50</width>
+                            <height>35</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>35</height>
+                        </size>
+                    </property>
+                    <property name="cursor">
+                        <cursor>0</cursor>
+                    </property>
+                    <property name="text">
+                        <string>Std</string>
+                    </property>
+                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout17</cstring>
+                        <cstring>Layout10</cstring>
                     </property>
                     <vbox>
                         <property name="name">
@@ -88,70 +92,65 @@
                         </property>
                         <widget class="QLabel">
                             <property name="name">
-                                <cstring>TextLabel1</cstring>
+                                <cstring>TextLabel2</cstring>
                             </property>
                             <property name="text">
-                                <string>Polygon Offs.</string>
+                                <string>Polygon Offset</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignCenter</set>
                             </property>
                         </widget>
-                        <widget class="QwtSlider">
+                        <widget class="QSlider">
                             <property name="name">
-                                <cstring>offsetSlider</cstring>
+                                <cstring>offsSlider</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>3</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>35</height>
+                                </size>
+                            </property>
+                            <property name="maxValue">
+                                <number>10</number>
+                            </property>
+                            <property name="value">
+                                <number>5</number>
                             </property>
                             <property name="orientation">
-                                <enum>Vertical</enum>
+                                <enum>Horizontal</enum>
                             </property>
-                            <property name="thumbLength">
-                                <number>15</number>
+                            <property name="tickmarks">
+                                <enum>Right</enum>
                             </property>
-                            <property name="thumbWidth">
-                                <number>23</number>
-                            </property>
-                            <property name="bgStyle">
-                                <enum>BgSlot</enum>
-                            </property>
-                            <property name="scalePos">
-                                <enum>Left</enum>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Paint improvement mesh-polygon boundary</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Paint improvement mesh-polygon boundary</string>
+                            <property name="tickInterval">
+                                <number>0</number>
                             </property>
                         </widget>
                     </vbox>
                 </widget>
                 <spacer>
                     <property name="name">
-                        <cstring>Spacer2</cstring>
+                        <cstring>Spacer5</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Vertical</enum>
+                        <enum>Horizontal</enum>
                     </property>
                     <property name="sizeType">
-                        <enum>Expanding</enum>
+                        <enum>Fixed</enum>
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>0</width>
-                            <height>85</height>
+                            <width>41</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout11</cstring>
+                        <cstring>Layout9</cstring>
                     </property>
-                    <grid>
+                    <vbox>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
@@ -161,128 +160,51 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="QwtWheel" row="2" column="1">
-                            <property name="name">
-                                <cstring>yS</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="2" column="0">
-                            <property name="name">
-                                <cstring>ySc</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="2" column="2">
-                            <property name="name">
-                                <cstring>yR</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>10</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
+                        <widget class="QLabel">
                             <property name="name">
                                 <cstring>TextLabel1_2</cstring>
                             </property>
                             <property name="text">
-                                <string>Y</string>
+                                <string>Resolution</string>
                             </property>
                             <property name="alignment">
                                 <set>AlignCenter</set>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
+                        <widget class="QSlider">
                             <property name="name">
-                                <cstring>TextLabel2</cstring>
+                                <cstring>resSlider</cstring>
                             </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>35</height>
+                                </size>
                             </property>
-                            <property name="text">
-                                <string>scale   shift  rot</string>
+                            <property name="minValue">
+                                <number>1</number>
                             </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>1</number>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="tickmarks">
+                                <enum>Right</enum>
+                            </property>
+                            <property name="tickInterval">
+                                <number>5</number>
                             </property>
                         </widget>
-                    </grid>
+                    </vbox>
                 </widget>
-            </vbox>
+            </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="0" column="4" rowspan="2" colspan="1">
+        <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
             <property name="name">
                 <cstring>Layout21</cstring>
             </property>
@@ -389,889 +311,32 @@
                         </size>
                     </property>
                 </spacer>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout13_2</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QwtWheel" row="2" column="0">
-                            <property name="name">
-                                <cstring>zR</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>10</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>TextLabel1_2_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Z</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>TextLabel2_4</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="text">
-                                <string>rot   shift  scale</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="2" column="2">
-                            <property name="name">
-                                <cstring>zSc</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="2" column="1">
-                            <property name="name">
-                                <cstring>zS</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Preferred</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>16</width>
-                            <height>130</height>
-                        </size>
-                    </property>
-                </spacer>
             </vbox>
         </widget>
-        <widget class="QPushButton" row="1" column="0">
+        <widget class="QFrame" row="0" column="0">
             <property name="name">
-                <cstring>normButton</cstring>
+                <cstring>Frame3</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
             </property>
-            <property name="minimumSize">
-                <size>
-                    <width>50</width>
-                    <height>35</height>
-                </size>
-            </property>
-            <property name="maximumSize">
-                <size>
-                    <width>50</width>
-                    <height>35</height>
-                </size>
-            </property>
-            <property name="cursor">
-                <cursor>0</cursor>
-            </property>
-            <property name="text">
-                <string>Std</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget" row="1" column="3">
-            <property name="name">
-                <cstring>Layout22</cstring>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
                 <property name="margin">
-                    <number>0</number>
+                    <number>11</number>
                 </property>
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLayoutWidget" row="2" column="1">
+                <widget class="QwtPlot3D" row="0" column="0">
                     <property name="name">
-                        <cstring>Layout5_3</cstring>
+                        <cstring>dataWidget</cstring>
                     </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>betaLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>b</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>RichText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>LCDNumber2_3</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="4">
-                    <property name="name">
-                        <cstring>TextLabel1_4</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Resolution</string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignCenter</set>
-                    </property>
-                </widget>
-                <spacer row="2" column="3">
-                    <property name="name">
-                        <cstring>Spacer12</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>80</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QwtSlider" row="1" column="0" rowspan="1" colspan="4">
-                    <property name="name">
-                        <cstring>resSlider</cstring>
-                    </property>
-                    <property name="thumbLength">
-                        <number>16</number>
-                    </property>
-                    <property name="thumbWidth">
-                        <number>34</number>
-                    </property>
-                    <property name="bgStyle">
-                        <enum>BgSlot</enum>
-                    </property>
-                    <property name="scalePos">
-                        <enum>Bottom</enum>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="2" column="2">
-                    <property name="name">
-                        <cstring>l5</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>gammaLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>c</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>RichText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>LCDNumber2_2</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget" row="2" column="0">
-                    <property name="name">
-                        <cstring>Layout5_4</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>alphaLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>a</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>RichText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>LCDNumber2_4</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-            </grid>
-        </widget>
-        <spacer row="1" column="2">
-            <property name="name">
-                <cstring>Spacer5</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>53</width>
-                    <height>0</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLayoutWidget" row="1" column="1">
-            <property name="name">
-                <cstring>Layout24</cstring>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLayoutWidget" row="1" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>Layout5_6</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>TextLabel1_3_6</cstring>
-                            </property>
-                            <property name="text">
-                                <string>y:</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>AutoText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>LCDNumber2_6</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLabel" row="0" column="2">
-                    <property name="name">
-                        <cstring>TextLabel2_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>X</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="4">
-                    <property name="name">
-                        <cstring>Layout16</cstring>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QwtWheel">
-                            <property name="name">
-                                <cstring>zoomWheel</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>40</width>
-                                    <height>10</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>32767</width>
-                                    <height>100</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="totalAngle">
-                                <number>720</number>
-                            </property>
-                            <property name="tickCnt">
-                                <number>8</number>
-                            </property>
-                            <property name="internalBorder">
-                                <number>2</number>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber">
-                            <property name="name">
-                                <cstring>LCDNumber1</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="numDigits">
-                                <number>3</number>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                            <property name="intValue" stdset="0">
-                                <number>0</number>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-                <spacer row="0" column="3">
-                    <property name="name">
-                        <cstring>Spacer5_3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Fixed</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>70</width>
-                            <height>16</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLayoutWidget" row="1" column="3">
-                    <property name="name">
-                        <cstring>Layout17</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>TextLabel1_3_5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>z:</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>AutoText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLCDNumber" row="0" column="1">
-                            <property name="name">
-                                <cstring>LCDNumber2_5</cstring>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>Layout12</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel" row="0" column="1">
-                            <property name="name">
-                                <cstring>TextLabel2_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>rot</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="0" column="0">
-                            <property name="name">
-                                <cstring>xR</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="tickCnt">
-                                <number>10</number>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="1" column="0">
-                            <property name="name">
-                                <cstring>xS</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="1">
-                            <property name="name">
-                                <cstring>TextLabel2_2_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>scale</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="1">
-                            <property name="name">
-                                <cstring>TextLabel2_2_3</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>31</width>
-                                    <height>25</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>shift</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                        </widget>
-                        <widget class="QwtWheel" row="2" column="0">
-                            <property name="name">
-                                <cstring>xSc</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>5</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>32767</height>
-                                </size>
-                            </property>
-                            <property name="cursor">
-                                <cursor>0</cursor>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                            <property name="mass">
-                                <number>0.1</number>
-                            </property>
-                            <property name="tickCnt">
-                                <number>20</number>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget" row="1" column="0">
-                    <property name="name">
-                        <cstring>Layout11</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLCDNumber" row="0" column="1">
-                            <property name="name">
-                                <cstring>LCDNumber2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>0</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>Panel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="smallDecimalPoint">
-                                <bool>true</bool>
-                            </property>
-                            <property name="segmentStyle">
-                                <enum>Flat</enum>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>TextLabel1_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>x:</string>
-                            </property>
-                            <property name="textFormat">
-                                <enum>AutoText</enum>
-                            </property>
-                            <property name="alignment">
-                                <set>WordBreak|AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                    </grid>
                 </widget>
             </grid>
         </widget>
@@ -1294,8 +359,6 @@
         <action name="labelcolor"/>
         <action name="titlecolor"/>
         <action name="resetcolor"/>
-        <separator/>
-        <action name="alpha"/>
     </item>
     <item text="&amp;Font" name="PopupMenu">
         <action name="numberfont"/>
@@ -1750,20 +813,6 @@
                 <string>Reset</string>
             </property>
         </action>
-        <action>
-            <property name="name">
-                <cstring>alpha</cstring>
-            </property>
-            <property name="text">
-                <string>Alpha values</string>
-            </property>
-            <property name="menuText">
-                <string>Alpha values ...</string>
-            </property>
-            <property name="toolTip">
-                <string>Alpha values</string>
-            </property>
-        </action>
     </actiongroup>
     <actiongroup>
         <property name="name">
@@ -1984,55 +1033,9 @@
         <receiver>Mesh2MainWindowBase</receiver>
         <slot>close()</slot>
     </connection>
-    <connection>
-        <sender>zoomWheel</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber1</receiver>
-        <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>yS</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber2_6</receiver>
-        <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>xS</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber2</receiver>
-        <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>xR</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber2_4</receiver>
-        <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>yR</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber2_3</receiver>
-        <slot>display(double)</slot>
-    </connection>
-    <connection>
-        <sender>zR</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>LCDNumber2_2</receiver>
-        <slot>display(double)</slot>
-    </connection>
 </connections>
 <includes>
     <include location="local" impldecl="in implementation">mesh2mainwindowbase.ui.h</include>
 </includes>
-<forwards>
-    <forward>class alphadlg;</forward>
-</forwards>
-<variables>
-    <variable>alphadlg* alphaDlg;</variable>
-</variables>
-<slots>
-    <slot>showAlphaDlg()</slot>
-    <slot>init()</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
