@@ -11,7 +11,8 @@ namespace Qwt3D
 
 //! A flat color legend
 /**
-
+	The class visualizes a ColorVector together with a scale (axis)  and a caption. ColorLegends are vertical 
+	or horizontal
 */
 class QWT3D_EXPORT ColorLegend : public Drawable
 {
@@ -19,41 +20,54 @@ class QWT3D_EXPORT ColorLegend : public Drawable
 public:
 	
 	//! Possible anchor points for caption and axis
-	enum POSITION
+	enum SCALEPOSITION
 	{
-		Top,
-    Bottom,
-		Left,
-		Right
+		Top,      //!< scale on top
+    Bottom,   //!< scale on bottom
+		Left,     //!< scale left
+		Right     //!< scale right
 	};
 	
 	//! Orientation of the legend
 	enum ORIENTATION
 	{
-    BottomTop,
-		LeftRight
+    BottomTop, //!< Positionate the legend vertically, the lowest color index is on the bottom
+		LeftRight  //!< Positionate the legend horizontally, the lowest color index is on left side
 	};
 
-	ColorLegend();
+	ColorLegend(); //!< Standard constructor
 
-	void draw();
-	void setGeometry(Qwt3D::Tuple relMin, Qwt3D::Tuple relMax);
-	void setOrientation(ORIENTATION, POSITION);
-	void setLimits(double start, double stop);
-	void setMajors(int);
-	void setMinors(int);
+	void draw(); //!< Draws the object. You should not use this explicitely - the function is called by updateGL().
+	
+	void setRelPosition(Qwt3D::Tuple relMin, Qwt3D::Tuple relMax); //!< Sets the relative position of the legend inside widget
+	void setOrientation(ORIENTATION, SCALEPOSITION); //!< Sets legend orientation and scale position
+	void setLimits(double start, double stop); //!< Sets the limit of the scale.
+	void setMajors(int); //!< Sets scale major tics.
+	void setMinors(int); //!< Sets scale minor tics.
+	void drawScale(bool val) { showaxis_ = val; } //!< Sets whether a scale will be drawn.
+	void drawNumbers(bool val) { axis_.setNumbers(val); } //!< Sets whether the scale will have scale numbers.
+	void setAutoScale(bool val); //!< Sets, whether the axis is autoscaled or not.
 
-	Qwt3D::LabelPixmap caption;
-	Qwt3D::ColorField colors;
+	void setCaptionString(QString const& s); //!< Sets the legends caption string.
+	
+	//! Sets the legends caption font.
+	void setCaptionFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false); 
+
+	Qwt3D::ColorVector colors; //!< The color vector
 
 private:
 	
+	Qwt3D::LabelPixmap caption_;
 	Qwt3D::ParallelEpiped geometry() const { return pe_;}
+	void setGeometryInternal();
 
 	Qwt3D::ParallelEpiped pe_;
+	Qwt3D::Tuple relMin_, relMax_;
 	Qwt3D::Axis axis_;
-	POSITION axisposition_;
+	SCALEPOSITION axisposition_;
 	ORIENTATION orientation_;
+
+	bool showaxis_;
 };
 
 } // ns

@@ -1,4 +1,4 @@
-#include "qbitmap.h"
+#include <qbitmap.h>
 #include "qwt3d_labelpixmap.h"
 
 using namespace Qwt3D;
@@ -61,6 +61,17 @@ LabelPixmap::setPosition(Triple pos, ANCHOR a)
 	pos_ = pos;
 }
 
+void
+LabelPixmap::setRelPosition(Tuple rpos, ANCHOR a)
+{
+	double ot = 0;
+
+	getMatrices(modelMatrix, projMatrix, viewport);
+	beg_ = relativePosition(Triple(rpos.x, rpos.y, ot));
+	setPosition(beg_, a);	
+	update();
+}
+
 void 
 LabelPixmap::update()
 {
@@ -101,7 +112,6 @@ LabelPixmap::update()
 	buf_ = pm_.convertToImage();
 	tex_ = QGLWidget::convertToGLFormat( buf_ );	  // flipped 32bit RGBA ?		
 }
-
 
 void
 LabelPixmap::convert2screen()
@@ -148,7 +158,7 @@ LabelPixmap::draw()
 {
 	if (buf_.isNull())
 		return;
-
+	
 	GLboolean b;
 	GLint func;
 	GLdouble v;

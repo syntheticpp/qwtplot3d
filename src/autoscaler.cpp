@@ -121,6 +121,7 @@ AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double st
 
 
 /*!
+	\brief Does the actual scaling
 	\return Number of intervals after rescaling. This will in the most cases differ 
 	from the requested interval number!  Always >0.
 	\param a Start value after scaling (always >= start)

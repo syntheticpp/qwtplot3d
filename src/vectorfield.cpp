@@ -45,7 +45,7 @@ void VectorField::drawArrows()
 	if(elements.empty() || !colors)
 		return;
 
-glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 	RGBA col;
 	for (unsigned i=0; i!=elements.size(); ++i)
 	{
@@ -53,7 +53,7 @@ glEnable(GL_LIGHTING);
 		glColor4d(col.r, col.g, col.b, col.a);
 		drawArrow(elements[i]);
 	}
-glDisable(GL_LIGHTING);
+	glDisable(GL_LIGHTING);
 }
 
 /**

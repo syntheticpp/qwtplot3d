@@ -15,7 +15,7 @@ public:
   void previewUrl( const QUrl &u );
 
 private:
-	Qwt3D::ColorField cv;
+	Qwt3D::ColorVector cv;
 	QLabel* label_;
 	QPixmap pix_;
 	bool open(QString);

@@ -59,9 +59,6 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	legend_.setMajors(10);
 	legend_.setMinors(2);
 	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
-		
-	//legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
-	//legend_.setGeometry(Tuple(0.1,0.05),Tuple(0.56,0.25));
 }
 
 /*!
@@ -120,8 +117,7 @@ Plot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	
+		
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
   glRotatef( -90, 1.0, 0.0, 0.0 ); 
@@ -130,12 +126,10 @@ Plot3D::paintGL()
 
 	if (displaylegend_)
 	{		
-		legend_.setGeometry(Tuple(0.94, 1-0.40),Tuple(0.97, 1-0.08));
 		legend_.draw();
 	}
-	title_.setPosition(title_.relativePosition(Triple(titlerel_.x, titlerel_.y, 1)),titleanchor_);
+	title_.setRelPosition(titlerel_, titleanchor_);
 	title_.draw();
-	
 	
   glColor3f(1.0, 1.0, 1.0);
 	
@@ -244,7 +238,7 @@ Plot3D::createCoordinateSystem()
 void 
 Plot3D::updateColorLegend()
 {
-	dataColor->createField(legend_.colors);
+	dataColor->createVector(legend_.colors);
 }
 
 void 

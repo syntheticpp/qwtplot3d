@@ -37,9 +37,10 @@ public:
 	LabelPixmap(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	
 	//! set label font
-	void setFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
+	void setFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
 	void setPosition(Qwt3D::Triple pos, ANCHOR a = BottomLeft); //!< set label position
+	void setRelPosition(Tuple rpos, ANCHOR a);
 	Qwt3D::Triple first() const { return beg_;}
 	Qwt3D::Triple second() const { return end_;}
 	ANCHOR anchor() const { return anchor_; } //!< define anchor point for position
