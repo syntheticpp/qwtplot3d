@@ -78,8 +78,9 @@ public:
 		
 		void assignMouse(int xrot, int yrot, int zrot,
 										 int xscale, int yscale, int zscale,
-										 int zoom, int xshift, int yshift); 
-
+										 int zoom, int xshift, int yshift);
+		
+		bool mouseEnabled() const; //!< returns true, if the widget accept mouse input from the user
 
 		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
@@ -107,6 +108,9 @@ public slots:
 		
 		void    setOrtho(bool);
 		void		setResolution( int );
+
+		void enableMouse(bool val=true); //!< enable mouse input
+		void disableMouse(bool val =true); //!< disable mouse input
 
 		bool    dump(QString fileName, QString format); //!< Dumps grabbed frame buffer to file
 
@@ -184,6 +188,8 @@ private:
         zoom_mstate_,
 				xshift_mstate_,
 				yshift_mstate_;
+
+		bool mouse_input_enabled_;
 
 		void setRotationMouse(ButtonState bstate, double accel, QPoint diff);
 		void setScaleMouse(ButtonState bstate, double accel, QPoint diff);

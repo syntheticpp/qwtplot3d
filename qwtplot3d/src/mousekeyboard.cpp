@@ -22,7 +22,7 @@ QwtPlot3D::mouseReleaseEvent( QMouseEvent *e )
 void 
 QwtPlot3D::mouseMoveEvent( QMouseEvent *e )
 {
-	if (!mpressed_)
+	if (!mpressed_ || !mouseEnabled())
 		return;
 		
 	ButtonState bstate = e->state();
@@ -126,17 +126,19 @@ QwtPlot3D::wheelEvent( QWheelEvent *e )
 	Sets the key/mousebutton combination for data/coordinatesystem moves inside the widget\n\n
 	default behaviour:\n
 
-	\code
+	\verbatim
 	rotate around x axis: Qt::LeftButton 
 	rotate around y axis: Qt::LeftButton | Qt::ShiftButton
 	rotate around z axis: Qt::LeftButton 
 	scale x:              Qt::LeftButton | Qt::AltButton 
-	scale x:              Qt::LeftButton | Qt::AltButton 
-	scale x:              Qt::LeftButton | Qt::AltButton | Qt::ShiftButton
+	scale y:              Qt::LeftButton | Qt::AltButton 
+	scale z:              Qt::LeftButton | Qt::AltButton | Qt::ShiftButton
 	zoom:                 Qt::LeftButton | Qt::AltButton | Qt::ControlButton
 	shifting along x:     Qt::LeftButton | Qt::ControlButton 
 	shifting along y:     Qt::LeftButton | Qt::ControlButton
-	\endcode
+	\endverbatim
+
+	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
 void 
 QwtPlot3D::assignMouse(int xrot, int yrot, int zrot,
@@ -153,3 +155,16 @@ QwtPlot3D::assignMouse(int xrot, int yrot, int zrot,
   xshift_mstate_ =  xshift;
   yshift_mstate_ =  yshift;
 }
+
+/** 
+The function has no effect if you derive from QwtPlot3D and overrides the mouse handler too careless.
+In this case check first against mouseEnabled() in your version of mouseMoveEvent().
+A more fine grained input control can be achieved by combining assignMouse() with enableMouse(). 
+*/
+void QwtPlot3D::enableMouse(bool val) {mouse_input_enabled_ = val;}
+
+/** 
+\see enableMouse()
+*/
+void QwtPlot3D::disableMouse(bool val) {mouse_input_enabled_ = !val;}
+bool QwtPlot3D::mouseEnabled() const {return mouse_input_enabled_;}
