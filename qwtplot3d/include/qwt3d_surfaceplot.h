@@ -67,10 +67,11 @@ private:
 		void CellData2Floor();
 		void CellIsolines2Floor();
 		void Cell2Floor();
+
+		void setColorFromGridVertex(int ix, int iy, bool skip = false);
+		void setColorFromCellVertex(int node, bool skip = false);
 	
 		Qwt3D::MESHTYPE meshtype() const { return meshtype_; }	
-
-
 
 		Qwt3D::GridData* actualGridData_;
 		Qwt3D::CellData* actualCellData_;
