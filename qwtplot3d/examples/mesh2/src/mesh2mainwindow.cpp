@@ -171,20 +171,13 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
     grids->setEnabled(false);
 
-//    const char* c = dataWidget->className();
-//    c = filetypeCB->className();
-
-    GL2PS* handler = (GL2PS*)IO::outputHandler("PDF");
-    handler->setTextMode(GL2PS::TEX);
-    //handler->setSortMode(GL2PS::BSPSORT);
-    //handler->setLandscape();
-    handler = (GL2PS*)IO::outputHandler("EPS");
-    handler->setTextMode(GL2PS::TEX);
-    //handler->setSortMode(GL2PS::BSPSORT);
-    handler = (GL2PS*)IO::outputHandler("EPS_GZ");
-    handler->setTextMode(GL2PS::TEX);
-    //handler->setSortMode(GL2PS::BSPSORT);
-    //handler->setLandscape();
+    VectorWriter* handler = (VectorWriter*)IO::outputHandler("PDF");
+    handler->setTextMode(VectorWriter::TEX);
+    handler = (VectorWriter*)IO::outputHandler("EPS");
+    handler->setTextMode(VectorWriter::TEX);
+    handler = (VectorWriter*)IO::outputHandler("EPS_GZ");
+    if (handler) // with zlib support only
+      handler->setTextMode(VectorWriter::TEX);
 
 }
 
@@ -239,7 +232,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	{
 		Rosenbrock rosenbrock(*dataWidget);
 		
-		rosenbrock.setMesh(70,71);
+		rosenbrock.setMesh(50,51);
 		rosenbrock.setDomain(-1.73,1.55,-1.5,1.95);
 		rosenbrock.setMinZ(-100);
 		
@@ -249,10 +242,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
     dataWidget->coordinates()->axes[Z2].setScale(LOG10SCALE);
     dataWidget->coordinates()->axes[Z3].setScale(LOG10SCALE);
     dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
-		dataWidget->coordinates()->axes[Z1].setMinors(9);
-		dataWidget->coordinates()->axes[Z2].setMinors(9);
-		dataWidget->coordinates()->axes[Z3].setMinors(9);
-		dataWidget->coordinates()->axes[Z4].setMinors(9);
     dataWidget->legend()->setScale(LOG10SCALE);
 	}
 	else if (name == QString("Hat")) 
