@@ -4,6 +4,10 @@
 #include <qmodules.h>
 #include <qglobal.h>
 
+#define QWT3D_MAJOR_VERSION 0
+#define QWT3D_MINOR_VERSION 2
+#define QWT3D_PATCH_VERSION 1
+
 //
 // Create Qwt3d DLL if QWT3D_DLL is defined (Windows only)
 //
