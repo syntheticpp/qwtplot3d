@@ -63,7 +63,7 @@ public:
 	Qwt3D::TripleField const& minorPositions() const {return minorpos_;} //!< Returns positions for actual minor tics (also if invisible)
 
 	//! Sets line width for axis components
-	void setLineWidth(double val, double majfac = 1, double minfac = 0.5);
+	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
 	double lineWidth() const { return lineWidth_;} //!< \return Line width for axis body
 	double majLineWidth() const { return majLineWidth_;} //!< \return Line width for major tics
 	double minLineWidth() const { return minLineWidth_;} //!< \return Line width for minor tics
@@ -82,8 +82,8 @@ private:
 	
 	
 	Qwt3D::ANCHOR scaleNumberAnchor_;
-	LabelPixmap label_;
-	std::vector<LabelPixmap> markerLabel_;
+	Label label_;
+	std::vector<Label> markerLabel_;
 
 	Qwt3D::Triple beg_, end_;
 	Qwt3D::TripleField majorpos_, minorpos_; //! vectors, holding major resp. minor tic positions;

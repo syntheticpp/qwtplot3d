@@ -49,7 +49,7 @@ Axis::init()
 
 	makeSimpleLabels(true);
 
-	label_ = LabelPixmap();
+	label_ = Label();
 }
 
 void 
@@ -68,7 +68,7 @@ Axis::setMajors(int val)
 	majorintervals_ = (val<=0) ? 1 : val; // always >= 1
 
 	markerLabel_.clear();
-	markerLabel_ = std::vector<LabelPixmap>(majorintervals_+1);
+	markerLabel_ = std::vector<Label>(majorintervals_+1);
 }
 
 void 

@@ -34,7 +34,7 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_dataviews_grid.cpp \
            src/qwt3d_drawable.cpp \
            src/qwt3d_function.cpp \
-           src/qwt3d_labelpixmap.cpp \
+           src/qwt3d_label.cpp \
            src/qwt3d_mapping.cpp \
            src/qwt3d_mousekeyboard.cpp \
            src/qwt3d_movements.cpp \
@@ -58,7 +58,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_drawable.h \
            include/qwt3d_femreader.h \
            include/qwt3d_helper.h \
-           include/qwt3d_labelpixmap.h \
+           include/qwt3d_label.h \
            include/qwt3d_openglhelper.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \

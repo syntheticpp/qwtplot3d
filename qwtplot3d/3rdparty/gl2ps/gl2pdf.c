@@ -6,7 +6,8 @@
 *********************************************************************/
 
 # if defined(_MSC_VER)
-#    pragma warning(disable: 4244) // 'conversion' conversion from 'type1' to 'type2', possible loss of data
+#    pragma warning(disable: 4244) /* 'conversion' conversion from 'type1' to 'type2', possible loss of data */
+#    pragma warning(disable: 4761)  /* integral size mismatch in argument : conversion supplied */
 # endif
 
 
@@ -20,15 +21,13 @@ extern GL2PScontext *gl2ps;
 
 /* The PDF */
 
-enum GL2PDF_COMPRESSOR
-{
+enum GL2PDF_COMPRESSOR{
 	GL2PDF_NOCOMPRESSOR,
 	GL2PDF_RL,
   GL2PDF_DEFLATE
 } compressor;
 
-enum GL2PDF_GROUPING
-{
+enum GL2PDF_GROUPING{
 	GL2PDF_NOGROUPS,
 	GL2PDF_GROUPS
 } objectgrouping;
@@ -48,21 +47,17 @@ GL2PSlist *tlist, *tidxlist, *ilist, *slist; /* triangles, indexes for consecuti
 
 /* In unfiltered mode the Shader stream in PDF requires to be in a 'big-endian' order */
 
-size_t gl2pdfWriteBigEndian(unsigned long data, size_t bytes, FILE* fp)
-{
+size_t gl2pdfWriteBigEndian(unsigned long data, size_t bytes, FILE* fp){
 	size_t i;
 	size_t size = sizeof(unsigned long);
-	for (i=1; i<=bytes; ++i)
-	{
+	for (i=1; i<=bytes; ++i){
 		fputc(0xff & (data >> (size-i) * 8) , fp);
 	}
 	return bytes;
 }
 
-int gl2pdfPrintCompressorType(enum GL2PDF_COMPRESSOR comp)
-{
-	if (comp == GL2PDF_DEFLATE)
-	{	
+int gl2pdfPrintCompressorType(enum GL2PDF_COMPRESSOR comp){
+	if (comp == GL2PDF_DEFLATE){	
 		return fprintf(gl2ps->stream,
 			"/Filter [/FlateDecode]\n");
 	}	
@@ -71,8 +66,7 @@ int gl2pdfPrintCompressorType(enum GL2PDF_COMPRESSOR comp)
 
 /* Helper for pixmap and text lists */
 
-GL2PSimage* gl2pdfCopyPixmap(GL2PSimage* im)
-{
+GL2PSimage* gl2pdfCopyPixmap(GL2PSimage* im){
 	int size;
 	GL2PSimage* image = (GL2PSimage*)gl2psMalloc(sizeof(GL2PSimage));
  
@@ -87,8 +81,7 @@ GL2PSimage* gl2pdfCopyPixmap(GL2PSimage* im)
 	return image;
 }
 
-void gl2pdfFreePixmap(GL2PSimage* im)
-{
+void gl2pdfFreePixmap(GL2PSimage* im){
 	if(!im)
 		return;
 	if (im->pixels)
@@ -96,27 +89,23 @@ void gl2pdfFreePixmap(GL2PSimage* im)
 	gl2psFree(im);
 }
 
-void gl2pdfAddPixmap2list(GL2PSimage* im)
-{
+void gl2pdfAddPixmap2list(GL2PSimage* im){
 	GL2PSimage* image = gl2pdfCopyPixmap(im);
  	gl2psListAdd(ilist, &image);		
 }
 
-void gl2pdfDeletePixmapList()
-{
+void gl2pdfDeletePixmapList(){
 	int i;
 	GL2PSimage** ptr;
 	int size = gl2psListNbr(ilist);
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		ptr = gl2psListPointer(ilist,i);
 		gl2pdfFreePixmap(*ptr);
 	}
 	gl2psListDelete(ilist);
 }
 
-GL2PSstring* gl2pdfCopyText(GL2PSstring* t)
-{
+GL2PSstring* gl2pdfCopyText(GL2PSstring* t){
   GL2PSstring* text = (GL2PSstring*)gl2psMalloc(sizeof(GL2PSstring));
   text->str = (char*)gl2psMalloc((strlen(t->str)+1)*sizeof(char));
   strcpy(text->str, t->str); 
@@ -128,14 +117,12 @@ GL2PSstring* gl2pdfCopyText(GL2PSstring* t)
 	return text;
 }
 
-void gl2pdfAddText2list(GL2PSstring* s)
-{
+void gl2pdfAddText2list(GL2PSstring* s){
 	GL2PSstring* str = gl2pdfCopyText(s);
  	gl2psListAdd(slist, &str);		
 }
 
-void gl2pdfFreeText(GL2PSstring* text)
-{
+void gl2pdfFreeText(GL2PSstring* text){
 	if(!text)
 		return;
 	if (text->str)
@@ -145,50 +132,42 @@ void gl2pdfFreeText(GL2PSstring* text)
 	gl2psFree(text);
 }
 
-void gl2pdfDeleteTextList()
-{
+void gl2pdfDeleteTextList(){
 	int i;
 	GL2PSstring** ptr;
 	int size = gl2psListNbr(slist);
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		ptr = gl2psListPointer(slist,i);
 		gl2pdfFreeText(*ptr);
 	}
 	gl2psListDelete(slist);
 }
 
-float gl2pdfRGBdiff(GL2PSrgba rgba1, GL2PSrgba rgba2)
-{
+float gl2pdfRGBdiff(GL2PSrgba rgba1, GL2PSrgba rgba2){
 	int i;	
 	float res = 0;
-	for (i=0;i<3;++i)
-	{
+	for (i=0;i<3;++i){
 		res += (rgba1[i] - rgba2[i]) * (rgba1[i] - rgba2[i]);
 	}
 	return res;
 }
 
-void gl2pdfSetLastRGBA(GL2PSrgba rgba)
-{
+void gl2pdfSetLastRGBA(GL2PSrgba rgba){
 	int i;	
 	if (!gl2ps)
 		return;
-	for (i=0;i<3;++i)
-	{
+	for (i=0;i<3;++i){
 		gl2ps->lastrgba[i] = rgba[i];
 	}
 }
 
-int gl2pdfPrintStrokeColor(GL2PSrgba rgba)
-{
+int gl2pdfPrintStrokeColor(GL2PSrgba rgba){
 	int offs = 0;
 	int i;	
 
 	gl2pdfSetLastRGBA(rgba);
 
-	for (i=0;i<3;++i)
-	{
+	for (i=0;i<3;++i){
 		if (GL2PS_ZERO(rgba[i]))
 			offs += fprintf(gl2ps->stream, "%.0f ", 0);
 		else if (rgba[i] < 1e-4 || rgba[i] > 1e6) /* avoid %e formatting*/
@@ -200,13 +179,11 @@ int gl2pdfPrintStrokeColor(GL2PSrgba rgba)
 	return offs;
 }
 
-int gl2pdfPrintFillColor(GL2PSrgba rgba)
-{
+int gl2pdfPrintFillColor(GL2PSrgba rgba){
 	int offs = 0;
 	int i;	
 
-	for (i=0;i<3;++i)
-	{
+	for (i=0;i<3;++i){
 		if (GL2PS_ZERO(rgba[i]))
 			offs += fprintf(gl2ps->stream, "%.0f ", 0);
 		else if (rgba[i] < 1e-4 || rgba[i] > 1e6) /* avoid %e formatting*/
@@ -218,8 +195,7 @@ int gl2pdfPrintFillColor(GL2PSrgba rgba)
 	return offs;
 }
 
-int gl2pdfPrintLineWidth(float lw)
-{
+int gl2pdfPrintLineWidth(float lw){
 	if (GL2PS_ZERO(lw))
 		return fprintf(gl2ps->stream, "%.0f w\n", 0);
 	else if (lw < 1e-4 || lw > 1e6) /* avoid %e formatting*/
@@ -231,8 +207,7 @@ int gl2pdfPrintLineWidth(float lw)
 
 /* Print 1st PDF object - file info */
 
-int gl2pdfPrintInfo()
-{
+int gl2pdfPrintInfo(){
   int offs;
 	time_t now;
 	struct tm *newtime;
@@ -248,8 +223,7 @@ int gl2pdfPrintInfo()
 			"/Producer (GL2PS %d.%d.%d, an OpenGL to PostScript Printing Library)\n",
 		  gl2ps->title, gl2ps->producer, GL2PS_MAJOR_VERSION, GL2PS_MINOR_VERSION, GL2PS_PATCH_VERSION);
 
-	if (!newtime)
-	{
+	if (!newtime){
 	  offs += fprintf(gl2ps->stream, 
 			">>\n"
 			"endobj\n");	
@@ -273,8 +247,7 @@ int gl2pdfPrintInfo()
 
 /* Create catalog and page structure - 2nd and 3th PDF object */
 
-int gl2pdfPrintCatalog()
-{
+int gl2pdfPrintCatalog(){
 	return fprintf(gl2ps->stream, 
 		"2 0 obj\n"
 		"<<\n" 
@@ -284,8 +257,7 @@ int gl2pdfPrintCatalog()
 		"endobj\n");
 }
 
-int gl2pdfPrintPages()		
-{
+int gl2pdfPrintPages(){
 	return fprintf(gl2ps->stream, 
 		"3 0 obj\n"
 		"<<\n" 
@@ -299,8 +271,7 @@ int gl2pdfPrintPages()
 
 /* Open stream for data - graphical objects, fonts etc. PDF object 4*/
 
-int gl2pdfOpenDataStream()		
-{
+int gl2pdfOpenDataStream(){
 	int offs = 0;
 
 	offs += fprintf(gl2ps->stream, 
@@ -316,8 +287,7 @@ int gl2pdfOpenDataStream()
 
 /* Stream setup - Graphics state, fill background if allowed */
 
-int gl2pdfOpenDataStreamWritePreface()		
-{
+int gl2pdfOpenDataStreamWritePreface(){
 	int offs;
   GLint index;
  	GLfloat rgba[4];
@@ -350,8 +320,7 @@ int gl2pdfOpenDataStreamWritePreface()
 
 /* Use the functions above to create the first part of the PDF*/
 
-void gl2pdfPrintHeader()
-{
+void gl2pdfPrintHeader(){
 	int offs;
 
   tlist = gl2psListCreate(0, 1, sizeof(GL2PStriangle));
@@ -386,11 +355,9 @@ void gl2pdfPrintHeader()
 }
 
 
-int gl2pdfFlushTriangles()
-{
+int gl2pdfFlushTriangles(){
 	int offs = 0;
-	if (lasttype == GL2PS_TRIANGLE)
-	{
+	if (lasttype == GL2PS_TRIANGLE){
 		gl2psListAdd(tidxlist,&consec_inner_cnt);
 		offs = fprintf(gl2ps->stream,
 			"/Sh%d sh\n", consec_cnt++);
@@ -400,11 +367,9 @@ int gl2pdfFlushTriangles()
 	return offs;
 }
 
-int gl2pdfFlushLines()
-{
+int gl2pdfFlushLines(){
 	int offs = 0;
-	if (lasttype == GL2PS_LINE && !line_stroked)
-	{
+	if (lasttype == GL2PS_LINE && !line_stroked){
 		offs = fprintf(gl2ps->stream, "S\n");
 		streamlength += offs;
 		line_stroked = 1;
@@ -414,8 +379,7 @@ int gl2pdfFlushLines()
 
 /* The central primitive drawing */
 
-void gl2pdfPrintPrimitive(void *a, void *b)
-{
+void gl2pdfPrintPrimitive(void *a, void *b){
 	GL2PSprimitive *prim;
 	GL2PStriangle t;
 
@@ -513,8 +477,7 @@ void gl2pdfPrintPrimitive(void *a, void *b)
 
 /* close stream and ... */
 
-int gl2pdfCloseDataStream()
-{
+int gl2pdfCloseDataStream(){
 	int offs = 0;
 
 	offs += gl2pdfFlushTriangles();
@@ -529,18 +492,16 @@ int gl2pdfCloseDataStream()
 
 /* ... write the now known length object */
 
-int gl2pdfPrintDataStreamLength(int l)
-{
+int gl2pdfPrintDataStreamLength(int val){
 	return fprintf(gl2ps->stream,
 		"5 0 obj\n"
 		"%d\n"
-		"endobj\n", l);
+		"endobj\n", val);
 }
 
 /* Create named shader objects */
 
-int gl2pdfPrintShaderResources(int firstObject, int size)
-{
+int gl2pdfPrintShaderResources(int firstObject, int size){
 	int offs = 0;
 	int i;
 
@@ -548,8 +509,7 @@ int gl2pdfPrintShaderResources(int firstObject, int size)
 		"/Shading\n"
 		"<<\n");
 	
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		offs += fprintf(gl2ps->stream,
 		"/Sh%d %d 0 R\n", i, firstObject+i);
 	}
@@ -561,8 +521,7 @@ int gl2pdfPrintShaderResources(int firstObject, int size)
 
 /* Create named pixmap objects */
 
-int gl2pdfPrintPixmapResources(int firstObject, int size)
-{
+int gl2pdfPrintPixmapResources(int firstObject, int size){
 	int offs = 0;
 	int i;
 
@@ -570,8 +529,7 @@ int gl2pdfPrintPixmapResources(int firstObject, int size)
 		"/XObject\n"
 		"<<\n");
 	
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		offs += fprintf(gl2ps->stream,
 		"/Im%d %d 0 R\n", i, firstObject + i);
 	}
@@ -583,8 +541,7 @@ int gl2pdfPrintPixmapResources(int firstObject, int size)
 
 /* Create named font objects */
 
-int gl2pdfPrintTextResources(int firstObject, int size)
-{
+int gl2pdfPrintTextResources(int firstObject, int size){
 	int offs = 0;
 	int i;
 
@@ -592,8 +549,7 @@ int gl2pdfPrintTextResources(int firstObject, int size)
 		"/Font\n"
 		"<<\n");
 	
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		offs += fprintf(gl2ps->stream,
 		"/F%d %d 0 R\n", i, firstObject + i);
 	}
@@ -605,8 +561,7 @@ int gl2pdfPrintTextResources(int firstObject, int size)
 
 /* Put the info created before in PDF objects */
 
-int gl2pdfPrintSinglePage()		
-{
+int gl2pdfPrintSinglePage(){
   int offs;
 	
 	offs = fprintf(gl2ps->stream, 
@@ -648,29 +603,27 @@ int gl2pdfPrintSinglePage()
 
 /* Extended graphics state for shading */
 
-int gl2pdfPrintExtGState()
-{
+int gl2pdfPrintExtGState(){
 	return fprintf(gl2ps->stream,
 		"7 0 obj\n"
-			"<<\n"
-			"/Type /ExtGState\n"
-			"/SA false\n"
-			"/SM 0.02\n"
-			"/OP false\n"
-			"/op false\n"
-			"/OPM 0\n"
-			"/BG2 /Default\n"
-			"/UCR2 /Default\n"
-			"/TR2 /Default\n"
-			">>\n"
+		"<<\n"
+		"/Type /ExtGState\n"
+		"/SA false\n"
+		"/SM 0.02\n"
+		"/OP false\n"
+		"/op false\n"
+		"/OPM 0\n"
+		"/BG2 /Default\n"
+		"/UCR2 /Default\n"
+		"/TR2 /Default\n"
+		">>\n"
 		"endobj\n");
 }
 
 
 /* Put a triangles uncompressed raw data in shader stream */
 
-int gl2pdfPrintShaderStreamData(GL2PStriangle triangle)
-{
+int gl2pdfPrintShaderStreamData(GL2PStriangle triangle){
   int offs = 0;
   int i;
 	unsigned long imap;
@@ -682,17 +635,14 @@ int gl2pdfPrintShaderStreamData(GL2PStriangle triangle)
 	dx = gl2ps->viewport[2]-gl2ps->viewport[0];
 	dy = gl2ps->viewport[3]-gl2ps->viewport[1];
 	
-	for (i = 0; i < 3; ++i)
-  {
+	for (i = 0; i < 3; ++i){
     offs += fwrite (&edgeflag, sizeof(char), 1, gl2ps->stream);
 		
-		if (fabs(dx*dy) < FLT_MIN)
-		{
+		if (fabs(dx*dy) < FLT_MIN){
 			offs += gl2pdfWriteBigEndian(0, 4, gl2ps->stream);
 			offs += gl2pdfWriteBigEndian(0, 4, gl2ps->stream);
 		}
-		else
-		{
+		else{
 			diff = (triangle[i].xyz[0] - gl2ps->viewport[0]) / dx;
 			if (diff>1)
 				diff = 1;
@@ -725,8 +675,7 @@ int gl2pdfPrintShaderStreamData(GL2PStriangle triangle)
 
 /* Writes shaded triangle */
 
-int gl2pdfPrintShader(int obj, GL2PSlist* triangles, int idx, int cnt )
-{
+int gl2pdfPrintShader(int obj, GL2PSlist* triangles, int idx, int cnt ){
 	int offs = 0;
 	int vertexbytes = 1+4+4+1+1+1;
 	int i;
@@ -766,8 +715,7 @@ int gl2pdfPrintShader(int obj, GL2PSlist* triangles, int idx, int cnt )
 
 /* Writes all triangles and returns field of offsets for the PDF cross reference table */
 
-int* gl2pdfPrintShaderObjects(int firstObjnumber, int firstOffs)
-{
+int* gl2pdfPrintShaderObjects(int firstObjnumber, int firstOffs){
 	int size;
 	int* offs;
 	int i;
@@ -779,30 +727,25 @@ int* gl2pdfPrintShaderObjects(int firstObjnumber, int firstOffs)
 
 	offs[0] = firstOffs;
 
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		tmp = *(int*)gl2psListPointer(tidxlist, i);
-//		if (tmp>0)
-		{
-			firstOffs += gl2pdfPrintShader(i+firstObjnumber, tlist, idx, tmp);
-			offs[i+1] = firstOffs;
-			idx += tmp;
-		}
+
+		firstOffs += gl2pdfPrintShader(i+firstObjnumber, tlist, idx, tmp);
+		offs[i+1] = firstOffs;
+		idx += tmp;
 	}
 	return offs;
 }
 
 /* Similar groups of  functions for pixmaps and text */
 
-int gl2pdfPrintPixmapStreamData(GL2PSimage* im)
-{
+int gl2pdfPrintPixmapStreamData(GL2PSimage* im){
   int offs = 0;
 	int x,y;
 	GLfloat r,g,b;
 
 	for (y=0; y<im->height;++y)
-		for (x=0; x<im->width;++x)
-		{
+		for (x=0; x<im->width;++x){
 			gl2psGetRGB(im->pixels, im->width, im->height, x, y, &r, &g, &b);
 			fputc((int)(r*255),gl2ps->stream);
 			fputc((int)(g*255),gl2ps->stream);
@@ -811,8 +754,7 @@ int gl2pdfPrintPixmapStreamData(GL2PSimage* im)
 	return 3 * im->width * im->height;
 }
 
-int gl2pdfPrintPixmap(int obj, GL2PSimage* im )
-{
+int gl2pdfPrintPixmap(int obj, GL2PSimage* im ){
 	int offs = 0;
 
 	offs += fprintf(gl2ps->stream,
@@ -839,8 +781,7 @@ int gl2pdfPrintPixmap(int obj, GL2PSimage* im )
 	return offs;
 }
 
-int* gl2pdfPrintPixmapObjects(int firstObjnumber, int firstOffs)
-{
+int* gl2pdfPrintPixmapObjects(int firstObjnumber, int firstOffs){
 	int size;
 	int* offs;
 	int i;
@@ -850,16 +791,14 @@ int* gl2pdfPrintPixmapObjects(int firstObjnumber, int firstOffs)
 
 	offs[0] = firstOffs;
 
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		firstOffs += gl2pdfPrintPixmap(i+firstObjnumber, *(GL2PSimage**)gl2psListPointer(ilist, i));
 		offs[i+1] = firstOffs;
 	}
 	return offs;
 }
 
-int gl2pdfPrintText(int obj, GL2PSstring* s, int fontnumber )
-{
+int gl2pdfPrintText(int obj, GL2PSstring* s, int fontnumber ){
 	int offs = 0;
 
 	offs += fprintf(gl2ps->stream,
@@ -872,13 +811,12 @@ int gl2pdfPrintText(int obj, GL2PSstring* s, int fontnumber )
 			"/Encoding /MacRomanEncoding\n"
 		">>\n"
 		"endobj\n"
-		,obj, fontnumber, s->fontname //TODO
+		,obj, fontnumber, s->fontname
 		);
 	return offs;
 }
 
-int* gl2pdfPrintTextObjects(int firstObjnumber, int firstOffs)
-{
+int* gl2pdfPrintTextObjects(int firstObjnumber, int firstOffs){
 	int size;
 	int* offs;
 	int i;
@@ -888,8 +826,7 @@ int* gl2pdfPrintTextObjects(int firstObjnumber, int firstOffs)
 
 	offs[0] = firstOffs;
 
-	for (i=0; i<size; ++i)
-	{
+	for (i=0; i<size; ++i){
 		firstOffs += gl2pdfPrintText(i+firstObjnumber, *(GL2PSstring**)gl2psListPointer(slist, i),i);
 		offs[i+1] = firstOffs;
 	}
@@ -899,8 +836,7 @@ int* gl2pdfPrintTextObjects(int firstObjnumber, int firstOffs)
 /* All variable data is written at this point and all required functioninality has been gathered: 
    Writes file footer with cross reference table and trailer */
 
-void gl2pdfPrintFooter()
-{
+void gl2pdfPrintFooter(){
 	int offs;
 	int i;
 	int *shader_offs, *image_offs, *text_offs;
@@ -940,20 +876,16 @@ void gl2pdfPrintFooter()
 		"0 %d\n"
 		"%010d 65535 f \n", objnumber, 0); 
 	
-	for (i=0; i<GL2PDF_FIXED_XREF_ENTRIES; ++i)
-	{
+	for (i=0; i<GL2PDF_FIXED_XREF_ENTRIES; ++i){
 		fprintf(gl2ps->stream, "%010d 00000 n \n", cref[i]); 
 	}
-	for (i=0; i<shader_size; ++i)
-	{
+	for (i=0; i<shader_size; ++i){
 		fprintf(gl2ps->stream, "%010d 00000 n \n", shader_offs[i]); 
 	}
-	for (i=0; i<image_size; ++i)
-	{
+	for (i=0; i<image_size; ++i){
 		fprintf(gl2ps->stream, "%010d 00000 n \n", image_offs[i]); 
 	}
-	for (i=0; i<text_size; ++i)
-	{
+	for (i=0; i<text_size; ++i){
 		fprintf(gl2ps->stream, "%010d 00000 n \n", text_offs[i]); 
 	}
 
@@ -980,8 +912,7 @@ void gl2pdfPrintFooter()
 
 /* */
 
-void gl2pdfPrintBeginViewport(GLint viewport[4])
-{
+void gl2pdfPrintBeginViewport(GLint viewport[4]){
 	int offs;
   GLint index;
  	GLfloat rgba[4];
@@ -1008,7 +939,7 @@ void gl2pdfPrintBeginViewport(GLint viewport[4])
     offs += fprintf(gl2ps->stream,
 	    "%f %f %f rg\n"
 			"%d %d %d %d re\n"
-//			"W\n"  
+/*			"W\n" */  
 			"f\n"
 	    ,rgba[0], rgba[1], rgba[2] 
 	    ,x,y,w,h 
