@@ -6,7 +6,7 @@
 #define __DATATYPES_H__
 
 #ifdef _DEBUG
-	#include <fstream.h>
+	#include <fstream>
 #endif
 
 #include <string>
@@ -23,7 +23,6 @@
 
 #include "qwt3d_helper.h"
 #include "qwt3d_openglhelper.h"
-#include "qwt3d_gl2ps.h"
 
 //! Common namespace for all QwtPlot3D classes
 namespace Qwt3D
@@ -90,6 +89,21 @@ enum AXIS
 	Z3 = 11,  //!<  3th z-axis
 	Z4 = 10   //!<  4th z-axis
 };
+
+//! Possible anchor points for drawing operations
+enum ANCHOR
+{
+	BottomLeft,
+	BottomRight,
+	BottomCenter,
+	TopLeft,
+	TopRight,
+	TopCenter,
+	CenterLeft,
+	CenterRight,
+	Center
+};
+
 
 //! Tuple <tt>[x,y]</tt>
 struct QWT3D_EXPORT Tuple

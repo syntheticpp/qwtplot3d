@@ -61,7 +61,7 @@ private:
 
 	bool smooth_;
 
-	void positionateLabel(Axis& ax, LabelPixmap::ANCHOR an);
+	void positionateLabel(Axis& ax, Qwt3D::ANCHOR an);
 	
 	void chooseAxes();
 	void autoDecorateExposedAxis(Axis& ax, bool left);

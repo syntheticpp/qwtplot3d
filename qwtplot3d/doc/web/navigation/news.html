@@ -88,21 +88,30 @@ Interface to create them from user data ( <a class="el"
 <h2>Change Log</h2>
 &nbsp;&nbsp;&nbsp; <b style="color: rgb(34, 139, 34);">CVS:</b>
 Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
-<h4>&nbsp;&nbsp;&nbsp; New Features <b style="color: rgb(34, 139, 34);">CVS</b><br>
-</h4>
+<h4>&nbsp;&nbsp;&nbsp; New Features <b style="color: rgb(34, 139, 34);">CVS</b></h4>
+<h3></h3>
 <ul>
-  <li>...</li>
-  <li>PDF, PS, EPS output through <a href="http://www.geuz.org/gl2ps/"
- target="_blank">gl2ps<br>
+  <li>... </li>
+  <li>PS, EPS output through <a href="http://www.geuz.org/gl2ps/"
+ target="_blank">gl2ps</a>&nbsp;<span style="font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// but see <a
+ href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html">here</a></span><a
+ href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html"><br>
     </a></li>
   <li>Color legends</li>
   <li>Shading<br>
   </li>
 </ul>
-<h4>&nbsp;&nbsp;&nbsp; Changes <b style="color: rgb(34, 139, 34);">CVS</b><br>
-</h4>
+<h4>&nbsp;&nbsp;&nbsp; Changes <b style="color: rgb(34, 139, 34);">CVS</b></h4>
+<h3></h3>
 <ul>
   <li>...</li>
+  <li>C++ sources with <span style="font-family: monospace;">qwt3d_ </span>prefixed
+(consistent with header naming scheme)<br>
+  </li>
+  <li>Plot3D::setPlotStyle, Plot3D::setFloorStyle call not longer
+updateData() and updateGL()<br>
+  </li>
   <li>Plot3D::setShading(SHADINGSTYLE), Plot3D::shading() pair for
 setting/returning shading style (flat or Gouraud). Default is
 Gouraud.</li>
@@ -121,10 +130,12 @@ Gouraud.</li>
   </li>
 </ul>
 <br>
-<h4>&nbsp;&nbsp;&nbsp; Bugs <b style="color: rgb(34, 139, 34);">CVS<br>
-</b></h4>
+<h4>&nbsp;&nbsp;&nbsp; Bugs <b style="color: rgb(34, 139, 34);">CVS</b></h4>
+<h3></h3>
 <ul>
   <li>...</li>
+  <li>[examples] Some missing QGLWidget::makeCurrent() inserted<br>
+  </li>
   <li>Sometimes the last minors inherited the majors linewidth <br>
   </li>
   <li>Sporadic misbehaviour of Autoscaler<br>

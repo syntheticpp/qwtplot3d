@@ -11,19 +11,18 @@
 #define __qwt3d_gl2ps_2003_09_04_23_54__
 
 #include <qgl.h>
+#include "qwt3d_types.h"
+#include <gl2ps.h>
 
-#ifdef QWT3D_GL2PS
-	#include <gl2ps.h>
-#endif
-
-inline GLint setDeviceLineWidth(GLfloat val)
+namespace Qwt3D
 {
-	glLineWidth(val);
-#ifdef QWT3D_GL2PS
-	return gl2psLineWidth(val);
-#endif
-  return 0;
-}
 
+GLint setDeviceLineWidth(GLfloat val);
+GLint drawDevicePixels(GLsizei width, GLsizei height,
+                       GLenum format, GLenum type,
+                       const void *pixels, bool printerfonts);
+GLint drawDeviceText(const char* str, const char* fontname, int fontsize, Qwt3D::Triple pos, Qwt3D::ANCHOR align, Qwt3D::Triple gap);
+
+} // ns
 
 #endif  // __qwt3d_gl2ps_2003_09_04_23_54__

@@ -37,7 +37,7 @@ public:
 	void setLabelFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setLabelFont(QFont const& font);
   void setLabelString(QString const& name);
-	void setLabelPosition(const Qwt3D::Triple& pos, LabelPixmap::ANCHOR);
+	void setLabelPosition(const Qwt3D::Triple& pos, Qwt3D::ANCHOR);
 	void setLabelColor(Qwt3D::RGBA col);
 	void setLabel(bool d) {drawLabel_ = d;}
 
@@ -48,7 +48,7 @@ public:
 	Qwt3D::RGBA numberColor() const {return numbercolor_;}
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setNumberFont(QFont const&);
-	void setNumberAnchor(LabelPixmap::ANCHOR a) { scaleNumberAnchor_ = a;}
+	void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;}
 
 	void setAutoScale(bool val = true) {autoscale_ = val;};
 	bool autoScale() const { return autoscale_;}
@@ -73,7 +73,7 @@ private:
 	void drawTic(Qwt3D::Triple nadir, double length);
 	
 	
-	LabelPixmap::ANCHOR scaleNumberAnchor_;
+	Qwt3D::ANCHOR scaleNumberAnchor_;
 	LabelPixmap label_;
 	std::vector<LabelPixmap> markerLabel_;
 

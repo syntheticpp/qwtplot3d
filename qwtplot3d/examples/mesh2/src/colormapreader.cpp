@@ -1,4 +1,4 @@
-#include <fstream.h>
+#include <fstream>
 
 #include <qfileinfo.h>
 #include <qfiledialog.h>
@@ -8,6 +8,7 @@
 #include "colormapreader.h"
 
 using namespace Qwt3D;
+using namespace std;
 
 ColorMapPreview::ColorMapPreview( QWidget *parent ) 
 : QFrame( parent ) 

@@ -22,7 +22,8 @@
   <li><a href="manual.html#colors">Colors</a></li>
   <li><a href="manual.html#fonts">Fonts etc.</a></li>
   <li><a href="manual.html#meshs">Mesh Types</a></li>
-  <li><a href="manual.html#text">Text, Legends</a><br>
+  <li><a href="manual.html#text">Text, Legends</a></li>
+  <li><a href="manual.html#dataoutput">Data Output</a><br>
   </li>
   <li><a href="manual.html#datainput">Data Input</a></li>
 </ol>
@@ -34,7 +35,7 @@
  style="font-family: monospace;">qwtplot3d.pro</span> you can create a<br>
 <ul>
   <li>VC6 DLL project (Windows)&nbsp;</li>
-  <li>Shared library for POSIX systems.&nbsp;</li>
+  <li>shared library for POSIX systems.&nbsp;</li>
 </ul>
 <p>Adjust the target path and perhaps the library directories. The same
 is true for the examples <span style="font-family: monospace;">.pro</span>
@@ -64,17 +65,22 @@ including:<br>
 <ol>
   <li>Colors, fonts, normal vectors, mouse handling etc.</li>
   <li>Grid and FEM data reading from files (in <code>examples/data/*</code>)</li>
+  <li>Output to all pixmap formats supported by Qt and as vector data
+with&nbsp; <a href="http://www.geuz.org/gl2ps/">gl2ps</a>&nbsp;
+(optional)<br>
+  </li>
   <li>Plotting styles and resolution change on the fly</li>
   <li>Shading<br>
   </li>
 </ol>
 <p>So, it would be a good idea to get this example project running ...<br>
 </p>
-</div>
-<p> </p>
-<div style="margin-left: 40px;">
-<ul>
-</ul>
+<p>The 2nd important example resides in the <span
+ style="font-family: monospace;">print</span> subdirectory. It exploits
+QwtPlot3D's vector output facilities. That means EPS, PS, TeX and to an
+increasing degree PDF. See <a href="pdf.html">here</a> for an
+extensive discussion.<br>
+</p>
 </div>
 <h4 style="margin-left: 40px;"><br>
 <a name="conventions"></a> Using conventions</h4>
@@ -222,9 +228,13 @@ etc.</h4>
 <br>
 <br>
 <a name="meshs" style="font-weight: bold;"></a><span
- style="font-weight: bold;">Mesh Types</span>
-<h4><br>
+ style="font-weight: bold;">Mesh Types<br>
+<br>
+</span>
+<h4><a name="dataoutput"></a>Data Ouput<br>
+<br>
 </h4>
+<h4></h4>
 <h4><a name="datainput"></a>Data Input</h4>
 QwtPlot3D supports one general and some special forms of native data
 input:

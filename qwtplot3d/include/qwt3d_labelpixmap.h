@@ -19,20 +19,6 @@ class QWT3D_EXPORT LabelPixmap : public Drawable
 		
 public:
 
-	//! Possible anchor points
-	enum ANCHOR
-	{
-		BottomLeft,
-		BottomRight,
-		BottomCenter,
-		TopLeft,
-		TopRight,
-		TopCenter,
-		CenterLeft,
-		CenterRight,
-		Center
-	};
-
   LabelPixmap();
  	//! Construct label and initialize with font 
 	LabelPixmap(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
@@ -55,7 +41,14 @@ public:
 	void update(); //!< Enforces an update of the internal pixmap
 	void draw(); //!< Actual drawing
 
+	/**
+		\brief Decides about use of PDF standard fonts for PDF output 
+		If true, LabelPixmap can use one of the PDF standard fonts (unprecise positioning for now), 
+		otherwise it dumps  pixmaps in the PDF stream (poor quality) 
+	*/
+	static void usePrinterFonts(bool val); 
 	
+
 private:
 
 	Qwt3D::Triple beg_, end_, pos_;
@@ -72,6 +65,8 @@ private:
 
 	double width() const;
 	double height() const;
+
+	static bool printerFonts_;
 
 };
 
