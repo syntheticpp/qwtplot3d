@@ -150,19 +150,24 @@ Axis::drawTics()
 	if (!drawTics_)
 		return;
 
+  if (isPracticallyZero(start_, stop_))
+		return;
+
 	autostart_ = start_;
 	autostop_ = stop_;
 
  	if (autoScale()) 
-    buildAutoScale(autostart_, autostop_); // changes majorintervals_
-
+  {  
+		as_.init(start_, stop_, majors());
+		setMajors(as_.execute(autostart_, autostop_));
+	}
   if (isPracticallyZero(autostart_, autostop_))
 		return;
 
 	Triple normal = (end_ - beg_);
-	normal.normalize();
-	Triple beg = beg_ + (autostart_ - start_) * normal;
-	Triple end = end_ - (stop_ - autostop_) * normal;
+	//normal.normalize();
+	Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
+	Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
 
 	Triple runningpoint = end - beg;
 
@@ -246,6 +251,7 @@ Axis::drawNumber(Triple pos, int mtic)
 		markerLabel_[mtic].setString(QString::number(start_ + t * (stop_ - start_)));
 	
 	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
+	markerLabel_[mtic].update();
 	markerLabel_[mtic].draw();
 }
 
@@ -310,19 +316,8 @@ void
 Axis::setLabelColor(RGBA col)
 {
 	label_.setColor(col);
+	label_.update();
 }
 
-/*!
-	changes majorintervals_
-*/
-void 
-Axis::buildAutoScale (double& a, double& b)
-{
-  double delta = stop_ - start_;
 
-  double y = round125(delta/majorintervals_);
-	a = y * ceil(start_/y);
-	b = y * floor(stop_/y);
 
-	setMajors(round((b-a) / y));
-}

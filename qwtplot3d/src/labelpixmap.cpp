@@ -26,7 +26,8 @@ LabelPixmap::init()
 {
 	beg_ = Triple(0.0, 0.0, 0.0);
 	end_ = beg_;
-	setColor(0,0,0);
+	pos_ = beg_;
+	setColor(0,0,0,1);
 	pm_ = QPixmap(0, 0, -1);
 	font_ = QFont();
 	anchor_ = BottomLeft;
@@ -57,41 +58,7 @@ void
 LabelPixmap::setPosition(Triple pos, ANCHOR a)
 {
 	anchor_ = a;
-	Triple start = World2ViewPort(pos);
-
-	switch (anchor_)
-	{
-		case BottomLeft :
-			beg_ = pos;
-			break;
-		case BottomRight:
-			beg_ = ViewPort2World(start - Triple(width(), 0, 0));
-			break;
-		case BottomCenter:
-			beg_ = ViewPort2World(start - Triple(width() / 2, 0, 0));
-			break;
-		case TopRight:
-			beg_ = ViewPort2World(start - Triple(width(), height(), 0));
-			break;
-		case TopLeft:
-			beg_ = ViewPort2World(start - Triple(0, height(), 0));
-			break;
-		case TopCenter:
-			beg_ = ViewPort2World(start - Triple(width() / 2, height(), 0));
-			break;
-		case CenterLeft:
-			beg_ = ViewPort2World(start - Triple(0, height() / 2, 0));
-			break;
-		case CenterRight:
-			beg_ = ViewPort2World(start - Triple(width(), height() / 2, 0));
-			break;
-		case Center:
-			beg_ = ViewPort2World(start - Triple(width() / 2, height() / 2, 0));
-			break;
-		default:
-			break;
-	}
-	end_ = ViewPort2World(start + Triple(width(), height(), 0));
+	pos_ = pos;
 }
 
 void 
@@ -136,6 +103,46 @@ LabelPixmap::update()
 }
 
 
+void
+LabelPixmap::convert2screen()
+{
+	Triple start = World2ViewPort(pos_);
+
+	switch (anchor_)
+	{
+		case BottomLeft :
+			beg_ = pos_;
+			break;
+		case BottomRight:
+			beg_ = ViewPort2World(start - Triple(width(), 0, 0));
+			break;
+		case BottomCenter:
+			beg_ = ViewPort2World(start - Triple(width() / 2, 0, 0));
+			break;
+		case TopRight:
+			beg_ = ViewPort2World(start - Triple(width(), height(), 0));
+			break;
+		case TopLeft:
+			beg_ = ViewPort2World(start - Triple(0, height(), 0));
+			break;
+		case TopCenter:
+			beg_ = ViewPort2World(start - Triple(width() / 2, height(), 0));
+			break;
+		case CenterLeft:
+			beg_ = ViewPort2World(start - Triple(0, height() / 2, 0));
+			break;
+		case CenterRight:
+			beg_ = ViewPort2World(start - Triple(width(), height() / 2, 0));
+			break;
+		case Center:
+			beg_ = ViewPort2World(start - Triple(width() / 2, height() / 2, 0));
+			break;
+		default:
+			break;
+	}
+	end_ = ViewPort2World(start + Triple(width(), height(), 0));	
+}
+
 void 
 LabelPixmap::draw()
 {
@@ -151,7 +158,8 @@ LabelPixmap::draw()
 	
 	glEnable (GL_ALPHA_TEST);
   glAlphaFunc (GL_NOTEQUAL, 0.0);
-
+	
+	convert2screen();
 	glRasterPos3d(beg_.x, beg_.y, beg_.z);
 
 	int w = tex_.width();
@@ -174,25 +182,10 @@ double
 LabelPixmap::height() const 
 { 
 	return pm_.height(); 
-}
-
-void
-LabelPixmap::setColor(double r, double g, double b, double a)
-{
-	Drawable::setColor(r,g,b,a);
-	update();
-}	
-
-void
-LabelPixmap::setColor(RGBA rgba)
-{
-	Drawable::setColor(rgba);
-	update();
 }	
 
 void 
 LabelPixmap::setString(QString const& s)
 {
   text_ = s;
-	update();
 }

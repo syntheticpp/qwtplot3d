@@ -92,22 +92,39 @@ Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
 </h4>
 <ul>
   <li>...</li>
-  <li>Plot3D::setShading(SHADINGSTYLE),
-Plot3D::shading() pair for
-setting/returning shading style (flat or Gouraud). Default value is
-Gouraud<br>
+  <li>Color legends</li>
+  <li>Shading<br>
   </li>
 </ul>
 <h4>&nbsp;&nbsp;&nbsp; Changes</h4>
 <ul>
-  <li>...<br>
+  <li>...</li>
+  <li>Plot3D::setShading(SHADINGSTYLE), Plot3D::shading() pair for
+setting/returning shading style (flat or Gouraud). Default is
+Gouraud.</li>
+  <li>Plot3D::updateColorLegend()<br>
+  </li>
+  <li>Plot3D::legend() for color legend access</li>
+  <li>LabelPixmap: obsolete setColor() functions removed<br>
+  </li>
+  <li>Global transformation helper functions moved to Drawable<br>
+  </li>
+  <li>Axis::limits() to get start and stop value<br>
+  </li>
+  <li>AutoScaler class encapsulates auto scaling for axes<br>
+  </li>
+  <li>qwt3d_plane.h -&gt; qwt3d_colorlegend.h<br>
   </li>
 </ul>
 <br>
 <h4>&nbsp;&nbsp;&nbsp; Bugs <b style="color: rgb(34, 139, 34);">CVS<br>
 </b></h4>
 <ul>
-  <li>...<br>
+  <li>...</li>
+  <li>Color: <span style="color: rgb(204, 0, 0);">colormodel example
+doesn't compile at this moment</span><br>
+  </li>
+  <li>Misbehaviour of Autoscaler for some cases&nbsp; removed <br>
   </li>
   <li>Limits
 (DBL_EPSILON) for scale and zoom<br>

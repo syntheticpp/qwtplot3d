@@ -56,6 +56,7 @@ public slots:
 	void setNormalLength(int);
 	bool openColorMap(Qwt3D::ColorField& cv, QString fname);
 	void adaptDataColors(const QString&);
+	void updateColorLegend(int majors, int minors);
 
 private:
 	QLabel *filenameWidget,

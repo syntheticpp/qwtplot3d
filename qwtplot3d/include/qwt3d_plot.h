@@ -26,6 +26,7 @@ public:
 		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		void updateCoordinateSystem();
 		CoordinateSystem* coordinates() { return &coord; } //!< \return Pointer to CoordinateSystem object
+		ColorLegend* legend() { return &legend_;} //!< \return Pointer to ColorLegend object
 		
 		double xRotation() const { return xRot_;}  //!< \return Rotation around X axis [-360..360] (some angles are equivalent)
 		double yRotation() const { return yRot_;}  //!< \return Rotation around Y axis [-360..360] (some angles are equivalent)
@@ -65,9 +66,9 @@ public:
 		virtual void calculateHull() = 0;
 		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
 
-		void createColorLegend(Qwt3D::ColorField const&, Qwt3D::Triple a = Qwt3D::Triple(), Qwt3D::Triple b = Qwt3D::Triple(), Qwt3D::Triple c = Qwt3D::Triple(), Qwt3D::Triple d = Qwt3D::Triple());
 		void showColorLegend(bool);
-
+		void updateColorLegend();
+		
 		void setCoordinateStyle(Qwt3D::COORDSTYLE st);
 		void setPolygonOffset(double d);
 		double polygonOffset() const {return polygonOffset_;} //!< \return Relative value for polygon offset [0..1] \see setPolygonOffset()
@@ -155,13 +156,14 @@ private:
 		bool ortho_;
 		double polygonOffset_;
 		int isolines_;
+		bool displaylegend_;
 
 		Qwt3D::ParallelEpiped hull_;
 
 		ColorLegend legend_;
 
 		LabelPixmap title_;
-		double titlerelx_, titlerely_;
+		Qwt3D::Tuple titlerel_;
 		LabelPixmap::ANCHOR titleanchor_;
 
 		QPoint lastMouseMovePosition_;

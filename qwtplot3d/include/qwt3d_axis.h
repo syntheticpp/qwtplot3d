@@ -3,6 +3,7 @@
 
 #include "qwt3d_global.h"
 #include "qwt3d_labelpixmap.h"
+#include "qwt3d_autoscaler.h"
 
 namespace Qwt3D
 {
@@ -23,6 +24,9 @@ public:
 
 	void setPosition(const Qwt3D::Triple& beg, const Qwt3D::Triple& end);
 	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;}
+	Qwt3D::Triple begin() const { return beg_; }
+	Qwt3D::Triple end() const { return end_; }
+
 	void setTicLength(double majorl, double minorl);
 	void ticLength(double& majorl, double& minorl) const {majorl = lmaj_; minorl = lmin_;}
 	void setTicOrientation(double tx, double ty, double tz);
@@ -56,11 +60,8 @@ public:
 
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
 
-	Qwt3D::Triple begin() const { return beg_; }
-	Qwt3D::Triple end() const { return end_; }
-
-
 	void setLimits(double start, double stop) {start_=start; stop_=stop;}
+	void limits(double& start, double& stop) const {start = start_; stop = stop_;}
 
 	
 private:
@@ -69,12 +70,10 @@ private:
 	void drawBase();
 	void drawTics();
 	void drawNumber(Qwt3D::Triple Pos, int mtic);
-
-	void buildAutoScale(double& a, double& b);
-
 	void drawTic(Qwt3D::Triple nadir, double length);
 	
 	
+	LabelPixmap::ANCHOR scaleNumberAnchor_;
 	LabelPixmap label_;
 	std::vector<LabelPixmap> markerLabel_;
 
@@ -99,8 +98,7 @@ private:
 	void makeSimpleLabels(bool val) { simpleLabels_ = val;}
 	bool simpleLables() const { return simpleLabels_;}
 
-
-	LabelPixmap::ANCHOR scaleNumberAnchor_;
+	Qwt3D::AutoScaler as_;
 };
 
 } // ns 

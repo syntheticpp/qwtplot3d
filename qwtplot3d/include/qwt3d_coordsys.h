@@ -3,7 +3,7 @@
 
 #include "qwt3d_global.h"
 #include "qwt3d_axis.h"
-#include "qwt3d_plane.h"
+#include "qwt3d_colorlegend.h"
 
 namespace Qwt3D
 {
