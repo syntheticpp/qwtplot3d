@@ -1874,7 +1874,7 @@ void gl2psPrintTeXHeader(void){
 	  "\\setlength{\\unitlength}{1pt}\n"
 	  "%s\\begin{picture}(0,0)\n"
 	  "\\includegraphics{%s}\n"
-	  "\\end{picture}%%\n"
+	  "\\end{picture}\n"
 	  "\\begin{picture}(%d,%d)(0,0)\n",
 	  (gl2ps->options & GL2PS_LANDSCAPE) ? "\\rotatebox{90}{" : "", name,
 	  gl2ps->viewport[2], gl2ps->viewport[3]);
@@ -1887,8 +1887,10 @@ void gl2psPrintTeXPrimitive(void *a, void *b){
 
   switch(prim->type){
   case GL2PS_TEXT :
-		fprintf(gl2ps->stream, "\\fontsize{%d}{0}\\selectfont", prim->text->fontsize);
-		fprintf(gl2ps->stream, "\\put(%g,%g){\\makebox(0,0)", prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
+		fprintf(gl2ps->stream, "\\fontsize{%d}{0}\n\\selectfont"
+			,prim->text->fontsize);
+		fprintf(gl2ps->stream, "\\put(%g,%g){\\makebox(0,0)"
+			,prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
 		switch (prim->text->alignment) {
 		case GL2PS_TEXT_CL:
 			fprintf(gl2ps->stream, "[l]");
@@ -1917,7 +1919,9 @@ void gl2psPrintTeXPrimitive(void *a, void *b){
 		default:
 			break;
 		}
-		fprintf(gl2ps->stream, "{%s}}\n",  prim->text->str);
+		fprintf(gl2ps->stream, "{\\textcolor[rgb]{%f,%f,%f}{"
+			, prim->verts[0].rgba[0], prim->verts[0].rgba[1], prim->verts[0].rgba[2]);
+		fprintf(gl2ps->stream, "{%s}}}}\n",  prim->text->str);
     break;
   default :
     break;

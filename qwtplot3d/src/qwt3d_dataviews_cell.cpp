@@ -97,28 +97,6 @@ SurfacePlot::CellData2Floor()
 	}
 }
 
-
-void 
-SurfacePlot::Cell2Floor()
-{
-	if (actualCellData_->empty() || meshtype() == GRID)
-		return;
-	
-	double zshift = actualCellData_->minimum();
-
-	glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
-	for (unsigned i=0; i!=actualCellData_->cells.size(); ++i)
-	{
-		glBegin(GL_LINE_LOOP);
-		for (unsigned j=0; j!=actualCellData_->cells[i].size(); ++j)
-		{
-			int idx = actualCellData_->cells[i][j];
-			glVertex3d( actualCellData_->nodes[idx].x, actualCellData_->nodes[idx].y, zshift );
-		}
-		glEnd();
-	}
-}
-
 void 
 SurfacePlot::CellIsolines2Floor()
 {

@@ -118,6 +118,7 @@
 
 /* Primitive types */
 
+#define GL2PS_NOTYPE     -1
 #define GL2PS_TEXT       1
 #define GL2PS_POINT      2
 #define GL2PS_LINE       3

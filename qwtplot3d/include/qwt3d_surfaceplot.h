@@ -1,6 +1,7 @@
 #ifndef __surfaceplot_2003_06_09_12_08__
 #define __surfaceplot_2003_06_09_12_08__
 
+#include <utility>
 #include "qwt3d_global.h"
 #include "qwt3d_plot.h"
 
@@ -28,15 +29,17 @@ public:
 		
 		bool createDataRepresentation(Qwt3D::TripleField const& data, Qwt3D::CellField const& poly, Qwt3D::MESHTYPE mtype = POLYGON);
 
-		void updateNormals();
-		void showNormals(bool); //!< draw normals to every vertex
-		bool normals() const { return datanormals_;} //!< \return true, if normal drawing is on
+		void updateNormals(); //!< Recalculates surface normals;
+		void showNormals(bool); //!< Draw normals to every vertex
+		bool normals() const { return datanormals_;} //!< Returns \c true, if normal drawing is on
 		
-		void setNormalLength(double val); //!< set length of normals in percent per hull diagonale
-		double normalLength() const { return normalLength_; }//!< \return relative length of normals
-		void setNormalQuality(int val); //!< increase plotting quality of normal arrows
-		double normalQuality() const { return normalQuality_; }//!< \return plotting quality of normal arrows
-		int	resolution() const {return resolution_;} //!< \return data resolution (1 means all data)
+		void setNormalLength(double val); //!< Sets length of normals in percent per hull diagonale
+		double normalLength() const { return normalLength_; }//!< \return Relative length of normals
+		void setNormalQuality(int val); //!< Increases plotting quality of normal arrows
+		double normalQuality() const { return normalQuality_; }//!< \return Plotting quality of normal arrows
+		int	resolution() const {return resolution_;} //!< \return Data resolution (1 means all data)
+
+		std::pair<int,int> facets() const; //!< Returns the number of mesh cells for the ORIGINAL data
 
 signals:
 		
@@ -62,11 +65,9 @@ private:
 		void updateGridNormals();
 		void GridData2Floor();
 		void GridIsolines2Floor();
-		void Grid2Floor();
 		void updateCellNormals();
 		void CellData2Floor();
 		void CellIsolines2Floor();
-		void Cell2Floor();
 
 		void setColorFromGridVertex(int ix, int iy, bool skip = false);
 		void setColorFromCellVertex(int node, bool skip = false);

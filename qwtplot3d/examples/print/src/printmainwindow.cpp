@@ -47,8 +47,10 @@ public:
 printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	: printMainWindowBase( parent, name, f )
 {
-	filetype_ = "tex (both)";
-	filetypeCB->setCurrentText("tex (both)");
+//	filetype_ = "tex (both)";
+//	filetypeCB->setCurrentText("tex (both)");
+	filetype_ = "pdf";
+	filetypeCB->setCurrentText("pdf");
 	
 	sortingtype_ = GL2PS_BSP_SORT;
 	sortingtypeCB->setCurrentText("BSP");
@@ -59,11 +61,14 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	layout->addWidget( spl, 0, 0 );
  
 	plot[0] = new SurfacePlot(spl);
-	//plot[0]->setFloorStyle(FLOORISO);
 	plot[0]->setZoom(0.8);
-	plot[0]->setCoordinateStyle(BOX);
 	plot[0]->setBackgroundColor(RGBA(1,1, 157./255));
 	plot[0]->setRotation(30,0,15);
+
+	plot[0]->coordinates()->setGridLines(true,true);
+	plot[0]->setCoordinateStyle(BOX);
+	//plot[0]->setCoordinateStyle(NOCOORD);
+	//plot[0]->setPlotStyle(FILLED);
 
 
 	plot[1] = new SurfacePlot(spl);
@@ -77,7 +82,7 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 
 	rosenbrock = new Rosenbrock(plot[0]);
 	
-	rosenbrock->setMesh(21,23);
+	rosenbrock->setMesh(31,33);
 	rosenbrock->setDomain(-1.73,1.8,-1.9,1.8);
 	rosenbrock->setMinZ(-100);
 	
@@ -103,14 +108,15 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	plot[0]->setTitle("Rosenbrock");
 	plot[1]->setTitle("Hat");
 
-	plot[0]->setMeshLineWidth(1 / 10.0);
-	plot[0]->coordinates()->setLineWidth(1 / 10.0);
+	plot[0]->setMeshLineWidth(1);
+	plot[0]->coordinates()->setLineWidth(1);
+	plot[0]->coordinates()->setNumberColor(RGBA(0,0.5,0));
   plot[0]->makeCurrent();
 	plot[0]->updateData();
   plot[0]->updateGL();
 
-	plot[1]->setMeshLineWidth(1 / 10.0);
-	plot[1]->coordinates()->setLineWidth(1 / 10.0);
+	plot[1]->setMeshLineWidth(1);
+	plot[1]->coordinates()->setLineWidth(1);
 	plot[1]->makeCurrent();
   plot[1]->updateData();
   plot[1]->updateGL();
@@ -139,8 +145,11 @@ void printMainWindow::dumpImage()
 		return;
 	QString name;
 		
-  plot[0]->setTitle(rosenbrock->name());
-  plot[1]->setTitle(hat->name());
+  if (filetype_.find("tex") >= 0)
+	{
+		plot[0]->setTitle(rosenbrock->name());
+		plot[1]->setTitle(hat->name());
+	}
 
 	if (filetype_ == QString("eps"))
 	{

@@ -101,6 +101,11 @@ Axis::setTicOrientation(const Triple& val)
 	orientation_.normalize();
 }
 
+/**
+\param val thickness for axis base line
+\param majfac relative thickness for axis major tics (majfac*val)
+\param minfac relative thickness for axis minor tics (minfac*val)
+*/
 void
 Axis::setLineWidth(double val, double majfac, double minfac)
 {
@@ -134,8 +139,8 @@ Axis::drawBase()
 {
 	setDeviceLineWidth( lineWidth_ );
 	glBegin( GL_LINES );
-	glVertex3d( beg_.x, beg_.y, beg_.z); 
-	glVertex3d( end_.x, end_.y, end_.z);
+		glVertex3d( beg_.x, beg_.y, beg_.z); 
+		glVertex3d( end_.x, end_.y, end_.z);
 	glEnd();
 }	
 
@@ -166,13 +171,16 @@ Axis::drawTics()
 
 	Triple runningpoint = end - beg;
 
+	majorpos_.clear();
+	minorpos_.clear();
+		
 	int mj;
 	
 	for (mj = 0; mj <= majorintervals_; ++mj) 
 	{
 		setDeviceLineWidth(majLineWidth_);
 		double t = double(mj) / majorintervals_;
-		drawTic(beg + t * runningpoint, lmaj_);
+		majorpos_.push_back(drawTic(beg + t * runningpoint, lmaj_));
 		drawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_, mj);
 		if (t==1.0)
 			break;
@@ -180,7 +188,7 @@ Axis::drawTics()
 		for (int mi=1; mi < minorintervals_; ++mi)
 		{
 			double tt = double(mi)  / (minorintervals_ * majorintervals_);
-			drawTic(beg + (t+tt)*runningpoint, lmin_);		
+			minorpos_.push_back(drawTic(beg + (t+tt)*runningpoint, lmin_));		
 		}
 	}
 
@@ -202,7 +210,7 @@ Axis::drawTics()
 		setDeviceLineWidth(minLineWidth_);
 		while (runningpoint.length() < residuum.length())
 		{
-			drawTic(beg - runningpoint, lmin_);								
+			minorpos_.push_back(drawTic(beg - runningpoint, lmin_));								
 			runningpoint = (++ii) * step;
 		}
 	}
@@ -218,7 +226,7 @@ Axis::drawTics()
 	{
 		while (runningpoint.length() < residuum.length()) 
 		{ 
-			drawTic(end + runningpoint, lmin_);								
+			minorpos_.push_back(drawTic(end + runningpoint, lmin_));								
 			runningpoint = (++ii) * step;
 		}
 	}	
@@ -251,7 +259,7 @@ Axis::drawNumber(Triple pos, int mtic)
 	markerLabel_[mtic].draw();
 }
 
-void 
+Triple 
 Axis::drawTic(Triple nadir, double length)
 {
 	double ilength = (symtics_) ? -length : 0.0;
@@ -264,6 +272,7 @@ Axis::drawTic(Triple nadir, double length)
 							nadir.y  + length * orientation_.y,
 							nadir.z  + length * orientation_.z);
 	glEnd();
+	return nadir;
 }
 
 void 

@@ -1,6 +1,7 @@
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_gl2ps.h"
 
+using namespace std;
 using namespace Qwt3D;
 
 SurfacePlot::SurfacePlot( QWidget* parent, const char* name, MESHTYPE mt )
@@ -19,7 +20,7 @@ SurfacePlot::SurfacePlot( QWidget* parent, const char* name, MESHTYPE mt )
 }
 
 /*!
-  Release allocated resources
+  Releases allocated resources
 */
 
 SurfacePlot::~SurfacePlot()
@@ -29,7 +30,7 @@ SurfacePlot::~SurfacePlot()
 }
 
 /**
-	Calculate the smallest x-y-z parallelepiped enclosing the data.
+	Calculates the smallest x-y-z parallelepiped enclosing the data.
 	It can be accessed by hull();
 */
 void 
@@ -78,7 +79,7 @@ SurfacePlot::setNormalQuality(int val)
 }
 
 /*!
-  Set data resolution (res == 1 original resolution) and updates widget
+  Sets data resolution (res == 1 original resolution) and updates widget
 	If res < 1, the function does nothing
 */
 void 
@@ -141,9 +142,6 @@ SurfacePlot::createFloorData()
 		case FLOORISO:
 			GridIsolines2Floor();
 			break;
-		case FLOORMESH:
-			Grid2Floor();
-			break;
 		default:
 			break;
 		}
@@ -158,11 +156,24 @@ SurfacePlot::createFloorData()
 		case FLOORISO:
 			CellIsolines2Floor();
 			break;
-		case FLOORMESH:
-			Cell2Floor();
-			break;
 		default:
 			break;
 		}
 	}
+}
+
+/**
+	The returned value is not affected by resolution(). The pair gives (columns,rows) for grid data
+, (number of cells,1) for free formed data (meshtype() == POLYGON) and (0,0) else
+*/
+pair<int,int>
+SurfacePlot::facets() const
+{
+	if (!hasData())
+		return pair<int,int>(0,0);
+
+	if (meshtype() == GRID)
+		return pair<int,int>(actualGridData_->columns(), actualGridData_->rows()); 	
+	else
+		return pair<int,int>(int(actualCellData_->cells.size()), 1);
 }
