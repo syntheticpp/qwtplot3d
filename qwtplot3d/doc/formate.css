@@ -1,6 +1,6 @@
 /* Formatdatei */
 
-p,td,li,ul,body {font-family:arial,helvetica; font-size:9pt; color:#404040;}
+p,td,li,ul,body,pre {font-family:arial,helvetica; font-size:9pt; color:#404040;}
 
 p.sub {font-family:arial,helvetica; font-size:8pt; color:#333399;}
 

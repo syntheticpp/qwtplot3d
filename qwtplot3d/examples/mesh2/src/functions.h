@@ -13,7 +13,6 @@ public:
 	Rosenbrock(QwtPlot3D* pw)
 	:Function(pw)
 	{
-		setMinZ(-100);
 	}
 
 	double operator()(double x, double y)

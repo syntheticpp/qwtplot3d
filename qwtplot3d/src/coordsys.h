@@ -1,7 +1,6 @@
 #ifndef __COORDSYS_H__
 #define __COORDSYS_H__
 
-#include <vector>
 #include "axis.h"
 #include "plane.h"
 
@@ -34,6 +33,9 @@ public:
 	Triple first() const { return first_;}
 	Triple second() const { return second_;}
 
+	void setAutoDecoration(bool val = true) {autodecoration_ = val;};
+	bool autoDecoration() const { return autodecoration_;}
+
 	void draw();
 	void postDraw();
 
@@ -49,9 +51,12 @@ private:
 	double ared_, agreen_, ablue_; 
 	double lineWidth_, majLineWidth_, minLineWidth_;
 
-	void positionateLabel(Qwt3d::AXIS num, LabelPixmap::ANCHOR an, QString name = QString());
+	void positionateLabel(Axis& ax, LabelPixmap::ANCHOR an);
 	
-	static const double SQRT1_2;
+	void chooseAxesForAutoDecoration();
+	void autoDecorateExposedAxis(Axis& ax, bool left);
+
+	bool autodecoration_;
 };
 
 #endif

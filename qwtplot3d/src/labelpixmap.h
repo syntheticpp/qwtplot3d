@@ -5,10 +5,8 @@
 #include <qimage.h>
 #include <qfont.h>
 #include <qpainter.h>
-#include <qgl.h>
 #include <qfontmetrics.h>
 
-#include "types.h"
 #include "drawable.h"
 
 class LabelPixmap : public Drawable 

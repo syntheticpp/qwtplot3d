@@ -1,12 +1,13 @@
 #include "coordsys.h"
 
-const double CoordinateSystem::SQRT1_2 = 0.70710678118654752440084436210485;
 
 using namespace std;
 using namespace Qwt3d;
 
+
 CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 {
+	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
   setStyle(st);
 	init(first,second);
@@ -50,30 +51,44 @@ CoordinateSystem::init(Triple first, Triple second)
 	axes[Y1].setTicOrientation(-1,0,0);
 	axes[Z1].setTicOrientation(-1,0,0);
 	
+	axes[X1].setLimits(first.x, second.x);
+	axes[X2].setLimits(first.x, second.x);
+	axes[X3].setLimits(first.x, second.x);
+	axes[X4].setLimits(first.x, second.x);
+	
+	axes[Y1].setLimits(first.y, second.y);
+	axes[Y2].setLimits(first.y, second.y);
+	axes[Y3].setLimits(first.y, second.y);
+	axes[Y4].setLimits(first.y, second.y);
+	
+	axes[Z1].setLimits(first.z, second.z);
+	axes[Z2].setLimits(first.z, second.z);
+	axes[Z3].setLimits(first.z, second.z);
+	axes[Z4].setLimits(first.z, second.z);
+
 	// remaining x axes 
 	axes[X2].setPosition(first+Triple( 0,    0, dv.z), first+Triple( dv.x,    0, dv.z));	// front top x
 	axes[X3].setPosition(first+Triple( 0, dv.y, dv.z), second);		  											// back top x
 	axes[X4].setPosition(first+Triple( 0, dv.y,    0), first+Triple( dv.x, dv.y,    0));	// back bottom x
-	axes[X2].setTicOrientation(0,1,0);
-	axes[X3].setTicOrientation(0,-1,0);
-	axes[X4].setTicOrientation(0,-1,0);
+	axes[X2].setTicOrientation(0,-1,0);
+	axes[X3].setTicOrientation(0,1,0);
+	axes[X4].setTicOrientation(0,1,0);
 	
 	// remaining y axes 
 	axes[Y2].setPosition(first+Triple(dv.x, 0,    0), first+Triple(dv.x, dv.y,  0)); // bottom right y
 	axes[Y3].setPosition(first+Triple(dv.x, 0, dv.z), second);											 // top right y
 	axes[Y4].setPosition(first+Triple(0,    0, dv.z), first+Triple(0,  dv.y, dv.z)); // top left y
-	axes[Y2].setTicOrientation(-1,0,0);
-	axes[Y3].setTicOrientation(-1,0,0);
-
-	axes[Y4].setTicOrientation (1,0,0);
+	axes[Y2].setTicOrientation(1,0,0);
+	axes[Y3].setTicOrientation(1,0,0);
+	axes[Y4].setTicOrientation (-1,0,0);
 
 	// remaining z axes 
 	axes[Z2].setPosition(first, first+Triple(   0,    0,  dv.z));												// front left z
 	axes[Z4].setPosition(first+Triple(dv.x, dv.y, 0), second );                         // back right z
 	axes[Z3].setPosition(first+Triple(dv.x,    0, 0), first+Triple(dv.x,    0, dv.z));	// front right z
-	axes[Z2].setTicOrientation(SQRT1_2,SQRT1_2,0);
-	axes[Z4].setTicOrientation(-SQRT1_2,-SQRT1_2,0);
-	axes[Z3].setTicOrientation(-SQRT1_2,SQRT1_2,0);
+	axes[Z2].setTicOrientation(-1,0,0);
+	axes[Z4].setTicOrientation(1,0,0);
+	axes[Z3].setTicOrientation(1,0,0);
 
 	setLabelFont("Courier", 14, QFont::Bold);
 	
@@ -81,15 +96,14 @@ CoordinateSystem::init(Triple first, Triple second)
 }
 
 void 
-CoordinateSystem::positionateLabel(AXIS num, LabelPixmap::ANCHOR an, QString label)
+CoordinateSystem::positionateLabel(Axis& ax, LabelPixmap::ANCHOR an)
 {
-	Axis& ax = axes[num];
-//	ax.setLabelString(label);
   Triple diff = ax.end() - ax.begin();
 	Triple center = ax.begin() + diff/2;
 	
 	double fac = 6*(second()-first()).length() / 100;
 	ax.setLabelPosition(center +  fac * ax.ticOrientation(), an);
+	ax.setNumberAnchor(an);
 }
 
 void 
@@ -105,24 +119,246 @@ CoordinateSystem::draw()
 void 
 CoordinateSystem::postDraw()
 {
-	positionateLabel(X1, LabelPixmap::TopCenter, "X1-Axis");
-	positionateLabel(Y1, LabelPixmap::CenterRight, "Y1-Axis");
-	positionateLabel(Z1, LabelPixmap::CenterRight, "Z1-Axis");
-	
-	positionateLabel(X2, LabelPixmap::BottomCenter, "X2-Axis");
-	positionateLabel(X3, LabelPixmap::BottomCenter, "X3-Axis");
-	positionateLabel(X4, LabelPixmap::TopCenter, "X4-Axis");
-	
-	positionateLabel(Y2, LabelPixmap::CenterLeft, "Y2-Axis");
-	positionateLabel(Y3, LabelPixmap::CenterLeft, "Y3-Axis");
-	positionateLabel(Y4, LabelPixmap::CenterRight, "Y4-Axis");
-	
-	positionateLabel(Z2, LabelPixmap::CenterRight, "Z2-Axis");
-	positionateLabel(Z3, LabelPixmap::CenterLeft, "Z3-Axis");
-	positionateLabel(Z4, LabelPixmap::CenterLeft, "Z4-Axis");
+	if (autoDecoration())
+		chooseAxesForAutoDecoration();
 
 	Drawable::postDraw();
 }
+
+
+
+//! build convex hull (6 axes: 2 x, 2 y, 2 z) and choose one of them at a time for scales, labels etc.  
+void 
+CoordinateSystem::chooseAxesForAutoDecoration()
+{
+	vector<Triple> beg(axes.size());
+	vector<Triple> end(axes.size());
+	vector<Tuple> src(2*axes.size());
+
+	unsigned i;
+	for (i=0; i!=axes.size(); ++i)
+	{
+		beg[i] = World2ViewPort(axes[i].begin());
+		end[i] = World2ViewPort(axes[i].end());
+		src[i] = Tuple(beg[i].x, beg[i].y);
+		src[axes.size()+i] = Tuple(end[i].x, end[i].y);
+
+		axes[i].setScale(false);
+		axes[i].setNumbers(false);
+		axes[i].setLabel(false);
+	}
+
+	vector<int> idx;
+	convexhull2d(idx,src);
+
+	int rem_x = -1;
+	int rem_y = -1;
+	int rem_z = -1;
+
+	for (unsigned k=0; k!=idx.size(); ++k)
+	{
+		Triple one, two;
+		
+		if (idx[k] >= axes.size()) // end point
+			one = end[idx[k]-axes.size()];
+		else
+			one = beg[idx[k]];
+
+		unsigned int next = idx[(k+1) % idx.size()];
+
+		if (next >= axes.size()) // end point
+			two = end[next-axes.size()];
+		else
+			two = beg[next];
+
+		int choice, other;
+		bool left;
+
+		for (i=0; i!=axes.size(); ++i)
+		{
+			if (
+					(one == beg[i] && two == end[i])
+					||
+					(two == beg[i] && one == end[i])
+				 )
+			{
+				if (i==X1 || i==X2 || i==X3 || i==X4)  // x Achsen
+				{
+					if (rem_x>=0) // schon zweite Achse der konvexen Huelle ?
+					{
+						// untere der beiden x Achsen
+						double y = min(min(end[rem_x].y,end[i].y),min(beg[rem_x].y,beg[i].y));
+						choice = (y == beg[i].y || y == end[i].y) ? i : rem_x;
+												
+						other = (choice == i) ? rem_x : i;
+						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
+							? true
+							: false;
+						autoDecorateExposedAxis(axes[choice], left);
+
+						rem_x = -1;
+					}
+					else
+					{
+						rem_x = i;
+					}
+				}
+				else if (i==Y1 || i==Y2 || i==Y3 || i==Y4)
+				{
+					if (rem_y>=0)
+					{
+						// untere der beiden y Achsen
+						double y = min(min(end[rem_y].y,end[i].y),min(beg[rem_y].y,beg[i].y));
+						choice = (y == beg[i].y || y == end[i].y) ? i : rem_y;
+						
+						other = (choice == i) ? rem_y : i;
+						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
+							? true
+							: false;
+						autoDecorateExposedAxis(axes[choice], left);
+
+						rem_y = -1;
+					}
+					else
+					{
+						rem_y = i;
+					}
+				}
+				else if (i==Z1 || i==Z2 || i==Z3 || i==Z4)
+				{
+					if (rem_z>=0)
+					{
+						// hintere der beiden z Achsen
+						double z = max(max(end[rem_z].z,end[i].z),max(beg[rem_z].z,beg[i].z));
+						choice = (z == beg[i].z || z == end[i].z) ? i : rem_z;
+
+						other = (choice == i) ? rem_z : i;
+						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
+							? true
+							: false;
+						autoDecorateExposedAxis(axes[choice], left);
+
+						rem_z = -1;
+					}
+					else
+					{
+						rem_z = i;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+void 
+CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
+{
+	Triple diff = World2ViewPort(ax.end()) - World2ViewPort(ax.begin());
+
+	diff = Triple(diff.x,diff.y,0); // projection
+	
+	double s = diff.length();
+	
+	if (!s)
+		return;
+
+	ax.setScale(true);
+	ax.setNumbers(true);
+	ax.setLabel(true);
+
+	const double SQRT_2 = 0.7071067;
+	double sina = fabs(diff.y / s);
+
+
+	if (left) // leftmost (compared with antagonist in CV)  axis -> draw decorations on the left side
+	{
+		if ( diff.x >= 0 && diff.y >= 0 && sina < SQRT_2)          // 0..Pi/4 
+		{
+			positionateLabel(ax, LabelPixmap::BottomCenter);
+			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+		}
+		else if ( diff.x >= 0 && diff.y >= 0  && !left)            // octant 2
+		{
+			positionateLabel(ax, LabelPixmap::CenterRight);
+			ax.setNumberAnchor(LabelPixmap::CenterRight);
+		}
+		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2)    // octant 3
+		{
+			positionateLabel(ax, LabelPixmap::CenterRight);
+			ax.setNumberAnchor(LabelPixmap::CenterRight);
+		}
+		else if ( diff.x <= 0 && diff.y >= 0 )                      // octant 4
+		{
+			positionateLabel(ax, LabelPixmap::TopCenter);
+			ax.setNumberAnchor(LabelPixmap::TopCenter);
+		}
+		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2)    // octant 5
+		{
+			positionateLabel(ax, LabelPixmap::BottomCenter);
+			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+		}
+		else if ( diff.x <= 0 && diff.y <= 0)                      // octant 6
+		{
+			positionateLabel(ax, LabelPixmap::CenterRight);
+			ax.setNumberAnchor(LabelPixmap::CenterRight);
+		}
+		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2)    // octant 7
+		{
+			positionateLabel(ax, LabelPixmap::CenterRight);
+			ax.setNumberAnchor(LabelPixmap::CenterRight);
+		}
+		else if ( diff.x >= 0 && diff.y <= 0)                      // octant 8
+		{
+			positionateLabel(ax, LabelPixmap::TopCenter);
+			ax.setNumberAnchor(LabelPixmap::TopCenter);
+		}
+	}	
+	else // rightmost axis
+	{
+		if ( diff.x >= 0 && diff.y >= 0 && sina <= SQRT_2)
+		{
+			positionateLabel(ax, LabelPixmap::TopCenter);
+			ax.setNumberAnchor(LabelPixmap::TopCenter);
+		}
+		else if ( diff.x >= 0 && diff.y >= 0  && !left) 
+		{
+			positionateLabel(ax, LabelPixmap::CenterLeft);
+			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+		}
+		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2) 
+		{
+			positionateLabel(ax, LabelPixmap::CenterLeft);
+			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+		}
+		else if ( diff.x <= 0 && diff.y >= 0) 
+		{
+			positionateLabel(ax, LabelPixmap::BottomCenter);
+			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+		}
+		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2) 
+		{
+			positionateLabel(ax, LabelPixmap::TopCenter);
+			ax.setNumberAnchor(LabelPixmap::TopCenter);
+		}
+		else if ( diff.x <= 0 && diff.y <= 0) 
+		{
+			positionateLabel(ax, LabelPixmap::CenterLeft);
+			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+		}
+		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2) 
+		{
+			positionateLabel(ax, LabelPixmap::CenterLeft);
+			ax.setNumberAnchor(LabelPixmap::CenterLeft);
+		}
+		else if ( diff.x >= 0 && diff.y <= 0) 
+		{
+			positionateLabel(ax, LabelPixmap::BottomCenter);
+			ax.setNumberAnchor(LabelPixmap::BottomCenter);
+		}
+	}
+}
+
 
 void 
 CoordinateSystem::setPosition(Triple first, Triple second)

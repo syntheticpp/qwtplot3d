@@ -1,7 +1,4 @@
-#include <float.h>
-
 #include "qwt_plot3d.h"
-#include "types.h"
 #include "functiongenerator.h"
 
 Function::Function(QwtPlot3D* pw)

@@ -1,7 +1,6 @@
 #ifndef __FUNCTIONGENERATOR_H__
 #define __FUNCTIONGENERATOR_H__
 
-#include <float.h>
 #include <qstring.h>
 
 
