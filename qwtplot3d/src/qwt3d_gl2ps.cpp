@@ -4,8 +4,7 @@
 using namespace Qwt3D;
 
 
-GLint 
-Qwt3D::setDeviceLineWidth(GLfloat val)
+GLint Qwt3D::setDeviceLineWidth(GLfloat val)
 {
 	if (val<0) 
 		val=0;
@@ -24,8 +23,26 @@ Qwt3D::setDeviceLineWidth(GLfloat val)
 	return ret;
 }
 
-GLint 
-Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
+GLint Qwt3D::setDevicePointSize(GLfloat val)
+{
+	if (val<0) 
+		val=0;
+
+	GLint ret = gl2psPointSize(val);
+
+	GLfloat lw[2];
+	glGetFloatv(GL_POINT_SIZE_RANGE, lw);
+	
+	if (val < lw[0])
+		val = lw[0];
+	else if (val > lw[1])
+		val = lw[1];
+
+	glPointSize(val);
+	return ret;
+}
+
+GLint Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
                        GLenum format, GLenum type,
                        const void *pixels)
 {
@@ -51,8 +68,7 @@ Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
 	return ret;
 }
 
-GLint 
-Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, double gap)
+GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, double gap)
 {
 	double vp[3];
 
@@ -128,8 +144,7 @@ Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Tripl
   return ret;
 }
 
-void 
-Qwt3D::setDevicePolygonOffset(GLfloat factor, GLfloat units)
+void Qwt3D::setDevicePolygonOffset(GLfloat factor, GLfloat units)
 {
 	glPolygonOffset(factor, units);
 	gl2psEnable(GL2PS_POLYGON_OFFSET_FILL);

@@ -29,17 +29,17 @@ Plot::Plot(QWidget* pw, int updateinterval)
 	
 	
 	coordinates()->axes[Qwt3D::X1].setLabelString("x");
-	coordinates()->axes[Qwt3D::Y1].setLabelString("y");
-	coordinates()->axes[Qwt3D::Z1].setLabelString("z"); 
-	coordinates()->axes[Qwt3D::X2].setLabelString("x");
-	coordinates()->axes[Qwt3D::Y2].setLabelString("y");
-	coordinates()->axes[Qwt3D::Z2].setLabelString("z"); 
-	coordinates()->axes[Qwt3D::X3].setLabelString("x");
-	coordinates()->axes[Qwt3D::Y3].setLabelString("y");
-	coordinates()->axes[Qwt3D::Z3].setLabelString("z"); 
-	coordinates()->axes[Qwt3D::X4].setLabelString("x");
-	coordinates()->axes[Qwt3D::Y4].setLabelString("y");
-	coordinates()->axes[Qwt3D::Z4].setLabelString("z"); 
+	coordinates()->axes[Y1].setLabelString("y");
+	coordinates()->axes[Z1].setLabelString("z"); 
+	coordinates()->axes[X2].setLabelString("x");
+	coordinates()->axes[Y2].setLabelString("y");
+	coordinates()->axes[Z2].setLabelString("z"); 
+	coordinates()->axes[X3].setLabelString("x");
+	coordinates()->axes[Y3].setLabelString("y");
+	coordinates()->axes[Z3].setLabelString("z"); 
+	coordinates()->axes[X4].setLabelString("x");
+	coordinates()->axes[Y4].setLabelString("y");
+	coordinates()->axes[Z4].setLabelString("z"); 
 
 
   QTimer* timer = new QTimer( this );

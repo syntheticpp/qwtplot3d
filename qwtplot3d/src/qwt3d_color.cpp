@@ -36,8 +36,7 @@ void StandardColor::setColorVector(ColorVector const& cv)
 	colors_ = cv;
 }
 
-void
-StandardColor::setAlpha(double a)
+void StandardColor::setAlpha(double a)
 {
 	if (a<0 || a>1)
 		return;
@@ -50,10 +49,9 @@ StandardColor::setAlpha(double a)
 		elem.a = a;
 		colors_[i] = elem;
 	}	
-}
-		
-RGBA 
-StandardColor::operator()(double x, double y, double z)
+}	
+
+RGBA StandardColor::operator()(double x, double y, double z) const
 {
 	Q_ASSERT(data_);
 	int index = (int)((colors_.size()-1) * (z - data_->hull().minVertex.z) / (data_->hull().maxVertex.z-data_->hull().minVertex.z));

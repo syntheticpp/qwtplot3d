@@ -310,6 +310,14 @@ void Mesh2MainWindow::pickPlotStyle( QAction* action )
 	{
 		dataWidget->setPlotStyle(HIDDENLINE);
 	}
+	else if (action == pointstyle)
+	{
+
+    dataWidget->setPlotStyle(Qwt3D::POINTS);
+//    Cone d(len,32);
+//    CrossHair d(0.003,0,true,false);
+//    dataWidget->setPlotStyle(d);
+	}
 	else
 	{
 		dataWidget->setPlotStyle(NOPLOT);

@@ -8,6 +8,59 @@
 
 using namespace Qwt3D;
 
+namespace {
+  // convex hull
+  
+  typedef double coord;
+
+  int ccw(coord **P, int i, int j, int k) {
+    coord	a = P[i][0] - P[j][0],
+      b = P[i][1] - P[j][1],
+      c = P[k][0] - P[j][0],
+      d = P[k][1] - P[j][1];
+    return a*d - b*c <= 0;	   /* true if points i, j, k counterclockwise */
+  }
+
+
+#define CMPM(c,A,B) \
+  v = (*(coord**)A)[c] - (*(coord**)B)[c];\
+  if (v>0) return 1;\
+  if (v<0) return -1;
+
+  int cmpl(const void *a, const void *b) {
+    double v;
+    CMPM(0,a,b);
+    CMPM(1,b,a);
+    return 0;
+  }
+
+  int cmph(const void *a, const void *b) {return cmpl(b,a);}
+
+
+  int make_chain(coord** V, int n, int (*cmp)(const void*, const void*)) {
+    int i, j, s = 1;
+    coord* t;
+
+    qsort(V, n, sizeof(coord*), cmp);
+    for (i=2; i<n; i++) {
+      for (j=s; j>=1 && ccw(V, i, j, j-1); j--){}
+      s = j+1;
+      t = V[s]; V[s] = V[i]; V[i] = t;
+    }
+    return s;
+  }
+
+  int _ch2d(coord **P, int n)  {
+    int u = make_chain(P, n, cmpl);		/* make lower hull */
+    if (!n) return 0;
+    P[n] = P[0];
+    return u+make_chain(P+u, n-u+1, cmph);	/* make upper hull */
+  }
+
+
+} // ns anon
+
+
 GridData::GridData()
 {
 	setSize(0,0);
@@ -23,20 +76,17 @@ GridData::~GridData()
 	clear();		
 }
 
-int 
-GridData::columns() const 
+int GridData::columns() const 
 { 
 	return (int)vertices.size();
 }
 
-int 
-GridData::rows() const 
+int GridData::rows() const 
 { 
 	return (empty()) ? 0 : (int)vertices[0].size();	
 }
 
-void 
-GridData::clear()
+void GridData::clear()
 {
 	{
 		for (unsigned i=0; i!=vertices.size(); ++i)
@@ -69,8 +119,7 @@ GridData::clear()
 }
 
 
-void 
-GridData::setSize(unsigned int columns, unsigned int rows)
+void GridData::setSize(unsigned int columns, unsigned int rows)
 {
 	clear();
 	vertices = std::vector<DataRow>(columns);
@@ -105,22 +154,19 @@ ParallelEpiped GridData::hull() const
 	return hull_;
 }
 
-Triple const& 
-CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
+Triple const& CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
 {
 	return nodes[cells[cellnumber][vertexnumber]];
 }
 
-void 
-CellData::clear()
+void CellData::clear()
 {
 	cells.clear();
 	nodes.clear();
 	normals.clear();
 }
 
-ParallelEpiped 
-CellData::hull() const
+ParallelEpiped CellData::hull() const
 {
 	if (empty())
 		return ParallelEpiped();
@@ -129,15 +175,12 @@ CellData::hull() const
 }
 
 
-QColor 
-Qwt3D::GL2Qt(GLdouble r, GLdouble g, GLdouble b)
+QColor Qwt3D::GL2Qt(GLdouble r, GLdouble g, GLdouble b)
 {
 	return QColor(round(r * 255), round(g * 255), round(b * 255));	
 }
 
- 
-RGBA 
-Qwt3D::Qt2GL(QColor col)
+RGBA Qwt3D::Qt2GL(QColor col)
 {
 	QRgb qrgb = col.rgb();
 	RGBA rgba;
@@ -148,63 +191,10 @@ Qwt3D::Qt2GL(QColor col)
 	return rgba;	
 }
 
-// convex hull
-
-namespace {
-
-typedef double coord;
 
 
-int ccw(coord **P, int i, int j, int k) {
-	coord	a = P[i][0] - P[j][0],
-		b = P[i][1] - P[j][1],
-		c = P[k][0] - P[j][0],
-		d = P[k][1] - P[j][1];
-	return a*d - b*c <= 0;	   /* true if points i, j, k counterclockwise */
-}
 
-
-#define CMPM(c,A,B) \
-	v = (*(coord**)A)[c] - (*(coord**)B)[c];\
-	if (v>0) return 1;\
-	if (v<0) return -1;
-
-int cmpl(const void *a, const void *b) {
-	double v;
-	CMPM(0,a,b);
-	CMPM(1,b,a);
-	return 0;
-}
-
-int cmph(const void *a, const void *b) {return cmpl(b,a);}
-
-
-int make_chain(coord** V, int n, int (*cmp)(const void*, const void*)) {
-	int i, j, s = 1;
-	coord* t;
-
-	qsort(V, n, sizeof(coord*), cmp);
-	for (i=2; i<n; i++) {
-		for (j=s; j>=1 && ccw(V, i, j, j-1); j--){}
-		s = j+1;
-		t = V[s]; V[s] = V[i]; V[i] = t;
-	}
-	return s;
-}
-
-int _ch2d(coord **P, int n)  {
-	int u = make_chain(P, n, cmpl);		/* make lower hull */
-	if (!n) return 0;
-	P[n] = P[0];
-	return u+make_chain(P+u, n-u+1, cmph);	/* make upper hull */
-}
-
-
-} // ns anon
-
-
-void 
-Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& src )
+void Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& src )
 {
     idx.clear();
     if (src.empty())
@@ -237,8 +227,7 @@ Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& src )
 		delete [] P;
 }
 
-unsigned 
-Qwt3D::tesselationSize(CellField const& t)
+unsigned Qwt3D::tesselationSize(CellField const& t)
 {
 	unsigned ret = 0;
 	

@@ -1,15 +1,16 @@
-# Doxyfile 1.3.4
+# Doxyfile 1.3.5
 
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "QwtPlot3D API"
-PROJECT_NUMBER         = "0.2.0 beta"
+PROJECT_NUMBER         = "0.2.3 beta"
 OUTPUT_DIRECTORY       = 
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = YES
 BRIEF_MEMBER_DESC      = YES
 REPEAT_BRIEF           = NO
+ABBREVIATE_BRIEF       = 
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = NO
@@ -150,6 +151,7 @@ GENERATE_XML           = NO
 XML_OUTPUT             = xml
 XML_SCHEMA             = 
 XML_DTD                = 
+XML_PROGRAMLISTING     = YES
 #---------------------------------------------------------------------------
 # configuration options for the AutoGen Definitions output
 #---------------------------------------------------------------------------

@@ -31,11 +31,13 @@ namespace Qwt3D
 //! Plotting style
 enum PLOTSTYLE
 {
-	NOPLOT,      //!< No visible data, used in SurfacePlot to show normals only
-	WIREFRAME,   //!< Wireframe style
-	HIDDENLINE,  //!< Hidden Line style
-	FILLED,      //!< Color filled polygons w/o edges 
-	FILLEDMESH   //!< Color filled polygons w/ separately colored edges
+	NOPLOT     , //!< No visible data
+	WIREFRAME  , //!< Wireframe style
+	HIDDENLINE , //!< Hidden Line style
+	FILLED     , //!< Color filled polygons w/o edges 
+	FILLEDMESH , //!< Color filled polygons w/ separately colored edges
+  POINTS     , //!< User defined style (used by Enrichments)
+  USER       , //!< User defined style (used by Enrichments)
 };
 
 //! Shading style
@@ -289,9 +291,10 @@ unsigned tesselationSize(Qwt3D::CellField const& t);
 //! Red-Green-Blue-Alpha value
 struct QWT3D_EXPORT RGBA
 {
-	RGBA() 
+	RGBA()
+		: r(0), g(0), b(0), a(1)
 		{}
-	explicit RGBA(double rr, double gg, double bb, double aa = 1)
+	RGBA(double rr, double gg, double bb, double aa = 1)
 		: r(rr), g(gg), b(bb), a(aa)
 		{}
 	double r,g,b,a;

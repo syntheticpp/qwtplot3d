@@ -12,8 +12,7 @@ using namespace Qwt3D;
 	Standard mouse button handler. Prepares the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void 
-Plot3D::mousePressEvent( QMouseEvent *e )
+void Plot3D::mousePressEvent( QMouseEvent *e )
 {
 	lastMouseMovePosition_ = e->pos();
 	mpressed_ = true;
@@ -25,8 +24,7 @@ Plot3D::mousePressEvent( QMouseEvent *e )
 	Standard mouse button handler. Completes the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void 
-Plot3D::mouseReleaseEvent( QMouseEvent *e )
+void Plot3D::mouseReleaseEvent( QMouseEvent *e )
 {
 	mpressed_ = false;
 	//setResolution(resolution() / 5);
@@ -36,8 +34,7 @@ Plot3D::mouseReleaseEvent( QMouseEvent *e )
 	Standard mouse button handler
 	\see assignMouse()
 */
-void 
-Plot3D::mouseMoveEvent( QMouseEvent *e )
+void Plot3D::mouseMoveEvent( QMouseEvent *e )
 {
 	if (!mpressed_ || !mouseEnabled())
 		return;
@@ -52,8 +49,7 @@ Plot3D::mouseMoveEvent( QMouseEvent *e )
 	lastMouseMovePosition_ = e->pos();
 }
 
-void 
-Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Rotation
 	double w = max(1,width());
@@ -76,8 +72,7 @@ Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void 
-Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Scale
 		double w = max(1,width());
@@ -103,8 +98,7 @@ Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 			setZoom(max(0.0,zoom() - relyz));
 }
 
-void 
-Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Shift
 	double w = max(1,width());
@@ -127,8 +121,7 @@ Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 /**
 	Standard wheel handler - zoom (wheel only) or z-scale (shift+wheel)
 */
-void 
-Plot3D::wheelEvent( QWheelEvent *e )
+void Plot3D::wheelEvent( QWheelEvent *e )
 {
 	if (!mouseEnabled())
 		return;
@@ -162,8 +155,7 @@ Plot3D::wheelEvent( QWheelEvent *e )
 
 	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
-void 
-Plot3D::assignMouse(int xrot, int yrot, int zrot,
+void Plot3D::assignMouse(int xrot, int yrot, int zrot,
 											 int xscale, int yscale, int zscale,
 											 int zoom, int xshift, int yshift)
 {

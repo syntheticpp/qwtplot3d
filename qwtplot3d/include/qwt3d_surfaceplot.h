@@ -62,11 +62,19 @@ protected:
 private:
 		void updateGridData();
 	  void updateCellData();
+
+    void updateGridEnrichment(Qwt3D::Enrichment& p);
+    void updateGridEnrichments();
+    void updateCellEnrichment(Qwt3D::Enrichment& p);
+    void updateCellEnrichments();
 		
 		void updateGridNormals();
+		void updateGridPoints();
 		void GridData2Floor();
 		void GridIsolines2Floor();
-		void updateCellNormals();
+		
+    void updateCellNormals();
+		void updateCellPoints();
 		void CellData2Floor();
 		void CellIsolines2Floor();
 

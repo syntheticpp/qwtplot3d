@@ -4,25 +4,38 @@
 #endif
 
 #include "qwt3d_surfaceplot.h"
-#include "qwt3d_vectorfield.h"
+#include "qwt3d_enrichment_std.h"
 #include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
 
-void 
-SurfacePlot::updateGridData()
+void SurfacePlot::updateGridData()
 {
 	int i, j;
 	RGBA col;
 	int cstep = resolution();
 	int rstep = resolution();
-	
+
+  if (plotStyle() == Qwt3D::POINTS)
+  {
+    updateGridPoints();
+    return;
+  }
+  else if (plotStyle() == Qwt3D::USER)
+  {
+    if (userplotstyle)
+      updateGridEnrichment(*userplotstyle);
+    return;
+  }
+  updateGridEnrichments();
+
 	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	setDevicePolygonOffset(polygonOffset(),1.0);
 
 	GLStateBewarer sb2(GL_LINE_SMOOTH, smoothdatamesh_);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
 	if (plotStyle() != WIREFRAME)
 	{
@@ -96,13 +109,12 @@ SurfacePlot::updateGridData()
 	}
 }
 
-void
-SurfacePlot::setColorFromGridVertex(int ix, int iy, bool skip)
+void SurfacePlot::setColorFromGridVertex(int ix, int iy, bool skip)
 {
 	if (skip)
 		return;
 
-	RGBA col = (*dataColor)(
+	RGBA col = (*datacolor)(
 		actualGridData_->vertices[ix][iy][0],
 		actualGridData_->vertices[ix][iy][1],
 		actualGridData_->vertices[ix][iy][2]);
@@ -110,8 +122,7 @@ SurfacePlot::setColorFromGridVertex(int ix, int iy, bool skip)
 	glColor4d(col.r, col.g, col.b, col.a);
 }
 
-void 
-SurfacePlot::GridData2Floor()
+void SurfacePlot::GridData2Floor()
 {
 	if (actualGridData_->empty())
 		return;
@@ -143,8 +154,7 @@ SurfacePlot::GridData2Floor()
 	}
 }
 
-void 
-SurfacePlot::GridIsolines2Floor()
+void SurfacePlot::GridIsolines2Floor()
 {
 	if (isolines() <= 0 || actualGridData_->empty())
 		return;
@@ -179,7 +189,7 @@ SurfacePlot::GridIsolines2Floor()
 												actualGridData_->vertices[i][j][1],
 												actualGridData_->vertices[i][j][2]);
 
-				col = (*dataColor)(t[0].x,t[0].y,t[0].z);
+				col = (*datacolor)(t[0].x,t[0].y,t[0].z);
   			glColor4d(col.r, col.g, col.b, col.a);
 //  			glColor4d(0,0,0,1);
 				
@@ -247,24 +257,23 @@ SurfacePlot::GridIsolines2Floor()
 }
 
 
-void 
-SurfacePlot::updateGridNormals()
+void SurfacePlot::updateGridNormals()
 {
 	if (!normals() || actualGridData_->empty())
 		return;
 
-	VectorField v(dataColor);
-	v.setQuality(normalQuality());
-	v.elements = FreeVectorField(actualGridData_->columns()*actualGridData_->rows());
+  Arrow arrow;
+  arrow.setQuality(normalQuality());
 
-	Triple basev;
-	Triple topv;	
+	Triple basev, topv, norm;	
 	
 	int cstep = resolution();
 	int rstep = resolution();
 
 	double diag = (actualGridData_->hull().maxVertex-actualGridData_->hull().minVertex).length() * normalLength();
 
+  arrow.assign(*this);
+  arrow.drawBegin();
 	for (int i = 0; i <= actualGridData_->columns() - cstep; i += cstep) 
 	{
 		for (int j = 0; j <= actualGridData_->rows() - rstep; j += rstep) 
@@ -274,15 +283,46 @@ SurfacePlot::updateGridNormals()
 							 actualGridData_->vertices[i][j][1]+actualGridData_->normals[i][j][1],
 							 actualGridData_->vertices[i][j][2]+actualGridData_->normals[i][j][2]);	
 			
-			Triple norm = (topv-basev);
+			norm = topv-basev;
 			norm.normalize();
 			norm	*= diag;
 
-			v.elements[i * actualGridData_->rows() +j].base 
-				= basev;		
-			v.elements[i * actualGridData_->rows() +j].top 
-				= basev + norm;	
+      arrow.setTop(basev+norm);
+      arrow.setColor((*datacolor)(basev.x,basev.y,basev.z));
+      arrow.draw(basev);
 		}
 	}
-	v.drawArrows();
+  arrow.drawEnd();
+}
+
+void SurfacePlot::updateGridPoints()
+{
+  Dot pt;
+  updateGridEnrichment(pt);
+}
+
+void SurfacePlot::updateGridEnrichment(Qwt3D::Enrichment& p)
+{
+  int cstep = resolution();  
+  int rstep = resolution();  
+  p.assign(*this);
+	  p.drawBegin();
+ 	  for (int i = 0; i <= actualGridData_->columns() - cstep; i += cstep) 
+    {
+      for (int j = 0; j <= actualGridData_->rows() - rstep; j += rstep) 
+      { 
+  			  p.draw(Triple(actualGridData_->vertices[i][j][0],
+										                actualGridData_->vertices[i][j][1],
+                                    actualGridData_->vertices[i][j][2]));
+      }
+    }
+    p.drawEnd(); 
+}
+
+void SurfacePlot::updateGridEnrichments()
+{
+  for (ELIT it = elist.begin(); it!=elist.end(); ++it)
+  {
+    updateGridEnrichment(**it);
+  } 
 }

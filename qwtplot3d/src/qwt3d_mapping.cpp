@@ -12,8 +12,7 @@ using namespace Qwt3D;
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool 
-SurfacePlot::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
+bool SurfacePlot::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																				, double minx, double maxx, double miny, double maxy)
 {
 	meshtype_ = GRID;
@@ -172,8 +171,7 @@ SurfacePlot::createDataRepresentation(double** data, unsigned int columns, unsig
 	Convert user (non-rectangular) mesh based data to internal structure.
 	See also Qwt3D::TripleField and Qwt3D::CellField
 */
-bool 
-SurfacePlot::createDataRepresentation(TripleField const& data, CellField const& poly, MESHTYPE mtype)
+bool SurfacePlot::createDataRepresentation(TripleField const& data, CellField const& poly, MESHTYPE mtype)
 {
 	if (mtype == GRID)
 		return false;
