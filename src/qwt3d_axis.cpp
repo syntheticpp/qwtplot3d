@@ -68,6 +68,9 @@ void Axis::setMajors(int val)
 	majorintervals_ = (val<=0) ? 1 : val; // always >= 1
 }
 
+/*!
+\see LogScale::setMinors().
+*/
 void Axis::setMinors(int val)
 {
 	if (val == minorintervals_)
@@ -196,7 +199,7 @@ bool Axis::prepTicCalculation(Triple& startpoint)
   scale_->setMajors(majors());
   scale_->setMinors(minors());
   scale_->setMajorLimits(autostart_,autostop_);
-  scale_->create();
+  scale_->calculate();
 
 	Triple normal = (end_ - beg_);
 	//normal.normalize();
@@ -352,8 +355,9 @@ Triple Axis::biggestNumberString()
 }
 
 /*! 
+  This variant sets a user-defined scale object.
   Use with a heap based initialized pointer only.
-  The axis adopts ownership 
+  The axis adopts ownership. 
 */
 void Axis::setScale(Scale* val)
 {
@@ -362,6 +366,9 @@ void Axis::setScale(Scale* val)
 
 /*!
   Sets one of the predefined scaling types.
+  \warning Too small intervals in logarithmic scales lead to  
+  empty scales (or perhaps a scale only containing an isolated 
+  major tic). Better switch to linear scales in such cases.
 */
 void Axis::setScale(Qwt3D::SCALETYPE val)
 {
@@ -371,6 +378,7 @@ void Axis::setScale(Qwt3D::SCALETYPE val)
   	break;
   case Qwt3D::LOG10SCALE:
     setScale(new LogScale);
+    setMinors(9);
   	break;
   default:
     break;

@@ -454,7 +454,7 @@ void CoordinateSystem::setNumberColor(RGBA val)
 void CoordinateSystem::setStandardScale()
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
-    axes[i].setScale(new LinearScale);
+    axes[i].setScale(LINEARSCALE);
 }
 
 void CoordinateSystem::setLabelFont(QFont const& font)
