@@ -21,7 +21,7 @@ int main( int argc, char **argv )
 		return -1;
   }
     
-	Mesh2MainWindow mainwindow;
+  Mesh2MainWindow mainwindow;
 	app.setMainWidget(&mainwindow);
 
 	mainwindow.show();

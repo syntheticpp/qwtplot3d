@@ -14,4 +14,5 @@ SOURCES = src/main.cpp \
 HEADERS =  src/mesh2mainwindow.h \
 		src/functions.h \
 		src/colormapreader.h \
-		src/lightingdlg.h 
+		src/lightingdlg.h \
+		src/femreader.h

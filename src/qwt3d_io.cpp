@@ -2,110 +2,204 @@
 
 #include "qwt3d_plot.h"
 #include "qwt3d_gl2ps.h"
-#include "qwt3d_io.h"
+//#include "qwt3d_io.h"
+#include "qwt3d_io_gl2ps.h"
+#include "qwt3d_io_reader.h"
+
 
 using namespace Qwt3D;
 
+static Qwt3D::IO qwt3diodummy;
+
+
+/*! 
+  Registers a new Function for data input.\n
+  Every call overwrites a formerly registered handler for the same format string
+  (case sensitive).
+*/
+bool IO::defineInputHandler(QString const& format, IO::Function func)
+{
+  return add_unique(rlist(), Entry(format, func));
+}
+
+/*! 
+  Registers a new Functor for data input.\n
+  Every call overwrites a formerly registered handler for the same format string
+  (case sensitive).
+*/
+bool IO::defineInputHandler(QString const& format, IO::Functor const& func)
+{
+  return add_unique(rlist(), Entry(format, func));
+}
+
+/*! 
+  Registers a new Function for data output.  
+  Every call overwrites a formerly registered handler for the same format string
+  (case sensitive).
+ */
+bool IO::defineOutputHandler(QString const& format, IO::Function func)
+{
+  return add_unique(wlist(), Entry(format, func));
+}
+
+/*! 
+  Registers a new Functor for data output.\n
+  Every call overwrites a formerly registered handler for the same format string
+  (case sensitive).
+*/
+bool IO::defineOutputHandler(QString const& format, IO::Functor const& func)
+{
+  return add_unique(wlist(), Entry(format, func));
+}
 
 /*!
-	Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS","PDF" or "TEX" .
+  Returns a pointer to a read Function if such a function has been registered by 
+  defineInputHandler and 0 else. 
+*/
+bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
+{
+  IT it = IO::find(rlist(), format);
+
+  if (it == rlist().end())
+    return false;
+
+  return (*it->iofunc)(plot, fname, format);
+}
+
+/*!
+  Returns a pointer to a write Function if such a function has been registered by 
+  defineOutputHandler and 0 else. 
+*/
+bool IO::save(Plot3D* plot, QString const& fname, QString const& format)
+{
+  IT it = IO::find(wlist(), format);
+
+  if (it == wlist().end())
+    return false;
+
+  return (*it->iofunc)(plot, fname, format);
+}
+
+/*!
+  Returns a list of currently registered input formats. 
+*/
+QStringList IO::inputFormatList()
+{
+  QStringList list;
+  for ( IT it = rlist().begin(); it!=rlist().end(); ++it )
+    list.append(it->fmt);
+  
+  return list;
+}
+
+/*!
+  Returns a list of currently registered output formats. 
+*/
+QStringList IO::outputFormatList()
+{
+  QStringList list;  
+  for ( IT it = wlist().begin(); it!=wlist().end(); ++it )
+    list.append(it->fmt);
+  
+  return list;
+}
+
+/*! 
+  Returns the input functor in charge for format and 0 if non-existent. 
+*/
+IO::Functor* IO::inputHandler(QString const& format)
+{
+  IO::IT it = IO::find(rlist(), format);
+  
+  if (it==rlist().end())
+    return 0;
+
+  return it->iofunc;
+}
+
+/*! 
+  Returns the output functor in charge for format and 0 if non-existent. 
+*/
+IO::Functor* IO::outputHandler(QString const& format)
+{
+  IO::IT it = IO::find(wlist(), format);
+  
+  if (it==wlist().end())
+    return 0;
+
+  return it->iofunc;
+}
+
+void IO::setupHandler()
+{
+  QStringList list = QImage::outputFormatList();
+  QStringList::Iterator it = list.begin();
+  while( it != list.end() ) 
+  {
+    defineOutputHandler( *it, QtPixmapWrite );
+    ++it;
+  }
+  Gl2psWriter vecfunc; 
+#ifdef GL2PS_HAVE_ZLIB
+  vecfunc.compressed = false;
+#endif
+  vecfunc.setFormat("EPS");
+  defineOutputHandler("EPS", vecfunc);
+  vecfunc.setFormat("PS");
+  defineOutputHandler("PS", vecfunc);
+  
+#ifdef GL2PS_HAVE_ZLIB
+  vecfunc.compressed = true;
+  vecfunc.setFormat("EPS_GZ");
+  defineOutputHandler("EPS_GZ", vecfunc);
+  vecfunc.setFormat("PS_GZ");
+  defineOutputHandler("PS_GZ", vecfunc);
+#endif
+  vecfunc.setFormat("PDF");
+  defineOutputHandler("PDF", vecfunc);
+  vecfunc.setFormat("TEX");
+  defineOutputHandler("TEX", vecfunc);
+
+  defineInputHandler("mes", NativeReader());
+  defineInputHandler("MES", NativeReader());
+}
+
+/*!
+	\deprecated  Use Plot3D::save or IO::save instead.
+	
+  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS","PDF" or "TEX".
+  If zlib has been configured this will be extended by "EPS_GZ" and "PS_GZ". 
 	The last parameter is one of gl2ps' sorting types: GL2PS_NO_SORT, GL2PS_SIMPLE_SORT or GL2PS_BSP_SORT.
   Default is GL2PS_SIMPLE_SORT.\n 
 	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
-	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.\n
-  Another word of caution: If you use compressed output, the created postscript file is actually a gzipped 
-  EPS resp. PS file ("xyz.eps.gz, yyz.ps.gz"). PDF on the other hand defines compression in his specification 
-  and therefore the option produces valid PDF.  
+	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.
 */
-bool Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
+bool Plot3D::saveVector(QString const& fileName, QString const& format, bool notext, int sorttype)
 {
-	makeCurrent();
-	Label::useDeviceFonts(true);
-	
-	GLint gl2ps_format;
-	if (format == QString("EPS"))
-	{
-		gl2ps_format = GL2PS_EPS;
-	}
-	else if (format == QString("PS"))
-	{
-		gl2ps_format = GL2PS_PS;
-	}
-	else if (format == QString("TEX"))
-	{
-		gl2ps_format = GL2PS_TEX;
-	}
-	else if (format == QString("PDF"))
-	{
-		gl2ps_format = GL2PS_PDF;
-	}
-	else
-	{
-		Label::useDeviceFonts(false);
-		return false;
-	}
-
-	FILE *fp = fopen(fileName.latin1(), "wb");	
-	if (!fp)
-		return false;
-
-	GLint bufsize = 0, state = GL2PS_OVERFLOW;
-	GLint viewport[4];
-
-	glGetIntegerv(GL_VIEWPORT, viewport);
-
-	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
-										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_COMPRESS;
-
-	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
-		options |= GL2PS_LANDSCAPE;
-
-	if (notext)
-		options |= GL2PS_NO_PIXMAP | GL2PS_NO_TEXT;
-
-	if (sorttype < 0)
-		sorttype = GL2PS_SIMPLE_SORT;
-
-
-	QString version = QString::number(QWT3D_MAJOR_VERSION) + "."
-		+ QString::number(QWT3D_MINOR_VERSION) + "."
-		+ QString::number(QWT3D_PATCH_VERSION); 
-	    
-	QString producer = QString("QwtPlot3D ") + version + 
-		" (beta) , (C) 2002";
-  
-  // calculate actual year
-  time_t now;
-  struct tm *newtime;
-  time(&now);
-  newtime = gmtime(&now);
-	if (newtime && newtime->tm_year + 1900 > 2002)
-	  producer += "-" + QString::number(newtime->tm_year+1900); 
-  
-  producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
-
-	while( state == GL2PS_OVERFLOW )
-	{ 
-		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", producer, viewport,
-										 gl2ps_format, sorttype,
-										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-										 fp, fileName.latin1() );
-		
-		updateData();
-		updateGL(); 
-		state = gl2psEndPage();
-	}
-	fclose(fp);
-
-	Label::useDeviceFonts(false);
-	return true;
+  if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
+    || format == "PS_GZ" || format == "PDF" || format == "TEX")
+    return IO::save(this, fileName, format);
+  return false;
 }	
 /*!
-	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt
+	\deprecated  Use Plot3D::save or IO::save instead.
+  
+  Saves the framebuffer to the file fileName using one of the image file formats supported by Qt.
 */
-bool Plot3D::savePixmap(QString fileName, QString format)
+bool Plot3D::savePixmap(QString const& fileName, QString const& format)
 {
-	QImage im = grabFrameBuffer(true);
-	return im.save(fileName,format);
+  if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
+    || format == "PS_GZ" || format == "PDF"  || format == "TEX")
+    return false;
+  
+  return IO::save(this, fileName, format);
+}
+
+/*! 
+  Saves content in one of the registered output formats. To modify the 
+  behaviour for more complex output handling use IO::outputHandler.
+*/
+bool Plot3D::save(QString const& fileName, QString const& format)
+{
+  return IO::save(this, fileName, format);
 }

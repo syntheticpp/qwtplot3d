@@ -6,6 +6,7 @@
 #include "qwt3d_plot.h"
 #include "qwt3d_enrichment.h"
 
+
 using namespace Qwt3D;
 	
 /*!
@@ -13,7 +14,7 @@ using namespace Qwt3D;
 */
 Plot3D::Plot3D( QWidget* parent, const char* name )
     : QGLWidget( parent, name )
-{
+{  
   initializedGL_ = false;
   xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
   
@@ -192,7 +193,6 @@ void Plot3D::paintGL()
 	}
 
   glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
-	
  //glDisable(GL_DEPTH_TEST);
  //glEnable(GL_DEPTH_TEST);
  //glDepthMask(GL_FALSE);  

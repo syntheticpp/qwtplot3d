@@ -9,9 +9,8 @@ MOC_DIR           = tmp
 OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
-DESTDIR      			= lib
-#unix:LIBS += -L/usr/X11R6/lib
-#DESTDIR = ../../lib
+#DESTDIR      			= lib
+DESTDIR = ../../lib
 
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll 
@@ -22,7 +21,7 @@ win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL
 # win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
-unix:VERSION = 0.2.3-beta
+unix:VERSION = 0.2.4
 
 # Input
 SOURCES += src/qwt3d_axis.cpp \
@@ -38,7 +37,7 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_types.cpp \
            src/qwt3d_enrichment_std.cpp \
            src/qwt3d_autoscaler.cpp \
-           src/qwt3d_reader.cpp \
+           src/qwt3d_io_reader.cpp \
            src/qwt3d_io.cpp 
 
 SOURCES += src/qwt3d_gridmapping.cpp \
@@ -65,8 +64,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_enrichment_std.h \
            include/qwt3d_autoscaler.h \
            include/qwt3d_io.h \
-           include/qwt3d_femreader.h \
-           include/qwt3d_reader.h
+           include/qwt3d_io_reader.h
 						
 
 HEADERS += include/qwt3d_mapping.h \
@@ -79,10 +77,10 @@ HEADERS += include/qwt3d_surfaceplot.h \
            include/qwt3d_graphplot.h \
            include/qwt3d_multiplot.h
 
-
 # gl2ps support
 HEADERS+=include/qwt3d_gl2ps.h \
-         3rdparty/gl2ps/gl2ps.h
+         3rdparty/gl2ps/gl2ps.h \
+         include/qwt3d_io_gl2ps.h
          
 SOURCES+=src/qwt3d_gl2ps.cpp \
          3rdparty/gl2ps/gl2ps.c

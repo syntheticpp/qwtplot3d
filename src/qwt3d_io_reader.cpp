@@ -2,24 +2,26 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <float.h>
 #include <stdio.h>
 #include <qtextstream.h>
 
 #include "qwt3d_surfaceplot.h"
-#include "qwt3d_io.h"
+#include "qwt3d_io_reader.h"
 
 using namespace std;
 using namespace Qwt3D;
 
+const char* NativeReader::magicstring = "jk:11051895-17021986";
 
 namespace
 {
 	FILE* open(QString fname)
 	{
-		FILE* file = fopen(fname.latin1(), "r");
+		FILE* file = fopen(fname.local8Bit(), "r");
 		if (!file) 
 		{
-			fprintf(stderr, "NativeReader::read: cannot open data file \"%s\"\n", fname.latin1());
+			fprintf(stderr, "NativeReader::read: cannot open data file \"%s\"\n", fname.local8Bit());
 		}
 		return file;
 	}
@@ -152,25 +154,18 @@ namespace
 	}
 }
 
-NativeReader::NativeReader(SurfacePlot* pw, QString fname)
-: magicstring("jk:11051895-17021986")
+NativeReader::NativeReader()
+: minz_(-DBL_MAX), maxz_(DBL_MAX) 
 {
-	if (!pw)
-	{
-		fprintf(stderr,"NativeReader: no valid Plot3D Widget");
-		return;
-	}
-	plotwidget_ = pw;
-	setFileName(fname);
 }
 
-bool NativeReader::collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh, 
+bool NativeReader::collectInfo(FILE*& file, QString const& fname, unsigned& xmesh, unsigned& ymesh, 
 															 double& minx, double& maxx, double& miny, double& maxy)
 {
-	if (fileName_.isEmpty() || !plotwidget_)
+	if (fname.isEmpty())
 		return false;
 	
-	file = open(fileName_);
+	file = open(fname);
 	
 	if (!file)
 		return false;
@@ -190,14 +185,14 @@ bool NativeReader::collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh,
 }
 
 
-bool NativeReader::read(double minz, double maxz)
+bool NativeReader::operator()(Plot3D* plot, QString const& fname, QString const& format)
 {
 	
 	FILE* file;
 	unsigned int xmesh, ymesh;
 	double minx, maxx, miny, maxy;
 	
-	if ( !collectInfo(file, xmesh, ymesh, minx, maxx, miny, maxy) )
+	if ( !collectInfo(file, fname, xmesh, ymesh, minx, maxx, miny, maxy) )
 		return false;
 	
 	/* allocate some space for the mesh */
@@ -209,21 +204,21 @@ bool NativeReader::read(double minz, double maxz)
 		{
       if (fscanf(file, "%lf", &data[i][j]) != 1) 
 			{
-				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", fileName_.latin1());
+				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", fname.local8Bit());
 				return false;
       }
 
-			if (data[i][j] > maxz)
-				data[i][j] = maxz;
-			else if (data[i][j] < minz)
-				data[i][j] = minz;
+			if (data[i][j] > maxz_)
+				data[i][j] = maxz_;
+			else if (data[i][j] < minz_)
+				data[i][j] = minz_;
     }
   }
 
   /* close the file */
   fclose(file);
 
-	plotwidget_->loadFromData(data, xmesh, ymesh, minx, maxx, miny, maxy);
+	((SurfacePlot*)plot)->loadFromData(data, xmesh, ymesh, minx, maxx, miny, maxy);
 	deleteData(data,xmesh);
 
 	return true;

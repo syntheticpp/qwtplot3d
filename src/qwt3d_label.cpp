@@ -222,7 +222,7 @@ void Label::draw()
 	if (devicefonts_)
 	{
 //		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
+		drawDeviceText(text_.local8Bit(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
 	}
 	else
 	{
