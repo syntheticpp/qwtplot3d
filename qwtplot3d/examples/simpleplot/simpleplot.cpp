@@ -27,7 +27,6 @@ public:
 	}
 
 	QString name() const { return QString("Rosenbrock"); }
-	QString formula() const { return QString("log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x))"); }
 };
 
 

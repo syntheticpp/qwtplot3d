@@ -567,6 +567,8 @@ QwtPlot3D::calcFloorListAsIsolines()
 							glBegin(GL_LINES);
 								glVertex3d(rp1.x,rp1.y,zshift);
 								glVertex3d(rp2.x,rp2.y,zshift);
+//								glVertex3d(rp1.x,rp1.y,rp1.z);
+//								glVertex3d(rp2.x,rp2.y,rp2.z);
 							glEnd();
 						}
 						else if (tlo[1].z <= lo)
@@ -576,6 +578,8 @@ QwtPlot3D::calcFloorListAsIsolines()
 							glBegin(GL_LINES);
 								glVertex3d(rp1.x,rp1.y,zshift);
 								glVertex3d(rp2.x,rp2.y,zshift);
+//								glVertex3d(rp1.x,rp1.y,rp1.z);
+//								glVertex3d(rp2.x,rp2.y,rp2.z);
 							glEnd();
 						}
 						++k;
