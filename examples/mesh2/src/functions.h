@@ -44,7 +44,5 @@ public:
 	QString formula() const { return QString("1 / (x*x+y*y+0.5)"); }
 };
 
-void CreateFunction(QString const& name);
-
 
 #endif // __EXAMPLE_H__
