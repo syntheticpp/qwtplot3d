@@ -133,7 +133,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		colormappv_ = new ColorMapPreview;
 		datacolordlg_ = new QFileDialog( this );
-    lightingdlg_ = new LightingDlg();
+    lightingdlg_ = new LightingDlg( this );
     lightingdlg_->assign( dataWidget);
 		
 		QDir dir("../../data/colormaps");

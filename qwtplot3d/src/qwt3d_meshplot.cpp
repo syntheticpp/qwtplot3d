@@ -259,9 +259,7 @@ bool SurfacePlot::createDataRepresentation(TripleField const& data, CellField co
 {	
 	actualDataG_->clear();
   actualData_p = actualDataC_;
-	
-	unsigned tsize = tesselationSize(poly);
-	
+		
 	actualDataC_->nodes = data;
 	actualDataC_->cells = poly;
 	actualDataC_->normals = TripleField(actualDataC_->nodes.size());

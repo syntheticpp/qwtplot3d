@@ -9,7 +9,7 @@ namespace Qwt3D
 class SurfacePlot;
 
 
-//! Abstract base class for parametric surfaces
+//! Abstract base class for mappings acting on rectangular grids
 /**
 
 */
@@ -17,7 +17,6 @@ class QWT3D_EXPORT GridMapping : public Qwt3D::Mapping
 {
 public:
   GridMapping(); //!< Constructs GridMapping object w/o assigned SurfacePlot.
-	//! Creates data representation for the actual assigned SurfacePlot.
 
 	void setMesh(unsigned int columns, unsigned int rows); //!< Sets number of rows and columns. 
 	void setDomain(double minu, double maxu, double minv, double maxv); //!< Sets u-v domain boundaries.

@@ -10,7 +10,7 @@
 
 #include "lightingdlgbase.h"
 
-class Pointer : public Qwt3D::Enrichment
+class Pointer : public Qwt3D::VertexEnrichment
 {
 public:
   Pointer(double rad);
@@ -48,7 +48,7 @@ class LightingDlg : public lightingdlgbaseBase
 	Q_OBJECT
     
 public:
-  LightingDlg();
+  LightingDlg(QWidget *parent=0);
   ~LightingDlg();
 
   void assign(Qwt3D::Plot3D* pl);

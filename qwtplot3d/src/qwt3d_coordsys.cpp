@@ -508,6 +508,11 @@ void CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS f
 	}
 }
 
+/**
+\param majors  Draw grid between major tics
+\param minors  Draw grid between minor tics
+\param sides   Side(s), where the grid should be drawn
+*/
 void CoordinateSystem::setGridLines(bool majors, bool minors, int sides) 
 {
 	sides_ = sides;

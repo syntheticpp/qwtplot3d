@@ -18,9 +18,9 @@ class QWT3D_EXPORT ParametricSurface : public Qwt3D::GridMapping
 
 public:
   ParametricSurface(); //!< Constructs ParametricSurface object w/o assigned SurfacePlot.
-  //! Constructs ParametricSurface object and assign a SurfacePlot
+  //! Constructs ParametricSurface object and assigns a SurfacePlot
   explicit ParametricSurface(Qwt3D::SurfacePlot& plotWidget); 
-  //! Constructs ParametricSurface object and assign a SurfacePlot
+  //! Constructs ParametricSurface object and assigns a SurfacePlot
   explicit ParametricSurface(Qwt3D::SurfacePlot* plotWidget); 
   //! Overwrite this
   virtual Qwt3D::Triple operator()(double u, double v) = 0; 

@@ -4,7 +4,7 @@
 #include "qwt3d_plot.h"
 
 
-class Bar : public Qwt3D::Enrichment
+class Bar : public Qwt3D::VertexEnrichment
 {
 public:
   Bar();
