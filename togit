@@ -1,0 +1,3 @@
+#!/bin/bash
+git svn init  svn://svn.code.sf.net/p/qwtplot3d/code -s
+git svn fetch  --authors-file=../authors 
