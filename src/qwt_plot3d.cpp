@@ -5,7 +5,7 @@
 
 #include "qwt_plot3d.h"
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 	
 /*!
   Create a QwtPlot3D widget
@@ -100,8 +100,7 @@ QwtPlot3D::initializeGL()
 }
 
 /*!
-  Paint the texobj. The actual openGL commands for drawing the texobj are
-  performed here.
+  Paint the widgets content.
 */
 void 
 QwtPlot3D::paintGL()
@@ -139,9 +138,9 @@ QwtPlot3D::paintGL()
 	if (beg != end)
 	{		
 		if (ortho_)
-			glOrtho( -radius, +radius, -radius, +radius, 5 * radius, 40 * radius);
+			glOrtho( -radius, +radius, -radius, +radius, 0, 40 * radius);
 		else
-			glFrustum( -radius, +radius, -radius, +radius, 5 * radius, 40 * radius);
+			glFrustum( -radius, +radius, -radius, +radius, 5 * radius, 400 * radius );
 	}
 	else
 	{
@@ -151,16 +150,15 @@ QwtPlot3D::paintGL()
 			glFrustum( -1.0, 1.0, -1.0, 1.0, 10.0, 100.0 );
 	}
   
-	glTranslatef( xVPShift_ * radius, yVPShift_ * radius, -7 * radius );
+	glTranslatef( xVPShift_ * 2 * radius, yVPShift_ * 2 * radius, -7 * radius );
 
 	for (unsigned i=0; i!= objectList_.size(); ++i)
 	{
-		if (i!=CoordSystemObject)
+		if (i!=CoordObject)
 			glCallList( objectList_[i] );
 	}
 
-	coord.postDraw();
-	coord.draw();
+  coord.draw();
 		
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();  
@@ -172,7 +170,7 @@ QwtPlot3D::paintGL()
 }
 
 /*!
-  Set up the OpenGL view port, matrix mode, etc.
+  Set up the OpenGL view port
 */
 void 
 QwtPlot3D::resizeGL( int w, int h )
@@ -183,6 +181,26 @@ QwtPlot3D::resizeGL( int w, int h )
 }
 
 void 
+QwtPlot3D::updateCoordinateSystem()
+{
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_LINE_SMOOTH);
+
+	SaveGlDeleteLists(objectList_[CoordObject], 1);
+			
+	objectList_[CoordObject] = glGenLists(1);
+	glNewList(objectList_[CoordObject], GL_COMPILE);
+
+	coord.draw();
+
+	glEndList();
+}
+
+/*!
+  Set data resolution (res == 1 original resolution) and updates widget
+	If res < 1, the function does nothing
+*/
+void 
 QwtPlot3D::setResolution( int res )
 {
 	if ((resolution_ == res) || res < 1)
@@ -190,11 +208,14 @@ QwtPlot3D::setResolution( int res )
 	
 	resolution_ = res;
 	updateData();
-	updateCoordinates();
+	updateGL();
 
 	emit resolutionChanged(res);
 }
 
+/**
+	Create a coordinate system with generating corners beg and end 
+*/
 void
 QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
 {
@@ -202,6 +223,9 @@ QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
 		coord.init(beg, end);
 }
 
+/**
+	Create a coordinate system from data
+*/
 void
 QwtPlot3D::createCoordinateSystem()
 {
@@ -209,27 +233,12 @@ QwtPlot3D::createCoordinateSystem()
 		return;
 
 	calculateHull();
-	Triple a = hullFirst();
-	Triple b = hullSecond();
-	createCoordinateSystem(a, b);
+	createCoordinateSystem(hullFirst(), hullSecond());
 }
 
-void 
-QwtPlot3D::updateCoordinates()
-{
-	SaveGlDeleteLists(objectList_[CoordSystemObject], 1);
-	
-	objectList_[CoordSystemObject] = glGenLists(1);
-	glNewList(objectList_[CoordSystemObject], GL_COMPILE);	
-
-	coord.draw();
-
-	glEndList();
-
-
-	updateGL();
-}
-
+/*!
+  Show a color legend <tt>(experimental)</tt>
+*/
 void 
 QwtPlot3D::showColorLegend( bool show )
 {
@@ -249,8 +258,11 @@ QwtPlot3D::showColorLegend( bool show )
 }
 
 
+/**
+	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt 
+*/
 bool 
-QwtPlot3D::dump(QString fileName, QString format)
+QwtPlot3D::saveContent(QString fileName, QString format)
 {
 	QImage im = grabFrameBuffer(true);
 	return im.save(fileName,format);
@@ -268,6 +280,10 @@ QwtPlot3D::setBackgroundColor(RGBA rgba)
 	bgcolor_ = rgba;
 }
 
+/**
+	Calculate the smallest x-y-z parallelepiped enclosing the data.
+	The 2 characterizing Triples can be accessed by hullFirst() and hullSecond();
+*/
 void 
 QwtPlot3D::calculateHull()
 {
@@ -298,12 +314,18 @@ QwtPlot3D::setDataColor( Color* col )
 	dataColor_ = col;
 }
 
+/*!
+  <tt>(experimental)</tt>
+*/
 void 
 QwtPlot3D::modifyStandardColorAlpha(double d)
 {
 	dataColor_->setAlpha(d);
 }
 
+/*!
+  Set up ortogonal or perspective mode and updates widget
+*/
 void
 QwtPlot3D::setOrtho( bool val )
 {
@@ -315,6 +337,9 @@ QwtPlot3D::setOrtho( bool val )
 	emit projectionChanged(val);
 }
 
+/*!
+  <tt>(experimental)</tt>
+*/
 void 
 QwtPlot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
 {
@@ -322,12 +347,20 @@ QwtPlot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple 
 		legend_.colors = col;
 }
 
+/*!
+  Set style of coordinate system
+*/
 void 
 QwtPlot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coord.setStyle(st);
+	updateCoordinateSystem();
+	updateGL();
 }
 
+/*!
+  Set plotting style
+*/
 void
 QwtPlot3D::setPlotStyle( PLOTSTYLE val )
 {
@@ -339,6 +372,9 @@ QwtPlot3D::setPlotStyle( PLOTSTYLE val )
 	updateGL();
 }
 
+/*!
+  Set style of floor data
+*/
 void
 QwtPlot3D::setFloorStyle( FLOORSTYLE val )
 {
@@ -351,6 +387,9 @@ QwtPlot3D::setFloorStyle( FLOORSTYLE val )
 	updateGL();
 }
 
+/*!
+  Set number of isolines. The lines are equidistant between minimal and maximal Z value
+*/
 void 
 QwtPlot3D::setIsolines(int steps)
 {
@@ -360,7 +399,11 @@ QwtPlot3D::setIsolines(int steps)
 	isolines_ = steps;
 }
 
-
+/*!
+  Set Polygon offset. The function affects the OpenGL rendering process. 
+	Try different values for surfaces with polygons only and with mesh and polygons
+	The value is clamped to [0..1]
+*/
 void
 QwtPlot3D::setPolygonOffset( double val )
 {
@@ -370,6 +413,9 @@ QwtPlot3D::setPolygonOffset( double val )
 	polygonOffset_ = val;
 }
 
+/*!
+Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen
+*/
 void 
 QwtPlot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
 {
@@ -379,6 +425,9 @@ QwtPlot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anch
 	titleanchor_ = anchor;
 }
 
+/**
+Set caption font
+*/
 void 
 QwtPlot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool italic)
 { 
