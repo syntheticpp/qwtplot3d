@@ -949,13 +949,16 @@
             <iconset>image5</iconset>
         </property>
         <property name="text">
-            <string>Dump Pixmap</string>
+            <string>Dump Content</string>
         </property>
         <property name="menuText">
-            <string>Dump Pixmap</string>
+            <string>Dump Content</string>
+        </property>
+        <property name="toolTip">
+            <string>Dump Content</string>
         </property>
         <property name="statusTip">
-            <string>Dump Pixmap</string>
+            <string>Dump Content</string>
         </property>
     </action>
     <actiongroup>
