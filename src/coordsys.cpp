@@ -124,7 +124,6 @@ CoordinateSystem::postDraw()
 	Drawable::postDraw();
 }
 
-
 void 
 CoordinateSystem::setPosition(Triple first, Triple second)
 {

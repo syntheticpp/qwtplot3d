@@ -4,7 +4,7 @@
 #include <math.h>
 
 //-----------------------------------------------------------------
-//              simple.cpp
+//              simpleplot.cpp
 //
 //      A simple example which shows how to use QwtPlot3D
 //-----------------------------------------------------------------
@@ -39,7 +39,6 @@ public:
 
 
 Plot::Plot()
-:QwtPlot3D(0,"")
 {
   setTitle("A Simple QwtPlot3D Demonstration");
 	Rosenbrock rosenbrock(this);

@@ -4,6 +4,7 @@
 
 #include "float.h"
 #include "types.h"
+#include <algorithm>
 
 Data::Data()
 {
@@ -231,3 +232,4 @@ double round125( double x)
 	
 	return c;
 }
+
