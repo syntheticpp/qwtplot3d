@@ -2481,7 +2481,7 @@ void gl2psPDFgroupObjectInit(GL2PSpdfgroup* gro){
   gro->ptrlist = NULL;
   gro->fontno = gro->gsno
   = gro->imno = gro->maskshno
-  = gro->shno = gro->trgroupobjno 
+  = gro->shno = gro->trgroupno 
   = gro->fontobjno = gro->imobjno 
   = gro->shobjno = gro->maskshobjno 
   = gro->gsobjno = gro->trgroupobjno = -1;
@@ -2929,7 +2929,6 @@ int gl2psPDFgroupListWriteXObjectResources()
 int gl2psPDFgroupListWriteFontResources()
 {
   int i;
-  GL2PSprimitive* p = 0;
   GL2PSpdfgroup* gro;
   int offs = 0;
 
@@ -3163,7 +3162,7 @@ int gl2psPrintPDFDataStreamLength(int val){
 /* Put the info created before in PDF objects */
 
 int gl2psPrintPDFOpenPage(void){
-  int offs, top = GL2PS_FIXED_XREF_ENTRIES + 1, shmasks = 0, gap = 0;
+  int offs;
   
   /* Write fixed part */
   
