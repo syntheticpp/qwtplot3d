@@ -92,7 +92,7 @@ bool ParametricSurface::create()
 		delete [] data[i];
 	}
 
-	delete data;
+	delete [] data;
 
 	return true;
 }
