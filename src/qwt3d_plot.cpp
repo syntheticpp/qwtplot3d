@@ -62,7 +62,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 							Qt::LeftButton | Qt::ControlButton);
 
 
-  keyboard_input_enabled_ = true;
+  kbd_input_enabled_ = true;
   setFocusPolicy(QWidget::StrongFocus);
   assignKeyboard(Qt::Key_Down, Qt::Key_Up,
     Qt::ShiftButton + Qt::Key_Right, Qt::ShiftButton + Qt::Key_Left,
@@ -74,6 +74,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
     Qt::ControlButton + Qt::Key_Right, Qt::ControlButton + Qt::Key_Left,
     Qt::ControlButton + Qt::Key_Down, Qt::ControlButton + Qt::Key_Up
    );
+   setKeySpeed(3,5,5);
 
 
 	legend_.setLimits(0, 100);
