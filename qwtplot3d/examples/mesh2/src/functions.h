@@ -85,7 +85,7 @@ public:
 	Mex()
 	:Function()
 	{
-	//	setMaxZ(0.8);     
+	//	setMaxZ(0.8);
 	}
 	
 	double operator()(double x, double y)

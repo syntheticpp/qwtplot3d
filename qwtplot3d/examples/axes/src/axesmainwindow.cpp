@@ -175,6 +175,7 @@ void AxesMainWindow::standardItems()
 
 void AxesMainWindow::letterItems()
 {  
+  resetTics();
   ticNumberSlider->setEnabled(true);
   plot->coordinates()->axes[X1].setAutoScale(false);
   plot->coordinates()->setStandardScale();

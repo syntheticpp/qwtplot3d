@@ -32,12 +32,12 @@ void Function::assign(SurfacePlot* plotWidget)
 		plotwidget_p = plotWidget;
 }
 
-void Function::	setMinZ(double val)
+void Function::setMinZ(double val)
 {
 	range_p.minVertex.z = val;
 }
 
-void Function::	setMaxZ(double val)
+void Function::setMaxZ(double val)
 {
 	range_p.maxVertex.z = val;
 }
@@ -53,7 +53,7 @@ bool Function::create()
 	unsigned i,j;
 	for ( i = 0; i < umesh_p; i++) 
 	{
-		data[i]         = new double [vmesh_p];
+		data[i] = new double [vmesh_p];
 	}
 	
 	/* get the data */

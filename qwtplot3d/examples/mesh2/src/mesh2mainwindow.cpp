@@ -176,12 +176,15 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
       pmhandler->setQuality(70);
     VectorWriter* handler = (VectorWriter*)IO::outputHandler("PDF");
     handler->setTextMode(VectorWriter::TEX);
+    //handler->setCompressed(false);
     handler = (VectorWriter*)IO::outputHandler("EPS");
     handler->setTextMode(VectorWriter::TEX);
     handler = (VectorWriter*)IO::outputHandler("EPS_GZ");
     if (handler) // with zlib support only
       handler->setTextMode(VectorWriter::TEX);
 
+    createFunction("Hat");
+    functionCB->setCurrentText("Hat");
 }
 
 void Mesh2MainWindow::open()
@@ -712,14 +715,14 @@ void Mesh2MainWindow::toggleAnimation(bool val)
 
 void Mesh2MainWindow::rotate()
 {
-	if (dataWidget)
-	{
-		dataWidget->setRotation(
-			int(dataWidget->xRotation() + 1) % 360,
-			int(dataWidget->yRotation() + 1) % 360,
-			int(dataWidget->zRotation() + 1) % 360
-			);
-	}	
+	if (!dataWidget)
+		return;
+
+	dataWidget->setRotation(
+		int(dataWidget->xRotation() + 1) % 360,
+		int(dataWidget->yRotation() + 1) % 360,
+		int(dataWidget->zRotation() + 1) % 360
+		);
 }
 
 void
