@@ -13,7 +13,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 
 	setLineWidth(1.5);
 	setAxesColor(RGBA(0,0,0,1));
-	setNumberFont("Times", 12);
+	setNumberFont("Courier", 12);
 	setNumberColor(RGBA(0,0.0,0));
 }
 
@@ -75,7 +75,7 @@ CoordinateSystem::init(Triple first, Triple second)
 	axes[Z4].setTicOrientation(-SQRT1_2,-SQRT1_2,0);
 	axes[Z3].setTicOrientation(-SQRT1_2,SQRT1_2,0);
 
-	setLabelFont("Times", 14, QFont::Bold);
+	setLabelFont("Courier", 14, QFont::Bold);
 	
 	setStyle(style_);
 }

@@ -1,10 +1,15 @@
+# This file will be straightened in the future, adapt to your needs
+# A recent qwt is needed (>=0.4.2 with installed Qwt designer plugin)
+# otherwise you have to include some qwt headers in the uic generated
+# files manually
+#
+
 TARGET          = Mesh2
 win32:TEMPLATE        = vcapp
 CONFIG         += qt warn_on thread
 MOC_DIR         = moc
 OBJECTS_DIR     = obj 
 INCLUDEPATH    += ../../src 
-#DESTDIR         = v:\lib
 
 win32:LIBS     += ../../lib/qwtplot3d.lib qwt.lib opengl32.lib glu32.lib
 unix:LIBS += -lqwtplot3d -lqwt -lGLU -lGL -L/home/micha/programming/lib
@@ -21,7 +26,6 @@ SOURCES =  \
 		src/main.cpp \
 		src/mesh2mainwindow.cpp \
 		src/alphadlgimpl.cpp \
-		src/functions.cpp
 
 HEADERS =  \
 		src/mesh2mainwindow.h \

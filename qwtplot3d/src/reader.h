@@ -1,37 +1,31 @@
 #ifndef __READER_H__
 #define __READER_H__
 
+#include <float.h>
 #include <qstring.h>
-#include "datasource.h"
 
 
-class NativeReader : public DataSource
+class QwtPlot3D;
+
+class NativeReader
 {
+
 public:
-	
-	enum Type
-	{
-		XYZFILE,
-		MESHFILE
-	};
-	
-	explicit NativeReader(QString fname = "");
+		
+	explicit NativeReader(QwtPlot3D* plotWidget, QString fname = "");
 
-	virtual bool createData(Data& result);
-
-	void setType(Type t) {rtype_ = t;}
 	void setFileName(QString fname) {fileName_ = fname;}
+	bool read(double minz = -DBL_MAX, double maxz = DBL_MAX);
+
 
 	const char* magicstring;
 
 	
 
 private:
-	bool read_mesh_data_(Data&, QString fname);
-	bool read_xyz_data_(Data &, QString fname);
-
-	Type rtype_;
 	QString fileName_;
+
+	QwtPlot3D* plotwidget_;
 };
 
 

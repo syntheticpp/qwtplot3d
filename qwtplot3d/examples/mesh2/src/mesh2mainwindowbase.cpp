@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Di 8. Apr 01:23:17 2003
+** Created: So 13. Apr 18:54:13 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -9,6 +9,7 @@
 #include "mesh2mainwindowbase.h"
 
 #include <qvariant.h>
+#include <../../../src/qwt_plot3d.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qframe.h>
@@ -27,7 +28,6 @@
 #include <qimage.h>
 #include <qpixmap.h>
 
-#include "qwt_plot3d.h"
 #include "mesh2mainwindowbase.ui.h"
 static const char* const image0_data[] = { 
 "22 22 258 2",
@@ -1395,6 +1395,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     offsetSlider->setThumbWidth( 23 );
     offsetSlider->setBgStyle( QwtSlider::BgSlot );
     offsetSlider->setScalePos( QwtSlider::Left );
+    QToolTip::add( offsetSlider, trUtf8( "Paint improvement mesh-polygon boundary" ) );
+    QWhatsThis::add( offsetSlider, trUtf8( "Paint improvement mesh-polygon boundary" ) );
     Layout17->addWidget( offsetSlider );
     Layout19->addLayout( Layout17 );
     QSpacerItem* spacer = new QSpacerItem( 0, 85, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -1603,7 +1605,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Layout22->addLayout( Layout5_4, 2, 0 );
 
     Mesh2MainWindowBaseLayout->addLayout( Layout22, 1, 3 );
-    QSpacerItem* spacer_5 = new QSpacerItem( 35, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    QSpacerItem* spacer_5 = new QSpacerItem( 53, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
     Mesh2MainWindowBaseLayout->addItem( spacer_5, 1, 2 );
 
     Layout24 = new QGridLayout( 0, 1, 1, 0, 6, "Layout24"); 
@@ -1859,12 +1861,10 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     numbercolor->setMenuText( trUtf8( "&Numbers" ) );
     numbercolor->setToolTip( trUtf8( "Numbers" ) );
     labelcolor = new QAction( color, "labelcolor" );
-    labelcolor->setOn( FALSE );
     labelcolor->setText( trUtf8( "Label" ) );
     labelcolor->setMenuText( trUtf8( "&Label" ) );
     labelcolor->setToolTip( trUtf8( "Label" ) );
     resetcolor = new QAction( color, "resetcolor" );
-    resetcolor->setOn( FALSE );
     resetcolor->setText( trUtf8( "Reset" ) );
     resetcolor->setToolTip( trUtf8( "Reset" ) );
     alpha = new QAction( color, "alpha" );

@@ -17,9 +17,10 @@
 
 	\section features Features 
 
-   -# Scaling, rotating, shifting, zooming of data sets and mathematical functions
+   -# Scaling, rotating, shifting, zooming of data sets and mathematical functions (see \ref datatopics)
    -# Resolution changing on the fly
-   -# Reading from MESH data files (see the 'examples/data' directory and NativeReader)
+   -# Reading from MESH data files :See the 'examples/data' directory and NativeReader documentation
+   for this . You will find example datasets <a href="http://sourceforge.net/projects/qwtplot3d">here</a> 
    -# Flat (2D) labeling
  	 -# Wireframe, filled polygons, hidden line (improvement necessary)
  	 -# On floor projections (isolines, data)
@@ -30,20 +31,25 @@
  		
  		\par todo
  	 	 
- 	 next release:
+ 	 Next release:
  	 
  	 -# Autoswitching axes scales (axes in front should automatically get a scale)
+ 	 -# General input interface for matrix-like data structures (all the things representable as <tt> data[i][j] </tt> and suiting iterators)
  	 -# Reader plugin (Interface to other data sources)
-	 -# 2nd native format ( XYZ files with irregular (x,y)-tuples )
- 	 -# Documentation improvement   
+	 -# Delaunay triangulation as operator on input - especially 2nd file format ( <tt>[X,Y,Z]</tt> files with irregularly distributed <tt>(x,y)</tt>-tuples )	 
+ 	 -# Perfomance (reading)
+ 	 -# Documentation improvement 
+ 	 -# Finish isoline contouring  
 
 	
-	 subsequent releases:
+	
+	 Subsequent releases:
 
  	 -# Interactive mouse handling (picking)
- 	 -# configurable illumination model	
- 	 -# Labeling with user defined pixmaps (i.e. TeX/DVI screenshots)
- 	 -# Math function parser ?
+ 	 -# Grey scale (PGM) file format native
+ 	 -# Configurable illumination model	
+ 	 -# Labeling and proper scaling (mipmapping) of user defined pixmaps (i.e. TeX/DVI screenshots)
+ 	 -# Math function parser ? 	 
  	 
  	 
  	 <b>  ...Proposals !</b>
@@ -72,7 +78,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 
 
 /*!
-  \page changes Change log   
+  \page changes Changelog   
  	 
   \par Bugfixes:
 
@@ -83,8 +89,23 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 /*!
   \page install Installation
 
-	For now, QwtPlot3d is not part of Qwt's cvs tree and completely independent of the 
-	latter. The example application still needs an installed Qwt (and perhaps his Qt Designer plugin) 
+	For now, QwtPlot3d is not part of <a href="http://qwt.sourceforge.net">Qwt</a> and the library is completely independent of the 
+	latter. The example application still needs an installed Qwt (and perhaps his Qt Designer plugin, see
+	also the remarks in 'examples/Mesh2/Mesh2.pro'). If uic creates a 'mesh2mainwindowbase.cpp' and you have no Qwt Designer plugin installed, 
+	the compiler will miss the following statements in mesh2mainwindowbase.cpp: 
+	\verbatim
+	#include <qwt_slider.h>
+	#include <qwt_wheel.h>
+	\endverbatim
+	In this case, add them manually.
+	
+	With qwtplot3d.pro you can create a static library VC6 project for windows and a shared library for POSIX systems. I will change
+	the Windows type to DLL in the future.
+	
+	QwtPlot3D has been tested with Qt version 3.0.5 for Windows and with version 3.1.? on Debian Linux. Older Qt versions are likely working.
+	If I'm wrong with the latter guess, please don't hesitate to contact me. I'll try to provide a code fix in this case. 
+	
+	The library requires OpenGL >= 1.1 and a true color mode with 24 or 32 bits color depth.
 */
 
 
@@ -96,5 +117,39 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   \image html simpleapp2.png "Example Application (Windows 2000)"
   \image html simpleapp3.png "Other View (Debian/KDE)"
   \image html zooming.png "Zooming"
+
+*/
+
+/*!
+  \page datatopics Data Input Topics
+
+	QwtPlot3D supports two special forms of native data input:
+	
+  \par Mesh data files:
+  
+  You can read a special simple form of ASCII files containing z-values and domain information, organized in the following
+  way (C++ comments only for this documentation):
+  
+  \verbatim
+   jk:11051895-17021986                                              // magic string
+   MESH                                                              // MESH file (other keywords in future versions)
+   327 466                                                           // x,y grid
+   557726 567506                                                     // domain boundaries (x values)
+   5.10821e+006 5.12216e+006                                         // domain boundaries (y values)
+   682 682 682 682 912 924 928 928 932 ... element[327*466-1]        // the single z values 
+  \endverbatim 
+  
+  See NativeReader for additional information.
+  
+  \par Mathematical functions:
+  
+  Setup a function object. To do so, inherit from the Function class and 
+  write your own version of Function::operator()(double x, double y)
+  Set the domain and perhaps limitations for the range and call Function::create().
+  Thats all.
+  
+	See also Function and the implementation of concrete functions in examples/Mesh2/functions.h
+
+	A more general approach is provided by QwtPlot3D::createInternalRepresentation(). I'll extend this in the future.
 
 */

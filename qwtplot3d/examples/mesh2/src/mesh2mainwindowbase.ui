@@ -51,7 +51,7 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QwtPlot3d" row="0" column="0">
+                <widget class="QwtPlot3D" row="0" column="0">
                     <property name="name">
                         <cstring>dataWidget</cstring>
                     </property>
@@ -120,6 +120,12 @@
                             </property>
                             <property name="scalePos">
                                 <enum>Left</enum>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Paint improvement mesh-polygon boundary</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Paint improvement mesh-polygon boundary</string>
                             </property>
                         </widget>
                     </vbox>
@@ -780,7 +786,7 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>35</width>
+                    <width>53</width>
                     <height>0</height>
                 </size>
             </property>
@@ -1357,8 +1363,8 @@
 </toolbars>
 <customwidgets>
     <customwidget>
-        <class>QwtPlot3d</class>
-        <header location="local">qwt_plot3d.h</header>
+        <class>QwtPlot3D</class>
+        <header location="global">../../../src/qwt_plot3d.h</header>
         <sizehint>
             <width>-1</width>
             <height>-1</height>
@@ -1703,9 +1709,6 @@
             <property name="name">
                 <cstring>labelcolor</cstring>
             </property>
-            <property name="on">
-                <bool>false</bool>
-            </property>
             <property name="text">
                 <string>Label</string>
             </property>
@@ -1719,9 +1722,6 @@
         <action>
             <property name="name">
                 <cstring>resetcolor</cstring>
-            </property>
-            <property name="on">
-                <bool>false</bool>
             </property>
             <property name="text">
                 <string>Reset</string>

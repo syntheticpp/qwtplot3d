@@ -29,6 +29,7 @@ enum PLOTSTYLE
 	FILLEDMESH
 };
 
+//! Not yet implemented
 enum ELEMENTTYPE
 {
 	POINT,
@@ -52,6 +53,7 @@ enum FLOORSTYLE
 	FLOORDATA
 };
 
+//! The 12 axes
 enum AXIS
 {
 	X1 = 0,
@@ -76,6 +78,7 @@ inline int round(double d)
 }
 
 
+//! Triple <tt>[x,y,z]</tt>
 struct Triple
 {
 	explicit Triple(double xv = 0,double yv = 0,double zv = 0)
@@ -180,35 +183,37 @@ inline const Triple operator*(const Triple& t, const Triple& t2)
 	return Triple(t) *= t2;
 }
 
-typedef GLfloat *Vertex;
+typedef double *Vertex;
 typedef std::vector<Vertex> DataRow;
 typedef std::vector<DataRow> DataMatrix;
 
+//! Implements a matrix of z-Values with limit access functions 
 class Data
 {
 public:
 	
 	Data();
+	Data(unsigned int columns, unsigned int rows);//!< see setSize()
 	~Data();
 
-	Data(Data const&);
-	Data& operator=(Data const&);
+	Data(Data const&); 
+	Data& operator=(Data const&); //!< deep copy
 
 	int columns() const;
 	int rows() const;
 
-	void clear();
+	void clear(); //!< destroy content
 	bool empty() const { return vertices.empty();}
-	void setSize(unsigned int columns, unsigned int rows);
-
-	double maximum() const;
-	double minimum() const;
+	void setSize(unsigned int columns, unsigned int rows); //!< destroys content and set new size, elements are uninitialized
 	
-	void setMin(double minv);
-	void setMax(double maxv);
+	double maximum() const; //!< \return minimal z value
+	double minimum() const; //!< \return maximal z value
+	
+	void setMin(double minv); //!< set maximum for z, not immediately, but the different generators take care and will cut
+	void setMax(double maxv); //!< set minimum for z, not immediately, but the different generators take care and will cut 
 
-	DataMatrix vertices;		/* mesh vertices */
-	DataMatrix normals;		/* mesh normals */
+	DataMatrix vertices;		//!< mesh vertices
+	DataMatrix normals;		//!< mesh normals
 
 private:
 
@@ -216,17 +221,10 @@ private:
 	double				min_;		/* minimum height value in mesh */
 };
 
-struct XYZ
-{
-	float x,y,z;
-};
-
-XYZ MIN(const std::vector<XYZ>& data);
-XYZ MAX(const std::vector<XYZ>& data);
-double MAX(const std::vector<double>& data);
 
 // colors
 
+//! Red-Green-Blue-Alpha value
 struct RGBA
 {
 	RGBA() 
@@ -240,8 +238,8 @@ struct RGBA
 typedef std::vector<RGBA> ColorVector;
 
 
-QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b);
-RGBA Qt2GL(QColor col);
+QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
+RGBA Qt2GL(QColor col); //!< QColor -> RGBA
 
 
 //! simplified glut routine (glProject): object coord --> windows coord 
@@ -295,9 +293,9 @@ inline const GLubyte* gl_error()
 	return err;
 }
 
-inline void normalizedcross(GLfloat* u, GLfloat* v, GLfloat* n)
+inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
 {
-  GLfloat l;
+  GLdouble l;
 
   /* compute the cross product (u x v for right-handed [ccw]) */
   n[0] = u[1] * v[2] - u[2] * v[1];
@@ -305,7 +303,7 @@ inline void normalizedcross(GLfloat* u, GLfloat* v, GLfloat* n)
   n[2] = u[0] * v[1] - u[1] * v[0];
 
   /* normalize */
-  l = (GLfloat)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
+  l = (GLdouble)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
   n[0] /= l;
   n[1] /= l;
   n[2] /= l;

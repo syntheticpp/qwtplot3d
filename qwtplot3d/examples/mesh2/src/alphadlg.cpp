@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\alphadlg.ui'
 **
-** Created: Di 8. Apr 01:23:18 2003
+** Created: So 13. Apr 18:34:18 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -1,9 +1,6 @@
 #include "types.h"
 #include "colorgenerator.h"
 
-Color::~Color()
-{
-}
 
 StandardColor::StandardColor(Data const& data, int size)
 			: data_(data)
@@ -13,7 +10,7 @@ StandardColor::StandardColor(Data const& data, int size)
 
 	double dsize = size;
 
-	for (int i=0; i!=colors_.size(); ++i)
+	for (unsigned int i=0; i!=colors_.size(); ++i)
 	{
 		elem.r = i / dsize;
 		elem.g = i / dsize / 4;
@@ -31,7 +28,7 @@ StandardColor::setAlpha(double a)
 	
 	RGBA elem;
 
-	for (int i=0; i!=colors_.size(); ++i)
+	for (unsigned int i=0; i!=colors_.size(); ++i)
 	{
 		elem = colors_[i];
 		elem.a = a;
@@ -45,18 +42,8 @@ StandardColor::operator()(double x, double y, double z)
 	int index = (int)((colors_.size()-1) * (z - data_.minimum()) / (data_.maximum() - data_.minimum()));
 	if (index < 0)
 		index = 0;
-	if (index > colors_.size() - 1)
-		index = colors_.size() - 1;
+	if ((unsigned int)index > colors_.size() - 1)
+		index = (int)(colors_.size() - 1);
 	return colors_[index];
-
-/*
-	RGBA rgba;
-
-	rgba.r = colors_[index].r;
-	rgba.g = colors_[index].g;
-	rgba.b = colors_[index].b;
-	rgba.a = 1-((z - data_.minimum()) / (data_.maximum() - data_.minimum()));
-	return rgba;
-*/
 }
 	

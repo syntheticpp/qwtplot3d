@@ -2,12 +2,12 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <fstream>
 #include <float.h>
 #include <stdio.h>
 #include <math.h>
 
 #include "reader.h"
+#include "qwt_plot3d.h"
 
 using namespace std;
 
@@ -68,18 +68,18 @@ namespace
 
 
   //! set to data begin
-  bool extract_info(FILE* fp, int& xmesh, int& ymesh, double& xmin, double& xmax, double& ymin, double& ymax)
+  bool extract_info(FILE* fp, unsigned int& xmesh, unsigned int& ymesh, double& xmin, double& xmax, double& ymin, double& ymax)
   {
     char* p;
   
     // find out the size
     if ((p = read_field (fp)) == 0)
       return false;
-    xmesh = atoi (p);
+    xmesh = (unsigned int)atoi(p);
 
     if ((p = read_field (fp)) == 0)
       return false;
-    ymesh = atoi (p);
+    ymesh = (unsigned int)atoi (p);
 
     if (xmesh < 1 || ymesh < 1)
       return false;
@@ -131,34 +131,38 @@ namespace
 		return true;
 	}
 
-	GLfloat** allocateData(int rows, int columns, GLfloat initval)
+	GLdouble** allocateData(int columns, int rows)
 	{
- 		GLfloat** data         = new GLfloat* [columns] ;
+ 		GLdouble** data         = new GLdouble* [columns] ;
  
 		for (int i = 0; i < columns; ++i) 
 		{
-			data[i]         = new GLfloat [rows];
-			for (int j = 0; j < rows; ++j) 
-			{
-				data[i][j] = initval;
-			}
+			data[i]         = new GLdouble [rows];
 		}
 		return data;
 	}
 
 }
 
-NativeReader::NativeReader(QString fname)
+NativeReader::NativeReader(QwtPlot3D* pw, QString fname)
 : magicstring("jk:11051895-17021986")
 {
+	if (!pw)
+	{
+		fprintf(stderr,"NativeReader: no valid QwtPlot3D Widget");
+		return;
+	}
+	plotwidget_ = pw;
 	setFileName(fname);
-	rtype_ = NativeReader::XYZFILE;
 }
 
 bool 
-NativeReader::read_mesh_data_(Data& res, QString fname)
+NativeReader::read(double minz, double maxz)
 {
-	FILE* file = open(fname);
+	if (fileName_.isEmpty() || !plotwidget_)
+		return false;
+	
+	FILE* file = open(fileName_);
 
 	if (!file)
 		return false;
@@ -169,139 +173,40 @@ NativeReader::read_mesh_data_(Data& res, QString fname)
 	if (!check_type(file, "MESH"))
 		return false;
  	/* get the extents of the mesh */
- 	if (!extract_info(file, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_))
+ 	unsigned int xmesh, ymesh;
+	double minx, maxx, miny, maxy;
+	if (!extract_info(file, xmesh, ymesh, minx, maxx, miny, maxy))
 		return false;
 	
-	res.setSize(xmesh_, ymesh_);
-	res.setMin(DBL_MAX);
-	res.setMax(-DBL_MAX);
-	
 	/* allocate some space for the mesh */
- 	GLfloat** data = allocateData(res.rows(), res.columns(), 0);
+ 	GLdouble** data = allocateData(xmesh, ymesh);
 
-  /* get the data */
-  res.setMax(0); res.setMin(0);
-  for (int j = 0; j < res.rows(); j++) 
+	for (unsigned int j = 0; j < ymesh; j++) 
 	{
-    for (int i = 0; i < res.columns(); i++) 
+    for (unsigned int i = 0; i < xmesh; i++) 
 		{
-      if (fscanf(file, "%f", &data[i][j]) != 1) 
+      if (fscanf(file, "%lf", &data[i][j]) != 1) 
 			{
-				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", fname.latin1());
+				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", fileName_.latin1());
 				return false;
       }
 
-      /* find the maximum data value */
-      if (res.maximum() < data[i][j]) 
-				res.setMax(data[i][j]);
-
-      /* find the minimum data value */
-      if (res.minimum() > data[i][j]) 
-				res.setMin(data[i][j]);
+			if (data[i][j] > maxz)
+				data[i][j] = maxz;
+			else if (data[i][j] < minz)
+				data[i][j] = minz;
     }
   }
 
   /* close the file */
   fclose(file);
 
-	convert2VertexData(res, data);
+	plotwidget_->createInternalRepresentation(data, xmesh, ymesh, minx, maxx, miny, maxy);
 
+	for ( unsigned int i = 0; i < xmesh; i++) 
+	{
+		delete [] data[i];
+	}
 	return true;
 }
 
-
-bool 
-NativeReader::read_xyz_data_(Data& res, QString fname)   
-{
-	FILE* file = open(fname);
-
-	if (!file)
-		return false;
-
-	vector<XYZ> grid; 
-	XYZ tmp, minval, maxval; 
-
-	int fres = 3;
-	while	(fres == 3)
-	{		
-		fres = fscanf(file, "%f%f%f", &tmp.x, &tmp.y, &tmp.z);
-		if (fres == EOF)
-			break;
-		if ( fres != 3 ) 
-		{
-			fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", fname.latin1());
-			return false;
-    }
-		grid.push_back(tmp);
-  }
-	vector<float> unique_x(grid.size()),
-								unique_y(grid.size());
-
-	unsigned int j,i;
-	for (j = 0; j!= grid.size(); ++j)
-
-	{
-		unique_x[j] = grid[j].x;
-		unique_y[j] = grid[j].y;
-	}
-
-	unsigned xs = unique_x.size();
-	unsigned ys = unique_y.size();
-
-	sort(unique_x.begin(),unique_x.end());
-	sort(unique_y.begin(),unique_y.end());	
-	unique_x.erase(unique(unique_x.begin(), unique_x.end()), unique_x.end()); 
-	unique_y.erase(unique(unique_y.begin(), unique_y.end()), unique_y.end());
-
-	xs = unique_x.size();
-	ys = unique_y.size();
-
-	minx_ = unique_x[0];
-	maxx_ = unique_x.back();
-	miny_ = unique_y[0];
-	maxy_ = unique_y.back();
-
-	minval = MIN(grid);
-	maxval = MAX(grid);
-
-
-	res.setSize(unique_x.size(), unique_y.size());
-
-	/* allocate some space for the mesh */
- 	GLfloat** data = allocateData(res.rows(), res.columns(), minval.z);
-
-  /* get the data */
-  res.setMax(maxval.z); 
-	res.setMin(minval.z);
-
-	for (unsigned k = 0; k < grid.size(); ++k) 
-	{
-    i = lower_bound(unique_x.begin(), unique_x.end(),grid[k].x)-unique_x.begin();
-		j =	lower_bound(unique_y.begin(), unique_y.end(),grid[k].y)-unique_y.begin();
-		data[i][j] = grid[k].z; 
-  }
-	fclose(file);
-
-	
-	convert2VertexData(res, data);
-
-	return true;
-}
-
-bool 
-NativeReader::createData(Data& result)
-{
-	if (fileName_.isEmpty())
-		return false;
-
-	result.clear();
-	switch (rtype_)
-	{
-	case XYZFILE:
-		return read_xyz_data_(result, fileName_);	
-	case MESHFILE:
-		return read_mesh_data_(result, fileName_);
-	default:
-		return false;
-	}
-}
