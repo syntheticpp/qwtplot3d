@@ -22,8 +22,23 @@ public:
 	{
 		return x*y;
 	}
+};
 
-	QString name() const { return QString("Rosenbrock"); }
+class Hat : public Function
+{
+public:
+
+	Hat(QwtPlot3D* pw)
+	:Function(pw)
+	{
+		setDomain(-1.5,1.5,-1.5,1.5);
+		setMesh(41,41);
+	}
+
+	double operator()(double x, double y)
+	{
+		return 1.0 / (x*x+y*y+0.3);
+	}
 };
 
 
@@ -32,7 +47,7 @@ class Plot : public QwtPlot3D
 	Q_OBJECT
 
 public:
-    Plot(QWidget* pw = 0);
+    Plot(QWidget* pw, int updateinterval);
 
 public slots:
 	void rotate();

@@ -11,13 +11,9 @@
 //      Demonstrates autoswitching axes with a cutted saddle as data
 //--------------------------------------------------------------------
 
-Plot::Plot(QWidget* pw)
+Plot::Plot(QWidget* pw, int updateinterval)
 :QwtPlot3D(pw)
 {
-	Saddle saddle(this);
-	
-	saddle.create();
-
 	setRotation(30,0,15);
 	setScale(1,1,1);
 	setShift(0.1,0,0);
@@ -44,23 +40,22 @@ Plot::Plot(QWidget* pw)
 	coordinates()->axes[Qwt3d::Y4].setLabelString("y");
 	coordinates()->axes[Qwt3d::Z4].setLabelString("z"); 
 
-	
-	updateData();
-	updateCoordinates();
 
   QTimer* timer = new QTimer( this );
 	connect( timer, SIGNAL(timeout()), this, SLOT(rotate()) );
 
-	timer->start(20);
+	timer->start(updateinterval);
 
 }
 
 void Plot::rotate()
 {
-		setRotation(
-			int(xRotation() + 1) % 720,
-			int(yRotation() + 1) % 720,
-			int(zRotation() + 1) % 720
+	int prec = 3;
+		
+	setRotation(
+			(int(prec*xRotation() + 1) % (360*prec))/double(prec),
+			(int(prec*yRotation() + 1) % (360*prec))/double(prec),
+			(int(prec*zRotation() + 1) % (360*prec))/double(prec)
 			);
 }
 
@@ -72,17 +67,24 @@ int main(int argc, char **argv)
     QApplication a(argc, argv);
 		QSplitter* spl = new QSplitter(QSplitter::Horizontal);
 
-		Plot* plot1 = new Plot(spl);
+		Plot* plot1 = new Plot(spl,30);
 		plot1->setFloorStyle(FLOORISO);
 		plot1->setCoordinateStyle(BOX);
+		Saddle saddle(plot1);
+		saddle.create();
 		plot1->setTitle("Autoswitching axes");
-		plot1->setBackgroundColor(RGBA(1,220./255, 180./255));
+		plot1->setBackgroundColor(RGBA(1,1, 157./255));
 
-		Plot* plot2 = new Plot(spl);
-		plot2->setPlotStyle(WIREFRAME);
-		plot2->setFloorStyle(FLOORDATA);
+
+		Plot* plot2 = new Plot(spl,50);
+		plot2->setPlotStyle(FILLED);
+		plot2->setFloorStyle(FLOORISO);
 		plot2->setCoordinateStyle(FRAME);
-		plot2->setBackgroundColor(RGBA(1,220./255, 180./255));
+		plot2->setZoom(0.8);
+		Hat hat(plot2);
+		hat.create();
+		plot2->setBackgroundColor(RGBA(1,1, 157./255));
+
 
 		a.setMainWidget(spl);
 		spl->resize(800,400);
