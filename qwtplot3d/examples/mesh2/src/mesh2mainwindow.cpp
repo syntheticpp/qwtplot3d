@@ -27,7 +27,7 @@
 #include "../src/reader.h"
 
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 
 Mesh2MainWindow::~Mesh2MainWindow()      
@@ -65,8 +65,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect( timer, SIGNAL(timeout()), this, SLOT(rotate()) );
 
 		resSlider->setRange(1,70);
-		connect( resSlider, SIGNAL(valueChanged(int)), this, SLOT(setResolution(int)) );
-		connect( dataWidget, SIGNAL(resolutionChanged(double)), resSlider, SLOT(setValue(double)) );
+		connect( resSlider, SIGNAL(valueChanged(int)), dataWidget, SLOT(setResolution(int)) );
+		connect( dataWidget, SIGNAL(resolutionChanged(int)), resSlider, SLOT(setValue(int)) );
 		resSlider->setValue(1);             
 		
 		offsSlider->setRange(0,10);
@@ -142,6 +142,83 @@ void Mesh2MainWindow::open()
 		dataWidget->showColorLegend(legend_);
 }
 
+void Mesh2MainWindow::createFunction(QString const& name)
+{
+	if (name == QString("Rosenbrock")) 
+	{
+		Rosenbrock rosenbrock(dataWidget);
+		
+		rosenbrock.setMesh(70,71);
+		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
+		//rosenbrock.setDomain(-5,5.5,-1,2);
+		rosenbrock.setMinZ(-100);
+		
+		rosenbrock.create();
+	}
+	else if (name == QString("Hat")) 
+	{
+		Hat hat(dataWidget);
+		
+		hat.setMesh(51,72);
+		hat.setDomain(-1.5,1.5,-1.5,1.5);
+		
+		//hat.setMaxZ(1.1);
+
+		hat.create();		
+	}
+	else if (name == QString("Saddle")) 
+	{
+		Saddle saddle(dataWidget);
+		
+		saddle.setMesh(71,71);
+		double dom = 2.5;
+		saddle.setDomain(-dom, dom, -dom, dom);
+		
+		//hat.setMaxZ(1.1);
+
+		saddle.create();
+	}
+	else if (name == QString("Sombrero")) 
+	{
+		Mex mex(dataWidget);
+		
+		mex.setMesh(90,90);
+		double dom = 15;
+		mex.setDomain(-dom, dom, -dom, dom);
+		
+		//hat.setMaxZ(1.1);
+
+		mex.create();
+	}
+
+	createColorLegend(StandardColor(dataWidget->data()).colVector());
+
+	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
+	{
+		dataWidget->coordinates()->axes[i].setMajors(7);
+		dataWidget->coordinates()->axes[i].setMinors(5);
+	}
+	
+	pickCoordSystem(activeCoordSystem);
+
+	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X2].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X3].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X4].setLabelString(QChar (0x3b4) + QString("-axis"));
+
+	dataWidget->coordinates()->axes[Y1].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y2].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y3].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y4].setLabelString(QChar (0x3b6) + QString("-axis"));
+
+	dataWidget->coordinates()->axes[Z1].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z2].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
+
+	dataWidget->showColorLegend(legend_);
+}
+
 void Mesh2MainWindow::pickCoordSystem( QAction* action)
 {
 	if (!action || !dataWidget)
@@ -174,7 +251,9 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 		dataWidget->setTitle("");
 		dataWidget->setCoordinateStyle(NOCOORD);
 	}
-	dataWidget->updateCoordinates();
+
+	dataWidget->updateCoordinateSystem();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickPlotStyle( QAction* action )
@@ -245,7 +324,7 @@ void Mesh2MainWindow::resetColors()
 	dataWidget->updateData();
 	dataWidget->coordinates()->setNumberColor(nuc);
 	dataWidget->coordinates()->setLabelColor(lbc);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 
@@ -257,7 +336,7 @@ void Mesh2MainWindow::pickAxesColor()
 		return;
 	RGBA rgb = Qt2GL(c);
 	dataWidget->coordinates()->setAxesColor(rgb);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickBgColor()
@@ -268,7 +347,7 @@ void Mesh2MainWindow::pickBgColor()
 		return;
 	RGBA rgb = Qt2GL(c);
 	dataWidget->setBackgroundColor(rgb);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickMeshColor()
@@ -280,7 +359,7 @@ void Mesh2MainWindow::pickMeshColor()
 	RGBA rgb = Qt2GL(c);
 	dataWidget->setMeshColor(rgb);
 	dataWidget->updateData();
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickNumberColor()
@@ -291,7 +370,7 @@ void Mesh2MainWindow::pickNumberColor()
 		return;
 	RGBA rgb = Qt2GL(c);
 	dataWidget->coordinates()->setNumberColor(rgb);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickLabelColor()
@@ -301,7 +380,7 @@ void Mesh2MainWindow::pickLabelColor()
 		return;
 	RGBA rgb = Qt2GL(c);
 	dataWidget->coordinates()->setLabelColor(rgb);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickTitleColor()
 {
@@ -322,7 +401,7 @@ void Mesh2MainWindow::pickNumberFont()
 		return;
 	} 
 	dataWidget->coordinates()->setNumberFont(font);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickLabelFont()
 {
@@ -333,7 +412,7 @@ void Mesh2MainWindow::pickLabelFont()
 		return;
 	} 
 	dataWidget->coordinates()->setLabelFont(font);
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickTitleFont()
 {
@@ -350,13 +429,13 @@ void Mesh2MainWindow::resetFonts()
 {
 	dataWidget->coordinates()->setNumberFont(QFont("Courier", 12));
 	dataWidget->coordinates()->setLabelFont(QFont("Courier", 14, QFont::Bold));
-	dataWidget->updateCoordinates();
+	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::setStandardView()
 {
 	dataWidget->setRotation(30,0,15);
-	dataWidget->setViewportShift(0.1,0);
+	dataWidget->setViewportShift(0.05,0);
 	dataWidget->setScale(1,1,1);
 	dataWidget->setZoom(0.95);
 }
@@ -368,7 +447,7 @@ void Mesh2MainWindow::dumpImage()
 		return;
 
 	QString name = QString("dump_") + QString::number(counter++) + ".png";
-	dataWidget->dump(name,"PNG");
+	dataWidget->saveContent(name,"PNG");
 }
 
 /*!
@@ -399,71 +478,6 @@ void Mesh2MainWindow::rotate()
 	}	
 }
 
-void Mesh2MainWindow::createFunction(QString const& name)
-{
-	if (name == QString("Rosenbrock")) 
-	{
-		Rosenbrock rosenbrock(dataWidget);
-		
-		rosenbrock.setMesh(70,71);
-		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
-		//rosenbrock.setDomain(-5,5.5,-1,2);
-		rosenbrock.setMinZ(-100);
-		
-		rosenbrock.create();
-	}
-	else if (name == QString("Hat")) 
-	{
-		Hat hat(dataWidget);
-		
-		hat.setMesh(51,72);
-		hat.setDomain(-1.5,1.5,-1.5,1.5);
-		
-		//hat.setMaxZ(1.1);
-
-		hat.create();		
-	}
-	else if (name == QString("Gauss")) 
-	{
-		Gauss gauss(dataWidget);
-		
-		gauss.setMesh(71,71);
-		gauss.setDomain(-2.5,2.5,-2.5,2.5);
-		
-		//hat.setMaxZ(1.1);
-
-		gauss.create();
-	}
-
-	createColorLegend(StandardColor(dataWidget->data()).colVector());
-
-	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-	{
-		dataWidget->coordinates()->axes[i].setMajors(7);
-		dataWidget->coordinates()->axes[i].setMinors(5);
-	}
-	
-	pickCoordSystem(activeCoordSystem);
-
-	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X2].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X3].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X4].setLabelString(QChar (0x3b4) + QString("-axis"));
-
-	dataWidget->coordinates()->axes[Y1].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y2].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y3].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y4].setLabelString(QChar (0x3b6) + QString("-axis"));
-
-	dataWidget->coordinates()->axes[Z1].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z2].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
-
-	//setStandardView();
-	dataWidget->showColorLegend(legend_);
-}
-
 void
 Mesh2MainWindow::toggleProjectionMode(bool val)
 {
@@ -481,13 +495,7 @@ void
 Mesh2MainWindow::toggleAutoScale(bool val)
 {
 	dataWidget->coordinates()->setAutoScale(val);
-	dataWidget->updateCoordinates();
-}
-
-void
-Mesh2MainWindow::setResolution(int val)
-{
-	dataWidget->setResolution(val);
+	dataWidget->updateGL();
 }
 
 void
@@ -519,27 +527,27 @@ Mesh2MainWindow::createColorLegend(ColorVector const& col)
 void
 Mesh2MainWindow::showRotate(double x, double y, double z)		
 {
-	rotateLabel->setText(" Angles ("  + QString::number(x) + " ," 
-																	+ QString::number(y) + " ,"
-																	+ QString::number(z) + ")");
+	rotateLabel->setText(" Angles ("  + QString::number(x,'g',3) + " ," 
+																	+ QString::number(y,'g',3) + " ,"
+																	+ QString::number(z,'g',3) + ")");
 }
 void
 Mesh2MainWindow::showShift(double x, double y)		
 {
-	shiftLabel->setText(" Shifts (" + QString::number(x) + " ," 
-																	+ QString::number(y) + " )"
+	shiftLabel->setText(" Shifts (" + QString::number(x,'g',3) + " ," 
+																	+ QString::number(y,'g',3) + " )"
 																	);
 }
 void
 Mesh2MainWindow::showScale(double x, double y, double z)		
 {
-	scaleLabel->setText(" Scales (" + QString::number(x) + " ," 
-																	+ QString::number(y) + " ,"
-																	+ QString::number(z) + ")");
+	scaleLabel->setText(" Scales (" + QString::number(x,'g',3) + " ," 
+																	+ QString::number(y,'g',3) + " ,"
+																	+ QString::number(z,'g',3) + ")");
 }
 void
 Mesh2MainWindow::showZoom(double z)		
 {
-	zoomLabel->setText(" Zoom "  + QString::number(z)); 
+	zoomLabel->setText(" Zoom "  + QString::number(z,'g',3)); 
 }
 

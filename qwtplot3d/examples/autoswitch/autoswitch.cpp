@@ -27,18 +27,18 @@ Plot::Plot(QWidget* pw, int updateinterval)
 	}
 	
 	
-	coordinates()->axes[Qwt3d::X1].setLabelString("x");
-	coordinates()->axes[Qwt3d::Y1].setLabelString("y");
-	coordinates()->axes[Qwt3d::Z1].setLabelString("z"); 
-	coordinates()->axes[Qwt3d::X2].setLabelString("x");
-	coordinates()->axes[Qwt3d::Y2].setLabelString("y");
-	coordinates()->axes[Qwt3d::Z2].setLabelString("z"); 
-	coordinates()->axes[Qwt3d::X3].setLabelString("x");
-	coordinates()->axes[Qwt3d::Y3].setLabelString("y");
-	coordinates()->axes[Qwt3d::Z3].setLabelString("z"); 
-	coordinates()->axes[Qwt3d::X4].setLabelString("x");
-	coordinates()->axes[Qwt3d::Y4].setLabelString("y");
-	coordinates()->axes[Qwt3d::Z4].setLabelString("z"); 
+	coordinates()->axes[Qwt3D::X1].setLabelString("x");
+	coordinates()->axes[Qwt3D::Y1].setLabelString("y");
+	coordinates()->axes[Qwt3D::Z1].setLabelString("z"); 
+	coordinates()->axes[Qwt3D::X2].setLabelString("x");
+	coordinates()->axes[Qwt3D::Y2].setLabelString("y");
+	coordinates()->axes[Qwt3D::Z2].setLabelString("z"); 
+	coordinates()->axes[Qwt3D::X3].setLabelString("x");
+	coordinates()->axes[Qwt3D::Y3].setLabelString("y");
+	coordinates()->axes[Qwt3D::Z3].setLabelString("z"); 
+	coordinates()->axes[Qwt3D::X4].setLabelString("x");
+	coordinates()->axes[Qwt3D::Y4].setLabelString("y");
+	coordinates()->axes[Qwt3D::Z4].setLabelString("z"); 
 
 
   QTimer* timer = new QTimer( this );
@@ -60,7 +60,7 @@ void Plot::rotate()
 }
 
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 int main(int argc, char **argv)
 {
@@ -72,17 +72,18 @@ int main(int argc, char **argv)
 		plot1->setCoordinateStyle(BOX);
 		Saddle saddle(plot1);
 		saddle.create();
+		plot1->updateCoordinateSystem();
 		plot1->setTitle("Autoswitching axes");
 		plot1->setBackgroundColor(RGBA(1,1, 157./255));
 
 
 		Plot* plot2 = new Plot(spl,80);
-		plot2->setPlotStyle(FILLED);
-		plot2->setFloorStyle(FLOORISO);
-		plot2->setCoordinateStyle(FRAME);
 		plot2->setZoom(0.8);
 		Hat hat(plot2);
 		hat.create();
+		plot2->setPlotStyle(FILLED);
+		plot2->setFloorStyle(FLOORISO);
+		plot2->setCoordinateStyle(FRAME);
 		plot2->setBackgroundColor(RGBA(1,1, 157./255));
 
 

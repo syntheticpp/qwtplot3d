@@ -10,7 +10,7 @@ Apr 28 2003:
 	- QwtPlot3D::disableMouse()
 	
 Apr 27 2003: 
-- <b>release 0.1.1 alpha</b>
+- <b>Release 0.1.1 alpha</b>
 	- new Features:
 	  - Standard mouse handler (rotate, shift, scale, zoom data - try your left mouse button with ALT,CTRL,SHIFT and combinations)
 	  - Mesh2 example adapted ( relies not longer on qwt library) 

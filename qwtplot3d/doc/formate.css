@@ -2,8 +2,9 @@
 
 p,li,ul,body {font-family:arial,helvetica; font-size:9pt; color:#404040;}
 pre {font-family:monospace; font-size:9pt; color:#404040;}
-td {font-family:arial,helvetica; font-size:10pt; color:#000000;}
+td {font-family:arial,helvetica; font-size:10pt; color:#404040;}
 td.md {font-weight:bold}
+div.groupHeader {font-weight:bold}
 
 #p.sub {font-family:arial,helvetica; font-size:8pt; color:#333399;}
 

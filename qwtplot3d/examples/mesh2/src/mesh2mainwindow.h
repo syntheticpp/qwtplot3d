@@ -39,7 +39,6 @@ public slots:
 	void toggleColorLegend(bool);
 	void toggleAutoScale(bool val);
 	void rotate();
-	void setResolution(int);
 	void setPolygonOffset(int);
 	void createColorLegend(ColorVector const&);
 

@@ -19,8 +19,6 @@ public:
 	{
 		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
 	}
-
-	QString name() const { return QString("Rosenbrock"); }
 };
 
 class Hat : public Function
@@ -37,15 +35,13 @@ public:
 	{
 		return 1.0 / (x*x+y*y+0.5);
 	}
-
-	QString name() const { return QString("Hat"); }
 };
 
-class Gauss : public Function
+class Saddle : public Function
 {
 public:
 
-	Gauss(QwtPlot3D* pw)
+	Saddle(QwtPlot3D* pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     
@@ -53,10 +49,29 @@ public:
 	
 	double operator()(double x, double y)
 	{
-		return exp(-(x*x+y*y)/2);
+		return x*x - y*y;
 	}
+};
 
-	QString name() const { return QString("Gauss"); }
+class Mex : public Function
+{
+public:
+
+	Mex(QwtPlot3D* pw)
+	:Function(pw)
+	{
+	//	setMaxZ(0.8);     
+	}
+	
+	double operator()(double x, double y)
+	{
+		double n = sqrt(x*x+y*y); 
+
+		if (n < DBL_MIN)
+			return 20;
+		
+		return 20 * sin(sqrt(x*x+y*y)) / n;
+	}
 };
 
 #endif // __EXAMPLE_H__

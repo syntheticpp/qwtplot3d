@@ -74,7 +74,7 @@ Plot::Plot(QWidget* pw)
 
 	
 	updateData();
-	updateCoordinates();
+	updateGL();
 
   QTimer* timer = new QTimer( this );
 	connect( timer, SIGNAL(timeout()), this, SLOT(changeColor()) );
@@ -83,7 +83,7 @@ Plot::Plot(QWidget* pw)
 
 }
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 void Plot::changeColor()
 {

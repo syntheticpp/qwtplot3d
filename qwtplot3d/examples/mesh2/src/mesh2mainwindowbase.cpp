@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Di 29. Apr 00:50:52 2003
+** Created: Sa 3. Mai 10:58:21 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1416,17 +1416,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
 
     Mesh2MainWindowBaseLayout->addLayout( Layout5, 1, 0 );
 
-    Frame3 = new QFrame( centralWidget(), "Frame3" );
-    Frame3->setFrameShape( QFrame::StyledPanel );
-    Frame3->setFrameShadow( QFrame::Sunken );
-    Frame3Layout = new QGridLayout( Frame3, 1, 1, 11, 6, "Frame3Layout"); 
-
-    dataWidget = new QwtPlot3D( Frame3, "dataWidget" );
-
-    Frame3Layout->addWidget( dataWidget, 0, 0 );
-
-    Mesh2MainWindowBaseLayout->addWidget( Frame3, 0, 0 );
-
     Layout7 = new QVBoxLayout( 0, 0, 6, "Layout7"); 
 
     Layout6 = new QVBoxLayout( 0, 0, 6, "Layout6"); 
@@ -1461,6 +1450,17 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Layout7->addItem( spacer_2 );
 
     Mesh2MainWindowBaseLayout->addMultiCellLayout( Layout7, 0, 1, 1, 1 );
+
+    Frame4 = new QFrame( centralWidget(), "Frame4" );
+    Frame4->setFrameShape( QFrame::StyledPanel );
+    Frame4->setFrameShadow( QFrame::Sunken );
+    Frame4Layout = new QGridLayout( Frame4, 1, 1, 11, 6, "Frame4Layout"); 
+
+    dataWidget = new QwtPlot3D( Frame4, "dataWidget" );
+
+    Frame4Layout->addWidget( dataWidget, 0, 0 );
+
+    Mesh2MainWindowBaseLayout->addWidget( Frame4, 0, 0 );
 
     // actions
     openFile = new QAction( this, "openFile" );
@@ -1631,7 +1631,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     functionCB->insertItem( trUtf8( "---" ) );
     functionCB->insertItem( trUtf8( "Hat" ) );
     functionCB->insertItem( trUtf8( "Rosenbrock" ) );
-    functionCB->insertItem( trUtf8( "Gauss" ) );
+    functionCB->insertItem( trUtf8( "Saddle" ) );
+    functionCB->insertItem( trUtf8( "Sombrero" ) );
     animation->addTo( Toolbar );
     Toolbar->addSeparator();
     Box->addTo( Toolbar );
