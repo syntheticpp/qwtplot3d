@@ -47,9 +47,9 @@ Axis::init()
 
 	setNumberAnchor(Center);
 
-	makeSimpleLabels(true);
-
 	label_ = Label();
+	numbergap_ = 0;
+	labelgap_ = 0;
 }
 
 void 
@@ -122,16 +122,61 @@ Axis::draw()
 	saveGLState();
 
 	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+//	glBlendFunc(GL_ONE, GL_ZERO);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(color.r,color.g,color.b,color.a);		
 
 	drawBase();
 	drawTics();
-		
-	if (drawLabel_)
-		label_.draw();
+	drawLabel();	
 
 	restoreGLState();
+}
+
+/**
+Always use AFTER drawNumbers() ! (Needs length of number string)
+*/
+void 
+Axis::drawLabel()
+{
+	if (!drawLabel_)
+		return;
+
+  Triple diff = end() - begin();
+	Triple center = begin() + diff/2;
+	
+	Triple bnumber = biggestNumberString(); 
+//	double fac = 6*(second()-first()).length() / 100;
+	
+	switch (scaleNumberAnchor_) 
+	{
+		case BottomLeft:
+		case TopLeft:
+		case CenterLeft:
+			bnumber.y = 0;
+			break;
+		case BottomRight:
+		case TopRight:
+		case CenterRight:
+			bnumber.x = -bnumber.x;
+			bnumber.y = 0;
+			break;
+		case TopCenter:
+			bnumber.x = 0;
+			bnumber.y = -bnumber.y;
+			break;
+		case BottomCenter:
+			bnumber.x = 0;
+			break;
+		default:
+			break;
+	}
+	
+	Triple pos = ViewPort2World(World2ViewPort(center + ticOrientation() * lmaj_) + bnumber);
+	setLabelPosition(pos, scaleNumberAnchor_);
+
+	label_.adjust(labelgap_);
+	label_.draw();
 }
 
 void 
@@ -255,6 +300,7 @@ Axis::drawNumber(Triple pos, int mtic)
 		markerLabel_[mtic].setString(QString::number(start_ + t * (stop_ - start_)));
 	
 	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
+	markerLabel_[mtic].adjust(numbergap_);
 	markerLabel_[mtic].update();
 	markerLabel_[mtic].draw();
 }
@@ -297,6 +343,7 @@ void
 Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	label_.setFont(family, pointSize, weight, italic);
+	label_.update();
 }
 
 void 
@@ -309,12 +356,14 @@ void
 Axis::setLabelString(QString const& name)
 {
 	label_.setString(name);
+	label_.update();
 }
 
 void 
 Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 {
 	label_.setPosition(pos, an);
+	label_.update();
 }
 
 void 
@@ -324,5 +373,24 @@ Axis::setLabelColor(RGBA col)
 	label_.update();
 }
 
+Triple 
+Axis::biggestNumberString()
+{
+	Triple ret;
+	unsigned size = markerLabel_.size();
 
+	double width, height;
+
+	for (unsigned i=0; i!=size; ++i)
+	{
+		width = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).x );
+		height = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).y );
+
+		if (width > ret.x)
+			ret.x = width + markerLabel_[i].gap();
+		if (height > ret.y)
+			ret.y = height + markerLabel_[i].gap();;
+	}
+	return ret;
+}
 

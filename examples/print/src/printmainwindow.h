@@ -21,6 +21,9 @@ public slots:
 	void setSmoothMesh(bool val);
 	void setMeshLineWidth(int val);
 	void setCoordLineWidth(int val);
+	void setFontSize(QString const& size);
+	void setNumberGap(int gap);
+	void setLabelGap(int gap);
 
 private:
 	int sortingtype_;

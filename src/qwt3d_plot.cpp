@@ -175,13 +175,11 @@ Plot3D::paintGL()
 	
 	for (unsigned i=0; i!= DisplayLists.size(); ++i)
 	{
-		if (i!=LegendObject && i!=CoordObject /*&& i!=DataObject*/)
+		if (i!=LegendObject && i!=CoordObject)
 			glCallList( DisplayLists[i] );
 	}
 	
-//	createData();
 	coord.draw();
-
  
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();
@@ -248,7 +246,7 @@ Plot3D::showColorLegend( bool show )
 }
 
 /*!
-	Saves as vector data supported by gl2ps. The corresponding format types are "EPS" and "PS".
+	Saves as vector data supported by gl2ps. The corresponding format types are "EPS","PS","PDF" or "TEX" .
 	The last parameter is one of gl2ps' sorting types: GL2PS_NO_SORT, GL2PS_SIMPLE_SORT or GL2PS_BSP_SORT.
   Default is GL2PS_SIMPLE_SORT.\n 
 	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
@@ -258,6 +256,8 @@ bool
 Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 {
 	makeCurrent();
+	Label::useDeviceFonts(true);
+	
 	GLint gl2ps_format;
 	if (format == QString("EPS"))
 	{
@@ -301,7 +301,7 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 
 	while( state == GL2PS_OVERFLOW )
 	{ 
-		bufsize += 1024*1024;
+		bufsize += 2*1024*1024;
 		gl2psBeginPage ( "---", "qwtplot3d", viewport,
 										 gl2ps_format, sorttype,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
@@ -312,6 +312,8 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 		state = gl2psEndPage();
 	}
 	fclose(fp);
+
+	Label::useDeviceFonts(false);
 	return true;
 }	
 /*!

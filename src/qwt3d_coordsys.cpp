@@ -98,17 +98,6 @@ CoordinateSystem::init(Triple first, Triple second)
 }
 
 void 
-CoordinateSystem::positionateLabel(Axis& ax, Qwt3D::ANCHOR an)
-{
-  Triple diff = ax.end() - ax.begin();
-	Triple center = ax.begin() + diff/2;
-	
-	double fac = 6*(second()-first()).length() / 100;
-	ax.setLabelPosition(center +  fac * ax.ticOrientation(), an);
-	ax.setNumberAnchor(an);
-}
-
-void 
 CoordinateSystem::draw()
 {	
 //	saveGLState();
@@ -335,42 +324,34 @@ CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 	{
 		if ( diff.x >= 0 && diff.y >= 0 && sina < SQRT_2)          // 0..Pi/4 
 		{
-			positionateLabel(ax, BottomCenter);
 			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x >= 0 && diff.y >= 0  && !left)            // octant 2
 		{
-			positionateLabel(ax, CenterRight);
 			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2)    // octant 3
 		{
-			positionateLabel(ax, CenterRight);
 			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0 )                      // octant 4
 		{
-			positionateLabel(ax, TopCenter);
 			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2)    // octant 5
 		{
-			positionateLabel(ax, BottomCenter);
 			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0)                      // octant 6
 		{
-			positionateLabel(ax, CenterRight);
 			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2)    // octant 7
 		{
-			positionateLabel(ax, CenterRight);
 			ax.setNumberAnchor(CenterRight);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0)                      // octant 8
 		{
-			positionateLabel(ax, TopCenter);
 			ax.setNumberAnchor(TopCenter);
 		}
 	}	
@@ -378,42 +359,34 @@ CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 	{
 		if ( diff.x >= 0 && diff.y >= 0 && sina <= SQRT_2)
 		{
-			positionateLabel(ax, TopCenter);
 			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x >= 0 && diff.y >= 0  && !left) 
 		{
-			positionateLabel(ax, CenterLeft);
 			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0  && sina >= SQRT_2) 
 		{
-			positionateLabel(ax, CenterLeft);
 			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x <= 0 && diff.y >= 0) 
 		{
-			positionateLabel(ax, BottomCenter);
 			ax.setNumberAnchor(BottomCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0  && sina <= SQRT_2) 
 		{
-			positionateLabel(ax, TopCenter);
 			ax.setNumberAnchor(TopCenter);
 		}
 		else if ( diff.x <= 0 && diff.y <= 0) 
 		{
-			positionateLabel(ax, CenterLeft);
 			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0  && sina >= SQRT_2) 
 		{
-			positionateLabel(ax, CenterLeft);
 			ax.setNumberAnchor(CenterLeft);
 		}
 		else if ( diff.x >= 0 && diff.y <= 0) 
 		{
-			positionateLabel(ax, BottomCenter);
 			ax.setNumberAnchor(BottomCenter);
 		}
 	}
@@ -432,6 +405,20 @@ CoordinateSystem::setTicLength(double major, double minor)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setTicLength(major, minor);
+}
+
+void 
+CoordinateSystem::adjustNumbers(int val)
+{
+	for (unsigned i=0; i!=axes.size(); ++i)
+		axes[i].adjustNumbers(val);
+}
+
+void 
+CoordinateSystem::adjustLabels(int val)
+{
+	for (unsigned i=0; i!=axes.size(); ++i)
+		axes[i].adjustLabel(val);
 }
 
 void 

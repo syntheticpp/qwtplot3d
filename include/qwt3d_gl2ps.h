@@ -18,10 +18,8 @@ namespace Qwt3D
 {
 
 GLint setDeviceLineWidth(GLfloat val);
-GLint drawDevicePixels(GLsizei width, GLsizei height,
-                       GLenum format, GLenum type,
-                       const void *pixels, bool printerfonts);
-GLint drawDeviceText(const char* str, const char* fontname, int fontsize, Qwt3D::Triple pos, Qwt3D::RGBA rgba, Qwt3D::ANCHOR align, Qwt3D::Triple gap);
+GLint drawDevicePixels(GLsizei width, GLsizei height, GLenum format, GLenum type, const void *pixels);
+GLint drawDeviceText(const char* str, const char* fontname, int fontsize, Qwt3D::Triple pos, Qwt3D::RGBA rgba, Qwt3D::ANCHOR align, double gap);
 void setDevicePolygonOffset(GLfloat factor, GLfloat units);
 
 

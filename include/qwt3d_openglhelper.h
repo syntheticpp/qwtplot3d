@@ -85,6 +85,39 @@ inline void getMatrices(GLdouble* modelMatrix, GLdouble* projMatrix, GLint* view
 	glGetDoublev(GL_PROJECTION_MATRIX,	projMatrix);
 }
 
+//! simplified glut routine (glUnProject): windows coord --> object coord 
+/**
+	Don't rely on (use) this in display lists !
+*/
+inline bool ViewPort2World(double& objx, double& objy, double& objz, double winx, double winy, double winz)
+{
+	GLdouble modelMatrix[16];
+  GLdouble projMatrix[16];
+  GLint viewport[4];
+
+	getMatrices(modelMatrix, projMatrix, viewport);
+	int res = gluUnProject(winx, winy, winz, modelMatrix, projMatrix, viewport, &objx, &objy, &objz);
+
+	return (res == GL_FALSE) ? false : true;
+}
+
+//! simplified glut routine (glProject): object coord --> windows coord 
+/**
+	Don't rely on (use) this in display lists !
+*/
+inline bool World2ViewPort(double& winx, double& winy, double& winz, double objx, double objy, double objz )
+{
+	GLdouble modelMatrix[16];
+  GLdouble projMatrix[16];
+  GLint viewport[4];
+
+	getMatrices(modelMatrix, projMatrix, viewport);
+	int res = gluProject(objx, objy, objz, modelMatrix, projMatrix, viewport, &winx, &winy, &winz);
+
+	return (res == GL_FALSE) ? false : true;
+}
+
+
 #endif // QWT3D_PRIVATE
 
 } // ns

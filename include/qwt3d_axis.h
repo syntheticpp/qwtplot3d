@@ -40,6 +40,7 @@ public:
 	void setLabelPosition(const Qwt3D::Triple& pos, Qwt3D::ANCHOR);
 	void setLabelColor(Qwt3D::RGBA col);
 	void setLabel(bool d) {drawLabel_ = d;}
+	void adjustLabel(int val) {labelgap_ = val;} //!< Shifts label in device coordinates dependent on anchor;
 
 	void setScale(bool d) {drawTics_ = d;} //!< Turns scale drawing on or off
 	bool scale() const {return drawTics_;} //!< Returns, if scale drawing is on or off
@@ -51,6 +52,7 @@ public:
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setNumberFont(QFont const&); //!< Overloaded member, works like the above function
 	void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;} //!< Sets anchor position for numbers
+	void adjustNumbers(int val) {numbergap_ = val;} //!< Shifts axis numbers in device coordinates dependent on anchor;
 
 	void setAutoScale(bool val = true) {autoscale_ = val;} //!< Turns Autoscaling on or off
 	bool autoScale() const { return autoscale_;} //!< actual Autoscaling mode
@@ -61,7 +63,7 @@ public:
 	int minors() const { return minorintervals_; } //!< Returns number of minor intervals
 	Qwt3D::TripleField const& majorPositions() const {return majorpos_;} //!< Returns positions for actual major tics (also if invisible)
 	Qwt3D::TripleField const& minorPositions() const {return minorpos_;} //!< Returns positions for actual minor tics (also if invisible)
-
+	
 	//! Sets line width for axis components
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
 	double lineWidth() const { return lineWidth_;} //!< \return Line width for axis body
@@ -70,7 +72,6 @@ public:
 
 	void setLimits(double start, double stop) {start_=start; stop_=stop;} //!< Sets interval
 	void limits(double& start, double& stop) const {start = start_; stop = stop_;} //!< Returns axis interval
-
 	
 private:
 
@@ -78,12 +79,15 @@ private:
 	void drawBase();
 	void drawTics();
 	void drawNumber(Qwt3D::Triple Pos, int mtic);
-	Triple drawTic(Qwt3D::Triple nadir, double length);
+	Qwt3D::Triple drawTic(Qwt3D::Triple nadir, double length);
+	void drawLabel();
+
+	Qwt3D::Triple biggestNumberString();
 	
 	
 	Qwt3D::ANCHOR scaleNumberAnchor_;
-	Label label_;
-	std::vector<Label> markerLabel_;
+	Qwt3D::Label label_;
+	std::vector<Qwt3D::Label> markerLabel_;
 
 	Qwt3D::Triple beg_, end_;
 	Qwt3D::TripleField majorpos_, minorpos_; //! vectors, holding major resp. minor tic positions;
@@ -102,10 +106,8 @@ private:
 	bool autoscale_;
 	QFont numberfont_;
 	Qwt3D::RGBA  numbercolor_;
-	bool simpleLabels_;
 
-	void makeSimpleLabels(bool val) { simpleLabels_ = val;}
-	bool simpleLables() const { return simpleLabels_;}
+	int numbergap_, labelgap_; 
 
 	Qwt3D::AutoScaler as_;
 };

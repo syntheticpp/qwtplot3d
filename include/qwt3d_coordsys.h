@@ -27,6 +27,9 @@ public:
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setNumberFont(QFont const& font);
 	void setNumberColor(Qwt3D::RGBA val);
+	
+	void adjustNumbers(int val); //!< Fine tunes distance between axis numbering and axis body
+	void adjustLabels(int val); //!< Fine tunes distance between axis label and axis body
 
 	void setGridLinesColor(Qwt3D::RGBA val) {gridlinecolor_ = val;}
 	
@@ -64,8 +67,6 @@ private:
 	Qwt3D::RGBA gridlinecolor_;
 
 	bool smooth_;
-
-	void positionateLabel(Axis& ax, Qwt3D::ANCHOR an);
 	
 	void chooseAxes();
 	void autoDecorateExposedAxis(Axis& ax, bool left);

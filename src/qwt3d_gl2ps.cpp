@@ -1,4 +1,5 @@
 #include "qwt3d_gl2ps.h"
+#include "qwt3d_openglhelper.h"
 
 using namespace Qwt3D;
 
@@ -6,6 +7,11 @@ using namespace Qwt3D;
 GLint 
 Qwt3D::setDeviceLineWidth(GLfloat val)
 {
+	if (val<0) 
+		val=0;
+
+	GLint ret = gl2psLineWidth(val);
+
 	GLfloat lw[2];
 	glGetFloatv(GL_LINE_WIDTH_RANGE, lw);
 	
@@ -15,18 +21,15 @@ Qwt3D::setDeviceLineWidth(GLfloat val)
 		val = lw[1];
 
 	glLineWidth(val);
-	return gl2psLineWidth(val);
+	return ret;
 }
 
 GLint 
 Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
                        GLenum format, GLenum type,
-                       const void *pixels, bool printerfonts)
+                       const void *pixels)
 {
   glDrawPixels(width, height, format, type, pixels);
-
-	if (printerfonts)
-		return GL2PS_SUCCESS;
 
   if(format != GL_RGBA || type != GL_UNSIGNED_BYTE)
 		return GL2PS_ERROR;
@@ -49,9 +52,12 @@ Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
 }
 
 GLint 
-Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, Triple gap)
+Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, double gap)
 {
-	Triple adjpos = pos;
+	double vp[3];
+
+	World2ViewPort(vp[0], vp[1], vp[2], pos.x, pos.y, pos.z);
+	Triple start(vp[0],vp[1],vp[2]);
 
 	GLdouble fcol[4];
 	glGetDoublev(GL_CURRENT_COLOR, fcol);
@@ -71,43 +77,42 @@ Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Tripl
 			break;
 		case CenterLeft:
 			a = GL2PS_TEXT_CL;
-			adjpos.x += gap.x;
+			start += Triple(gap,0,0);
 			break;
 		case CenterRight:
 			a = GL2PS_TEXT_CR;
-			adjpos.x -= gap.x;
+			start += Triple(-gap,0,0);
 			break;
 		case BottomCenter:
 			a = GL2PS_TEXT_B;
-			adjpos.y += gap.y;
+			start += Triple(0,gap,0);
 			break;
 		case BottomLeft:
 			a = GL2PS_TEXT_BL;
-			adjpos.x += gap.x;
-			adjpos.y += gap.y;
+			start += Triple(gap,gap,0);
 			break;
 		case BottomRight:
 			a = GL2PS_TEXT_BR;
-			adjpos.x -= gap.x;
-			adjpos.y += gap.y;
+			start += Triple(-gap,gap,0);
 			break;
 		case TopCenter:
 			a = GL2PS_TEXT_T;
-			adjpos.y -= gap.y;
+			start += Triple(0,-gap,0);
 			break;
 		case TopLeft:
 			a = GL2PS_TEXT_TL;
-			adjpos.x -= gap.x;
-			adjpos.y -= gap.y;
+			start += Triple(gap,-gap,0);
 			break;
 		case TopRight:
 			a = GL2PS_TEXT_TR;
-			adjpos.x += gap.x;
-			adjpos.y -= gap.y;
+			start += Triple(-gap,-gap,0);
 			break;
 		default:
 			break;
 	}
+	
+	ViewPort2World(vp[0], vp[1], vp[2], start.x, start.y, start.z);
+	Triple adjpos(vp[0],vp[1],vp[2]);
 	
 	GL2PSrgba rgba2;
 		
@@ -117,7 +122,7 @@ Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Tripl
 	rgba2[3] = rgba.a;
 
 	glRasterPos3d(adjpos.x, adjpos.y, adjpos.z);
-	ret = gl2psText2(str, fontname, (int)fontsize, a, rgba2);
+	ret = gl2psTextOpt(str, fontname, (int)fontsize, a, rgba2);
 	glColor4dv(fcol);
 	glClearColor(bcol[0], bcol[1], bcol[2], bcol[3]);
   return ret;

@@ -112,15 +112,40 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	plot[0]->coordinates()->setGridLinesColor(RGBA(0,0,0.5));
 	plot[0]->coordinates()->setLineWidth(1);
 	plot[0]->coordinates()->setNumberColor(RGBA(0,0.5,0));
-	plot[0]->coordinates()->setNumberFont("Courier",8);
+	plot[0]->coordinates()->setNumberFont("Courier",10);
 	plot[0]->setTitleFont("Courier",11);
-	plot[0]->coordinates()->setLabelFont("Courier",10);
+	plot[0]->coordinates()->setLabelFont("Courier",12, QFont::Bold);
+	plot[0]->coordinates()->axes[X1].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[X1].setLabelString("X1");
+	plot[0]->coordinates()->axes[Y1].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Y1].setLabelString("Y1");
+	plot[0]->coordinates()->axes[Z1].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Z1].setLabelString("Z1");
+	plot[0]->coordinates()->axes[X2].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[X2].setLabelString("X2");
+	plot[0]->coordinates()->axes[Y2].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Y2].setLabelString("Y2");
+	plot[0]->coordinates()->axes[Z2].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Z2].setLabelString("Z2");
+	plot[0]->coordinates()->axes[X3].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[X3].setLabelString("X3");
+	plot[0]->coordinates()->axes[Y3].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Y3].setLabelString("Y3");
+	plot[0]->coordinates()->axes[Z3].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Z3].setLabelString("Z3");
+	plot[0]->coordinates()->axes[X4].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[X4].setLabelString("X4");
+	plot[0]->coordinates()->axes[Y4].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Y4].setLabelString("Y4");
+	plot[0]->coordinates()->axes[Z4].setLabelColor(RGBA(0,0,0.4));
+	plot[0]->coordinates()->axes[Z4].setLabelString("Z4");
   plot[0]->makeCurrent();
 	plot[0]->updateData();
   plot[0]->updateGL();
 
 	plot[1]->setMeshLineWidth(1);
 	plot[1]->coordinates()->setLineWidth(1);
+	plot[1]->coordinates()->setNumberFont("Courier",10);
 	plot[1]->makeCurrent();
   plot[1]->updateData();
   plot[1]->updateGL();
@@ -134,8 +159,12 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	connect( meshlineSlider, SIGNAL(valueChanged(int)), this, SLOT(setMeshLineWidth(int)) );
 	connect( coordSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoordLineWidth(int)) );
 	connect(meshsmooth, SIGNAL(toggled(bool)), this, SLOT(setSmoothMesh(bool)));
+	
+	connect(fontsizeCB, SIGNAL(activated(const QString&)), this, SLOT(setFontSize(const QString&)));
+	connect(numbergapslider, SIGNAL(valueChanged(int)), this, SLOT(setNumberGap(int)) );
+	connect(labelgapslider, SIGNAL(valueChanged(int)), this, SLOT(setLabelGap(int)) );
 
-	Label::usePrinterFonts(true);
+	fontsizeCB->setCurrentItem(1);
 }
 
 printMainWindow::~printMainWindow()
@@ -213,18 +242,18 @@ void printMainWindow::dumpImage()
 	plot[0]->setTitle("Rosenbrock");
  	plot[1]->setTitle("Hat");
 
-	plot[0]->coordinates()->axes[X1].setLabelString("");
-	plot[0]->coordinates()->axes[Y1].setLabelString("");
-	plot[0]->coordinates()->axes[Z1].setLabelString("");
-	plot[0]->coordinates()->axes[X2].setLabelString("");
-	plot[0]->coordinates()->axes[Y2].setLabelString("");
-	plot[0]->coordinates()->axes[Z2].setLabelString("");
-	plot[0]->coordinates()->axes[X3].setLabelString("");
-	plot[0]->coordinates()->axes[Y3].setLabelString("");
-	plot[0]->coordinates()->axes[Z3].setLabelString("");
-	plot[0]->coordinates()->axes[X4].setLabelString("");
-	plot[0]->coordinates()->axes[Y4].setLabelString("");
-	plot[0]->coordinates()->axes[Z4].setLabelString("");
+	plot[0]->coordinates()->axes[X1].setLabelString("X1");
+	plot[0]->coordinates()->axes[Y1].setLabelString("Y1");
+	plot[0]->coordinates()->axes[Z1].setLabelString("Z1");
+	plot[0]->coordinates()->axes[X2].setLabelString("X2");
+	plot[0]->coordinates()->axes[Y2].setLabelString("Y2");
+	plot[0]->coordinates()->axes[Z2].setLabelString("Z2");
+	plot[0]->coordinates()->axes[X3].setLabelString("X3");
+	plot[0]->coordinates()->axes[Y3].setLabelString("Y3");
+	plot[0]->coordinates()->axes[Z3].setLabelString("Z3");
+	plot[0]->coordinates()->axes[X4].setLabelString("X4");
+	plot[0]->coordinates()->axes[Y4].setLabelString("Y4");
+	plot[0]->coordinates()->axes[Z4].setLabelString("Z4");
 
 }
 
@@ -248,18 +277,6 @@ void printMainWindow::setSortingType(QString const& name)
 		sortingtype_ = GL2PS_BSP_SORT;
 	}
 }
-
-//void printMainWindow::setPolygonOffset(int val)
-//{
-//	plot[0]->makeCurrent();
-//	plot[0]->setPolygonOffset(val / 10.0);
-//	plot[0]->updateData();
-//	plot[0]->updateGL();
-//  plot[1]->makeCurrent();
-//	plot[1]->setPolygonOffset(val / 10.0);
-//	plot[1]->updateData();
-//	plot[1]->updateGL();
-//}
 
 void printMainWindow::setMeshLineWidth(int val)
 {
@@ -293,4 +310,39 @@ void printMainWindow::setSmoothMesh(bool val)
 	plot[1]->setSmoothMesh(val);
 	plot[1]->updateData();
 	plot[1]->updateGL();
+}
+
+void printMainWindow::setNumberGap(int gap)
+{
+	plot[0]->coordinates()->adjustNumbers(gap);
+  plot[0]->makeCurrent();
+  plot[0]->updateGL();
+	plot[1]->coordinates()->adjustNumbers(gap);
+  plot[1]->makeCurrent();
+  plot[1]->updateGL();
+}
+
+void printMainWindow::setLabelGap(int gap)
+{
+	plot[0]->coordinates()->adjustLabels(gap);
+  plot[0]->makeCurrent();
+  plot[0]->updateGL();
+	plot[1]->coordinates()->adjustLabels(gap);
+  plot[1]->makeCurrent();
+  plot[1]->updateGL();
+}
+
+void printMainWindow::setFontSize(QString const& val)
+{
+	bool ok = false;
+	int size = val.toInt(&ok);
+	if (!ok)
+		return;
+
+	plot[0]->coordinates()->setNumberFont("Courier", size);
+  plot[0]->makeCurrent();
+  plot[0]->updateGL();
+	plot[1]->coordinates()->setNumberFont("Courier", size);
+  plot[1]->makeCurrent();
+  plot[1]->updateGL();
 }

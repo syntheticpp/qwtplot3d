@@ -26,6 +26,8 @@ public:
 	//! Sets the labels font
 	void setFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
+	void adjust(int gap); //!< Fine tunes label;
+	double gap() const {return gap_;} //!< Returns the gap caused by adjust();
 	void setPosition(Qwt3D::Triple pos, ANCHOR a = BottomLeft); //!< Sets the labels position
 	void setRelPosition(Tuple rpos, ANCHOR a); //!< Sets the labels position relative to screen
 	Qwt3D::Triple first() const { return beg_;} //!< Receives bottom left label position
@@ -46,7 +48,7 @@ public:
 		If true, Label can use one of the PDF standard fonts (unprecise positioning for now), 
 		otherwise it dumps  pixmaps in the PDF stream (poor quality) 
 	*/
-	static void usePrinterFonts(bool val); 
+	static void useDeviceFonts(bool val); 
 	
 
 private:
@@ -62,11 +64,12 @@ private:
 	void init();
   void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void convert2screen();
-
 	double width() const;
 	double height() const;
 
-	static bool printerFonts_;
+	int gap_;
+
+	static bool devicefonts_;
 
 };
 
