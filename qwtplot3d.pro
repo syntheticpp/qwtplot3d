@@ -8,7 +8,7 @@
 TARGET            = qwtplot3d
 TEMPLATE          = lib
 #VERSION           = 0.1.4
-CONFIG           += qt warn_on thread gl2ps
+CONFIG           += qt warn_on thread gl2ps zlib
 MOC_DIR           = moc
 OBJECTS_DIR       = obj
 INCLUDEPATH       = include
@@ -70,10 +70,28 @@ HEADERS += include/qwt3d_color.h \
 HEADERS+=include/qwt3d_gl2ps.h
 SOURCES+=src/qwt3d_gl2ps.cpp
 gl2ps {
-	INCLUDEPATH   += 3rdparty/gl2ps
-	
+  DEFINES += GL2PS_HAVE_ZLIB
+#  DEFINES += GL2PSZLIB
+  INCLUDEPATH   += 3rdparty/gl2ps
 	SOURCES	      += 3rdparty/gl2ps/gl2ps.c
-  
   HEADERS       += 3rdparty/gl2ps/gl2ps.h
+}
+#zlib support
+zlib {
+	INCLUDEPATH       += 3rdparty/zlib
+	SOURCES	+= 3rdparty/zlib/adler32.c \
+		  3rdparty/zlib/compress.c \
+		  3rdparty/zlib/crc32.c \
+		  3rdparty/zlib/deflate.c \
+		  3rdparty/zlib/gzio.c \
+		  3rdparty/zlib/infblock.c \
+		  3rdparty/zlib/infcodes.c \
+		  3rdparty/zlib/inffast.c \
+		  3rdparty/zlib/inflate.c \
+		  3rdparty/zlib/inftrees.c \
+		  3rdparty/zlib/infutil.c \
+		  3rdparty/zlib/trees.c \
+		  3rdparty/zlib/uncompr.c \
+		  3rdparty/zlib/zutil.c
 }
 
