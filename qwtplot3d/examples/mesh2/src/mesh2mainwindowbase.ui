@@ -15,7 +15,7 @@
     <property name="minimumSize">
         <size>
             <width>336</width>
-            <height>181</height>
+            <height>195</height>
         </size>
     </property>
     <property name="caption">
@@ -204,9 +204,36 @@
                 </widget>
             </hbox>
         </widget>
+        <widget class="QFrame" row="0" column="0">
+            <property name="name">
+                <cstring>Frame3</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QwtPlot3D" row="0" column="0">
+                    <property name="name">
+                        <cstring>dataWidget</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
         <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
             <property name="name">
-                <cstring>Layout21</cstring>
+                <cstring>Layout7</cstring>
             </property>
             <vbox>
                 <property name="name">
@@ -220,7 +247,7 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>Layout14</cstring>
+                        <cstring>Layout6</cstring>
                     </property>
                     <vbox>
                         <property name="name">
@@ -292,6 +319,28 @@
                                 <string>autoscale axes</string>
                             </property>
                         </widget>
+                        <widget class="QCheckBox">
+                            <property name="name">
+                                <cstring>mouseinput</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Mouse</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>enable/disable mouse input</string>
+                            </property>
+                        </widget>
                     </vbox>
                 </widget>
                 <spacer>
@@ -307,38 +356,11 @@
                     <property name="sizeHint">
                         <size>
                             <width>0</width>
-                            <height>130</height>
+                            <height>390</height>
                         </size>
                     </property>
                 </spacer>
             </vbox>
-        </widget>
-        <widget class="QFrame" row="0" column="0">
-            <property name="name">
-                <cstring>Frame3</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Sunken</enum>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QwtPlot3D" row="0" column="0">
-                    <property name="name">
-                        <cstring>dataWidget</cstring>
-                    </property>
-                </widget>
-            </grid>
         </widget>
     </grid>
 </widget>

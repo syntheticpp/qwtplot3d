@@ -3,6 +3,12 @@
  	
 \par Changes:
 
+Apr 28 2003: 
+- new functions:
+	- QwtPlot3D::mouseEnabled()
+	- QwtPlot3D::enableMouse()
+	- QwtPlot3D::disableMouse()
+	
 Apr 27 2003: 
 - <b>release 0.1.1 alpha</b>
 	- new Features:

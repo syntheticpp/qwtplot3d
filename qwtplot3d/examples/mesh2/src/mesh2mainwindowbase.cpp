@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: So 27. Apr 21:42:48 2003
+** Created: Di 29. Apr 00:50:52 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1362,7 +1362,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     if ( !name )
 	setName( "Mesh2MainWindowBase" );
     resize( 906, 585 ); 
-    setMinimumSize( QSize( 336, 181 ) );
+    setMinimumSize( QSize( 336, 195 ) );
     setCaption( trUtf8( "Mesh2" ) );
     setCentralWidget( new QWidget( this, "qt_central_widget" ) );
     Mesh2MainWindowBaseLayout = new QGridLayout( centralWidget(), 1, 1, 11, 6, "Mesh2MainWindowBaseLayout"); 
@@ -1416,34 +1416,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
 
     Mesh2MainWindowBaseLayout->addLayout( Layout5, 1, 0 );
 
-    Layout21 = new QVBoxLayout( 0, 0, 6, "Layout21"); 
-
-    Layout14 = new QVBoxLayout( 0, 0, 6, "Layout14"); 
-
-    projection = new QCheckBox( centralWidget(), "projection" );
-    projection->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, projection->sizePolicy().hasHeightForWidth() ) );
-    projection->setText( trUtf8( "Ortho" ) );
-    projection->setChecked( TRUE );
-    Layout14->addWidget( projection );
-
-    colorlegend = new QCheckBox( centralWidget(), "colorlegend" );
-    colorlegend->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, colorlegend->sizePolicy().hasHeightForWidth() ) );
-    colorlegend->setText( trUtf8( "Legend" ) );
-    Layout14->addWidget( colorlegend );
-
-    autoscale = new QCheckBox( centralWidget(), "autoscale" );
-    autoscale->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, autoscale->sizePolicy().hasHeightForWidth() ) );
-    autoscale->setText( trUtf8( "Autoscale" ) );
-    autoscale->setChecked( TRUE );
-    QToolTip::add( autoscale, trUtf8( "autoscale axes" ) );
-    QWhatsThis::add( autoscale, trUtf8( "autoscale axes" ) );
-    Layout14->addWidget( autoscale );
-    Layout21->addLayout( Layout14 );
-    QSpacerItem* spacer_2 = new QSpacerItem( 0, 130, QSizePolicy::Minimum, QSizePolicy::Expanding );
-    Layout21->addItem( spacer_2 );
-
-    Mesh2MainWindowBaseLayout->addMultiCellLayout( Layout21, 0, 1, 1, 1 );
-
     Frame3 = new QFrame( centralWidget(), "Frame3" );
     Frame3->setFrameShape( QFrame::StyledPanel );
     Frame3->setFrameShadow( QFrame::Sunken );
@@ -1454,6 +1426,41 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Frame3Layout->addWidget( dataWidget, 0, 0 );
 
     Mesh2MainWindowBaseLayout->addWidget( Frame3, 0, 0 );
+
+    Layout7 = new QVBoxLayout( 0, 0, 6, "Layout7"); 
+
+    Layout6 = new QVBoxLayout( 0, 0, 6, "Layout6"); 
+
+    projection = new QCheckBox( centralWidget(), "projection" );
+    projection->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, projection->sizePolicy().hasHeightForWidth() ) );
+    projection->setText( trUtf8( "Ortho" ) );
+    projection->setChecked( TRUE );
+    Layout6->addWidget( projection );
+
+    colorlegend = new QCheckBox( centralWidget(), "colorlegend" );
+    colorlegend->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, colorlegend->sizePolicy().hasHeightForWidth() ) );
+    colorlegend->setText( trUtf8( "Legend" ) );
+    Layout6->addWidget( colorlegend );
+
+    autoscale = new QCheckBox( centralWidget(), "autoscale" );
+    autoscale->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, autoscale->sizePolicy().hasHeightForWidth() ) );
+    autoscale->setText( trUtf8( "Autoscale" ) );
+    autoscale->setChecked( TRUE );
+    QToolTip::add( autoscale, trUtf8( "autoscale axes" ) );
+    QWhatsThis::add( autoscale, trUtf8( "autoscale axes" ) );
+    Layout6->addWidget( autoscale );
+
+    mouseinput = new QCheckBox( centralWidget(), "mouseinput" );
+    mouseinput->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mouseinput->sizePolicy().hasHeightForWidth() ) );
+    mouseinput->setText( trUtf8( "Mouse" ) );
+    mouseinput->setChecked( TRUE );
+    QToolTip::add( mouseinput, trUtf8( "enable/disable mouse input" ) );
+    Layout6->addWidget( mouseinput );
+    Layout7->addLayout( Layout6 );
+    QSpacerItem* spacer_2 = new QSpacerItem( 0, 390, QSizePolicy::Minimum, QSizePolicy::Expanding );
+    Layout7->addItem( spacer_2 );
+
+    Mesh2MainWindowBaseLayout->addMultiCellLayout( Layout7, 0, 1, 1, 1 );
 
     // actions
     openFile = new QAction( this, "openFile" );

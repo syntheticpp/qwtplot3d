@@ -98,14 +98,14 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 		connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 		connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
+		connect(mouseinput, SIGNAL( toggled(bool) ), dataWidget, SLOT( enableMouse(bool)));
 				
 		setStandardView();
 
 		dataWidget->coordinates()->setLineSmooth(true);
+		dataWidget->enableMouse(true);
 
 		// dataWidget->setCaptionPosition(0.7, 0.2);
-		
-		dataWidget->setMouseTracking(true);
 }
 
 void Mesh2MainWindow::open()
@@ -356,9 +356,9 @@ void Mesh2MainWindow::resetFonts()
 void Mesh2MainWindow::setStandardView()
 {
 	dataWidget->setRotation(30,0,15);
-	dataWidget->setShift(0.1,0,0);
+	dataWidget->setViewportShift(0.1,0);
 	dataWidget->setScale(1,1,1);
-	dataWidget->setZoom(1);
+	dataWidget->setZoom(0.95);
 }
 
 void Mesh2MainWindow::dumpImage()
