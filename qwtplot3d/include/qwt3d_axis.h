@@ -9,7 +9,11 @@
 namespace Qwt3D
 {
 
-//! Autoscalable axis with caption
+//! Autoscalable axis with caption. 
+/*!
+  Axes are highly customizable especially in terms
+  of labeling and scaling.
+*/
 class QWT3D_EXPORT Axis : public Drawable
 {
 

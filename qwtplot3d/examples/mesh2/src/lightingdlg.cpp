@@ -59,35 +59,22 @@ Plot::Plot(QWidget *parent)
     Qt::NoButton
     );
 
-  //SColor* col_ = new SColor();
-  //setDataColor(col_);
   stick = (Pointer*)addEnrichment(Pointer(0.05));
   stick->setPos(0,0,1);
-  //enableLighting();
 }
 
 void Plot::reset()
 {
   makeCurrent();
   setRotation(0,0,0);
-  setTitle("...");
+  setTitle("Use your mouse buttons and keyboard");
   setTitleFont("Arial", 8, QFont::Bold);
   setTitleColor(RGBA(0.9,0.9,0.9));
   setSmoothMesh(true);
-
-  //setShift(0.15,0,0);
   setZoom(0.9);
-
   setCoordinateStyle(NOCOORD);
-//  coordinates()->axes[X1].setLabelString("x");
-//  coordinates()->axes[Y1].setLabelString("y");
-//  coordinates()->axes[Z1].setLabelString("z");
-//  coordinates()->setAxesColor(RGBA(0.3,0.3,0.3));
-
-
   setMeshColor(RGBA(0.6,0.6,0.6,0.3));
   setPlotStyle(FILLEDMESH);
-
   setBackgroundColor(RGBA(0,0,0));
 
   updateData();
