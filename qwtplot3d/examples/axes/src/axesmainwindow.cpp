@@ -213,9 +213,9 @@ void AxesMainWindow::timeItems()
 void AxesMainWindow::customScale()
 {  
   resetTics();
-  plot->coordinates()->axes[Z1].setScale(new LogScale);
-  plot->coordinates()->axes[Z3].setScale(new LogScale);
-  plot->coordinates()->axes[Z4].setScale(new LogScale);
+  plot->coordinates()->axes[Z1].setScale(LOG10SCALE);
+  plot->coordinates()->axes[Z3].setScale(LOG10SCALE);
+  plot->coordinates()->axes[Z4].setScale(LOG10SCALE);
 	plot->coordinates()->axes[Z2].setLabelString("log10(z)");
 //  plot->coordinates()->axes[Z4].setScale(new LogScale);
 //  plot->coordinates()->axes[Z1].setAutoScale(false);
