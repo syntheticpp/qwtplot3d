@@ -143,9 +143,9 @@ void gl2psListDelete(GL2PSlist *list){
 }
 
 void gl2psListAdd(GL2PSlist *list, void *data){
-	list->n++;
+  list->n++;
   gl2psListRealloc(list, list->n);
-	memcpy(&list->array[(list->n - 1) * list->size], data, list->size);
+  memcpy(&list->array[(list->n - 1) * list->size], data, list->size);
 }
 
 GLint gl2psListNbr(GL2PSlist *list){
@@ -1872,11 +1872,11 @@ void gl2psPrintTeXHeader(void){
 
   fprintf(gl2ps->stream, 
 	  "\\setlength{\\unitlength}{1pt}\n"
-	  "%s\\begin{picture}(0,0)\n"
+	  "\\begin{picture}(0,0)\n"
 	  "\\includegraphics{%s}\n"
-	  "\\end{picture}\n"
-	  "\\begin{picture}(%d,%d)(0,0)\n",
-	  (gl2ps->options & GL2PS_LANDSCAPE) ? "\\rotatebox{90}{" : "", name,
+	  "\\end{picture}%%\n"
+	  "%s\\begin{picture}(%d,%d)(0,0)\n",
+	  name, (gl2ps->options & GL2PS_LANDSCAPE) ? "\\rotatebox{90}{" : "",
 	  gl2ps->viewport[2], gl2ps->viewport[3]);
 }
 
@@ -1887,37 +1887,37 @@ void gl2psPrintTeXPrimitive(void *a, void *b){
 
   switch(prim->type){
   case GL2PS_TEXT :
-		fprintf(gl2ps->stream, "\\fontsize{%d}{0}\n\\selectfont"
-			,prim->text->fontsize);
-		fprintf(gl2ps->stream, "\\put(%g,%g){\\makebox(0,0)"
-			,prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
-		switch (prim->text->alignment) {
-		case GL2PS_TEXT_CL:
-			fprintf(gl2ps->stream, "[l]");
-			break;
-		case GL2PS_TEXT_CR:
-			fprintf(gl2ps->stream, "[r]");
-			break;
-		case GL2PS_TEXT_B:
-			fprintf(gl2ps->stream, "[b]");
-			break;
-		case GL2PS_TEXT_BL:
-			fprintf(gl2ps->stream, "[bl]");
-			break;
-		case GL2PS_TEXT_BR:
-			fprintf(gl2ps->stream, "[br]");
-			break;
-		case GL2PS_TEXT_T:
-			fprintf(gl2ps->stream, "[t]");
-			break;
-		case GL2PS_TEXT_TL:
-			fprintf(gl2ps->stream, "[tl]");
-			break;
-		case GL2PS_TEXT_TR:
-			fprintf(gl2ps->stream, "[tr]");
-			break;
-		default:
-			break;
+    fprintf(gl2ps->stream, "\\fontsize{%d}{0}\n\\selectfont"
+    	,prim->text->fontsize);
+    fprintf(gl2ps->stream, "\\put(%g,%g){\\makebox(0,0)"
+    	,prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
+    switch (prim->text->alignment) {
+    case GL2PS_TEXT_CL:
+    	fprintf(gl2ps->stream, "[l]");
+    	break;
+    case GL2PS_TEXT_CR:
+    	fprintf(gl2ps->stream, "[r]");
+    	break;
+    case GL2PS_TEXT_B:
+    	fprintf(gl2ps->stream, "[b]");
+    	break;
+    case GL2PS_TEXT_BL:
+    	fprintf(gl2ps->stream, "[bl]");
+    	break;
+    case GL2PS_TEXT_BR:
+    	fprintf(gl2ps->stream, "[br]");
+    	break;
+    case GL2PS_TEXT_T:
+    	fprintf(gl2ps->stream, "[t]");
+    	break;
+    case GL2PS_TEXT_TL:
+    	fprintf(gl2ps->stream, "[tl]");
+    	break;
+    case GL2PS_TEXT_TR:
+    	fprintf(gl2ps->stream, "[tr]");
+    	break;
+    default:
+    	break;
 		}
 		fprintf(gl2ps->stream, "{\\textcolor[rgb]{%f,%f,%f}{"
 			, prim->verts[0].rgba[0], prim->verts[0].rgba[1], prim->verts[0].rgba[2]);
@@ -2198,7 +2198,7 @@ GL2PSDLL_API GLint gl2psEndViewport(void){
   return res;
 }
 
-GL2PSDLL_API GLint gl2psText2(const char *str, const char *fontname, GLshort fontsize, GLint alignment){
+GL2PSDLL_API GLint gl2psText2(const char *str, const char *fontname, GLshort fontsize, GLint alignment, GL2PSrgba rgba){
   GLfloat pos[4];
   GL2PSprimitive *prim;
   GLboolean valid;
@@ -2231,15 +2231,21 @@ GL2PSDLL_API GLint gl2psText2(const char *str, const char *fontname, GLshort fon
   prim->text->fontname = (char*)gl2psMalloc((strlen(fontname)+1)*sizeof(char));
   strcpy(prim->text->fontname, fontname);
   prim->text->fontsize = fontsize;
-	prim->text->alignment = alignment;
+  prim->text->alignment = alignment;
 
   gl2psListAdd(gl2ps->primitives, &prim);
 
+  if (rgba){
+    prim->verts[0].rgba[0] = rgba[0];
+    prim->verts[0].rgba[1] = rgba[1];
+    prim->verts[0].rgba[2] = rgba[2];
+    prim->verts[0].rgba[3] = rgba[3];
+  }
   return GL2PS_SUCCESS;
 }
 
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort fontsize){
-	return gl2psText2(str, fontname, fontsize, GL2PS_TEXT_BL);
+	return gl2psText2(str, fontname, fontsize, GL2PS_TEXT_BL, NULL);
 }
 
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,

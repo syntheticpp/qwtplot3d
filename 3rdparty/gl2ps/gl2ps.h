@@ -242,7 +242,7 @@ GL2PSDLL_API GLint gl2psEndPage(void);
 GL2PSDLL_API GLint gl2psBeginViewport(GLint viewport[4]);
 GL2PSDLL_API GLint gl2psEndViewport(void);
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort fontsize);
-GL2PSDLL_API GLint gl2psText2(const char *str, const char *fontname, GLshort fontsize, GLint align);
+GL2PSDLL_API GLint gl2psText2(const char *str, const char *fontname, GLshort fontsize, GLint align, GL2PSrgba);
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
 				   GLint xorig, GLint yorig,
 				   GLenum format, GLenum type, const void *pixels);

@@ -39,6 +39,9 @@ int streamlength;
 int lasttype = -1;
 int consec_cnt = 0;
 int consec_inner_cnt = 1;
+int line_width_diff = 1;
+int line_rgb_diff = 1;
+int line_stroked = 0;
 
 typedef GL2PSvertex GL2PStriangle[3];
 GL2PSlist *tlist, *tidxlist, *ilist, *slist; /* triangles, indexes for consecutive triangles, images, strings */
@@ -155,10 +158,34 @@ void gl2pdfDeleteTextList()
 	gl2psListDelete(slist);
 }
 
+float gl2pdfRGBdiff(GL2PSrgba rgba1, GL2PSrgba rgba2)
+{
+	int i;	
+	float res = 0;
+	for (i=0;i<3;++i)
+	{
+		res += (rgba1[i] - rgba2[i]) * (rgba1[i] - rgba2[i]);
+	}
+	return res;
+}
+
+void gl2pdfSetLastRGBA(GL2PSrgba rgba)
+{
+	int i;	
+	if (!gl2ps)
+		return;
+	for (i=0;i<3;++i)
+	{
+		gl2ps->lastrgba[i] = rgba[i];
+	}
+}
+
 int gl2pdfPrintStrokeColor(GL2PSrgba rgba)
 {
 	int offs = 0;
 	int i;	
+
+	gl2pdfSetLastRGBA(rgba);
 
 	for (i=0;i<3;++i)
 	{
@@ -373,6 +400,18 @@ int gl2pdfFlushTriangles()
 	return offs;
 }
 
+int gl2pdfFlushLines()
+{
+	int offs = 0;
+	if (lasttype == GL2PS_LINE && !line_stroked)
+	{
+		offs = fprintf(gl2ps->stream, "S\n");
+		streamlength += offs;
+		line_stroked = 1;
+	}
+	return offs;
+}
+
 /* The central primitive drawing */
 
 void gl2pdfPrintPrimitive(void *a, void *b)
@@ -387,6 +426,8 @@ void gl2pdfPrintPrimitive(void *a, void *b)
 
 	if (prim->type != GL2PS_TRIANGLE)
 		gl2pdfFlushTriangles();
+	if (prim->type != GL2PS_LINE)
+		gl2pdfFlushLines();
 
   switch(prim->type){
   case GL2PS_PIXMAP :
@@ -420,25 +461,36 @@ void gl2pdfPrintPrimitive(void *a, void *b)
 		}
 		streamlength += fprintf(gl2ps->stream, "1 J\n");
 		streamlength += gl2pdfPrintStrokeColor(prim->verts[0].rgba);
-    streamlength += fprintf(gl2ps->stream, "%f %f m\n%f %f l\nS\n",
+    streamlength += fprintf(gl2ps->stream, "%f %f m %f %f l S\n",
 	      prim->verts[0].xyz[0], prim->verts[0].xyz[1],
 	      prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
     streamlength += fprintf(gl2ps->stream, "0 J\n");
     break;
   case GL2PS_LINE :
-    if(gl2ps->lastlinewidth != prim->width){
-      gl2ps->lastlinewidth = prim->width;
+    line_width_diff = gl2ps->lastlinewidth != prim->width;
+		line_rgb_diff = !GL2PS_ZERO(gl2pdfRGBdiff(prim->verts[0].rgba, gl2ps->lastrgba));
+		
+		if(line_width_diff || line_rgb_diff || prim->dash){
+      gl2pdfFlushLines();
+		}
+		if(line_width_diff){
+			gl2ps->lastlinewidth = prim->width;
       streamlength += gl2pdfPrintLineWidth(gl2ps->lastlinewidth);
 		}
-		streamlength += gl2pdfPrintStrokeColor(prim->verts[0].rgba);
+		if (line_rgb_diff){
+			streamlength += gl2pdfPrintStrokeColor(prim->verts[0].rgba);
+		}
 		if(prim->dash){
       streamlength += fprintf(gl2ps->stream, "[%d] 0 d\n", prim->dash);
 		}
-    streamlength += fprintf(gl2ps->stream, "%f %f m\n%f %f l\nS\n",
+    streamlength += fprintf(gl2ps->stream, "%f %f m %f %f l \n",
 	      prim->verts[0].xyz[0], prim->verts[0].xyz[1],
 	      prim->verts[1].xyz[0], prim->verts[1].xyz[1]);
+		line_stroked = 0;
+
 		if(prim->dash){
-      streamlength += fprintf(gl2ps->stream, "[] 0 d\n", prim->dash);
+      streamlength += fprintf(gl2ps->stream, "S\n[] 0 d\n", prim->dash);
+			line_stroked = 1;
 		}
     break;
   case GL2PS_TRIANGLE :
@@ -448,15 +500,6 @@ void gl2pdfPrintPrimitive(void *a, void *b)
 		
 		gl2psListAdd(tlist, t);		
 		++consec_inner_cnt;
-
-/*TODO - perhaps more efficient for flat shading
-		
-		streamlength += gl2pdfPrintFillColor(prim->verts[0].rgba);
-	  streamlength += fprintf(gl2ps->stream, "%f %f m\n%f %f l\n%f %f l\nf\n",
-	      prim->verts[2].xyz[0], prim->verts[2].xyz[1],
-	      prim->verts[1].xyz[0], prim->verts[1].xyz[1],
-	      prim->verts[0].xyz[0], prim->verts[0].xyz[1]);
-*/
     break;
   case GL2PS_QUADRANGLE :
     gl2psMsg(GL2PS_WARNING, "There should not be any quad left to print");
@@ -474,7 +517,8 @@ int gl2pdfCloseDataStream()
 {
 	int offs = 0;
 
-	offs = gl2pdfFlushTriangles();
+	offs += gl2pdfFlushTriangles();
+	offs += gl2pdfFlushLines();
 
 	offs += fprintf(gl2ps->stream, 
 		"endstream\n"
@@ -571,6 +615,12 @@ int gl2pdfPrintSinglePage()
 			"/Type /Page\n"
 			"/Parent 3 0 R\n"
 			"/MediaBox [%d %d %d %d]\n"
+			,gl2ps->viewport[0], gl2ps->viewport[1], gl2ps->viewport[2], gl2ps->viewport[3]);
+
+	if (gl2ps->options & GL2PS_LANDSCAPE)
+		offs += fprintf(gl2ps->stream, "/Rotate -90\n");
+
+	offs += fprintf(gl2ps->stream, 
 			"/Contents 4 0 R\n"
 			"/Resources\n" 
 				"<<\n" 
@@ -579,8 +629,7 @@ int gl2pdfPrintSinglePage()
 					"/ExtGState\n" 
 						"<<\n"	
 							"/GS1 7 0 R\n"
-						">>\n",
-								gl2ps->viewport[0], gl2ps->viewport[1], gl2ps->viewport[2], gl2ps->viewport[3]);
+						">>\n");
 		
 		offs += gl2pdfPrintShaderResources(GL2PDF_FIXED_XREF_ENTRIES + 1, gl2psListNbr(tidxlist));
 		offs += gl2pdfPrintPixmapResources(GL2PDF_FIXED_XREF_ENTRIES + 1 
@@ -684,13 +733,13 @@ int gl2pdfPrintShader(int obj, GL2PSlist* triangles, int idx, int cnt )
 
 	offs += fprintf(gl2ps->stream,
 		"%d 0 obj\n"
-		"<<\n"
-		"/ShadingType 4\n"
-		"/ColorSpace /DeviceRGB\n"
-		"/BitsPerCoordinate 32\n"
-		"/BitsPerComponent 8\n"
-		"/BitsPerFlag 8\n"
-		"/Decode [%d %d %d %d 0 1 0 1 0 1]\n"
+		"<< "
+		"/ShadingType 4 "
+		"/ColorSpace /DeviceRGB "
+		"/BitsPerCoordinate 32 "
+		"/BitsPerComponent 8 "
+		"/BitsPerFlag 8 "
+		"/Decode [%d %d %d %d 0 1 0 1 0 1] "
 		,obj
 		,gl2ps->viewport[0]
 		,gl2ps->viewport[2]
@@ -700,7 +749,7 @@ int gl2pdfPrintShader(int obj, GL2PSlist* triangles, int idx, int cnt )
 	offs += gl2pdfPrintCompressorType(compressor);
 	
 	offs += fprintf(gl2ps->stream,
-				"/Length %d\n"
+				"/Length %d "
 				">>\n"
 				"stream\n"
 				,vertexbytes * 3 * cnt

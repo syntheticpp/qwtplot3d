@@ -17,6 +17,8 @@ SurfacePlot::SurfacePlot( QWidget* parent, const char* name, MESHTYPE mt )
 		
 	actualGridData_ = new GridData();
 	actualCellData_ = new CellData();
+
+	smoothdatamesh_ = false;
 }
 
 /*!

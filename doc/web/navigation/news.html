@@ -45,15 +45,13 @@ base class extraction)<br>
 26 2003</td>
       <td
  style="vertical-align: top; font-family: times new roman,times,serif;"
- width="18%"> release 0.1.2 alpha<b>&nbsp;</b><a
- href="http://sourceforge.net/project/showfiles.php?group_id=78209"
- target="_blank"></a></td>
+ width="18%"> release 0.1.2 alpha<b>&nbsp;</b></td>
       <td
  style="vertical-align: top; font-family: times new roman,times,serif;">
       <ul>
         <li>Data structures providing nodes and triangulation -
 Interface to create them from user data ( <a class="el"
- href="../navigation/tutorial.html#datainput">Data Input Topics</a> )</li>
+ href="manual.html#datainput">Data Input Topics</a> )</li>
         <li>Reading data from FEM files (see Gallery)</li>
       </ul>
       </td>
@@ -89,12 +87,12 @@ Interface to create them from user data ( <a class="el"
 &nbsp;&nbsp;&nbsp; <b style="color: rgb(34, 139, 34);">CVS:</b>
 Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
 <h4>&nbsp;&nbsp;&nbsp; New Features <b style="color: rgb(34, 139, 34);">CVS</b></h4>
-<h3></h3>
 <ul>
   <li>... </li>
-  <li>PS, EPS output through <a href="http://www.geuz.org/gl2ps/"
- target="_blank">gl2ps</a>&nbsp;<span style="font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <span style="color: rgb(102, 102, 102);">// but see</span> <a
+  <li>PS, EPS and PDF output through <a
+ href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>&nbsp;<span
+ style="font-style: italic;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="color: rgb(102, 102, 102);">// but see</span> <a
  href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html">here</a></span><a
  href="file:///V:/cvs/qwtplot3d/doc/web/navigation/pdf.html"><br>
     </a></li>
@@ -103,60 +101,98 @@ Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
   </li>
 </ul>
 <h4>&nbsp;&nbsp;&nbsp; Changes <b style="color: rgb(34, 139, 34);">CVS</b></h4>
-<h3></h3>
 <ul>
   <li>...</li>
-  <li>Style FLOORMESH removed<br>
+  <li>PDF output improved<br>
   </li>
-  <li>[CoordinateSystem]&nbsp; A coordinate grid can be drawn. See
-setGridLines() etc.<br>
-  </li>
-  <li>[SurfacePlot] new functin facets() <br>
+  <li>Style <span style="font-family: monospace;">FLOORMESH</span>
+removed<br>
   </li>
   <li>[Rectangular meshes] <br>
-Performance improvement for drawing of
-filled polygons (uses&nbsp; GL_TRIANGLE_STRIP now)<br>
-Mesh drawing algorithm complexity is <span style="font-style: italic;">O(m+n)</span>
+    <ul>
+      <li>Performance improvement for drawing of
+filled polygons (uses&nbsp; <span style="font-family: monospace;">GL_TRIANGLE_STRIP</span>
+now)</li>
+      <li>Mesh drawing algorithm complexity is <span
+ style="font-style: italic;">O(m+n)</span>
 instead <span style="font-style: italic;">O(mn)</span> where&nbsp; <span
  style="font-style: italic;">m </span>and&nbsp; <span
  style="font-style: italic;">n</span> are the row and column number<br>
-  </li>
-  <li>C++ sources by <span style="font-family: monospace;">qwt3d_ </span>prefixed
-(consistent with header naming scheme)<br>
+      </li>
+    </ul>
   </li>
   <li>[Plot3D] <br>
-setPlotStyle, setFloorStyle don't call
-updateData() and updateGL() any longer<br>
-setShading(SHADINGSTYLE), shading() pair for
+    <ul>
+      <li><span style="font-family: monospace;">setPlotStyle,
+setFloorStyle</span>
+don't call <span style="font-family: monospace;">updateData()</span>
+and <span style="font-family: monospace;">updateGL()</span> any longer</li>
+      <li><span style="font-family: monospace;">setShading,
+shading</span> pair for
 setting/returning shading style (flat or Gouraud). Default is
-Gouraud.<br>
-updateColorLegend(), legend() for color legend access</li>
-  <li>[LabelPixmap] Obsolete setColor() functions removed<br>
+Gouraud.</li>
+      <li><span style="font-family: monospace;">updateColorLegend,
+legend</span>
+for color legend access</li>
+      <li><span style="font-family: monospace;">setCaption... </span>-&gt;
+        <span style="font-family: monospace;">setTile... </span>(consistency)</li>
+      <li><span style="font-family: monospace;">updateFloorData </span>removed<br>
+      </li>
+    </ul>
   </li>
-  <li>Global transformation helper functions moved to Drawable<br>
+  <li>[SurfacePlot] <br>
+    <ul>
+      <li>New function <span style="font-family: monospace;">facets</span></li>
+      <li>New function <span style="font-family: monospace;">setSmoothMesh<br>
+        </span></li>
+    </ul>
+  </li>
+  <li>[CoordinateSystem]&nbsp; <br>
+    <ul>
+      <li>A coordinate grid can be drawn. See <span
+ style="font-family: monospace;">setGridLines</span> etc.</li>
+    </ul>
   </li>
   <li>[Axis] <br>
-new function limits() to get start and stop value<br>
-new functions to access tic mark positions <br>
+    <ul>
+      <li>New function <span style="font-family: monospace;">limits</span>
+to
+get start and stop value</li>
+      <li>New functions to access tic mark positions </li>
+    </ul>
   </li>
-  <li>AutoScaler class encapsulates auto scaling for axes<br>
+  <li>[LabelPixmap] <br>
+    <ul>
+      <li>Obsolete <span style="font-family: monospace;">setColor</span>
+functions removed</li>
+    </ul>
   </li>
-  <li>qwt3d_plane.h -&gt; qwt3d_colorlegend.h<br>
+  <li>Global transformation helper functions moved to <span
+ style="font-family: monospace;">Drawable</span><br>
   </li>
+  <li><span style="font-family: monospace;">AutoScaler</span> class
+encapsulates auto scaling for axes<br>
+  </li>
+  <li><span style="font-family: monospace;">qwt3d_plane.h </span>-&gt;<span
+ style="font-family: monospace;"> qwt3d_colorlegend.h</span></li>
+  <li>C++ sources by <span style="font-family: monospace;">qwt3d_ </span>prefixed
+(consistent with header naming scheme)</li>
 </ul>
 <br>
 <h4>&nbsp;&nbsp;&nbsp; Bugs <b style="color: rgb(34, 139, 34);">CVS</b></h4>
-<h3></h3>
 <ul>
   <li>...</li>
-  <li>[examples] Some missing QGLWidget::makeCurrent() inserted<br>
+  <li>[examples] Some missing calls to <span
+ style="font-family: monospace;">QGLWidget::makeCurrent()</span>
+inserted<br>
   </li>
   <li>Sometimes the last minors inherited the majors linewidth <br>
   </li>
   <li>Sporadic misbehaviour of Autoscaler<br>
   </li>
   <li>Limits
-(DBL_EPSILON) for scale and zoom<br>
+(<span style="font-family: monospace;">DBL_EPSILON</span>) for scale
+and zoom<br>
   </li>
   <li>Shader did
 not work correctly ( only flat

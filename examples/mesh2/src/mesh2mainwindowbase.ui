@@ -156,7 +156,7 @@
                                         </size>
                                     </property>
                                     <property name="maxValue">
-                                        <number>20</number>
+                                        <number>30</number>
                                     </property>
                                     <property name="lineStep">
                                         <number>1</number>
@@ -174,7 +174,7 @@
                                         <enum>Right</enum>
                                     </property>
                                     <property name="tickInterval">
-                                        <number>5</number>
+                                        <number>2</number>
                                     </property>
                                     <property name="toolTip" stdset="0">
                                         <string>Increase surface quality by setting polygon offset (OpenGL specific)</string>

@@ -2,9 +2,18 @@
 
 using namespace Qwt3D;
 
+
 GLint 
 Qwt3D::setDeviceLineWidth(GLfloat val)
 {
+	GLfloat lw[2];
+	glGetFloatv(GL_LINE_WIDTH_RANGE, lw);
+	
+	if (val < lw[0])
+		val = lw[0];
+	else if (val > lw[1])
+		val = lw[1];
+
 	glLineWidth(val);
 	return gl2psLineWidth(val);
 }
@@ -40,7 +49,7 @@ Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
 }
 
 GLint 
-Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, ANCHOR align, Triple gap)
+Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, Triple gap)
 {
 	Triple adjpos = pos;
 
@@ -99,8 +108,16 @@ Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Tripl
 		default:
 			break;
 	}
+	
+	GL2PSrgba rgba2;
+		
+	rgba2[0] = rgba.r;
+	rgba2[1] = rgba.g;
+	rgba2[2] = rgba.b;
+	rgba2[3] = rgba.a;
+
 	glRasterPos3d(adjpos.x, adjpos.y, adjpos.z);
-	ret = gl2psText2(str, fontname, (int)fontsize, a);
+	ret = gl2psText2(str, fontname, (int)fontsize, a, rgba2);
 	glColor4dv(fcol);
 	glClearColor(bcol[0], bcol[1], bcol[2], bcol[3]);
   return ret;

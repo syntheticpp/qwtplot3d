@@ -196,7 +196,7 @@ LabelPixmap::draw()
 		
 		Triple gap(gapx,gapy,gapz);
 
-		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, anchor_, gap);
+		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, color, anchor_, gap);
 	}
 
 	glAlphaFunc(func,v);

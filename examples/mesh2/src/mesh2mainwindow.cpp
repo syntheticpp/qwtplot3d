@@ -438,7 +438,7 @@ void Mesh2MainWindow::pickTitleColor()
   if ( !c.isValid() )
 		return;
 	RGBA rgb = Qt2GL(c);
-	dataWidget->setCaptionColor(rgb);
+	dataWidget->setTitleColor(rgb);
 	dataWidget->updateGL();
 }
 
@@ -493,7 +493,7 @@ void Mesh2MainWindow::pickTitleFont()
 	{
 		return;
 	} 
-	dataWidget->setCaptionFont(font.family(), font.pointSize(), font.weight(), font.italic());
+	dataWidget->setTitleFont(font.family(), font.pointSize(), font.weight(), font.italic());
 }
 
 void Mesh2MainWindow::resetFonts()
