@@ -2,7 +2,7 @@
 #define __AXIS_H__
 
 #include "qwt3d_global.h"
-#include "qwt3d_labelpixmap.h"
+#include "qwt3d_label.h"
 #include "qwt3d_autoscaler.h"
 
 namespace Qwt3D

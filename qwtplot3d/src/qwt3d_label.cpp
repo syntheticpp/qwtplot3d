@@ -1,6 +1,6 @@
 #include <qbitmap.h>
 #include "qwt3d_gl2ps.h"
-#include "qwt3d_labelpixmap.h"
+#include "qwt3d_label.h"
 
 using namespace Qwt3D;
 
