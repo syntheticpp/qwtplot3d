@@ -382,11 +382,11 @@ void SurfacePlot::sewPeriodic(GridData& gdata)
   }
 }
 
-/*! 
+/*!
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool SurfacePlot::createDataRepresentation(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
+bool SurfacePlot::loadFromData(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
 {
   actualDataC_->clear();
   actualData_p = actualDataG_;
@@ -407,7 +407,7 @@ bool SurfacePlot::createDataRepresentation(Triple** data, unsigned int columns, 
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool SurfacePlot::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
+bool SurfacePlot::loadFromData(double** data, unsigned int columns, unsigned int rows
 																				, double minx, double maxx, double miny, double maxy)
 {	
   actualDataC_->clear();

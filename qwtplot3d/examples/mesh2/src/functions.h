@@ -19,7 +19,7 @@ public:
 
 	double operator()(double x, double y)
 	{
-		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
+    return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
 	}
 //	QString name() const {return "Almost {\\it Rosenbrock}\\,:\\quad$\\frac{\\ln((1-x)^2 + 100(y-x^2)^2)}{8}$";}
 };

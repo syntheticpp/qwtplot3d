@@ -223,7 +223,7 @@ bool NativeReader::read(double minz, double maxz)
   /* close the file */
   fclose(file);
 
-	plotwidget_->createDataRepresentation(data, xmesh, ymesh, minx, maxx, miny, maxy);
+	plotwidget_->loadFromData(data, xmesh, ymesh, minx, maxx, miny, maxy);
 	deleteData(data,xmesh);
 
 	return true;

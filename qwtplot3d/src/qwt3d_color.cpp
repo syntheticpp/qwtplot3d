@@ -23,7 +23,7 @@ void StandardColor::reset(unsigned size)
 		elem.r = i / dsize;
 		elem.g = i / dsize / 4;
 		elem.b = 1 - i/dsize;
-		elem.a = 1;
+		elem.a = 1.0;
 		colors_[i] = elem;
 	}
 }

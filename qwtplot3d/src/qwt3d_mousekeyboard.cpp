@@ -8,6 +8,7 @@
 using namespace std;
 using namespace Qwt3D;
 
+
 /**
 	Standard mouse button handler. Prepares the call to mouseMoveEvent
 	\see mouseMoveEvent()
@@ -16,8 +17,6 @@ void Plot3D::mousePressEvent( QMouseEvent *e )
 {
 	lastMouseMovePosition_ = e->pos();
 	mpressed_ = true;
-
-	//setResolution(resolution() * 5);
 }
 
 /**
@@ -27,7 +26,6 @@ void Plot3D::mousePressEvent( QMouseEvent *e )
 void Plot3D::mouseReleaseEvent( QMouseEvent *e )
 {
 	mpressed_ = false;
-	//setResolution(resolution() / 5);
 }
 
 /**
@@ -37,8 +35,11 @@ void Plot3D::mouseReleaseEvent( QMouseEvent *e )
 void Plot3D::mouseMoveEvent( QMouseEvent *e )
 {
 	if (!mpressed_ || !mouseEnabled())
+  {
+    e->ignore();
 		return;
-		
+  }
+	
 	ButtonState bstate = e->state();
 	QPoint diff = e->pos() - lastMouseMovePosition_;
 
@@ -182,3 +183,173 @@ void Plot3D::enableMouse(bool val) {mouse_input_enabled_ = val;}
 */
 void Plot3D::disableMouse(bool val) {mouse_input_enabled_ = !val;}
 bool Plot3D::mouseEnabled() const {return mouse_input_enabled_;}
+
+
+
+
+void Plot3D::keyPressEvent( QKeyEvent *e )
+{
+	if (!keyboardEnabled())
+  {
+    e->ignore();
+    return;
+  }	
+
+  int bstate = e->state() & Qt::KeyButtonMask; // filter kbd modifier only
+  int keyseq = bstate + e->key();
+
+	setRotationKeyboard(keyseq, 3);	
+	setScaleKeyboard(keyseq, 5);	
+	setShiftKeyboard(keyseq, 5);	
+}
+
+void Plot3D::setRotationKeyboard(int kseq, double accel)
+{
+	// Rotation
+	double w = max(1,width());
+	double h = max(1,height());
+		
+	double relx = accel*360 / w; 
+	double relyz = accel*360 / h; 
+	
+	double new_xrot = xRotation();
+	double new_yrot = yRotation();
+	double new_zrot = zRotation();
+	
+	if ( kseq == xrot_kstate_[0] )
+		new_xrot = int(xRotation() + relyz) % 360; 
+	if ( kseq == xrot_kstate_[1] )
+		new_xrot = int(xRotation() - relyz) % 360; 
+	if ( kseq == yrot_kstate_[0] )
+		new_yrot = int(yRotation() + relx) % 360; 
+	if ( kseq == yrot_kstate_[1] )
+		new_yrot = int(yRotation() - relx) % 360; 
+	if ( kseq == zrot_kstate_[0] )
+		new_zrot = int(zRotation() + relx) % 360; 
+	if ( kseq == zrot_kstate_[1] )
+		new_zrot = int(zRotation() - relx) % 360; 
+		
+	setRotation(new_xrot, new_yrot, new_zrot); 
+}
+
+void Plot3D::setScaleKeyboard(int kseq, double accel)
+{
+	// Scale
+		double w = max(1,width());
+		double h = max(1,height());
+
+		double relx = accel / w; relx = exp(relx) - 1;
+		double relyz = accel / h; relyz = exp(relyz) - 1; 
+
+		double new_xscale = xScale();
+		double new_yscale = yScale();
+		double new_zscale = zScale();
+
+		if ( kseq == xscale_kstate_[0])
+			new_xscale = max(0.0,xScale() + relx);
+		if ( kseq == xscale_kstate_[1])
+			new_xscale = max(0.0,xScale() - relx);
+		if ( kseq == yscale_kstate_[0])
+			new_yscale = max(0.0,yScale() - relyz);
+		if ( kseq == yscale_kstate_[1])
+			new_yscale = max(0.0,yScale() + relyz);
+		if ( kseq == zscale_kstate_[0])
+			new_zscale = max(0.0,zScale() - relyz);
+		if ( kseq == zscale_kstate_[1])
+			new_zscale = max(0.0,zScale() + relyz);
+
+		setScale(new_xscale, new_yscale, new_zscale); 
+
+		if ( kseq == zoom_kstate_[0])
+			setZoom(max(0.0,zoom() - relyz));
+		if ( kseq == zoom_kstate_[1])
+			setZoom(max(0.0,zoom() + relyz));
+}
+
+void Plot3D::setShiftKeyboard(int kseq, double accel)
+{
+	// Shift
+	double w = max(1,width());
+	double h = max(1,height());
+
+	double relx = accel / w; 
+	double relyz = accel / h;
+
+	double new_xshift = xViewportShift();
+	double new_yshift = yViewportShift();
+
+	if ( kseq == xshift_kstate_[0])
+		new_xshift = xViewportShift() + relx;
+	if ( kseq == xshift_kstate_[1])
+		new_xshift = xViewportShift() - relx;
+	if ( kseq == yshift_kstate_[0])
+		new_yshift = yViewportShift() - relyz;
+	if ( kseq == yshift_kstate_[1])
+		new_yshift = yViewportShift() + relyz;
+
+	setViewportShift(new_xshift, new_yshift); 
+}
+
+/**
+	Sets the keybutton combination for data/coordinatesystem moves inside the widget\n\n
+	default behaviour:\n
+
+	\verbatim
+	rotate around x axis: [Key_Down, Key_Up] 
+	rotate around y axis: SHIFT+[Key_Right, Key_Left]
+	rotate around z axis: [Key_Right, Key_Left] 
+	scale x:              ALT+[Key_Right, Key_Left] 
+	scale y:              ALT+[Key_Up, Key_Down] 
+	scale z:              ALT+SHIFT[Key_Down, Key_Up] 
+	zoom:                 ALT+CTRL+[Key_Down, Key_Up]
+	shifting along x:     CTRL+[Key_Right, Key_Left] 
+	shifting along z:     CTRL+[Key_Down, Key_Up]
+	\endverbatim
+*/
+void Plot3D::assignKeyboard(
+       int xrot_n, int xrot_p
+      ,int yrot_n, int yrot_p
+      ,int zrot_n, int zrot_p
+			,int xscale_n, int xscale_p 
+      ,int yscale_n, int yscale_p
+      ,int zscale_n, int zscale_p
+			,int zoom_n, int zoom_p
+      ,int xshift_n, int xshift_p
+      ,int yshift_n, int yshift_p
+      )
+{
+	xrot_kstate_[0]   =  xrot_n;  
+  yrot_kstate_[0]   =  yrot_n;  
+  zrot_kstate_[0]   =  zrot_n;  
+	xrot_kstate_[1]   =  xrot_p;  
+  yrot_kstate_[1]   =  yrot_p;  
+  zrot_kstate_[1]   =  zrot_p;  
+  
+  xscale_kstate_[0] =  xscale_n;
+  yscale_kstate_[0] =  yscale_n;
+  zscale_kstate_[0] =  zscale_n;
+  xscale_kstate_[1] =  xscale_p;
+  yscale_kstate_[1] =  yscale_p;
+  zscale_kstate_[1] =  zscale_p;
+
+  zoom_kstate_[0]   =  zoom_n;  
+  xshift_kstate_[0] =  xshift_n;
+  yshift_kstate_[0] =  yshift_n;
+  zoom_kstate_[1]   =  zoom_p;  
+  xshift_kstate_[1] =  xshift_p;
+  yshift_kstate_[1] =  yshift_p;
+}
+
+/** 
+The function has no effect if you derive from Plot3D and overrides the keyboard handler too careless.
+In this case check first against keyboardEnabled() in your version of keyPressEvent()
+A more fine grained input control can be achieved by combining assignKeyboard() with enableKeyboard(). 
+*/
+void Plot3D::enableKeyboard(bool val) {keyboard_input_enabled_ = val;}
+
+/** 
+\see enableKeyboard()
+*/
+void Plot3D::disableKeyboard(bool val) {keyboard_input_enabled_ = !val;}
+bool Plot3D::keyboardEnabled() const {return keyboard_input_enabled_;}
+

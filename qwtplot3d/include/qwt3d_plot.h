@@ -9,8 +9,8 @@ namespace Qwt3D
   
 //! Base class for all plotting widgets
 /*!
-  Plot3D handles all the common features for plotting widgets - coordinate system, transformations, mouse handling,
-	labeling etc.. It contains some pure virtual functions and is, in so far, an abstract base class.
+  Plot3D handles all the common features for plotting widgets - coordinate system, transformations, mouse/keyboard
+  handling, labeling etc.. It contains some pure virtual functions and is, in so far, an abstract base class.
 	The class provides interfaces for data handling and implements basic data controlled color allocation.
 */
 class QWT3D_EXPORT Plot3D : public QGLWidget
@@ -88,8 +88,21 @@ public:
 										 int zoom, int xshift, int yshift);
 		
 		bool mouseEnabled() const; //!< Returns true, if the widget accept mouse input from the user
+		void assignKeyboard(
+       int xrot_n, int xrot_p
+      ,int yrot_n, int yrot_p
+      ,int zrot_n, int zrot_p
+			,int xscale_n, int xscale_p 
+      ,int yscale_n, int yscale_p
+      ,int zscale_n, int zscale_p
+			,int zoom_n, int zoom_p
+      ,int xshift_n, int xshift_p
+      ,int yshift_n, int yshift_p
+      );
+		
+		bool keyboardEnabled() const; //!< Returns true, if the widget accept keyboard input from the user
+    
     bool lightingEnabled() const; //!< Returns true, if Lighting is enabled, false else
-
     //! Turn light on
     void illuminate(unsigned light = 0);
     //! Turn light off
@@ -116,8 +129,8 @@ public:
     double zLightShift(unsigned idx = 0) const {return (idx<8) ? lights_[idx].shift.z : 0;}
 	  //! \return Valid data available (true) or not (false)
     bool hasData() const { return (actualData_p) ? !actualData_p->empty() : false;}
-    
 
+    
 signals:
 		
 		//! Emitted, if the rotation is changed
@@ -145,6 +158,8 @@ public slots:
     
 		void	enableMouse(bool val=true); //!< Enable mouse input   																														
 		void	disableMouse(bool val =true); //!< Disable mouse input																														
+		void	enableKeyboard(bool val=true); //!< Enable keyboard input   																														
+		void	disableKeyboard(bool val =true); //!< Disable keyboard input																														
 
     void enableLighting(bool val = true); //!< Turn Lighting on or off
     void disableLighting(bool val = true); //!< Turn Lighting on or off
@@ -168,6 +183,8 @@ protected:
 		void mouseMoveEvent( QMouseEvent *e );
 		void wheelEvent( QWheelEvent *e );		
 
+    void keyPressEvent( QKeyEvent *e );
+
     Qwt3D::CoordinateSystem coordinates_p;
 		Qwt3D::Color* datacolor_p;
     Qwt3D::Enrichment* userplotstyle_p;
@@ -187,9 +204,8 @@ protected:
 		{
 			DataObject,
 			LegendObject,
-			CoordObject,
 			NormalObject,
-			DisplayListSize
+			DisplayListSize // only to have a vector length ...
 		};
 		std::vector<GLuint> displaylists_p;
     Qwt3D::Data* actualData_p;
@@ -205,7 +221,8 @@ private:
     };
     std::vector<Light> lights_;
 
-    GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
+    GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_
+             , xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		Qwt3D::RGBA meshcolor_;
 		double meshLineWidth_;
@@ -227,7 +244,10 @@ private:
 		Qwt3D::Tuple titlerel_;
 		Qwt3D::ANCHOR titleanchor_;
 
-		QPoint lastMouseMovePosition_;
+		
+    // mouse
+    
+    QPoint lastMouseMovePosition_;
 		bool mpressed_;
 
 		int xrot_mstate_, 
@@ -241,15 +261,38 @@ private:
 				yshift_mstate_;
 
 		bool mouse_input_enabled_;
-		bool lighting_enabled_;
-    bool initializedGL_;
 
 		void setRotationMouse(ButtonState bstate, double accel, QPoint diff);
 		void setScaleMouse(ButtonState bstate, double accel, QPoint diff);
 		void setShiftMouse(ButtonState bstate, double accel, QPoint diff);
 
+    // keyboard
+
+		bool kpressed_;
+
+		int xrot_kstate_[2], 
+				yrot_kstate_[2], 
+				zrot_kstate_[2], 
+				xscale_kstate_[2], 
+				yscale_kstate_[2], 
+				zscale_kstate_[2],
+        zoom_kstate_[2],
+				xshift_kstate_[2],
+				yshift_kstate_[2];
+
+		bool keyboard_input_enabled_;
+
+		void setRotationKeyboard(int kseq, double accel);
+		void setScaleKeyboard(int kseq, double accel);
+		void setShiftKeyboard(int kseq, double accel);
+
+    
+
+    bool lighting_enabled_;
     void applyLight(unsigned idx);
     void applyLights();
+
+    bool initializedGL_;
 };
 
 

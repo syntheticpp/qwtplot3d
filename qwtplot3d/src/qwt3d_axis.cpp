@@ -289,20 +289,22 @@ void Axis::drawTics()
 	minorpos_.clear();
 		
 	int mj;
+  Triple nadir;
 	
 	for (mj = 0; mj <= majorintervals_; ++mj) 
 	{
 		setDeviceLineWidth(majLineWidth_);
 		double t = double(mj) / majorintervals_;
-		majorpos_.push_back(drawTic(beg + t * runningpoint, lmaj_));
-		drawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_, mj);
+		nadir = beg + t * runningpoint;
+    majorpos_.push_back(drawTic(nadir, lmaj_));
+		drawNumber(nadir + 1.2 * lmaj_ * orientation_, mj);
 		if (t==1.0)
 			break;
 		setDeviceLineWidth(minLineWidth_);
 		for (int mi=1; mi < minorintervals_; ++mi)
 		{
 			double tt = double(mi)  / (minorintervals_ * majorintervals_);
-			minorpos_.push_back(drawTic(beg + (t+tt)*runningpoint, lmin_));		
+			minorpos_.push_back(drawTic(nadir + tt*runningpoint, lmin_));		
 		}
 	}
 

@@ -3,8 +3,6 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <time.h>
-#include "qwt3d_gl2ps.h"
 #include "qwt3d_plot.h"
 #include "qwt3d_enrichment.h"
 
@@ -64,6 +62,20 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 							Qt::LeftButton | Qt::ControlButton);
 
 
+  keyboard_input_enabled_ = true;
+  setFocusPolicy(QWidget::StrongFocus);
+  assignKeyboard(Qt::Key_Down, Qt::Key_Up,
+    Qt::ShiftButton + Qt::Key_Right, Qt::ShiftButton + Qt::Key_Left,
+    Qt::Key_Right, Qt::Key_Left,
+    Qt::AltButton + Qt::Key_Right, Qt::AltButton + Qt::Key_Left,
+    Qt::AltButton + Qt::Key_Down, Qt::AltButton + Qt::Key_Up,
+    Qt::AltButton + Qt::ShiftButton + Qt::Key_Down, Qt::AltButton + Qt::ShiftButton + Qt::Key_Up,
+    Qt::AltButton + Qt::ControlButton + Qt::Key_Down, Qt::AltButton + Qt::ControlButton + Qt::Key_Up,
+    Qt::ControlButton + Qt::Key_Right, Qt::ControlButton + Qt::Key_Left,
+    Qt::ControlButton + Qt::Key_Down, Qt::ControlButton + Qt::Key_Up
+   );
+
+
 	legend_.setLimits(0, 100);
 	legend_.setMajors(10);
 	legend_.setMinors(2);
@@ -97,8 +109,8 @@ void Plot3D::initializeGL()
   glEnable( GL_BLEND );
   glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
-
-	// Set up the lights
+	
+  // Set up the lights
 
   disableLighting();
 	
@@ -127,7 +139,7 @@ void Plot3D::paintGL()
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	glMatrixMode( GL_MODELVIEW );
+  glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
   applyLights();
 
@@ -180,14 +192,18 @@ void Plot3D::paintGL()
 
   glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
 	
-	for (unsigned i=0; i!= displaylists_p.size(); ++i)
+ //glDisable(GL_DEPTH_TEST);
+ //glEnable(GL_DEPTH_TEST);
+ //glDepthMask(GL_FALSE);  
+
+ for (unsigned i=0; i!= displaylists_p.size(); ++i)
 	{
-		if (i!=LegendObject && i!=CoordObject)
+		if (i!=LegendObject)
 			glCallList( displaylists_p[i] );
 	}
-	
-	coordinates_p.draw();
-
+  coordinates_p.draw();
+ //glDepthMask(GL_TRUE); 
+  
   glMatrixMode( GL_MODELVIEW );
   glPopMatrix();
 }
@@ -201,18 +217,6 @@ void Plot3D::resizeGL( int w, int h )
 	glViewport( 0, 0, w, h );
 	paintGL();
 }
-
-//void Plot3D::updateCoordinateSystem()
-//{
-//	SaveGlDeleteLists(displaylists_p[CoordObject], 1);
-//			
-//	displaylists_p[CoordObject] = glGenLists(1);
-//	glNewList(displaylists_p[CoordObject], GL_COMPILE);
-//
-//	coordinates_p.draw();
-//
-//	glEndList();
-//}
 
 /*!
 	Create a coordinate system with generating corners beg and end 
@@ -241,106 +245,6 @@ void Plot3D::showColorLegend( bool show )
 	if (show)
     datacolor_p->createVector(legend_.colors);
 	updateGL();
-}
-
-/*!
-	Saves as vector data supported by gl2ps. The corresponding format types are "EPS","PS","PDF" or "TEX" .
-	The last parameter is one of gl2ps' sorting types: GL2PS_NO_SORT, GL2PS_SIMPLE_SORT or GL2PS_BSP_SORT.
-  Default is GL2PS_SIMPLE_SORT.\n 
-	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
-	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.
-*/
-bool Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
-{
-	makeCurrent();
-	Label::useDeviceFonts(true);
-	
-	GLint gl2ps_format;
-	if (format == QString("EPS"))
-	{
-		gl2ps_format = GL2PS_EPS;
-	}
-	else if (format == QString("PS"))
-	{
-		gl2ps_format = GL2PS_PS;
-	}
-	else if (format == QString("TEX"))
-	{
-		gl2ps_format = GL2PS_TEX;
-	}
-	else if (format == QString("PDF"))
-	{
-		gl2ps_format = GL2PS_PDF;
-	}
-	else
-	{
-		Label::useDeviceFonts(false);
-		return false;
-	}
-
-	FILE *fp = fopen(fileName.latin1(), "wb");	
-	if (!fp)
-		return false;
-
-	GLint bufsize = 0, state = GL2PS_OVERFLOW;
-	GLint viewport[4];
-
-	glGetIntegerv(GL_VIEWPORT, viewport);
-
-	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
-										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_COMPRESS;
-
-	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
-		options |= GL2PS_LANDSCAPE;
-
-	if (notext)
-		options |= GL2PS_NO_PIXMAP | GL2PS_NO_TEXT;
-
-	if (sorttype < 0)
-		sorttype = GL2PS_SIMPLE_SORT;
-
-
-	QString version = QString::number(QWT3D_MAJOR_VERSION) + "."
-		+ QString::number(QWT3D_MINOR_VERSION) + "."
-		+ QString::number(QWT3D_PATCH_VERSION); 
-	    
-	QString producer = QString("QwtPlot3D ") + version + 
-		" (beta) , (C) 2002";
-  
-  // calculate actual year
-  time_t now;
-  struct tm *newtime;
-  time(&now);
-  newtime = gmtime(&now);
-	if (newtime && newtime->tm_year + 1900 > 2002)
-	  producer += "-" + QString::number(newtime->tm_year+1900); 
-  
-  producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
-
-	while( state == GL2PS_OVERFLOW )
-	{ 
-		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", producer, viewport,
-										 gl2ps_format, sorttype,
-										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-										 fp, fileName.latin1() );
-		
-		updateData();
-		updateGL(); 
-		state = gl2psEndPage();
-	}
-	fclose(fp);
-
-	Label::useDeviceFonts(false);
-	return true;
-}	
-/*!
-	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt
-*/
-bool Plot3D::savePixmap(QString fileName, QString format)
-{
-	QImage im = grabFrameBuffer(true);
-	return im.save(fileName,format);
 }
 
 void Plot3D::setMeshColor(RGBA rgba)
@@ -514,4 +418,26 @@ void Plot3D::createEnrichments()
   {
     this->createEnrichment(**it);
   } 
+}
+
+/*!
+  Update OpenGL data representation
+*/
+void Plot3D::updateData()
+{
+	makeCurrent();
+  GLStateBewarer dt(GL_DEPTH_TEST, true);
+	GLStateBewarer ls(GL_LINE_SMOOTH, true);
+
+	calculateHull();	
+
+	SaveGlDeleteLists(displaylists_p[DataObject], 1); // nur Daten
+	
+	displaylists_p[DataObject] = glGenLists(1);
+	glNewList(displaylists_p[DataObject], GL_COMPILE);
+	
+  this->createEnrichments();
+	this->createData();
+		
+	glEndList();
 }
