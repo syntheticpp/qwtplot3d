@@ -13,15 +13,15 @@
 namespace Qwt3D
 {
 
-//! A Qt string encapsulated by a drawable pixmap
-class QWT3D_EXPORT LabelPixmap : public Drawable 
+//! A Qt string or an output device dependent string
+class QWT3D_EXPORT Label : public Drawable 
 {
 		
 public:
 
-  LabelPixmap();
+  Label();
  	//! Construct label and initialize with font 
-	LabelPixmap(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
+	Label(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	
 	//! Sets the labels font
 	void setFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
@@ -43,7 +43,7 @@ public:
 
 	/**
 		\brief Decides about use of PDF standard fonts for PDF output 
-		If true, LabelPixmap can use one of the PDF standard fonts (unprecise positioning for now), 
+		If true, Label can use one of the PDF standard fonts (unprecise positioning for now), 
 		otherwise it dumps  pixmaps in the PDF stream (poor quality) 
 	*/
 	static void usePrinterFonts(bool val); 

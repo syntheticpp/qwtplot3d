@@ -164,7 +164,7 @@ private:
 
 		ColorLegend legend_;
 
-		LabelPixmap title_;
+		Label title_;
 		Qwt3D::Tuple titlerel_;
 		Qwt3D::ANCHOR titleanchor_;
 

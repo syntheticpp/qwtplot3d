@@ -57,7 +57,7 @@ public:
 
 private:
 	
-	Qwt3D::LabelPixmap caption_;
+	Qwt3D::Label caption_;
 	Qwt3D::ParallelEpiped geometry() const { return pe_;}
 	void setGeometryInternal();
 

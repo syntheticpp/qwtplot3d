@@ -4,28 +4,28 @@
 
 using namespace Qwt3D;
 
-bool LabelPixmap::printerFonts_ = false;
+bool Label::printerFonts_ = false;
 
-LabelPixmap::LabelPixmap()
+Label::Label()
 {
 	init();
 }
 
-LabelPixmap::LabelPixmap(const QString & family, int pointSize, int weight, bool italic)
+Label::Label(const QString & family, int pointSize, int weight, bool italic)
 {
 	init(family, pointSize, weight, italic);
 }
 
 
 void 
-LabelPixmap::init(const QString & family, int pointSize, int weight, bool italic)
+Label::init(const QString & family, int pointSize, int weight, bool italic)
 {
 	init();
 	font_ = QFont(family, pointSize, weight, italic );
 }
 
 void 
-LabelPixmap::init()
+Label::init()
 {
 	beg_ = Triple(0.0, 0.0, 0.0);
 	end_ = beg_;
@@ -37,13 +37,13 @@ LabelPixmap::init()
 }
 
 void 
-LabelPixmap::usePrinterFonts(bool val)
+Label::usePrinterFonts(bool val)
 {
 	printerFonts_ = val;
 }
 
 void 
-LabelPixmap::setFont(const QString & family, int pointSize, int weight, bool italic)
+Label::setFont(const QString & family, int pointSize, int weight, bool italic)
 {
 	font_ = QFont(family, pointSize, weight, italic );
 	update();	
@@ -64,14 +64,14 @@ example:
 \endverbatim
 */
 void 
-LabelPixmap::setPosition(Triple pos, ANCHOR a)
+Label::setPosition(Triple pos, ANCHOR a)
 {
 	anchor_ = a;
 	pos_ = pos;
 }
 
 void
-LabelPixmap::setRelPosition(Tuple rpos, ANCHOR a)
+Label::setRelPosition(Tuple rpos, ANCHOR a)
 {
 	double ot = 0.99;
 
@@ -82,7 +82,7 @@ LabelPixmap::setRelPosition(Tuple rpos, ANCHOR a)
 }
 
 void 
-LabelPixmap::update()
+Label::update()
 {
 	QPainter p;
 	QFontMetrics fm(font_);
@@ -123,7 +123,7 @@ LabelPixmap::update()
 }
 
 void
-LabelPixmap::convert2screen()
+Label::convert2screen()
 {
 	Triple start = World2ViewPort(pos_);
 
@@ -163,7 +163,7 @@ LabelPixmap::convert2screen()
 }
 
 void 
-LabelPixmap::draw()
+Label::draw()
 {
 	if (buf_.isNull())
 		return;
@@ -205,19 +205,19 @@ LabelPixmap::draw()
 
 
 double 
-LabelPixmap::width() const 
+Label::width() const 
 { 
 	return pm_.width(); 
 }
 
 double
-LabelPixmap::height() const 
+Label::height() const 
 { 
 	return pm_.height(); 
 }	
 
 void 
-LabelPixmap::setString(QString const& s)
+Label::setString(QString const& s)
 {
   text_ = s;
 }

@@ -135,7 +135,7 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	connect( coordSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoordLineWidth(int)) );
 	connect(meshsmooth, SIGNAL(toggled(bool)), this, SLOT(setSmoothMesh(bool)));
 
-	LabelPixmap::usePrinterFonts(true);
+	Label::usePrinterFonts(true);
 }
 
 printMainWindow::~printMainWindow()
@@ -156,6 +156,15 @@ void printMainWindow::dumpImage()
 		plot[0]->coordinates()->axes[X1].setLabelString("$\\zeta$");
 		plot[0]->coordinates()->axes[Y1].setLabelString("$\\xi$");
 		plot[0]->coordinates()->axes[Z1].setLabelString("$f(\\zeta,\\xi)$");
+		plot[0]->coordinates()->axes[X2].setLabelString("$\\zeta$");
+		plot[0]->coordinates()->axes[Y2].setLabelString("$\\xi$");
+		plot[0]->coordinates()->axes[Z2].setLabelString("$f(\\zeta,\\xi)$");
+		plot[0]->coordinates()->axes[X3].setLabelString("$\\zeta$");
+		plot[0]->coordinates()->axes[Y3].setLabelString("$\\xi$");
+		plot[0]->coordinates()->axes[Z3].setLabelString("$f(\\zeta,\\xi)$");
+		plot[0]->coordinates()->axes[X4].setLabelString("$\\zeta$");
+		plot[0]->coordinates()->axes[Y4].setLabelString("$\\xi$");
+		plot[0]->coordinates()->axes[Z4].setLabelString("$f(\\zeta,\\xi)$");
 		
 		plot[1]->setTitle(hat->name());
 	}
@@ -207,6 +216,15 @@ void printMainWindow::dumpImage()
 	plot[0]->coordinates()->axes[X1].setLabelString("");
 	plot[0]->coordinates()->axes[Y1].setLabelString("");
 	plot[0]->coordinates()->axes[Z1].setLabelString("");
+	plot[0]->coordinates()->axes[X2].setLabelString("");
+	plot[0]->coordinates()->axes[Y2].setLabelString("");
+	plot[0]->coordinates()->axes[Z2].setLabelString("");
+	plot[0]->coordinates()->axes[X3].setLabelString("");
+	plot[0]->coordinates()->axes[Y3].setLabelString("");
+	plot[0]->coordinates()->axes[Z3].setLabelString("");
+	plot[0]->coordinates()->axes[X4].setLabelString("");
+	plot[0]->coordinates()->axes[Y4].setLabelString("");
+	plot[0]->coordinates()->axes[Z4].setLabelString("");
 
 }
 
