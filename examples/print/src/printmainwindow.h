@@ -30,4 +30,3 @@ private:
 	QString filetype_;
 
 };
-

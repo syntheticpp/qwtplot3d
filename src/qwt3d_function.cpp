@@ -114,4 +114,3 @@ bool Function::create(SurfacePlot* plotWidget)
 
 	return true;
 }
-

@@ -77,4 +77,3 @@ private:
 
 	QString filetype_;
 };
-

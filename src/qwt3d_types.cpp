@@ -236,4 +236,3 @@ unsigned Qwt3D::tesselationSize(CellField const& t)
 	
 	return ret;
 }
-

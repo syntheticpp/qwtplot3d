@@ -4,5 +4,4 @@
 #include "qwt3d_reader.h"
 #include "qwt3d_femreader.h"
 
-#endif  // __qwt3d_io_2003_07_04_23_27__
-
+#endif

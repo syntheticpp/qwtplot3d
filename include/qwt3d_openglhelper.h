@@ -122,4 +122,4 @@ inline bool World2ViewPort(double& winx, double& winy, double& winz, double objx
 
 } // ns
 
-#endif  // __openglhelper_2003_06_06_15_49__
+#endif

@@ -97,4 +97,4 @@ private:
 
 } // ns
 
-#endif  // __surfaceplot_2003_06_09_12_08__
+#endif

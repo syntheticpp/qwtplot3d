@@ -60,4 +60,4 @@ protected:
 
 } // ns
 
-#endif // __COLORGENERATOR_H__
+#endif

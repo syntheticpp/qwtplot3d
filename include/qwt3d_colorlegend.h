@@ -72,4 +72,4 @@ private:
 
 } // ns
 
-#endif // __PLANE_H__
+#endif

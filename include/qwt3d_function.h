@@ -45,4 +45,4 @@ private:
 
 } // ns
 
-#endif // __FUNCTIONGENERATOR_H__
+#endif

@@ -120,4 +120,4 @@ private:
 
 } // ns
 
-#endif  // __scatterobjects_2004_01_05_19_10__
+#endif
