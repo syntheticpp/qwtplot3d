@@ -22,52 +22,6 @@ GridData::~GridData()
 	clear();		
 }
 
-GridData::GridData(GridData const& rhs)
-{
-	setSize(rhs.columns(), rhs.rows());
-	for ( int i=0; i!=columns(); ++i)
-	{
-		for ( int j=0; j!=rows(); ++j)
-		{
-			vertices[i][j][0] = rhs.vertices[i][j][0];
-			vertices[i][j][1] = rhs.vertices[i][j][1];
-			vertices[i][j][2] = rhs.vertices[i][j][2];
-			normals[i][j][0] = rhs.normals[i][j][0];
-			normals[i][j][1] = rhs.normals[i][j][1];
-			normals[i][j][2] = rhs.normals[i][j][2];
-		}
-	}
-	max_ = rhs.max_;
-	min_ = rhs.min_;
-}
-
-
-GridData& GridData::operator=(GridData const& rhs)
-{
-	if (this == &rhs)
-		return *this;
-
-	setSize(rhs.columns(), rhs.rows());
-	for ( int i=0; i!=columns(); ++i)
-	{
-		for ( int j=0; j!=rows(); ++j)
-		{
-			vertices[i][j][0] = rhs.vertices[i][j][0];
-			vertices[i][j][1] = rhs.vertices[i][j][1];
-			vertices[i][j][2] = rhs.vertices[i][j][2];
-			normals[i][j][0] = rhs.normals[i][j][0];
-			normals[i][j][1] = rhs.normals[i][j][1];
-			normals[i][j][2] = rhs.normals[i][j][2];
-		}
-	}
-	max_ = rhs.max_;
-	min_ = rhs.min_;
-
-	return *this;
-}
-
-
-
 int 
 GridData::columns() const 
 { 
@@ -109,8 +63,8 @@ GridData::clear()
 	
 	normals.clear();
 	
-	max_ = -DBL_MAX;
-	min_ = DBL_MAX;
+//	max_ = -DBL_MAX;
+//	min_ = DBL_MAX;
 }
 
 
@@ -142,26 +96,37 @@ GridData::setSize(unsigned int columns, unsigned int rows)
 	}
 }
 
-double GridData::maximum() const { return max_;}
-double GridData::minimum() const { return min_;}
-
-void GridData::setMin(double minv) {min_ = minv;}
-void GridData::setMax(double maxv) {max_ = maxv;}
-
 ParallelEpiped GridData::hull() const
 {
 	if (empty())
 		return ParallelEpiped();
 
-	return ParallelEpiped(
-												Triple(vertices[0][0][0], vertices[0][0][1], minimum() ), 
-												Triple(
-																vertices[columns()-1][rows()-1][0], 
-																vertices[columns()-1][rows()-1][1], 
-																maximum() 
-															)
-											 );
+	return hull_;
 }
+
+Triple const& 
+CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
+{
+	return nodes[cells[cellnumber][vertexnumber]];
+}
+
+void 
+CellData::clear()
+{
+	cells.clear();
+	nodes.clear();
+	normals.clear();
+}
+
+ParallelEpiped 
+CellData::hull() const
+{
+	if (empty())
+		return ParallelEpiped();
+
+	return hull_;
+}
+
 
 QColor 
 GL2Qt(GLdouble r, GLdouble g, GLdouble b)
@@ -267,4 +232,14 @@ void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
 		}
     delete [] points;
 		delete [] P;
+}
+
+unsigned tesselationSize(Tesselation const& t)
+{
+	unsigned ret = 0;
+	
+	for (unsigned i=0; i!=t.size(); ++i)
+		ret += t[i].size();
+	
+	return ret;
 }

@@ -15,6 +15,7 @@ public:
 	
 public slots:
 	void open();
+	void openMesh();
 
 	void createFunction(QString const& name);
 

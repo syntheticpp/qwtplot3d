@@ -18,7 +18,7 @@
 
 TARGET          = qwtplot3d
 TEMPLATE        = lib
-VERSION					= 0.1
+VERSION					= 0.1.1
 CONFIG         += qt warn_on thread debug
 MOC_DIR         = moc
 OBJECTS_DIR     = obj 
@@ -56,4 +56,6 @@ SOURCES += src/qwt_plot3d.cpp \
 					 src/mousekeyboard.cpp \
 					 src/movements.cpp \
 					 src/dataviews.cpp \
+					 src/dataviews_cell.cpp \
+					 src/dataviews_grid.cpp \
 					 src/helper.cpp

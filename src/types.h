@@ -5,6 +5,10 @@
 #ifndef __DATATYPES_H__
 #define __DATATYPES_H__
 
+#ifdef _DEBUG
+	#include <fstream.h>
+#endif
+
 #include <string>
 
 #ifdef _WIN32
@@ -31,15 +35,6 @@ enum PLOTSTYLE
 	FILLEDMESH
 };
 
-//! Not yet implemented
-enum ELEMENTTYPE
-{
-	POINT,
-	TRIANGLE,
-  TRIANGLE2,
-	QUAD
-};
-
 enum COORDSTYLE
 {
 	NOCOORD,
@@ -52,7 +47,7 @@ enum FLOORSTYLE
 	NOFLOOR,
 	FLOORMESH,
 	FLOORISO,
-	FLOORDATA
+	FLOORDATA,
 };
 
 //! The 12 axes
@@ -216,9 +211,6 @@ public:
 	GridData(unsigned int columns, unsigned int rows);//!< see setSize()
 	~GridData();
 
-	GridData(GridData const&); 
-	GridData& operator=(GridData const&); //!< deep copy
-
 	int columns() const;
 	int rows() const;
 
@@ -226,21 +218,73 @@ public:
 	bool empty() const { return vertices.empty();}
 	void setSize(unsigned int columns, unsigned int rows); //!< destroys content and set new size, elements are uninitialized
 	
-	double maximum() const; //!< \return minimal z value
-	double minimum() const; //!< \return maximal z value 
+	double maximum() const { return hull().maxVertex.z;} //!< \return minimal z value
+	double minimum() const { return hull().minVertex.z;} //!< \return maximal z value 
+	
+//	double maximum() const { return max_;} //!< \return minimal z value
+//	double minimum() const { return min_;} //!< \return maximal z value 
 
-	void setMin(double minv); //!< set maximum for z, not immediately, but the different generators take care and will cut
-	void setMax(double maxv); //!< set minimum for z, not immediately, but the different generators take care and will cut 
+//	void setMin(double minv) {min_ = minv;} //!< set maximum for z, not immediately, but the different generators take care and will cut
+//	void setMax(double maxv) {max_ = maxv;} //!< set minimum for z, not immediately, but the different generators take care and will cut 
 
-	ParallelEpiped hull() const;
 
 	DataMatrix vertices;		//!< mesh vertices
 	DataMatrix normals;		//!< mesh normals
 
+	ParallelEpiped hull() const;
+	void setHull(ParallelEpiped h) { hull_ = h; }
+
 private:
 
-	double				max_;		/* maximum height value in mesh */
-	double				min_;		/* minimum height value in mesh */
+	GridData(GridData const&);						//!< no copy
+	GridData& operator=(GridData const&); //!< no copy
+
+	ParallelEpiped hull_;
+
+
+//	double				max_;		/* maximum height value in mesh */
+//	double				min_;		/* minimum height value in mesh */
+};
+
+
+typedef std::vector<Triple> TripleVector;
+//! Helds indexes in a TripleVector interpreted as node numbers for a convex polygon
+typedef std::vector<unsigned> Cell;
+//! Vector of convex polygons. You need a TripleVector as base for the node data
+typedef std::vector<Cell> Tesselation;
+//! returns the sum over the sizes of the single cells
+unsigned tesselationSize(Tesselation const& t);
+
+//! Implements a graph-like cell structure with limit access functions 
+class CellData
+{
+public:
+
+	CellData() {}
+
+	void clear(); //!< destroy content
+	bool empty() const { return cells.empty();}
+	
+	double maximum() const { return hull().maxVertex.z;} //!< \return minimal z value
+	double minimum() const { return hull().minVertex.z;} //!< \return maximal z value 
+
+	Triple const& operator()(unsigned cellnumber, unsigned vertexnumber);
+	
+	//	ParallelEpiped hull() const;
+
+	Tesselation cells;   //!< polygon/cell mesh 
+	TripleVector    nodes;
+	TripleVector    normals; //!< mesh normals
+
+	ParallelEpiped hull() const;
+	void setHull(ParallelEpiped h) { hull_ = h; }
+
+private:
+
+	CellData(CellData const&);						//!< no copy
+	CellData& operator=(CellData const&); //!< no copy
+
+	ParallelEpiped hull_;
 };
 
 
@@ -326,9 +370,41 @@ inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
 
   /* normalize */
   l = (GLdouble)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-  n[0] /= l;
-  n[1] /= l;
-  n[2] /= l;
+  if (l)
+	{
+		n[0] /= l;
+		n[1] /= l;
+		n[2] /= l;
+	}
+	else
+	{
+		n[0] = 0;
+		n[1] = 0;
+		n[2] = 0;
+	}
+}
+
+inline Triple normalizedcross(Triple const& u, Triple const& v)
+{
+	Triple n;
+
+  /* compute the cross product (u x v for right-handed [ccw]) */
+  n.x = u.y * v.z - u.z * v.y;
+  n.y = u.z * v.x - u.x * v.z;
+  n.z = u.x * v.y - u.y * v.x;
+
+  /* normalize */
+  double l = n.length();
+  if (l)
+	{
+		n /= l;
+	}
+	else
+	{
+		n = Triple(0,0,0);
+	}
+	
+	return n;
 }
 
 void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src );

@@ -22,9 +22,10 @@ FORMS =  \
 
 SOURCES =  \
 		src/main.cpp \
-		src/mesh2mainwindow.cpp \
+		src/mesh2mainwindow.cpp
 
 HEADERS =  \
 		src/mesh2mainwindow.h \
-		src/functions.h
+		src/functions.h \
+		src/femreader.h
 
