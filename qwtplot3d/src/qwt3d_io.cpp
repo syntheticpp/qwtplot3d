@@ -1,8 +1,6 @@
 #include <time.h>
 
 #include "qwt3d_plot.h"
-#include "qwt3d_gl2ps.h"
-//#include "qwt3d_io.h"
 #include "qwt3d_io_gl2ps.h"
 #include "qwt3d_io_reader.h"
 
@@ -139,17 +137,15 @@ void IO::setupHandler()
     defineOutputHandler( *it, QtPixmapWrite );
     ++it;
   }
-  Gl2psWriter vecfunc; 
-#ifdef GL2PS_HAVE_ZLIB
-  vecfunc.compressed = false;
-#endif
+  GL2PS vecfunc; 
+  vecfunc.setCompressed(false);
   vecfunc.setFormat("EPS");
   defineOutputHandler("EPS", vecfunc);
   vecfunc.setFormat("PS");
   defineOutputHandler("PS", vecfunc);
   
 #ifdef GL2PS_HAVE_ZLIB
-  vecfunc.compressed = true;
+  vecfunc.setCompressed(true);
   vecfunc.setFormat("EPS_GZ");
   defineOutputHandler("EPS_GZ", vecfunc);
   vecfunc.setFormat("PS_GZ");
@@ -157,28 +153,38 @@ void IO::setupHandler()
 #endif
   vecfunc.setFormat("PDF");
   defineOutputHandler("PDF", vecfunc);
-  vecfunc.setFormat("TEX");
-  defineOutputHandler("TEX", vecfunc);
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());
 }
 
+bool IO::QtPixmapWrite(Plot3D* plot, QString const& fname, QString const& format)
+{
+  QImage im = plot->grabFrameBuffer(true);
+  return im.save(fname, (const char*)format.local8Bit());
+}
+
 /*!
 	\deprecated  Use Plot3D::save or IO::save instead.
 	
-  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS","PDF" or "TEX".
+  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS"or "PDF".
   If zlib has been configured this will be extended by "EPS_GZ" and "PS_GZ". 
-	The last parameter is one of gl2ps' sorting types: GL2PS_NO_SORT, GL2PS_SIMPLE_SORT or GL2PS_BSP_SORT.
-  Default is GL2PS_SIMPLE_SORT.\n 
-	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
-	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.
+	\b Beware: BSPSORT turns out to behave very slowly and memory consuming, especially in cases where
+	many polygons appear. It is still more exact than SIMPLESORT.
 */
-bool Plot3D::saveVector(QString const& fileName, QString const& format, bool notext, int sorttype)
+bool Plot3D::saveVector(QString const& fileName, QString const& format, GL2PS::TEXTMODE text, GL2PS::SORTMODE sortmode)
 {
   if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF" || format == "TEX")
+    || format == "PS_GZ" || format == "PDF")
+  {  
+    GL2PS* gl2ps = (GL2PS*)IO::outputHandler(format);
+    if (gl2ps)
+    {
+      gl2ps->setSortMode(sortmode);
+      gl2ps->setTextMode(text);
+    }
     return IO::save(this, fileName, format);
+  }
   return false;
 }	
 /*!
@@ -189,7 +195,7 @@ bool Plot3D::saveVector(QString const& fileName, QString const& format, bool not
 bool Plot3D::savePixmap(QString const& fileName, QString const& format)
 {
   if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF"  || format == "TEX")
+    || format == "PS_GZ" || format == "PDF")
     return false;
   
   return IO::save(this, fileName, format);
@@ -203,3 +209,4 @@ bool Plot3D::save(QString const& fileName, QString const& format)
 {
   return IO::save(this, fileName, format);
 }
+

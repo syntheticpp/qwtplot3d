@@ -1,5 +1,4 @@
 #include "qwt3d_coordsys.h"
-#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -10,7 +9,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
   setStyle(st);
-	setLineSmooth(false);
+	setLineSmooth(true);
 	init(first,second);
 
 	setAxesColor(RGBA(0,0,0,1));
@@ -449,6 +448,12 @@ void CoordinateSystem::setNumberColor(RGBA val)
 		axes[i].setNumberColor( val);
 }
 
+void CoordinateSystem::setStandardNumbering()
+{
+	for (unsigned i=0; i!=axes.size(); ++i)
+    axes[i].setMap(new Axis::Number);
+}
+
 void CoordinateSystem::setLabelFont(QFont const& font)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
@@ -522,7 +527,6 @@ void CoordinateSystem::setGridLines(bool majors, bool minors, int sides)
 
 void CoordinateSystem::drawMajorGridLines()
 {
-	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
 	setDeviceLineWidth(axes[X1].majLineWidth());
@@ -563,7 +567,6 @@ void CoordinateSystem::drawMajorGridLines()
 
 void CoordinateSystem::drawMinorGridLines()
 {
-	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
 	setDeviceLineWidth(axes[X1].minLineWidth());

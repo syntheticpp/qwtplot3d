@@ -172,8 +172,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = V:/qt/include/
 INCLUDE_FILE_PATTERNS  = *.h
-PREDEFINED             = QWT3D_NOT_FOR_DOXYGEN \
-                         GL2PS_HAVE_ZLIB
+PREDEFINED             = QWT3D_NOT_FOR_DOXYGEN
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

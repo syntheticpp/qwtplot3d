@@ -83,6 +83,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	legend_.setMinors(2);
 	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
 
+  lighting_enabled_ = false;
   disableLighting();
   lights_ = std::vector<Light>(8);
 }

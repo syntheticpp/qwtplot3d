@@ -36,7 +36,7 @@ void ColorMapPreview::previewUrl( const QUrl &u )
 
 bool ColorMapPreview::open(QString fname)
 {	
-	ifstream file(fname.local8Bit());
+	ifstream file((const char*)fname.local8Bit());
 	
 	RGBA rgb;
 	cv.clear();

@@ -11,7 +11,7 @@ requiredfiles = ['qwtplot3d.dsw','examples.dsw','thesis.tex']
 requiredfiletypes = ['pro','bat','cpp','c','h','ui','ts','png','rc','ico','nsi','py']
 srcfiletypes = ['cpp','c','h']
 
-source = 'V:\\\\cvs\\uploads\\qwtplot3d\\'
+source = 'V:\\\\cvs\\qwtplot3d\\'
 
 tstr = strftime("%y%m%d", gmtime())
 tarname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.tgz'

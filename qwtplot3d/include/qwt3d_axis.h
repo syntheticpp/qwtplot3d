@@ -1,13 +1,12 @@
 #ifndef __AXIS_H__
 #define __AXIS_H__
 
+#include "qwt3d_autoptr.h"
 #include "qwt3d_label.h"
 #include "qwt3d_autoscaler.h"
 
 namespace Qwt3D
 {
-
-class LabelTexture;
 
 //! Autoscalable axis with caption
 class QWT3D_EXPORT Axis : public Drawable
@@ -15,31 +14,35 @@ class QWT3D_EXPORT Axis : public Drawable
 
 public:
 
-	explicit Axis();
-	Axis(Qwt3D::Triple beg, Qwt3D::Triple end);
-	~Axis();
+	Axis(); //!< Constructs standard axis
+	Axis(Qwt3D::Triple beg, Qwt3D::Triple end); //!< Constructs a new axis with specified limits
+	virtual ~Axis(); // dtor
 	
-	virtual void draw();
+	virtual void draw(); //!< Draws axis
 
 	void setPosition(const Qwt3D::Triple& beg, const Qwt3D::Triple& end); //!< Positionate axis
-	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;} //!< Get axis' position
-	Qwt3D::Triple begin() const { return beg_; }
-	Qwt3D::Triple end() const { return end_; }
-  double length() const { return (end_-beg_).length(); }
+	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;} //!< Returns axis' position
+  Qwt3D::Triple begin() const { return beg_; } //!< Returns axis' beginning position
+  Qwt3D::Triple end() const { return end_; } //!< Returns axis' ending position 
+  double length() const { return (end_-beg_).length(); } //!< Returns axis' length
 
-	void setTicLength(double majorl, double minorl);
-	void ticLength(double& majorl, double& minorl) const {majorl = lmaj_; minorl = lmin_;}
-	void setTicOrientation(double tx, double ty, double tz);
-	void setTicOrientation(const Qwt3D::Triple& val);
-	Qwt3D::Triple ticOrientation() const { return orientation_;}
-	void setSymmetricTics( bool b) { symtics_ = b;}
+	void setTicLength(double majorl, double minorl); //!< Sets tics lengths in world coordinates
+	//! Returns tics lengths
+  void ticLength(double& majorl, double& minorl) const {majorl = lmaj_; minorl = lmin_;}
+	void setTicOrientation(double tx, double ty, double tz); //!< Sets tic orientation
+	void setTicOrientation(const Qwt3D::Triple& val); //!< Same function as above
+  Qwt3D::Triple ticOrientation() const { return orientation_;} //!< Returns tic orientation
+  void setSymmetricTics( bool b) { symtics_ = b;} //!< Sets two-sided tics (default is false) 
 	
+  //! Sets font for axis label
 	void setLabelFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void setLabelFont(QFont const& font);
-  void setLabelString(QString const& name);
+	void setLabelFont(QFont const& font); //!< Sets font for axis label
+  QFont const& labelFont() const {return labelfont_;}; //!< Returns current label font 
+  
+  void setLabelString(QString const& name);   //!< Sets label content
 	void setLabelPosition(const Qwt3D::Triple& pos, Qwt3D::ANCHOR);
 	void setLabelColor(Qwt3D::RGBA col);
-	void setLabel(bool d) {drawLabel_ = d;}
+  void setLabel(bool d) {drawLabel_ = d;} //!< Turns label drawing on or off
 	void adjustLabel(int val) {labelgap_ = val;} //!< Shifts label in device coordinates dependent on anchor;
 
 	void setScale(bool d) {drawTics_ = d;} //!< Turns scale drawing on or off
@@ -51,7 +54,8 @@ public:
 	//! Sets font for numbering
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setNumberFont(QFont const&); //!< Overloaded member, works like the above function
-	void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;} //!< Sets anchor position for numbers
+  QFont const& numberFont() const {return numberfont_;}; //!< Returns current numbering font
+  void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;} //!< Sets anchor position for numbers
 	void adjustNumbers(int val) {numbergap_ = val;} //!< Shifts axis numbers in device coordinates dependent on anchor;
 
 	void setAutoScale(bool val = true) {autoscale_ = val;} //!< Turns Autoscaling on or off
@@ -74,6 +78,59 @@ public:
 	void limits(double& start, double& stop) const {start = start_; stop = stop_;} //!< Returns axis interval
   void recalculateTics(); //!< Enforces recalculation of ticmark positions
 
+  //! A mapping class to flexibilize the axis numbering scheme
+  /*!
+  This ABC is a base for implementations of special forms of scale items
+  instead real numbers. The key part here is operator(). The framework 
+  guarantees that the arguments are filled with the index for the 
+  actual major tic and his value. Additionally, tics() returns the current 
+  number of major tics. The writer for the derived class can than
+  map this informations to arbitrary output strings.
+  \see Axis::Number implementation for an example.
+  */
+  class Item 
+  {
+  friend class Axis;
+  public:
+    //! Actual number of major tics
+    unsigned int tics() const {return tics_;};
+    //! Returns a new heap based object of the derived class.  
+    virtual Item* clone() const = 0;
+    /*!
+    \param val provides the current axis value at major tic i
+    \param idx the current major tic index
+    \return to implement ...
+    */
+    virtual QString operator()(double val, unsigned int idx) = 0;
+    //! Called from framework
+    void destroy() const {delete this;}
+  protected:
+    virtual ~Item(){}
+  private:
+    unsigned int tics_;
+  };
+  //! The standard (1:1) mapping class for axis numbering
+  class Number : public Item
+  {
+  public:
+    //! Returns a new heap based Number object 
+    Item* clone() const {return new Number;}
+    /*!
+    \param val provides the current axis value at major tic i
+    \param idx the current major tic index
+    \return val's QString representation for valid i, empty QString else
+    */
+    QString operator()(double val, unsigned int idx)
+    {
+      if (idx<tics())
+        return QString::number(val);
+      return QString("");
+    }
+  };
+
+  void setMap(Axis::Item* map);
+
+
 private:
 
 	void init();
@@ -82,6 +139,7 @@ private:
 	void drawNumber(Qwt3D::Triple Pos, int mtic);
 	Qwt3D::Triple drawTic(Qwt3D::Triple nadir, double length);
 	void drawLabel();
+  double TicValue(int mtic) const;
 
 	Qwt3D::Triple biggestNumberString();
 	
@@ -105,12 +163,13 @@ private:
 	bool symtics_;
 	bool drawNumbers_, drawTics_, drawLabel_;
 	bool autoscale_;
-	QFont numberfont_;
+	QFont numberfont_, labelfont_;
 	Qwt3D::RGBA  numbercolor_;
 
 	int numbergap_, labelgap_; 
 
 	Qwt3D::AutoScaler as_;
+  Qwt3D::qwt3d_ptr<Item> digitmap_;
 };
 
 } // ns 

@@ -1,11 +1,10 @@
-#include "qwt3d_gl2ps.h"
 #include "qwt3d_axis.h"
 
 using namespace Qwt3D;
 
 Axis::Axis()
 {
-	init();
+  init();
 };
 
 Axis::~Axis()
@@ -14,7 +13,7 @@ Axis::~Axis()
 
 Axis::Axis(Triple beg, Triple end)
 {
-	init();
+ 	init();
 	setPosition(beg,end);
 }
 
@@ -22,18 +21,20 @@ void Axis::init()
 {
 	detachAll();
 
+  digitmap_ = qwt3d_ptr<Axis::Item>(new Axis::Number);
   beg_ = Triple(0.0, 0.0, 0.0);  
   end_ = beg_;
 	
-
+	majorintervals_ = 0;
+	minorintervals_ = 0;
+	setMajors(1);	
+	setMinors(1);	
 	setLimits(0,0);
 
 	setTicOrientation(0.0, 0.0, 0.0);
 	setTicLength(0.0, 0.0);
 	setColor(0.0, 0.0, 0.0);
 	setLineWidth(1.0);
-	setMajors(1);	
-	setMinors(1);	
 	symtics_ = false;
 	drawNumbers_ = false;
 	drawLabel_ = false;
@@ -42,11 +43,12 @@ void Axis::init()
 	autoscale_ = true;
 	markerLabel_.clear();
 	numberfont_ = QFont("Courier",12);
-	numbercolor_ = RGBA(0,0,0,0);
+	setLabelFont(QFont("Courier",14));
+
+  numbercolor_ = RGBA(0,0,0,0);
 
 	setNumberAnchor(Center);
 
-	//label_ = Label();
 	numbergap_ = 0;
 	labelgap_ = 0;
 }
@@ -112,7 +114,7 @@ void Axis::draw()
 
 	saveGLState();
 
-	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+//	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 //	glBlendFunc(GL_ONE, GL_ZERO);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(color.r,color.g,color.b,color.a);		
@@ -348,28 +350,39 @@ void Axis::drawTics()
 	}	
 }
 
+double Axis::TicValue(int mtic) const
+{
+	if ((mtic < 0) || (mtic >= int(markerLabel_.size())))
+		return 0;
+
+  double t = double(mtic) / majorintervals_;
+  double anumber;
+  if (autoScale())
+  {
+    anumber = autostart_ + t * (autostop_-autostart_);
+		if (isPracticallyZero(autostart_ , -t * (autostop_-autostart_))) // prevent rounding errors near zero
+			anumber = 0;
+  }
+  else
+  {
+    anumber = start_ + t * (stop_ - start_);
+  }
+  return anumber;
+}
+
 void Axis::drawNumber(Triple pos, int mtic)
 {
 	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
 		return;
 	
-	double t = double(mtic) / majorintervals_;
 
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
-
-	if (autoScale())
-	{
-		double anumber = autostart_ + t * (autostop_-autostart_);
-		
-		if (isPracticallyZero(autostart_ , -t * (autostop_-autostart_))) // prevent rounding errors near zero
-			anumber = 0;
-		markerLabel_[mtic].setString(QString::number(anumber));		
-	}
-	else
-		markerLabel_[mtic].setString(QString::number(start_ + t * (stop_ - start_)));
-	
-	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
+  
+  digitmap_->tics_ = markerLabel_.size();
+  markerLabel_[mtic].setString((*digitmap_)(TicValue(mtic),mtic));	  
+  
+  markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
 	markerLabel_[mtic].adjust(numbergap_);
 	markerLabel_[mtic].draw();
 }
@@ -406,7 +419,8 @@ void Axis::setNumberColor(RGBA col)
 
 void Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
-	label_.setFont(family, pointSize, weight, italic);
+	labelfont_ = QFont(family, pointSize, weight, italic );
+  label_.setFont(family, pointSize, weight, italic);
 }
 
 void Axis::setLabelFont(QFont const& font)
@@ -419,11 +433,15 @@ void Axis::setLabelString(QString const& name)
 	label_.setString(name);
 }
 
+/*!
+  Sets label position in conjunction with an anchoring strategy
+*/
 void Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 {
 	label_.setPosition(pos, an);
 }
 
+//! Sets color for label
 void Axis::setLabelColor(RGBA col)
 {
 	label_.setColor(col);
@@ -448,3 +466,14 @@ Triple Axis::biggestNumberString()
 	}
 	return ret;
 }
+
+/*! 
+  Use with a heap based initialized pointer only.
+  The axis adopts ownership 
+*/
+
+void Axis::setMap(Axis::Item* map)
+{
+  digitmap_ = qwt3d_ptr<Axis::Item>(map); 
+}
+

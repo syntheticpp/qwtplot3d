@@ -5,7 +5,6 @@
 
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_enrichment_std.h"
-#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;

@@ -9,8 +9,7 @@ MOC_DIR           = tmp
 OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
-#DESTDIR      			= lib
-DESTDIR = ../../lib
+DESTDIR      			= lib
 
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll 
@@ -63,10 +62,10 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_enrichment.h \
            include/qwt3d_enrichment_std.h \
            include/qwt3d_autoscaler.h \
+           include/qwt3d_autoptr.h \
            include/qwt3d_io.h \
            include/qwt3d_io_reader.h
 						
-
 HEADERS += include/qwt3d_mapping.h \
 					 include/qwt3d_gridmapping.h \
            include/qwt3d_parametricsurface.h \
@@ -78,11 +77,10 @@ HEADERS += include/qwt3d_surfaceplot.h \
            include/qwt3d_multiplot.h
 
 # gl2ps support
-HEADERS+=include/qwt3d_gl2ps.h \
-         3rdparty/gl2ps/gl2ps.h \
+HEADERS+=3rdparty/gl2ps/gl2ps.h \
          include/qwt3d_io_gl2ps.h
          
-SOURCES+=src/qwt3d_gl2ps.cpp \
+SOURCES+=src/qwt3d_io_gl2ps.cpp \
          3rdparty/gl2ps/gl2ps.c
 
 # zlib support for gl2ps

@@ -20,7 +20,7 @@ class QWT3D_EXPORT Color
 public:
 	virtual Qwt3D::RGBA operator()(double x, double y, double z) const = 0; //!< Implement your color model here
   virtual Qwt3D::RGBA operator()(Qwt3D::Triple const& t) const {return this->operator()(t.x,t.y,t.z);} 
-	//! Should create a color vector usable by ColorLegend. The default implementation is empty.
+	//! Should create a color vector usable by ColorLegend. The default implementation returns his argument
 	virtual Qwt3D::ColorVector& createVector(Qwt3D::ColorVector& vec) { return vec; }
 
 	void destroy() const { delete this;}
