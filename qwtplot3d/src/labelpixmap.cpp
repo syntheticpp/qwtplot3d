@@ -37,6 +37,17 @@ LabelPixmap::setFont(const QString & family, int pointSize, int weight, bool ita
 	update();	
 }
 
+/**
+ 
+example:
+
+		Anchor TopCenter (*)  resp. BottomRight(X) 
+
+	 +----*----+
+   |  Pixmap |
+   +---------X
+
+*/
 void 
 LabelPixmap::setPosition(Triple pos, ANCHOR a)
 {
