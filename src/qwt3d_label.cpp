@@ -1,5 +1,4 @@
 #include <qbitmap.h>
-#include "qwt3d_gl2ps.h"
 #include "qwt3d_label.h"
 
 using namespace Qwt3D;
@@ -220,13 +219,13 @@ void Label::draw()
 	int h = tex_.height();
  
 	if (devicefonts_)
-	{
-//		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-		drawDeviceText(text_.local8Bit(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
+	{		
+		drawDeviceText((const char*)text_.local8Bit(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
 	}
 	else
 	{
-		glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());	
+		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
+//    glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());	
 	}
 
 

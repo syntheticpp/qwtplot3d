@@ -1,6 +1,5 @@
 #include <math.h>
 #include "qwt3d_color.h"
-#include "qwt3d_gl2ps.h"
 #include "qwt3d_plot.h"
 #include "qwt3d_enrichment_std.h"
 

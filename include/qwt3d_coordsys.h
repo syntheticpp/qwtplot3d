@@ -30,8 +30,9 @@ public:
 	void setNumberFont(QFont const& font);
 	//! Set common color for all axis numberings
 	void setNumberColor(Qwt3D::RGBA val);
-	
-	void adjustNumbers(int val); //!< Fine tunes distance between axis numbering and axis body
+  void setStandardNumbering(); //!< Sets Axis items to doubles
+
+ 	void adjustNumbers(int val); //!< Fine tunes distance between axis numbering and axis body
 	void adjustLabels(int val); //!< Fine tunes distance between axis label and axis body
 
 	//! Sets color for the grid lines

@@ -1,4 +1,3 @@
-#include "qwt3d_gl2ps.h"
 #include "qwt3d_drawable.h"
 
 using namespace Qwt3D;

@@ -162,12 +162,25 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		filetype_ = "PNG";
 		filetypeCB->setCurrentText("PNG");
 
-    dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
+    dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
 
     grids->setEnabled(false);
 
 //    const char* c = dataWidget->className();
 //    c = filetypeCB->className();
+
+    GL2PS* handler = (GL2PS*)IO::outputHandler("PDF");
+    handler->setTextMode(GL2PS::TEX);
+    handler->setSortMode(GL2PS::BSPSORT);
+    //handler->setLandscape();
+    handler = (GL2PS*)IO::outputHandler("EPS");
+    handler->setTextMode(GL2PS::TEX);
+    handler->setSortMode(GL2PS::BSPSORT);
+    handler = (GL2PS*)IO::outputHandler("EPS_GZ");
+    handler->setTextMode(GL2PS::TEX);
+    handler->setSortMode(GL2PS::BSPSORT);
+    //handler->setLandscape();
+
 }
 
 void Mesh2MainWindow::open()
@@ -183,7 +196,7 @@ void Mesh2MainWindow::open()
 		QToolTip::add(filenameWidget, s);
 		filenameWidget->setText(fi.fileName());
   
-    if (IO::load(dataWidget, s, ext.local8Bit()))
+    if (IO::load(dataWidget, s, ext))
 		{
 			double a = dataWidget->facets().first;
 			double b = dataWidget->facets().second;
@@ -641,7 +654,7 @@ void Mesh2MainWindow::resetFonts()
 {
 	dataWidget->coordinates()->setNumberFont(QFont("Courier", 12));
 	dataWidget->coordinates()->setLabelFont(QFont("Courier", 14, QFont::Bold));
-  dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
+  dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
 	dataWidget->updateGL();
 }
 
@@ -661,7 +674,7 @@ void Mesh2MainWindow::dumpImage()
 	QString name;
 	
 	name = QString("dump_") + QString::number(counter++) + ".";
-
+  
   if (filetype_ == "PS_GZ")
     name += "ps.gz";
   else if (filetype_ == "EPS_GZ")
@@ -669,7 +682,6 @@ void Mesh2MainWindow::dumpImage()
   else
 	  name += filetype_;
   
-  Gl2psWriter* pdfhandler = (Gl2psWriter*)IO::outputHandler("PDF");
   IO::save(dataWidget, name.lower(), filetype_);
   //dataWidget->savePixmap(name.lower(), filetype_);
 }
@@ -822,7 +834,7 @@ Mesh2MainWindow::setNormalQuality(int val)
 bool
 Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 {	
-	ifstream file(fname.local8Bit());
+	ifstream file((const char*)fname.local8Bit());
 
 	if (!file)
 		return false;

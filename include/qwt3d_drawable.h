@@ -5,6 +5,7 @@
 #include <list>
 #include "qwt3d_global.h"
 #include "qwt3d_types.h"
+#include "qwt3d_io_gl2ps.h"
 
 namespace Qwt3D
 {

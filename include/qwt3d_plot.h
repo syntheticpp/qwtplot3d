@@ -172,7 +172,8 @@ public slots:
 		void	setLightShift( double xVal, double yVal, double zVal, unsigned idx = 0 );    																														
 
     virtual bool savePixmap(QString const& fileName, QString const& format); //!<  Saves content to pixmap format
-		virtual bool saveVector(QString const& fileName, QString const& format, bool notext = false, int sorttype = -1); //!<  Saves content to vector format
+		//!  Saves content to vector format
+    virtual bool saveVector(QString const& fileName, QString const& format, GL2PS::TEXTMODE text, GL2PS::SORTMODE sortmode);
 		virtual bool save(QString const& fileName, QString const& format); //!<  Saves content
 
 protected:

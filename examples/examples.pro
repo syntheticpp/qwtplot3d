@@ -3,7 +3,7 @@ SUBDIRS = \
 	simpleplot \
 	autoswitch \
 	enrichments \
-	print \
+	axes \
 	mesh2
 	
 

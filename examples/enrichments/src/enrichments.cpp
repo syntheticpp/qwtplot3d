@@ -45,6 +45,9 @@ void Bar::drawEnd()
 void Bar::draw(Qwt3D::Triple const& pos)
 {
   
+//	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+//  sb.turnOn();
+
   double interval = plot->hull().maxVertex.z-plot->hull().minVertex.z;
   double numlevel = plot->hull().minVertex.z + level_ * interval;
   interval /=100;

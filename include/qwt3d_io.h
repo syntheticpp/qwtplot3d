@@ -4,10 +4,14 @@
 #include <vector>
 #include <algorithm>
 
+#include <qstring.h>
+#include <qstringlist.h>
+#include <qwt3d_global.h>
 
 namespace Qwt3D
 {
 
+class Plot3D;
 /** 
 IO provides a generic interface for standard and user written I/O handlers. 
 The interfaces mimics roughly Qt's QImageIO functions for defining  
@@ -172,12 +176,7 @@ private:
     return rl;
   }
 
-  static bool QtPixmapWrite(Plot3D* plot, QString const& fname, QString const& format)
-  {
-    QImage im = plot->grabFrameBuffer(true);
-	  return im.save(fname, format.local8Bit());
-  }
-
+  static bool QtPixmapWrite(Plot3D* plot, QString const& fname, QString const& format);
   void setupHandler();
 };
 
