@@ -235,9 +235,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 
 	updateColorLegend(7,5);
 
-
-	pickCoordSystem(activeCoordSystem);
-
 	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
 	dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
 	dataWidget->coordinates()->axes[X3].setLabelString(QString("X3"));
@@ -252,6 +249,8 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	dataWidget->coordinates()->axes[Z2].setLabelString(QString("Z2"));
 	dataWidget->coordinates()->axes[Z3].setLabelString(QString("Z3"));
 	dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
+
+	pickCoordSystem(activeCoordSystem);
 }
 
 void Mesh2MainWindow::pickCoordSystem( QAction* action)

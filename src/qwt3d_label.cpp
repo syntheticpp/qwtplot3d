@@ -35,6 +35,7 @@ Label::init()
 	font_ = QFont();
 	anchor_ = BottomLeft;
 	gap_ = 0;
+	flagforupdate_ = true;
 }
 
 void 
@@ -47,7 +48,14 @@ void
 Label::setFont(const QString & family, int pointSize, int weight, bool italic)
 {
 	font_ = QFont(family, pointSize, weight, italic );
-	update();	
+	flagforupdate_ = true;
+}
+
+void 
+Label::setString(QString const& s)
+{
+  text_ = s;
+	flagforupdate_ = true;
 }
 
 /**
@@ -78,7 +86,6 @@ Label::setRelPosition(Tuple rpos, ANCHOR a)
 	getMatrices(modelMatrix, projMatrix, viewport);
 	beg_ = relativePosition(Triple(rpos.x, rpos.y, ot));
 	setPosition(beg_, a);	
-	update();
 }
 
 void 
@@ -185,9 +192,15 @@ Label::convert2screen()
 void 
 Label::draw()
 {
+	if (flagforupdate_)
+	{
+		update();
+		flagforupdate_ = false;
+	}
+
 	if (buf_.isNull())
 		return;
-	
+		
 	GLboolean b;
 	GLint func;
 	GLdouble v;
@@ -207,7 +220,7 @@ Label::draw()
  
 	if (devicefonts_)
 	{
-		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
+//		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
 	}
 	else
@@ -232,9 +245,3 @@ Label::height() const
 { 
 	return pm_.height(); 
 }	
-
-void 
-Label::setString(QString const& s)
-{
-  text_ = s;
-}

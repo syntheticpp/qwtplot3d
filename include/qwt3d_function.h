@@ -31,7 +31,7 @@ public:
 	void setMesh(unsigned int columns, unsigned int rows); //!< Sets number of rows and columns. 
 	void setDomain(double minx, double maxx, double miny, double maxy); //!< Sets x-y domain boundaries.
 	void setMinZ(double val); //!< Sets minimal z value.
-	void setMaxZ(double val); //!< Sest maximal z value.
+	void setMaxZ(double val); //!< Sets maximal z value.
 	void assign(SurfacePlot* plotWidget); //!< Assigns the object to another widget. To see the changes, you have to call this function before create(0).
 
 private:

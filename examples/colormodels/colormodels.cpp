@@ -49,7 +49,6 @@ public:
 	{
 		return RGBA(minval_ + cnt_*(maxval_-minval_), minval_ + (1-cnt_)*(maxval_-minval_), x*y - (minval_) / (maxval_-minval_));
 	}
-
 };	
 
 

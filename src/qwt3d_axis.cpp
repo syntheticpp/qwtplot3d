@@ -301,7 +301,6 @@ Axis::drawNumber(Triple pos, int mtic)
 	
 	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
 	markerLabel_[mtic].adjust(numbergap_);
-	markerLabel_[mtic].update();
 	markerLabel_[mtic].draw();
 }
 
@@ -343,7 +342,6 @@ void
 Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	label_.setFont(family, pointSize, weight, italic);
-	label_.update();
 }
 
 void 
@@ -356,21 +354,18 @@ void
 Axis::setLabelString(QString const& name)
 {
 	label_.setString(name);
-	label_.update();
 }
 
 void 
 Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 {
 	label_.setPosition(pos, an);
-	label_.update();
 }
 
 void 
 Axis::setLabelColor(RGBA col)
 {
 	label_.setColor(col);
-	label_.update();
 }
 
 Triple 

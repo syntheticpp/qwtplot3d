@@ -116,7 +116,6 @@ SurfacePlot::GridData2Floor()
 	if (actualGridData_->empty())
 		return;
 	
-	RGBA col;
 	int cstep = resolution();
 	int rstep = resolution();
 
@@ -124,7 +123,7 @@ SurfacePlot::GridData2Floor()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
 	double zshift = actualGridData_->minimum();
-	for (unsigned int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+	for (int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
 	{
 		glBegin(GL_TRIANGLE_STRIP);
   		setColorFromGridVertex(i, 0);
@@ -132,7 +131,7 @@ SurfacePlot::GridData2Floor()
 			
 			setColorFromGridVertex(i+cstep, 0);
 			glVertex3d(actualGridData_->vertices[i+cstep][0][0],actualGridData_->vertices[i+cstep][0][1], zshift);
-			for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
+			for (int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
 			{
 				setColorFromGridVertex(i, j+rstep);
 				glVertex3d(actualGridData_->vertices[i][j+rstep][0],actualGridData_->vertices[i][j+rstep][1], zshift);
@@ -164,7 +163,6 @@ SurfacePlot::GridIsolines2Floor()
 	Triple t[4];
 	vector<Triple> intersection;
 	
-	int hit = -1;
 	double lambda = 0;
 	
 	GLStateBewarer sb2(GL_LINE_SMOOTH, false);

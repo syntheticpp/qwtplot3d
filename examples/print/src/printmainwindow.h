@@ -1,7 +1,7 @@
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_function.h"
 #include "qwt3d_plot3d.h"
-#include "printMainWindowBase.h"
+#include "printmainwindowbase.h"
 
 
 class printMainWindow : public printMainWindowBase

@@ -3,16 +3,15 @@
 
 using namespace Qwt3D;
 
-StandardColor::StandardColor(Plot3D* data, int size)
+StandardColor::StandardColor(Plot3D* data, unsigned size)
 			: data_(data)
 {
 	Q_ASSERT(data_);
-	Q_ASSERT(size>=0);
 	
 	reset(size);
 }
 
-void StandardColor::reset(int size)
+void StandardColor::reset(unsigned size)
 {
 	colors_ = ColorVector(size);
 	RGBA elem;

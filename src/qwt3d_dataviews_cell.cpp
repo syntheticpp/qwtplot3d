@@ -113,7 +113,6 @@ SurfacePlot::CellIsolines2Floor()
 	TripleField nodes;
 	TripleField intersection;
 	
-	int hit = -1;
 	double lambda = 0;
 	
 	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
@@ -132,9 +131,9 @@ SurfacePlot::CellIsolines2Floor()
 			}
 			
 			double diff = 0;
-			for (int m = 0; m!=cellnodes; ++m)
+			for (unsigned m = 0; m!=cellnodes; ++m)
 			{
-				int mm = (m+1)%cellnodes;
+				unsigned mm = (m+1)%cellnodes;
 				if ((val>=nodes[m].z && val<=nodes[mm].z) || (val>=nodes[mm].z && val<=nodes[m].z))
 				{
 					diff = nodes[mm].z - nodes[m].z;
@@ -198,8 +197,6 @@ SurfacePlot::updateCellNormals()
 	v.setQuality(normalQuality());
 	v.elements = FreeVectorField(actualCellData_->normals.size());
 	
-	unsigned t = v.elements.size(); 
-
 	Triple basev;
 	Triple topv;	
 	

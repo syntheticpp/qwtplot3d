@@ -35,12 +35,10 @@ public:
 	ANCHOR anchor() const { return anchor_; } //!< Defines an anchor point for the labels surrounding rectangle
 
 	/*!
+	\brief Sets the labels string
 	For unicode labeling (<tt> QChar(0x3c0) </tt> etc.) please look at <a href="http://www.unicode.org/charts/">www.unicode.org</a>.
 	*/
-	void setString(QString const& s);	//!< Sets the labels string
-
-
-	void update(); //!< Enforces an update of the internal pixmap
+	void setString(QString const& s);
 	void draw(); //!< Actual drawing
 
 	/**
@@ -63,11 +61,14 @@ private:
 	
 	void init();
   void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
+	void update(); //!< Enforces an update of the internal pixmap
 	void convert2screen();
 	double width() const;
 	double height() const;
 
 	int gap_;
+
+	bool flagforupdate_;
 
 	static bool devicefonts_;
 
