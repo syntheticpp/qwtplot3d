@@ -4,7 +4,6 @@
 #include <qstring.h>
 #include "types.h"
 
-
 //! ABC for color functors
 /*!
 Use your own color model by providing an implementation of operator()(double x, double y, double z)
@@ -24,6 +23,9 @@ protected:
 	virtual ~Color(){} // allow heap based objects only
 };
 
+
+
+class QwtPlot3D;
 //! Standard color model for QwtPlot3D - implements a data driven operator()(double x, double y, double z)
 /*!
 The class has an colorvector representing z values, which will be used by operator()(double x, double y, double z)
@@ -32,7 +34,7 @@ class StandardColor : public Color
 {
 public:
 	//! initialize with data and set up a ColorVector with a size of 100 z values (default);
-	explicit StandardColor(GridData const& data, int size = 100);
+	explicit StandardColor(QwtPlot3D* data, int size = 100);
 	RGBA operator()(double x, double y, double z); //!< get z dependend Color from ColorVector
 	ColorVector const& colVector() const { return colors_;}
 	void setAlpha(double a);
@@ -41,7 +43,7 @@ protected:
 	ColorVector colors_;
 
 private:
-	GridData const& data_;
+	QwtPlot3D* data_;
 };
 
 

@@ -24,8 +24,8 @@
 #include "mesh2mainwindow.h"
 
 #include "functions.h"
+#include "femreader.h"
 #include "../src/reader.h"
-
 
 using namespace Qwt3D;
 
@@ -60,6 +60,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect( animation, SIGNAL( toggled(bool) ) , this, SLOT( toggleAnimation(bool) ) );
     connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
 		connect( openFile, SIGNAL( activated() ) , this, SLOT( open() ) );
+		connect( openMeshFile, SIGNAL( activated() ) , this, SLOT( openMesh() ) );
 
 	  timer = new QTimer( this );
 		connect( timer, SIGNAL(timeout()), this, SLOT(rotate()) );
@@ -128,7 +129,7 @@ void Mesh2MainWindow::open()
 			}
 		}
  		
-		createColorLegend(StandardColor(dataWidget->data()).colVector());
+		createColorLegend(StandardColor(dataWidget).colVector());
 
 		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 		{
@@ -191,7 +192,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		mex.create();
 	}
 
-	createColorLegend(StandardColor(dataWidget->data()).colVector());
+	createColorLegend(StandardColor(dataWidget).colVector());
 
 	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 	{
@@ -226,7 +227,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 
 	activeCoordSystem = action;
 	
-	dataWidget->setTitle("QwtPlot3D");
+	dataWidget->setTitle("");
 
 	if (!dataWidget->hasData())
 	{
@@ -551,3 +552,29 @@ Mesh2MainWindow::showZoom(double z)
 	zoomLabel->setText(" Zoom "  + QString::number(z,'g',3)); 
 }
 
+void Mesh2MainWindow::openMesh()
+{
+    QString data(QFileDialog::getOpenFileName( "../../data", "nodes (*.nod)", this ) );
+    QString edges( QFileDialog::getOpenFileName( "../../data", "connectivities (*.cel)", this ) );
+ 
+		if ( data.isEmpty() || edges.isEmpty() || !dataWidget)
+        return;
+
+
+		TripleVector vdata;
+		Tesselation vpoly;
+
+		readNodes(vdata, data, NodeFilter());
+		readConnections(vpoly, edges, CellFilter());
+		
+		dataWidget->createDataRepresentation(vdata, vpoly);
+
+ 		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
+		{
+			dataWidget->coordinates()->axes[i].setMajors(4);
+			dataWidget->coordinates()->axes[i].setMinors(5);
+			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
+		}
+		
+		pickCoordSystem(activeCoordSystem);
+}

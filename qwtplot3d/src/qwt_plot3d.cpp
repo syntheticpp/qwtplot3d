@@ -13,7 +13,8 @@ using namespace Qwt3D;
 QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
     : QGLWidget( parent, name )
 {
-	actualData_ = new GridData();
+	actualGridData_ = new GridData();
+	actualCellData_ = new CellData();
 	meshtype_ = mt;
 		
 	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
@@ -40,7 +41,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
 		objectList_[k] = 0;
 	}
 
-	dataColor_ = new StandardColor(*actualData_,100);
+	dataColor_ = new StandardColor(this, 100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -65,9 +66,9 @@ QwtPlot3D::~QwtPlot3D()
 {
 	SaveGlDeleteLists( objectList_[0], objectList_.size() );
 	dataColor_->destroy();
-	delete actualData_;
+	delete actualGridData_;
+	delete actualCellData_;
 }
-
 
 
 /*!
@@ -93,11 +94,11 @@ QwtPlot3D::initializeGL()
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, whiteAmb);
 
   glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteDir);
-//  glMaterialfv(GL_FRONT, GL_SPECULAR, whiteDir);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, whiteDir);
   glMaterialf(GL_FRONT, GL_SHININESS, 20.0);
 
   glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDir);		// enable diffuse
-//  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteDir);	// enable specular
+  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteDir);	// enable specular
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos); 
 }
 
@@ -231,12 +232,8 @@ QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
 void
 QwtPlot3D::createCoordinateSystem()
 {
-	Q_ASSERT(false == actualData_->empty());
-
-	if (actualData_->empty())
-		return;
-
 	calculateHull();
+	
 	createCoordinateSystem(hull().minVertex, hull().maxVertex);
 }
 
@@ -291,12 +288,18 @@ QwtPlot3D::setBackgroundColor(RGBA rgba)
 void 
 QwtPlot3D::calculateHull()
 {
-	Q_ASSERT(false == actualData_->empty());
-
-	if (actualData_->empty())
-		return;
-
-	hull_ = actualData_->hull();
+	if (meshtype() == GRID)
+	{
+		if (actualGridData_->empty())
+			return;
+		hull_ = actualGridData_->hull();
+	}
+	else
+	{
+		if (actualCellData_->empty())
+			return;
+		hull_ = actualCellData_->hull();
+	}
 }
 
 

@@ -10,8 +10,12 @@
 
 
 	\section news News
+	- Mai 26 2003: <b> release 0.1.2 alpha </b>
+	 - Data structures providing nodes and triangulation - Interface to create them from user data 
+	 - Reading data from FEM files (\ref screenshots)
+
 	- Apr 27 2003: 
-		<b> new release 0.1.1 alpha</b> (<a href="http://sourceforge.net/projects/qwtplot3d">download</a>)
+		release 0.1.1 alpha
 	
 	See also \ref changes	
 
@@ -28,6 +32,8 @@
    -# Resolution changing on the fly
    -# Reading from MESH data files :See the 'examples/data' directory and NativeReader documentation
    for this . You will find example datasets <a href="http://sourceforge.net/projects/qwtplot3d">here</a> 
+	 -# Data structures providing nodes and triangulation
+	 -# Reading from FEM files
    -# Flat (2D) labeling
  	 -# Wireframe, filled polygons, hidden line (improvement necessary)
  	 -# On floor projections (isolines, data)
@@ -40,18 +46,23 @@
  	<b style="color:#228B22;">CVS</b>: Changes in CVS yet
  	 
  	 Next release:
-	 
-	 -# Input: FEM files providing nodes and triangulation 
+	 	 
  	 -# Configurable illumination model	
    -# Documentation improvement
-	 
+	 -# Maintainance: Refactoring, final form for the programming interface, first beta release
+	 -# Bugfixing for autoscaler (occasional misbehaviour for some more extreme data sets)
 
 	 Subsequent releases:
 
-	 -# Native Delaunay triangulation for <tt>(x,y,z)</tt>-triples with irregularly distributed <tt>(x,y)</tt>-tuples )	 
- 	 -# Labeling and proper scaling (mipmapping) of user defined pixmaps
- 	 
+	 -# voxel data 
+ 	  	 
  	 <b>  ...Proposals !	</b>
+ 	 
+ 	 \e Remark: I skipped plans for including a native method of mesh generation  (Delaunay triangulation).
+ 	 There are very sophisticated programs you can use to prepare your data in a preliminary step. As an example,
+ 	 I'll likely provide a plugin for reading <a href="http://www-2.cs.cmu.edu/~quake/triangle.html">Triangle</a>
+ 	 output.
+ 	 
 
   \section examplesonmainpage Examples
   
@@ -111,6 +122,8 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 
   \latexonly Screenshots are only available in the HTML docs.\endlatexonly
 
+  \image html dump_0.png "FEM example (Material theory)"
+  \image html dump_1.png "Other FEM example"
   \image html simpleapp2.png "Example Application (Windows 2000)"
   \image html simpleapp3.png "Other View (Debian/KDE)"
   \image html zooming.png "Zooming"
@@ -120,7 +133,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 /*!
   \page datatopics Data Input Topics
 
-	QwtPlot3D supports a general and two special forms of native data input:
+	QwtPlot3D supports a general and some special forms of native data input:
 	
   \n\par Mesh data files:
    
@@ -204,9 +217,16 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 	
 	A general approach has been provided in form of the member 
 	
-	QwtPlot3D::createDataRepresentation().
+	bool QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy).
 	
-	For the present, you can feed the function with a <tt>double**</tt> pointer to your data. I'll extend this in the future.
+	You can feed the function with a <tt>double**</tt> pointer to your data. 
+	
+	A still more general solution has been supported by
+	
+	bool QwtPlot3D::createDataRepresentation(Qwt3D::TripleVector const& data, Qwt3D::Tesselation const& poly, MESHTYPE mtype = POLYGON)
+	
+	This function transforms her input to mesh based data found e.g. in FEM applications.
+	
 
 */
 

@@ -15,6 +15,7 @@ public:
 		{
 			GRID,
       TRIANGLE,
+			QUAD,
 			POLYGON
 		};	
 	
@@ -57,7 +58,8 @@ public:
 		RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
-		bool hasData() const { return !actualData_->empty(); } //!< \return Valid data available (true) or not (false)
+		bool hasData() const { return !actualGridData_->empty() || !actualCellData_->empty() ; } //!< \return Valid data available (true) or not (false)
+		MESHTYPE meshtype() const { return meshtype_; }	
 
 		void calculateHull();
 		ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
@@ -81,10 +83,11 @@ public:
 		
 		bool mouseEnabled() const; //!< Returns true, if the widget accept mouse input from the user
 
-		void createDataRepresentation(double** data, unsigned int columns, unsigned int rows
+		bool createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
 		
-		GridData const& data() const {return *actualData_;} //!< Access to data 
+		bool createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype = POLYGON);
+
 
 signals:
 		
@@ -139,7 +142,16 @@ private:
     GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		void createCoordinateSystem();
+	  void updateGridData();
+	  void updateCellData();
+
 		void updateFloorData();
+		void GridData2Floor();
+		void GridIsolines2Floor();
+		void Grid2Floor();
+		void CellData2Floor();
+		void CellIsolines2Floor();
+		void Cell2Floor();
 
 		int resolution_;
 		RGBA meshcolor_;
@@ -161,7 +173,9 @@ private:
 
 		std::vector<GLuint> objectList_;
 
-		GridData* actualData_;
+		GridData* actualGridData_;
+		CellData* actualCellData_;
+
 		ParallelEpiped hull_;
 
 		Color* dataColor_;
@@ -170,9 +184,6 @@ private:
 		LabelPixmap title_;
 		double titlerelx_, titlerely_;
 		LabelPixmap::ANCHOR titleanchor_;
-
-		void calcFloorListAsData();
-		void calcFloorListAsIsolines();
 
 		QPoint lastMouseMovePosition_;
 		bool mpressed_;

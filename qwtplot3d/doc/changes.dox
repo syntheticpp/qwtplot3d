@@ -3,6 +3,9 @@
  	
 \par Changes:
 
+Mai 18 2003: 
+- Isolines revised 
+
 Apr 28 2003: 
 - new functions:
 	- QwtPlot3D::mouseEnabled()

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Sa 17. Mai 00:06:11 2003
+** Created: So 25. Mai 22:10:33 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1365,6 +1365,28 @@ static const char* const image15_data[] = {
 ".....................",
 "....................."};
 
+static const char* const image16_data[] = { 
+"16 13 6 1",
+". c None",
+"d c #037e00",
+"a c #040404",
+"# c #144c54",
+"b c #4eff00",
+"c c #f3f7f3",
+".........###....",
+"........#...#.#.",
+".............##.",
+".aaa........###.",
+"abcbaaaaaaa.....",
+"acbcbcbcbca.....",
+"abcbcbcbcba.....",
+"acbcbaaaaaaaaaaa",
+"abcbaddddddddda.",
+"acbaddddddddda..",
+"abaddddddddda...",
+"aaddddddddda....",
+"aaaaaaaaaaa....."};
+
 
 /* 
  *  Constructs a Mesh2MainWindowBase which is a child of 'parent', with the 
@@ -1391,9 +1413,10 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     QPixmap image13( ( const char** ) image13_data );
     QPixmap image14( ( const char** ) image14_data );
     QPixmap image15( ( const char** ) image15_data );
+    QPixmap image16( ( const char** ) image16_data );
     if ( !name )
 	setName( "Mesh2MainWindowBase" );
-    resize( 906, 585 ); 
+    resize( 848, 585 ); 
     setMinimumSize( QSize( 336, 198 ) );
     setCaption( trUtf8( "Mesh2" ) );
     setCentralWidget( new QWidget( this, "qt_central_widget" ) );
@@ -1445,7 +1468,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     resSlider->setOrientation( QSlider::Horizontal );
     resSlider->setTickmarks( QSlider::Right );
     resSlider->setTickInterval( 5 );
-    QToolTip::add( resSlider, trUtf8( "Set data resolution" ) );
+    QToolTip::add( resSlider, trUtf8( "Set data resolution (no effect for nonrectangular data)" ) );
     Layout9->addWidget( resSlider );
     Layout5->addLayout( Layout9 );
 
@@ -1490,9 +1513,11 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Frame4 = new QFrame( centralWidget(), "Frame4" );
     Frame4->setFrameShape( QFrame::StyledPanel );
     Frame4->setFrameShadow( QFrame::Sunken );
+    Frame4Layout = new QGridLayout( Frame4, 1, 1, 11, 6, "Frame4Layout"); 
 
     dataWidget = new QwtPlot3D( Frame4, "dataWidget" );
-    dataWidget->setGeometry( QRect( 11, 11, 782, 404 ) ); 
+
+    Frame4Layout->addWidget( dataWidget, 0, 0 );
 
     Mesh2MainWindowBaseLayout->addWidget( Frame4, 0, 0 );
 
@@ -1501,13 +1526,16 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     openFile->setIconSet( QIconSet( image1 ) );
     openFile->setText( trUtf8( "Open File" ) );
     openFile->setMenuText( trUtf8( "&Open File" ) );
+    openFile->setStatusTip( trUtf8( "Open File" ) );
     openFile->setAccel( 4194383 );
     Exit = new QAction( this, "Exit" );
     Exit->setText( trUtf8( "Exit" ) );
+    Exit->setStatusTip( trUtf8( "Exit" ) );
     Exit->setAccel( 4194385 );
     coord = new QActionGroup( this, "coord" );
     coord->setText( trUtf8( "Coordinates" ) );
     coord->setMenuText( trUtf8( "&Coord" ) );
+    coord->setStatusTip( trUtf8( "Coordinates" ) );
     coord->setUsesDropDown( FALSE );
     Box = new QAction( coord, "Box" );
     Box->setToggleAction( TRUE );
@@ -1515,6 +1543,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Box->setText( trUtf8( "Box" ) );
     Box->setMenuText( trUtf8( "Box" ) );
     Box->setToolTip( trUtf8( "Box" ) );
+    Box->setStatusTip( trUtf8( "Box" ) );
     Box->setAccel( 65 );
     Frame = new QAction( coord, "Frame" );
     Frame->setToggleAction( TRUE );
@@ -1522,6 +1551,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Frame->setText( trUtf8( "Frame" ) );
     Frame->setMenuText( trUtf8( "&Frame" ) );
     Frame->setToolTip( trUtf8( "Frame" ) );
+    Frame->setStatusTip( trUtf8( "Frame" ) );
     Frame->setAccel( 70 );
     None = new QAction( coord, "None" );
     None->setToggleAction( TRUE );
@@ -1529,16 +1559,20 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     None->setIconSet( QIconSet( image4 ) );
     None->setText( trUtf8( "No Axes" ) );
     None->setToolTip( trUtf8( "No Axes" ) );
+    None->setStatusTip( trUtf8( "No Axes" ) );
     animation = new QAction( this, "animation" );
     animation->setToggleAction( TRUE );
     animation->setIconSet( QIconSet( image5 ) );
     animation->setText( trUtf8( "Animation" ) );
+    animation->setStatusTip( trUtf8( "Animation" ) );
     animation->setAccel( 4194369 );
     dump = new QAction( this, "dump" );
     dump->setIconSet( QIconSet( image6 ) );
     dump->setText( trUtf8( "Dump Pixmap" ) );
+    dump->setStatusTip( trUtf8( "Dump Pixmap" ) );
     plotstyle = new QActionGroup( this, "plotstyle" );
     plotstyle->setText( trUtf8( "Plot Style" ) );
+    plotstyle->setStatusTip( trUtf8( "Plot Style" ) );
     plotstyle->setUsesDropDown( FALSE );
     wireframe = new QAction( plotstyle, "wireframe" );
     wireframe->setToggleAction( TRUE );
@@ -1546,40 +1580,47 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     wireframe->setIconSet( QIconSet( image7 ) );
     wireframe->setText( trUtf8( "Wireframe" ) );
     wireframe->setToolTip( trUtf8( "Wireframe" ) );
+    wireframe->setStatusTip( trUtf8( "Wireframe" ) );
     hiddenline = new QAction( plotstyle, "hiddenline" );
     hiddenline->setToggleAction( TRUE );
     hiddenline->setEnabled( TRUE );
     hiddenline->setIconSet( QIconSet( image8 ) );
     hiddenline->setText( trUtf8( "Hidden Line" ) );
     hiddenline->setToolTip( trUtf8( "Hidden Line (EXPERIMENTAL!)" ) );
+    hiddenline->setStatusTip( trUtf8( "Hidden Line (EXPERIMENTAL!)" ) );
     polygon = new QAction( plotstyle, "polygon" );
     polygon->setToggleAction( TRUE );
     polygon->setEnabled( TRUE );
     polygon->setIconSet( QIconSet( image9 ) );
     polygon->setText( trUtf8( "Polygon only" ) );
     polygon->setToolTip( trUtf8( "Polygon only" ) );
+    polygon->setStatusTip( trUtf8( "Polygon only" ) );
     filledmesh = new QAction( plotstyle, "filledmesh" );
     filledmesh->setToggleAction( TRUE );
     filledmesh->setOn( TRUE );
     filledmesh->setIconSet( QIconSet( image10 ) );
     filledmesh->setText( trUtf8( "Mesh & filled Polygons" ) );
     filledmesh->setToolTip( trUtf8( "Mesh & filled Polygons" ) );
+    filledmesh->setStatusTip( trUtf8( "Mesh & filled Polygons" ) );
     nodata = new QAction( plotstyle, "nodata" );
     nodata->setToggleAction( TRUE );
     nodata->setOn( FALSE );
     nodata->setIconSet( QIconSet( image11 ) );
     nodata->setText( trUtf8( "No Data" ) );
     nodata->setToolTip( trUtf8( "No Data" ) );
+    nodata->setStatusTip( trUtf8( "No Data" ) );
     color = new QActionGroup( this, "color" );
     color->setText( trUtf8( "Color" ) );
     color->setMenuText( trUtf8( "&Color" ) );
     color->setToolTip( trUtf8( "Color" ) );
+    color->setStatusTip( trUtf8( "Color" ) );
     color->setExclusive( FALSE );
     color->setUsesDropDown( FALSE );
     axescolor = new QAction( color, "axescolor" );
     axescolor->setText( trUtf8( "Axes" ) );
     axescolor->setMenuText( trUtf8( "&Axes" ) );
     axescolor->setToolTip( trUtf8( "Axes" ) );
+    axescolor->setStatusTip( trUtf8( "Axes" ) );
     backgroundcolor = new QAction( color, "backgroundcolor" );
     backgroundcolor->setText( trUtf8( "Background" ) );
     backgroundcolor->setMenuText( trUtf8( "&Background" ) );
@@ -1589,58 +1630,71 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     meshcolor->setText( trUtf8( "Mesh" ) );
     meshcolor->setMenuText( trUtf8( "&Mesh" ) );
     meshcolor->setToolTip( trUtf8( "Mesh" ) );
+    meshcolor->setStatusTip( trUtf8( "Mesh" ) );
     numbercolor = new QAction( color, "numbercolor" );
     numbercolor->setText( trUtf8( "Numbers" ) );
     numbercolor->setMenuText( trUtf8( "&Numbers" ) );
     numbercolor->setToolTip( trUtf8( "Numbers" ) );
+    numbercolor->setStatusTip( trUtf8( "Numbers" ) );
     labelcolor = new QAction( color, "labelcolor" );
     labelcolor->setText( trUtf8( "Label" ) );
     labelcolor->setMenuText( trUtf8( "&Label" ) );
     labelcolor->setToolTip( trUtf8( "Label" ) );
+    labelcolor->setStatusTip( trUtf8( "Label" ) );
     titlecolor = new QAction( color, "titlecolor" );
     titlecolor->setText( trUtf8( "Caption" ) );
     titlecolor->setToolTip( trUtf8( "Caption" ) );
+    titlecolor->setStatusTip( trUtf8( "Caption" ) );
     resetcolor = new QAction( color, "resetcolor" );
     resetcolor->setText( trUtf8( "Reset" ) );
     resetcolor->setMenuText( trUtf8( "&Reset" ) );
     resetcolor->setToolTip( trUtf8( "Reset" ) );
+    resetcolor->setStatusTip( trUtf8( "Reset" ) );
     font = new QActionGroup( this, "font" );
     font->setText( trUtf8( "Fonts" ) );
     font->setMenuText( trUtf8( "&Fonts" ) );
+    font->setStatusTip( trUtf8( "Fonts" ) );
     font->setExclusive( FALSE );
     font->setUsesDropDown( FALSE );
     numberfont = new QAction( font, "numberfont" );
     numberfont->setText( trUtf8( "Scale numbering" ) );
     numberfont->setMenuText( trUtf8( "&Scale numbering" ) );
     numberfont->setToolTip( trUtf8( "Scale numbering" ) );
+    numberfont->setStatusTip( trUtf8( "Scale numbering" ) );
     labelfont = new QAction( font, "labelfont" );
     labelfont->setText( trUtf8( "Axis label" ) );
     labelfont->setMenuText( trUtf8( "&Axis label" ) );
     labelfont->setToolTip( trUtf8( "Axis label" ) );
+    labelfont->setStatusTip( trUtf8( "Axis label" ) );
     titlefont = new QAction( font, "titlefont" );
     titlefont->setText( trUtf8( "Caption" ) );
     titlefont->setMenuText( trUtf8( "&Caption" ) );
     titlefont->setToolTip( trUtf8( "Caption" ) );
+    titlefont->setStatusTip( trUtf8( "Caption" ) );
     resetfont = new QAction( font, "resetfont" );
     resetfont->setText( trUtf8( "Reset" ) );
     resetfont->setMenuText( trUtf8( "&Reset" ) );
     resetfont->setToolTip( trUtf8( "Reset" ) );
+    resetfont->setStatusTip( trUtf8( "Reset" ) );
     floorstyle = new QActionGroup( this, "floorstyle" );
     floorstyle->setText( trUtf8( "Floor Style" ) );
+    floorstyle->setStatusTip( trUtf8( "Floor Style" ) );
     floorstyle->setUsesDropDown( FALSE );
     floordata = new QAction( floorstyle, "floordata" );
     floordata->setToggleAction( TRUE );
     floordata->setIconSet( QIconSet( image12 ) );
     floordata->setText( trUtf8( "Floor Data Projection" ) );
     floordata->setToolTip( trUtf8( "Floor Data Projection" ) );
+    floordata->setStatusTip( trUtf8( "Floor Data Projection" ) );
     flooriso = new QAction( floorstyle, "flooriso" );
     flooriso->setToggleAction( TRUE );
     flooriso->setIconSet( QIconSet( image13 ) );
     flooriso->setText( trUtf8( "Floor Isolines" ) );
     flooriso->setToolTip( trUtf8( "Floor Isolines" ) );
+    flooriso->setStatusTip( trUtf8( "Floor Isolines" ) );
     floormesh = new QAction( floorstyle, "floormesh" );
     floormesh->setToggleAction( TRUE );
-    floormesh->setEnabled( FALSE );
+    floormesh->setEnabled( TRUE );
     floormesh->setIconSet( QIconSet( image14 ) );
     floormesh->setText( trUtf8( "Floor Mesh" ) );
     floormesh->setToolTip( trUtf8( "Floor Mesh" ) );
@@ -1651,6 +1705,10 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     floornone->setIconSet( QIconSet( image15 ) );
     floornone->setText( trUtf8( "Empty Floor" ) );
     floornone->setToolTip( trUtf8( "Empty Floor" ) );
+    floornone->setStatusTip( trUtf8( "Empty Floor" ) );
+    openMeshFile = new QAction( this, "openMeshFile" );
+    openMeshFile->setIconSet( QIconSet( image16 ) );
+    openMeshFile->setText( trUtf8( "Open FEM files" ) );
 
 
     // toolbars
@@ -1659,6 +1717,8 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Toolbar->setCursor( QCursor( 0 ) );
     Toolbar->setLabel( trUtf8( "Toolbar" ) );
     openFile->addTo( Toolbar );
+    openMeshFile->addTo( Toolbar );
+    dump->addTo( Toolbar );
 
     functionCB = new QComboBox( FALSE, Toolbar, "functionCB" );
     functionCB->setMinimumSize( QSize( 150, 0 ) );
@@ -1684,8 +1744,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     flooriso->addTo( Toolbar );
     floormesh->addTo( Toolbar );
     floornone->addTo( Toolbar );
-    Toolbar->addSeparator();
-    dump->addTo( Toolbar );
 
 
     // menubar
@@ -1693,6 +1751,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
 
     file = new QPopupMenu( this ); 
     openFile->addTo( file );
+    openMeshFile->addTo( file );
     animation->addTo( file );
     Exit->addTo( file );
     menubar->insertItem( trUtf8( "&File" ), file );

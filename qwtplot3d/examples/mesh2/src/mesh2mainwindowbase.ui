@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>906</width>
+            <width>848</width>
             <height>585</height>
         </rect>
     </property>
@@ -206,7 +206,7 @@
                                 <number>5</number>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Set data resolution</string>
+                                <string>Set data resolution (no effect for nonrectangular data)</string>
                             </property>
                         </widget>
                     </vbox>
@@ -357,19 +357,22 @@
             <property name="frameShadow">
                 <enum>Sunken</enum>
             </property>
-            <widget class="QwtPlot3D">
+            <grid>
                 <property name="name">
-                    <cstring>dataWidget</cstring>
+                    <cstring>unnamed</cstring>
                 </property>
-                <property name="geometry">
-                    <rect>
-                        <x>11</x>
-                        <y>11</y>
-                        <width>782</width>
-                        <height>404</height>
-                    </rect>
+                <property name="margin">
+                    <number>11</number>
                 </property>
-            </widget>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QwtPlot3D" row="0" column="0">
+                    <property name="name">
+                        <cstring>dataWidget</cstring>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
@@ -379,6 +382,7 @@
     </property>
     <item text="&amp;File" name="file">
         <action name="openFile"/>
+        <action name="openMeshFile"/>
         <action name="animation"/>
         <action name="Exit"/>
     </item>
@@ -410,6 +414,8 @@
             <string>Toolbar</string>
         </property>
         <action name="openFile"/>
+        <action name="openMeshFile"/>
+        <action name="dump"/>
         <widget class="QComboBox">
             <property name="name">
                 <cstring>functionCB</cstring>
@@ -465,8 +471,6 @@
         <action name="flooriso"/>
         <action name="floormesh"/>
         <action name="floornone"/>
-        <separator/>
-        <action name="dump"/>
     </toolbar>
 </toolbars>
 <customwidgets>
@@ -501,6 +505,9 @@
         <property name="menuText">
             <string>&amp;Open File</string>
         </property>
+        <property name="statusTip">
+            <string>Open File</string>
+        </property>
         <property name="accel">
             <number>4194383</number>
         </property>
@@ -510,6 +517,9 @@
             <cstring>Exit</cstring>
         </property>
         <property name="text">
+            <string>Exit</string>
+        </property>
+        <property name="statusTip">
             <string>Exit</string>
         </property>
         <property name="accel">
@@ -525,6 +535,9 @@
         </property>
         <property name="menuText">
             <string>&amp;Coord</string>
+        </property>
+        <property name="statusTip">
+            <string>Coordinates</string>
         </property>
         <property name="usesDropDown">
             <bool>false</bool>
@@ -546,6 +559,9 @@
                 <string>Box</string>
             </property>
             <property name="toolTip">
+                <string>Box</string>
+            </property>
+            <property name="statusTip">
                 <string>Box</string>
             </property>
             <property name="accel">
@@ -571,6 +587,9 @@
             <property name="toolTip">
                 <string>Frame</string>
             </property>
+            <property name="statusTip">
+                <string>Frame</string>
+            </property>
             <property name="accel">
                 <number>70</number>
             </property>
@@ -594,6 +613,9 @@
             <property name="toolTip">
                 <string>No Axes</string>
             </property>
+            <property name="statusTip">
+                <string>No Axes</string>
+            </property>
         </action>
     </actiongroup>
     <action>
@@ -607,6 +629,9 @@
             <iconset>image5</iconset>
         </property>
         <property name="text">
+            <string>Animation</string>
+        </property>
+        <property name="statusTip">
             <string>Animation</string>
         </property>
         <property name="accel">
@@ -623,12 +648,18 @@
         <property name="text">
             <string>Dump Pixmap</string>
         </property>
+        <property name="statusTip">
+            <string>Dump Pixmap</string>
+        </property>
     </action>
     <actiongroup>
         <property name="name">
             <cstring>plotstyle</cstring>
         </property>
         <property name="text">
+            <string>Plot Style</string>
+        </property>
+        <property name="statusTip">
             <string>Plot Style</string>
         </property>
         <property name="usesDropDown">
@@ -653,6 +684,9 @@
             <property name="toolTip">
                 <string>Wireframe</string>
             </property>
+            <property name="statusTip">
+                <string>Wireframe</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -671,6 +705,9 @@
                 <string>Hidden Line</string>
             </property>
             <property name="toolTip">
+                <string>Hidden Line (EXPERIMENTAL!)</string>
+            </property>
+            <property name="statusTip">
                 <string>Hidden Line (EXPERIMENTAL!)</string>
             </property>
         </action>
@@ -693,6 +730,9 @@
             <property name="toolTip">
                 <string>Polygon only</string>
             </property>
+            <property name="statusTip">
+                <string>Polygon only</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -711,6 +751,9 @@
                 <string>Mesh &amp; filled Polygons</string>
             </property>
             <property name="toolTip">
+                <string>Mesh &amp; filled Polygons</string>
+            </property>
+            <property name="statusTip">
                 <string>Mesh &amp; filled Polygons</string>
             </property>
         </action>
@@ -733,6 +776,9 @@
             <property name="toolTip">
                 <string>No Data</string>
             </property>
+            <property name="statusTip">
+                <string>No Data</string>
+            </property>
         </action>
     </actiongroup>
     <actiongroup>
@@ -746,6 +792,9 @@
             <string>&amp;Color</string>
         </property>
         <property name="toolTip">
+            <string>Color</string>
+        </property>
+        <property name="statusTip">
             <string>Color</string>
         </property>
         <property name="exclusive">
@@ -765,6 +814,9 @@
                 <string>&amp;Axes</string>
             </property>
             <property name="toolTip">
+                <string>Axes</string>
+            </property>
+            <property name="statusTip">
                 <string>Axes</string>
             </property>
         </action>
@@ -798,6 +850,9 @@
             <property name="toolTip">
                 <string>Mesh</string>
             </property>
+            <property name="statusTip">
+                <string>Mesh</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -810,6 +865,9 @@
                 <string>&amp;Numbers</string>
             </property>
             <property name="toolTip">
+                <string>Numbers</string>
+            </property>
+            <property name="statusTip">
                 <string>Numbers</string>
             </property>
         </action>
@@ -826,6 +884,9 @@
             <property name="toolTip">
                 <string>Label</string>
             </property>
+            <property name="statusTip">
+                <string>Label</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -835,6 +896,9 @@
                 <string>Caption</string>
             </property>
             <property name="toolTip">
+                <string>Caption</string>
+            </property>
+            <property name="statusTip">
                 <string>Caption</string>
             </property>
         </action>
@@ -851,6 +915,9 @@
             <property name="toolTip">
                 <string>Reset</string>
             </property>
+            <property name="statusTip">
+                <string>Reset</string>
+            </property>
         </action>
     </actiongroup>
     <actiongroup>
@@ -862,6 +929,9 @@
         </property>
         <property name="menuText">
             <string>&amp;Fonts</string>
+        </property>
+        <property name="statusTip">
+            <string>Fonts</string>
         </property>
         <property name="exclusive">
             <bool>false</bool>
@@ -882,6 +952,9 @@
             <property name="toolTip">
                 <string>Scale numbering</string>
             </property>
+            <property name="statusTip">
+                <string>Scale numbering</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -894,6 +967,9 @@
                 <string>&amp;Axis label</string>
             </property>
             <property name="toolTip">
+                <string>Axis label</string>
+            </property>
+            <property name="statusTip">
                 <string>Axis label</string>
             </property>
         </action>
@@ -910,6 +986,9 @@
             <property name="toolTip">
                 <string>Caption</string>
             </property>
+            <property name="statusTip">
+                <string>Caption</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -924,6 +1003,9 @@
             <property name="toolTip">
                 <string>Reset</string>
             </property>
+            <property name="statusTip">
+                <string>Reset</string>
+            </property>
         </action>
     </actiongroup>
     <actiongroup>
@@ -931,6 +1013,9 @@
             <cstring>floorstyle</cstring>
         </property>
         <property name="text">
+            <string>Floor Style</string>
+        </property>
+        <property name="statusTip">
             <string>Floor Style</string>
         </property>
         <property name="usesDropDown">
@@ -952,6 +1037,9 @@
             <property name="toolTip">
                 <string>Floor Data Projection</string>
             </property>
+            <property name="statusTip">
+                <string>Floor Data Projection</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -969,6 +1057,9 @@
             <property name="toolTip">
                 <string>Floor Isolines</string>
             </property>
+            <property name="statusTip">
+                <string>Floor Isolines</string>
+            </property>
         </action>
         <action>
             <property name="name">
@@ -978,7 +1069,7 @@
                 <bool>true</bool>
             </property>
             <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
             </property>
             <property name="iconSet">
                 <iconset>image14</iconset>
@@ -1012,8 +1103,22 @@
             <property name="toolTip">
                 <string>Empty Floor</string>
             </property>
+            <property name="statusTip">
+                <string>Empty Floor</string>
+            </property>
         </action>
     </actiongroup>
+    <action>
+        <property name="name">
+            <cstring>openMeshFile</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>image16</iconset>
+        </property>
+        <property name="text">
+            <string>Open FEM files</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1063,6 +1168,9 @@
     </image>
     <image name="image15">
         <data format="XPM.GZ" length="599">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325400210543251d2e253d856405bffcbc54105b19c856360003b0143630282494d1004202553d5c024d1ca78432cc0e4c0dd8259461aec2a201ab8432cc1fd8344024d03d87ec730c4017895a6b2e0001486945</data>
+    </image>
+    <image name="image16">
+        <data format="XPM.GZ" length="394">789c5d8ecb0ac2301045f7f98aa1d915e98344bb103f417129888bc9b4411755d0ba10f1dfede45153ef9064eee166923287c37e0b79291e030e17023ae31df2f6d9f7afe369f31659bd825ac1b8650b911540b0bb5d3beedbb197956abaaa628bce6a2eb6926dad352d9d356c7567ad0f135bab6c63951b1b25a5e42365d22d396321eb1922a6d7dd5f0c19f42ae23c24132a611199bf1cfe34cd6ba330e65214e6cd90677314d824ffee672dbe92b5620d</data>
     </image>
 </images>
 <connections>
