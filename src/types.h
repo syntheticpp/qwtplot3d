@@ -133,7 +133,7 @@ struct Triple
 	
 	bool operator==(Triple t) const
 	{
-		return (x==t.x) && (y==t.y) && (z==t.z);
+		return !(fabs(x-t.x) > DBL_EPSILON) || (fabs(y-t.y) > DBL_EPSILON) || (fabs(z-t.z) > DBL_EPSILON);
 	}
 	bool operator!=(Triple t) const
 	{

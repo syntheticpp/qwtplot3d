@@ -160,7 +160,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 \par Changes:
 
 Apr 17 2003: 
-- Autoswitching for axes labeling (not yet perfect, but working for the most relevant cases - try the animation in Mesh2)
+- Autoswitching (try Mesh2
   CoordinateSystem::setAutoDecoration()
   
 Apr 14 2003: 

@@ -610,7 +610,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	}
 
 	createColorLegend(StandardColor(dataWidget->data()).colVector());
-	setStandardView();
 
 	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 	{
@@ -618,6 +617,8 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		dataWidget->coordinates()->axes[i].setMinors(5);
 	}
 	
+	pickCoordSystem(activeCoordSystem);
+
 	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
 	dataWidget->coordinates()->axes[X2].setLabelString(QChar (0x3b4) + QString("-axis"));
 	dataWidget->coordinates()->axes[X3].setLabelString(QChar (0x3b4) + QString("-axis"));
@@ -633,7 +634,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
 	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
 
-	pickCoordSystem(activeCoordSystem);
+	setStandardView();
 	dataWidget->showColorLegend(legend_);
 }
 

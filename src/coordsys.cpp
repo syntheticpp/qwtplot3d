@@ -136,8 +136,12 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 	vector<Tuple> src(2*axes.size());
 
 	unsigned i;
+	// collect axes viewport coordinates and initialize
 	for (i=0; i!=axes.size(); ++i)
 	{
+		if (style() != NOCOORD)
+			attach(&axes[i]);
+		
 		beg[i] = World2ViewPort(axes[i].begin());
 		end[i] = World2ViewPort(axes[i].end());
 		src[i] = Tuple(beg[i].x, beg[i].y);
@@ -155,27 +159,36 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 	int rem_y = -1;
 	int rem_z = -1;
 
+
+	bool left;
+
+	int choice_x = -1; 
+	int	choice_y = -1;
+	int choice_z = -1;
+
+  int other_x = -1;
+  int other_y = -1;
+  int other_z = -1;
+
+	//traverse convex hull
 	for (unsigned k=0; k!=idx.size(); ++k)
 	{
 		Triple one, two;
 		
-		if (idx[k] >= axes.size()) // end point
+		if (idx[k] >= axes.size()) // is end point
 			one = end[idx[k]-axes.size()];
-		else
+		else                       // is begin point  
 			one = beg[idx[k]];
 
-		unsigned int next = idx[(k+1) % idx.size()];
+		unsigned int next = idx[(k+1) % idx.size()];  // next point in cv (considered as ring buffer of points)
 
-		if (next >= axes.size()) // end point
+		if (next >= axes.size()) 
 			two = end[next-axes.size()];
 		else
 			two = beg[next];
-
-		int choice, other;
-		bool left;
-
+		
 		for (i=0; i!=axes.size(); ++i)
-		{
+		{			
 			if (
 					(one == beg[i] && two == end[i])
 					||
@@ -188,13 +201,14 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 					{
 						// untere der beiden x Achsen
 						double y = min(min(end[rem_x].y,end[i].y),min(beg[rem_x].y,beg[i].y));
-						choice = (y == beg[i].y || y == end[i].y) ? i : rem_x;
+						choice_x = (y == beg[i].y || y == end[i].y) ? i : rem_x;
 												
-						other = (choice == i) ? rem_x : i;
-						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
+						other_x = (choice_x == i) ? rem_x : i;
+						left = (beg[choice_x].x < beg[other_x].x || end[choice_x].x < end[other_x].x) 
 							? true
 							: false;
-						autoDecorateExposedAxis(axes[choice], left);
+						
+						autoDecorateExposedAxis(axes[choice_x], left);
 
 						rem_x = -1;
 					}
@@ -209,13 +223,13 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 					{
 						// untere der beiden y Achsen
 						double y = min(min(end[rem_y].y,end[i].y),min(beg[rem_y].y,beg[i].y));
-						choice = (y == beg[i].y || y == end[i].y) ? i : rem_y;
+						choice_y = (y == beg[i].y || y == end[i].y) ? i : rem_y;
 						
-						other = (choice == i) ? rem_y : i;
-						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
+						other_y = (choice_y == i) ? rem_y : i;
+						left = (beg[choice_y].x < beg[other_y].x || end[choice_y].x < end[other_y].x) 
 							? true
 							: false;
-						autoDecorateExposedAxis(axes[choice], left);
+						autoDecorateExposedAxis(axes[choice_y], left);
 
 						rem_y = -1;
 					}
@@ -230,15 +244,12 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 					{
 						// hintere der beiden z Achsen
 						double z = max(max(end[rem_z].z,end[i].z),max(beg[rem_z].z,beg[i].z));
-						choice = (z == beg[i].z || z == end[i].z) ? i : rem_z;
+						choice_z = (z == beg[i].z || z == end[i].z) ? i : rem_z;
 
-						other = (choice == i) ? rem_z : i;
-						left = (beg[choice].x < beg[other].x || end[choice].x < end[other].x) 
-							? true
-							: false;
-						autoDecorateExposedAxis(axes[choice], left);
-
+						other_z = (choice_z == i) ? rem_z : i;
+												
 						rem_z = -1;
+
 					}
 					else
 					{
@@ -246,8 +257,48 @@ CoordinateSystem::chooseAxesForAutoDecoration()
 					}
 				}
 			}
+		} // for axes
+	} // for idx
+
+	// fit z axis in - the onthewall axis if the decorated axes build a continous line, the opposite else 
+	if (choice_x>=0 && choice_y>=0 && choice_z>=0)
+	{
+		left = (beg[choice_z].x < beg[other_z].x || end[choice_z].x < end[other_z].x) 
+			? true
+			: false;
+		
+
+		if (
+					axes[choice_z].begin() == axes[choice_x].begin() 
+			||	axes[choice_z].begin() == axes[choice_x].end()
+			||	axes[choice_z].begin() == axes[choice_y].begin() 
+			||	axes[choice_z].begin() == axes[choice_y].end()
+			||	axes[choice_z].end() == axes[choice_x].begin() 
+			||	axes[choice_z].end() == axes[choice_x].end()
+			||	axes[choice_z].end() == axes[choice_y].begin() 
+			||	axes[choice_z].end() == axes[choice_y].end()
+			
+			)
+		{
+			autoDecorateExposedAxis(axes[choice_z], left);
+		}
+
+		else
+		{
+			autoDecorateExposedAxis(axes[other_z], !left);
+			choice_z = other_z; // for FRAME
 		}
 	}
+	
+	if (style() == FRAME)
+	{
+		for (i=0; i!=axes.size(); ++i)
+		{
+			if (i!=choice_x && i!=choice_y && i!=choice_z)
+				detach(&axes[i]);
+		}
+	}
+
 }
 
 
@@ -461,9 +512,9 @@ CoordinateSystem::setStyle(COORDSTYLE s)
 			{
 				for (unsigned i=0; i!=axes.size(); ++i)
 					detach (&axes[i]);
-				attach(&axes[X1]);
-				attach(&axes[Y1]);
-				attach(&axes[Z1]);
+//				attach(&axes[X1]);
+//				attach(&axes[Y1]);
+//				attach(&axes[Z1]);
 			}
 			break;
 		default:
