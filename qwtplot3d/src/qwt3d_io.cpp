@@ -11,7 +11,7 @@ static Qwt3D::IO qwt3diodummy;
 
 
 /*! 
-  Registers a new Function for data input.\n
+  Registers a new IO::Function for data input.\n
   Every call overwrites a formerly registered handler for the same format string
   (case sensitive).
 */
@@ -31,7 +31,7 @@ bool IO::defineInputHandler(QString const& format, IO::Functor const& func)
 }
 
 /*! 
-  Registers a new Function for data output.  
+  Registers a new IO::Function for data output.  
   Every call overwrites a formerly registered handler for the same format string
   (case sensitive).
  */
@@ -51,7 +51,7 @@ bool IO::defineOutputHandler(QString const& format, IO::Functor const& func)
 }
 
 /*!
-  Returns a pointer to a read Function if such a function has been registered by 
+  Returns a pointer to a reading IO::Function if such a function has been registered by 
   defineInputHandler and 0 else. 
 */
 bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
@@ -61,11 +61,11 @@ bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
   if (it == rlist().end())
     return false;
 
-  return (*it->iofunc)(plot, fname, format);
+  return (*it->iofunc)(plot, fname);
 }
 
 /*!
-  Returns a pointer to a write Function if such a function has been registered by 
+  Returns a pointer to a writing IO::Function if such a function has been registered by 
   defineOutputHandler and 0 else. 
 */
 bool IO::save(Plot3D* plot, QString const& fname, QString const& format)
@@ -75,7 +75,7 @@ bool IO::save(Plot3D* plot, QString const& fname, QString const& format)
   if (it == wlist().end())
     return false;
 
-  return (*it->iofunc)(plot, fname, format);
+  return (*it->iofunc)(plot, fname);
 }
 
 /*!
@@ -128,13 +128,22 @@ IO::Functor* IO::outputHandler(QString const& format)
   return it->iofunc;
 }
 
+bool QtPixmap::operator()(Plot3D* plot, QString const& fname)
+{
+  QImage im = plot->grabFrameBuffer(true);
+  return im.save(fname, (const char*)fmt_.local8Bit());
+}
+
+
 void IO::setupHandler()
 {
   QStringList list = QImage::outputFormatList();
   QStringList::Iterator it = list.begin();
+  QtPixmap qtpix;
   while( it != list.end() ) 
   {
-    defineOutputHandler( *it, QtPixmapWrite );
+    qtpix.fmt_ = *it;
+    defineOutputHandler(*it, qtpix);
     ++it;
   }
   GL2PS vecfunc; 
@@ -156,12 +165,6 @@ void IO::setupHandler()
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());
-}
-
-bool IO::QtPixmapWrite(Plot3D* plot, QString const& fname, QString const& format)
-{
-  QImage im = plot->grabFrameBuffer(true);
-  return im.save(fname, (const char*)format.local8Bit());
 }
 
 /*!

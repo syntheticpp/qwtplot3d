@@ -25,7 +25,7 @@ public:
     The function type that can be processed by the define... members.
     An extension is the IO::Functor.
   */
-  typedef bool (*Function)(Plot3D*, QString const& fname, QString const&);
+  typedef bool (*Function)(Plot3D*, QString const& fname);
   
   
   /*! 
@@ -36,16 +36,18 @@ public:
   {
   public:
     virtual ~Functor() {}
-    /*! Must create object of your own derived class with new and 
-    return a pointer to it. 
+    /*! Must create object of your own derived class with \c new and 
+    return a pointer to it. Like operator() the predefined Functors 
+    hide this function from the user, still allowing IO access 
+    (friend declaration)
     */
     virtual Functor* clone() const = 0;
     /*! The workhorse of the user-defined implementation. Eventually, the 
     framework will call this operator.
     */
-    virtual bool operator()(Plot3D* plot, QString const& fname, QString const&) = 0;
+    virtual bool operator()(Plot3D* plot, QString const& fname) = 0;
   };
-
+  
   IO() {setupHandler();}
   static bool defineInputHandler( QString const& format, Function func);
   static bool defineOutputHandler( QString const& format, Function func);
@@ -68,16 +70,16 @@ private:
     //! Creates a Wrapper object from a function pointer
     explicit Wrapper(Function h) : hdl(h) {}
     //! Returns a pointer to the wrapped function
-    bool operator()(Plot3D* plot, QString const& fname, QString const& format)
+    bool operator()(Plot3D* plot, QString const& fname)
     {
       return (hdl) 
-        ?(*hdl)(plot, fname, format)
+        ?(*hdl)(plot, fname)
         :false;
     }
   private: 
     Function hdl;
   };  
-
+  
   struct Entry
   {
     Entry() : iofunc(0) 
@@ -176,8 +178,17 @@ private:
     return rl;
   }
 
-  static bool QtPixmapWrite(Plot3D* plot, QString const& fname, QString const& format);
   void setupHandler();
+};
+
+//! Provides Qt's Pixmap output facilities
+class QtPixmap : public IO::Functor
+{
+friend class IO;
+private:
+  IO::Functor* clone() const {return new QtPixmap(*this);}
+  bool operator()(Plot3D* plot, QString const& fname);
+  QString fmt_;
 };
 
 } //ns
