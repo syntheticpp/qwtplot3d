@@ -3,21 +3,32 @@
  * GL2PS, an OpenGL to PostScript Printing Library
  * Copyright (C) 1999-2003 Christophe Geuzaine <geuz@geuz.org>
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of either:
+ *
+ * a) the GNU Library General Public License as published by the Free
+ * Software Foundation, either version 2 of the License, or (at your
+ * option) any later version; or
+ *
+ * b) the GL2PS License as published by Christophe Geuzaine, either
  * version 2 of the License, or (at your option) any later version.
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See either
+ * the GNU Library General Public License or the GL2PS License for
+ * more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * License along with this library in the file named "COPYING.LGPL";
+ * if not, write to the Free Software Foundation, Inc., 675 Mass Ave,
+ * Cambridge, MA 02139, USA.
  *
- * Contributor(s):
+ * You should have received a copy of the GL2PS License with this
+ * library in the file named "COPYING.GL2PS"; if not, I will be glad
+ * to provide one.
+ *
+ * Contributors:
  *   Rouben Rostamian <rostamian@umbc.edu>
  *   Guy Barrand <barrand@lal.in2p3.fr>
  *
@@ -26,7 +37,7 @@
 
 /*
   To compile on Linux:
-  gcc -O3 gl2psTest.c gl2ps.c -lglut -lGL -L/usr/X11R6/lib -lX11 -lXi -lXmu -lm
+  gcc -O3 gl2psTest.c gl2ps.c -lglut -lGL -lGLU -L/usr/X11R6/lib -lX11 -lXi -lXmu -lm
 
   To compile on MacOSX:
   gcc -O3 gl2psTest.c gl2ps.c -framework OpenGL -framework GLUT -framework Cocoa
@@ -497,6 +508,9 @@ void keyboard(unsigned char key, int x, int y){
   case 's':
     opt = GL2PS_DRAW_BACKGROUND;
     writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimple", ext);
+
+    opt = GL2PS_DRAW_BACKGROUND | GL2PS_COMPRESS;
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCompressed", ext);
 
     opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
     writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled", ext);

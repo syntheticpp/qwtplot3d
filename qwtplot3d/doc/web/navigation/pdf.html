@@ -5,6 +5,7 @@
  content="text/html; charset=ISO-8859-1">
   <title>PDF</title>
   <meta name="author" content="Michael Bieber">
+  <link rel="stylesheet" type="text/css" href="general.css">
 </head>
 <body>
 <h2 style="margin-left: 40px;"><br>
@@ -12,10 +13,10 @@
 <h2 style="margin-left: 40px; text-align: center;">Vector Output<br>
 <br>
 </h2>
-<div style="margin-left: 40px;">Beginning with version 0.1.4 qwtplot3d
+<div style="margin-left: 40px;">Beginning with version 0.2.0 qwtplot3d
 supports PostScript, Encapsulated PostScript and PDF output by
-using&nbsp; <a href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>
-(<a href="#gl2ps">but note this ...</a>)&nbsp; Pixmap
+using&nbsp; <a href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>.&nbsp;
+Pixmap
 output exists in generic form, seamless provided by Qt. The
 following comparison table shows (in some way arbitrary and
 oversimplified) the pros and cons for various approachs:<br>
@@ -259,17 +260,6 @@ widths etc. .<br>
 <br>
 ... to finish.<br>
 <br>
-</div>
-<br>
-<div style="margin-left: 40px;"><small><a name="gl2ps"></a>You will not
-find native PDF output&nbsp; included
-in also recent&nbsp; versions of gl2ps. A preliminary version with PDF
-support
-is part of
-QwtPlot3D. An official version of gl2ps containing the new features is
-imminent and will be relased around this version of QwtPlot3D. Due to
-the self-contained nature of the code I will </small><small>furthermore</small><small>
-maintain a local copy of gl2ps inside the QwtPlot3D source tree.</small><br>
 </div>
 </body>
 </html>
