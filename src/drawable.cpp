@@ -33,7 +33,7 @@ Drawable::restoreGLState()
 	Enable(GL_LINE_SMOOTH, ls);
 	Enable(GL_POLYGON_SMOOTH, pols);
 	
-	glLineWidth(lw);
+	setDeviceLineWidth(lw);
 	glBlendFunc(blsrc, bldst);
 	glColor4dv(col);
 

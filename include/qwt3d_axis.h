@@ -58,7 +58,7 @@ public:
 	int majors() const { return majorintervals_; }
 	int minors() const { return minorintervals_; }
 
-	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
+	void setLineWidth(double val, double majfac = 1, double minfac = 0.5);
 
 	void setLimits(double start, double stop) {start_=start; stop_=stop;}
 	void limits(double& start, double& stop) const {start = start_; stop = stop_;}

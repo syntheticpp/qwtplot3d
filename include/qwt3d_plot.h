@@ -60,7 +60,6 @@ public:
 		void setMeshColor(Qwt3D::RGBA rgba);
 		Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setDataColor(Color* col);
-		void setColorAlpha(double d);
 		virtual bool hasData() const = 0;
 		
 		virtual void calculateHull() = 0;

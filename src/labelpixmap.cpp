@@ -64,7 +64,7 @@ LabelPixmap::setPosition(Triple pos, ANCHOR a)
 void
 LabelPixmap::setRelPosition(Tuple rpos, ANCHOR a)
 {
-	double ot = 0;
+	double ot = 0.99;
 
 	getMatrices(modelMatrix, projMatrix, viewport);
 	beg_ = relativePosition(Triple(rpos.x, rpos.y, ot));
@@ -171,7 +171,11 @@ LabelPixmap::draw()
 	
 	convert2screen();
 	glRasterPos3d(beg_.x, beg_.y, beg_.z);
-
+ 
+#ifdef QWT3D_GL2PS	
+	gl2psText(text_.latin1(), "Courier", font_.pointSize()); //GL2PS
+#endif
+	
 	int w = tex_.width();
 	int h = tex_.height();
 

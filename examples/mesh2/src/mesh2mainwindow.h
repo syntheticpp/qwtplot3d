@@ -20,6 +20,7 @@ public slots:
 	void openMesh();
 
 	void createFunction(QString const& name);
+	void setFileType(QString const& name);
 
 	void pickCoordSystem( QAction* );
 	void pickPlotStyle( QAction* );
@@ -72,5 +73,7 @@ private:
 
 	QFileDialog* datacolordlg_;
 	ColorMapPreview* colormappv_; 
+
+	QString filetype_;
 };
 

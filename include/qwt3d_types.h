@@ -23,6 +23,7 @@
 
 #include "qwt3d_helper.h"
 #include "qwt3d_openglhelper.h"
+#include "qwt3d_gl2ps.h"
 
 //! Common namespace for all QwtPlot3D classes
 namespace Qwt3D
