@@ -38,8 +38,8 @@ public:
   {
   public:
     virtual ~Functor() {}
-    /*! Must create object of your own derived class with \c new and 
-    return a pointer to it. Like operator() the predefined Functors 
+    /*! Must clone the content of *this for an object of a derived class with 
+    \c new and return the pointer. Like operator() the predefined Functors 
     hide this function from the user, still allowing IO access 
     (friend declaration)
     */
@@ -98,8 +98,8 @@ private:
       if (this==&e)
         return;
 
-      this->fmt = e.fmt;
-      this->iofunc = e.iofunc->clone();
+      fmt = e.fmt;
+      iofunc = e.iofunc->clone();
     }
     
     void operator=(Entry const& e)
@@ -107,8 +107,9 @@ private:
       if (this==&e)
         return;
 
-      this->fmt = e.fmt;
-      this->iofunc = e.iofunc->clone();
+      delete iofunc;
+      fmt = e.fmt;
+      iofunc = e.iofunc->clone();
     }
 
     Entry(QString const& s, Functor const& f)
@@ -184,11 +185,11 @@ private:
 };
 
 //! Provides Qt's Pixmap output facilities
-class QtWriter : public IO::Functor
+class PixmapWriter : public IO::Functor
 {
 friend class IO;
 private:
-  IO::Functor* clone() const {return new QtWriter(*this);}
+  IO::Functor* clone() const {return new PixmapWriter(*this);}
   bool operator()(Plot3D* plot, QString const& fname);
   QString fmt_;
 };

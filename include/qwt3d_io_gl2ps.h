@@ -13,7 +13,7 @@ namespace Qwt3D
 /*!
 
  */
-class QWT3D_EXPORT GL2PS : public IO::Functor
+class QWT3D_EXPORT VectorWriter : public IO::Functor
 {
 friend class IO;
 
@@ -21,16 +21,16 @@ public:
   //! The possible output formats for the text parts of the scene
   enum TEXTMODE
   {
-    PIXMAP, //!< All text will be converted to pixmaps
+    PIXEL, //!< All text will be converted to pixmaps
     NATIVE, //!< Text output in the native output format
-    TEX //!< Text output in additional tex-file as an overlay
+    TEX //!< Text output in additional LaTeX file as an overlay
   };
   //! The possible behaviour for landscape settings 
   enum LANDSCAPEMODE
   {
     ON,  //!< Landscape mode on
     OFF, //!< Landscape mode off
-    AUTO //!< The output orientation depends on the plots aspect ratio (default)
+    AUTO //!< The output orientation depends on the plot widgets aspect ratio (default)
   };
   
   //! The possible sorting types which are translated in gl2ps types  
@@ -41,7 +41,7 @@ public:
     BSPSORT //!< BSP SORT (best and slow!)
   };
   
-  GL2PS(); 
+  VectorWriter(); 
 
   void setLandscape(LANDSCAPEMODE val) {landscape_ = val;} //!< Sets landscape mode.
   LANDSCAPEMODE landscape() const {return landscape_;} //!< Returns the current landscape mode
@@ -52,7 +52,7 @@ public:
   
   //! Sets one of the SORTMODE sorting modes.
   void setSortMode(SORTMODE val) {sortmode_ = val;}
-  int sortmode() const {return sortmode_;} //!< Returns gl2ps sorting type.
+  SORTMODE sortMode() const {return sortmode_;} //!< Returns gl2ps sorting type.
   //! Turns compressed output on or off (no effect if zlib support is not available)
   void setCompressed(bool val);
   //! Returns compression mode (always false if zlib support has not been set) 
@@ -67,7 +67,7 @@ private:
   GLint gl2ps_format_;
   bool formaterror_;
   bool compressed_;
-  int sortmode_;
+  SORTMODE sortmode_;
   LANDSCAPEMODE landscape_;
   TEXTMODE textmode_;
   QString texfname_;

@@ -10,13 +10,13 @@
 
 using namespace Qwt3D;
 
-//! Provides a new GL2PS object. 
-IO::Functor* GL2PS::clone() const
+//! Provides a new VectorWriter object. 
+IO::Functor* VectorWriter::clone() const
 {
-  return new GL2PS(*this);
+  return new VectorWriter(*this);
 }
   
-GL2PS::GL2PS() 
+VectorWriter::VectorWriter() 
     : gl2ps_format_(GL2PS_EPS), 
     formaterror_(false),
 #ifdef GL2PS_HAVE_ZLIB
@@ -25,8 +25,8 @@ GL2PS::GL2PS()
     compressed_(false),
 #endif
     sortmode_(SIMPLESORT),
-    landscape_(GL2PS::AUTO),
-    textmode_(GL2PS::PIXMAP),
+    landscape_(VectorWriter::AUTO),
+    textmode_(VectorWriter::PIXEL),
     texfname_("")
   {}
 
@@ -34,7 +34,7 @@ GL2PS::GL2PS()
 /*!
   Sets the mode for text output:\n
   \param val The underlying format for the generated output:\n
-  PIXMAP - poor quality but exact positioning\n
+  PIXEL - poor quality but exact positioning\n
   NATIVE - high quality but inexact positioning\n
   TEX - high quality and exact positioning, arbitrary TeX strings as content for
   the saved labels are possible. The disadvantage is the need for an additionally TeX run
@@ -45,14 +45,14 @@ GL2PS::GL2PS()
   (04/05/27: On Linux platforms, pdflatex seems a file named 'dump_0.pdf.tex' mistakenly to 
   identify as PDF file.)
 */
-void GL2PS::setTextMode(TEXTMODE val, QString fname)
+void VectorWriter::setTextMode(TEXTMODE val, QString fname)
 {
   textmode_ = val;
   texfname_ = (fname.isEmpty()) ? QString("") : fname;
 }
 
   //! Turns compressed output on or off (no effect if zlib support has not been set)
-void GL2PS::setCompressed(bool val)
+void VectorWriter::setCompressed(bool val)
 {
 #ifdef GL2PS_HAVE_ZLIB
   compressed_ = val;
@@ -65,7 +65,7 @@ void GL2PS::setCompressed(bool val)
 Set output format, must be one of "EPS_GZ", "PS_GZ", "EPS", 
 "PS", "PDF" (case sensitive)
 */
-bool GL2PS::setFormat(QString const& format)
+bool VectorWriter::setFormat(QString const& format)
 {
 	if (format == QString("EPS"))
 	{
@@ -99,7 +99,7 @@ bool GL2PS::setFormat(QString const& format)
 }
 
 //! Performs actual output
-bool GL2PS::operator()(Plot3D* plot, QString const& fname)
+bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 {
   if (formaterror_)
     return false;
@@ -121,11 +121,11 @@ bool GL2PS::operator()(Plot3D* plot, QString const& fname)
 
   switch (landscape_) 
   {
-    case GL2PS::AUTO:
+    case VectorWriter::AUTO:
   	  if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
         options |= GL2PS_LANDSCAPE;
       break;
-    case GL2PS::ON:
+    case VectorWriter::ON:
       options |= GL2PS_LANDSCAPE;
   	  break;
     default:
@@ -135,13 +135,13 @@ bool GL2PS::operator()(Plot3D* plot, QString const& fname)
   int sortmode = GL2PS_SIMPLE_SORT;
   switch (sortmode_) 
   {
-    case GL2PS::NOSORT:
+    case VectorWriter::NOSORT:
       sortmode = GL2PS_NO_SORT;
       break;
-    case GL2PS::SIMPLESORT:
+    case VectorWriter::SIMPLESORT:
       sortmode = GL2PS_SIMPLE_SORT;
   	  break;
-    case GL2PS::BSPSORT:
+    case VectorWriter::BSPSORT:
       sortmode = GL2PS_BSP_SORT;
   	  break;
     default:
@@ -153,7 +153,7 @@ bool GL2PS::operator()(Plot3D* plot, QString const& fname)
     case NATIVE:
       Label::useDeviceFonts(true);
   	  break;
-    case PIXMAP:
+    case PIXEL:
       Label::useDeviceFonts(false);
   	  break;
     case TEX:

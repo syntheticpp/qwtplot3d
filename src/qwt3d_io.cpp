@@ -7,7 +7,7 @@
 
 using namespace Qwt3D;
 
-static Qwt3D::IO qwt3diodummy;
+static Qwt3D::IO qwt3diodummy; // Don't delete !
 
 
 /*! 
@@ -72,7 +72,7 @@ bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
   Applies a writing IO::Function or IO::Functor.
   \param plot Plot with the content that should be saved
   \param fname File name
-  \param format Input format
+  \param format Output format
   \return The return value from the called Function/Functor.
   The function returns false, if no registered handler could be found.
 */
@@ -136,7 +136,7 @@ IO::Functor* IO::outputHandler(QString const& format)
   return it->iofunc;
 }
 
-bool QtWriter::operator()(Plot3D* plot, QString const& fname)
+bool PixmapWriter::operator()(Plot3D* plot, QString const& fname)
 {
   QImage im = plot->grabFrameBuffer(true);
   return im.save(fname, (const char*)fmt_.local8Bit());
@@ -147,14 +147,14 @@ void IO::setupHandler()
 {
   QStringList list = QImage::outputFormatList();
   QStringList::Iterator it = list.begin();
-  QtWriter qtw;
+  PixmapWriter qtw;
   while( it != list.end() ) 
   {
     qtw.fmt_ = *it;
     defineOutputHandler(*it, qtw);
     ++it;
   }
-  GL2PS vecfunc; 
+  VectorWriter vecfunc; 
   vecfunc.setCompressed(false);
   vecfunc.setFormat("EPS");
   defineOutputHandler("EPS", vecfunc);
@@ -183,12 +183,12 @@ void IO::setupHandler()
 	\b Beware: BSPSORT turns out to behave very slowly and memory consuming, especially in cases where
 	many polygons appear. It is still more exact than SIMPLESORT.
 */
-bool Plot3D::saveVector(QString const& fileName, QString const& format, GL2PS::TEXTMODE text, GL2PS::SORTMODE sortmode)
+bool Plot3D::saveVector(QString const& fileName, QString const& format, VectorWriter::TEXTMODE text, VectorWriter::SORTMODE sortmode)
 {
   if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
     || format == "PS_GZ" || format == "PDF")
   {  
-    GL2PS* gl2ps = (GL2PS*)IO::outputHandler(format);
+    VectorWriter* gl2ps = (VectorWriter*)IO::outputHandler(format);
     if (gl2ps)
     {
       gl2ps->setSortMode(sortmode);
