@@ -148,6 +148,20 @@ double GridData::minimum() const { return min_;}
 void GridData::setMin(double minv) {min_ = minv;}
 void GridData::setMax(double maxv) {max_ = maxv;}
 
+ParallelEpiped GridData::hull() const
+{
+	if (empty())
+		return ParallelEpiped();
+
+	return ParallelEpiped(
+												Triple(vertices[0][0][0], vertices[0][0][1], minimum() ), 
+												Triple(
+																vertices[columns()-1][rows()-1][0], 
+																vertices[columns()-1][rows()-1][1], 
+																maximum() 
+															)
+											 );
+}
 
 QColor 
 GL2Qt(GLdouble r, GLdouble g, GLdouble b)
@@ -165,73 +179,6 @@ RGBA Qt2GL(QColor col)
 	rgba.b = qBlue(qrgb) / 255.0;
 	rgba.a = qAlpha(qrgb) / 255.0;
 	return rgba;	
-}
-
-/*!
-  \brief Find the smallest value out of {1,2,5}*10^n with an integer number n
-  which is greater than or equal to x
-
-  \param x Input value
-*/
-double ceil125( double x)
-{
-    if (x == 0.0) 
-        return 0.0;
-
-    double sign = (x > 0) ? 1.0 : -1.0;
-    double lx = log10(fabs(x));
-    double p10 = floor(lx);
-
-    double fr = pow(10.0, lx - p10);
-    if (fr <=1.0)
-       fr = 1.0;
-    else if (fr <= 2.0)
-       fr = 2.0;
-    else if (fr <= 5.0)
-       fr = 5.0;
-    else
-       fr = 10.0;
-
-    return sign * fr * pow(10.0, p10);
-}
-
-/*!
-  \brief Find the largest value out of {1,2,5}*10^n with an integer number n
-  which is smaller than or equal to x
-  
-  \param x Input value
-*/
-double floor125( double x)
-{
-    if (x == 0.0) 
-        return 0.0;
-    
-    double sign = (x > 0) ? 1.0 : -1.0;
-    double lx = log10(fabs(x));
-    double p10 = floor(lx);
-
-    double fr = pow(10.0, lx - p10);
-    if (fr >= 10.0)
-       fr = 10.0;
-    else if (fr >= 5.0)
-       fr = 5.0;
-    else if (fr >= 2.0)
-       fr = 2.0;
-    else
-       fr = 1.0;
-
-    return sign * fr * pow(10.0, p10);
-} 
-
-double round125( double x)
-{
-	double f = floor125(x);
-	double c = ceil125(x);
-	
-	if ( x-f < c-x )
-		return f;
-	
-	return c;
 }
 
 // convex hull

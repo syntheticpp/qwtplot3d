@@ -13,11 +13,12 @@ public:
 		//! Not really used at this point, provided for future extensions
 		enum MESHTYPE
 		{
-			REGULAR,
-      IRREGULAR
+			GRID,
+      TRIANGLE,
+			POLYGON
 		};	
 	
-    QwtPlot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = REGULAR );
+    QwtPlot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = GRID );
     virtual ~QwtPlot3D();
 
 	  void updateData();
@@ -56,11 +57,10 @@ public:
 		RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
-		bool hasData() const { return !actualData_.empty(); } //!< \return Valid data available (true) or not (false)
+		bool hasData() const { return !actualData_->empty(); } //!< \return Valid data available (true) or not (false)
 
 		void calculateHull();
-		Triple hullFirst() const { return datafirst_;} //!< \return Rear wall leftmost bottom Triple \see calculateHull()
-		Triple hullSecond() const { return datasecond_;} //!< \return Front wall rightmost top Triple \see calculateHull()
+		ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
 
 		void showColorLegend(bool);
 		void createColorLegend(ColorVector const&, Triple a = Triple(), Triple b = Triple(), Triple c = Triple(), Triple d = Triple());
@@ -81,10 +81,10 @@ public:
 		
 		bool mouseEnabled() const; //!< Returns true, if the widget accept mouse input from the user
 
-		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
+		void createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
-
-		GridData const& data() const {return actualData_;} //!< Access to data 
+		
+		GridData const& data() const {return *actualData_;} //!< Access to data 
 
 signals:
 		
@@ -161,8 +161,8 @@ private:
 
 		std::vector<GLuint> objectList_;
 
-		GridData actualData_;
-		Triple datafirst_, datasecond_;
+		GridData* actualData_;
+		ParallelEpiped hull_;
 
 		Color* dataColor_;
 		ColorLegend legend_;

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Sa 3. Mai 11:35:05 2003
+** Created: Sa 17. Mai 00:06:11 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1394,7 +1394,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     if ( !name )
 	setName( "Mesh2MainWindowBase" );
     resize( 906, 585 ); 
-    setMinimumSize( QSize( 336, 195 ) );
+    setMinimumSize( QSize( 336, 198 ) );
     setCaption( trUtf8( "Mesh2" ) );
     setCentralWidget( new QWidget( this, "qt_central_widget" ) );
     Mesh2MainWindowBaseLayout = new QGridLayout( centralWidget(), 1, 1, 11, 6, "Mesh2MainWindowBaseLayout"); 
@@ -1407,6 +1407,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     normButton->setMaximumSize( QSize( 50, 35 ) );
     normButton->setCursor( QCursor( 0 ) );
     normButton->setText( trUtf8( "Std" ) );
+    QToolTip::add( normButton, trUtf8( "Set standard view" ) );
     Layout5->addWidget( normButton );
 
     Layout10 = new QVBoxLayout( 0, 0, 6, "Layout10"); 
@@ -1423,6 +1424,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     offsSlider->setOrientation( QSlider::Horizontal );
     offsSlider->setTickmarks( QSlider::Right );
     offsSlider->setTickInterval( 0 );
+    QToolTip::add( offsSlider, trUtf8( "Increase surface quality by setting polygon offset (OpenGL specific)" ) );
     Layout10->addWidget( offsSlider );
     Layout5->addLayout( Layout10 );
     QSpacerItem* spacer = new QSpacerItem( 41, 16, QSizePolicy::Fixed, QSizePolicy::Minimum );
@@ -1443,6 +1445,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     resSlider->setOrientation( QSlider::Horizontal );
     resSlider->setTickmarks( QSlider::Right );
     resSlider->setTickInterval( 5 );
+    QToolTip::add( resSlider, trUtf8( "Set data resolution" ) );
     Layout9->addWidget( resSlider );
     Layout5->addLayout( Layout9 );
 
@@ -1464,18 +1467,19 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Layout6->addWidget( colorlegend );
 
     autoscale = new QCheckBox( centralWidget(), "autoscale" );
+    autoscale->setEnabled( TRUE );
     autoscale->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, autoscale->sizePolicy().hasHeightForWidth() ) );
     autoscale->setText( trUtf8( "Autoscale" ) );
     autoscale->setChecked( TRUE );
-    QToolTip::add( autoscale, trUtf8( "autoscale axes" ) );
-    QWhatsThis::add( autoscale, trUtf8( "autoscale axes" ) );
+    QToolTip::add( autoscale, trUtf8( "Autoscale axes" ) );
+    QWhatsThis::add( autoscale, trUtf8( "Autoscale axes" ) );
     Layout6->addWidget( autoscale );
 
     mouseinput = new QCheckBox( centralWidget(), "mouseinput" );
     mouseinput->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, mouseinput->sizePolicy().hasHeightForWidth() ) );
     mouseinput->setText( trUtf8( "Mouse" ) );
     mouseinput->setChecked( TRUE );
-    QToolTip::add( mouseinput, trUtf8( "enable/disable mouse input" ) );
+    QToolTip::add( mouseinput, trUtf8( "Enable mouse input" ) );
     Layout6->addWidget( mouseinput );
     Layout7->addLayout( Layout6 );
     QSpacerItem* spacer_2 = new QSpacerItem( 0, 390, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -1486,11 +1490,9 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Frame4 = new QFrame( centralWidget(), "Frame4" );
     Frame4->setFrameShape( QFrame::StyledPanel );
     Frame4->setFrameShadow( QFrame::Sunken );
-    Frame4Layout = new QGridLayout( Frame4, 1, 1, 11, 6, "Frame4Layout"); 
 
     dataWidget = new QwtPlot3D( Frame4, "dataWidget" );
-
-    Frame4Layout->addWidget( dataWidget, 0, 0 );
+    dataWidget->setGeometry( QRect( 11, 11, 782, 404 ) ); 
 
     Mesh2MainWindowBaseLayout->addWidget( Frame4, 0, 0 );
 
@@ -1660,6 +1662,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
 
     functionCB = new QComboBox( FALSE, Toolbar, "functionCB" );
     functionCB->setMinimumSize( QSize( 150, 0 ) );
+    QToolTip::add( functionCB, trUtf8( "Display function" ) );
     functionCB->insertItem( trUtf8( "---" ) );
     functionCB->insertItem( trUtf8( "Hat" ) );
     functionCB->insertItem( trUtf8( "Rosenbrock" ) );

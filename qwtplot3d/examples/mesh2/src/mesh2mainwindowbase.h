@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Sa 3. Mai 11:35:05 2003
+** Created: Sa 17. Mai 00:06:11 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -92,7 +92,6 @@ protected:
     QVBoxLayout* Layout9;
     QVBoxLayout* Layout7;
     QVBoxLayout* Layout6;
-    QGridLayout* Frame4Layout;
 };
 
 #endif // MESH2MAINWINDOWBASE_H

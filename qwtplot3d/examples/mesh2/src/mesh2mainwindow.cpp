@@ -509,8 +509,8 @@ Mesh2MainWindow::setPolygonOffset(int val)
 void
 Mesh2MainWindow::createColorLegend(ColorVector const& col)
 {
-	Triple a = dataWidget->hullFirst();
-	Triple c = dataWidget->hullSecond();
+	Triple a = dataWidget->hull().minVertex;
+	Triple c = dataWidget->hull().maxVertex;
 
 	Triple b, d;
 
