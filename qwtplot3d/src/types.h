@@ -130,16 +130,16 @@ struct Triple
 		return *this;
 	}
 
+	bool operator!=(Triple t) const
+	{
+		return fabs(x-t.x) > DBL_EPSILON || fabs(y-t.y) > DBL_EPSILON || fabs(z-t.z) > DBL_EPSILON;
+	}
 	
 	bool operator==(Triple t) const
 	{
-		return !(fabs(x-t.x) > DBL_EPSILON) || (fabs(y-t.y) > DBL_EPSILON) || (fabs(z-t.z) > DBL_EPSILON);
+		return !operator!=(t);
 	}
-	bool operator!=(Triple t) const
-	{
-		return !operator==(t);
-	}
-	
+
 	double length() const
 	{
 		double l2 = x*x + y*y + z*z;

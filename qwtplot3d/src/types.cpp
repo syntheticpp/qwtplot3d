@@ -2,6 +2,11 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+
+
+#include <fstream.h>
+ofstream ofs("aaa.txt");
+
 #include "float.h"
 #include "types.h"
 #include <algorithm>
@@ -302,19 +307,25 @@ void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
     coord** points = new coord*[src.size()+1] ;
     coord* P = new coord[src.size()*2];
 
+		ofs << "-->" << endl; 
     int i;
 		for (i=0; i<(int)src.size(); ++i)
     {
+			ofs << src[i].x << " " << src[i].y << endl; 
         points[i] = &P[2*i];
         points[i][0] = src[i].x;
         points[i][1] = src[i].y;
     }
+		ofs << "<--" << endl; 
+
     coord* start = points[0];
     int m = _ch2d( points, src.size() );
     idx.resize(m);
-    for (i=0; i<m; ++i)
-        idx[i] = (points[i] - start)/2;
-
+    
+		for (i=0; i<m; ++i)
+ 		{
+			idx[i] = (points[i] - start)/2;
+		}
     delete [] points;
 		delete [] P;
 }
