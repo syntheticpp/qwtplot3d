@@ -89,7 +89,7 @@ bool Function::create()
 		delete [] data[i];
 	}
 
-	delete data;
+	delete [] data;
 
 	return true;
 }

@@ -150,7 +150,7 @@ namespace
 		{
 			delete [] data[i];
 		}
-		delete data;
+		delete [] data;
 	}
 }
 
