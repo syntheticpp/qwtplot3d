@@ -8,5 +8,3 @@ cd ../print
 qmake print.pro -o print.dsp
 cd ../enrichments
 qmake enrichments.pro -o enrichments.dsp
-cd ../freesurfaces
-qmake freesurfaces.pro -o freesurfaces.dsp
