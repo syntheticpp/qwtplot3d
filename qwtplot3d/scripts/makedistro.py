@@ -51,10 +51,10 @@ def compresstree(src, tar, zip):
             (base,ext) = os.path.splitext(name)
             ext2 = ext[1:]
             if ((ext2 in requiredfiletypes) and (name not in refusedfiles)) or (name in requiredfiles):
-                zip.write(srcname, srcname[len(source):])
+                zip.write(srcname, 'qwtplot3d/' + srcname[len(source):])
                 if (ext2 in srcfiletypes):
                     dos2unix(srcname)
-                tar.add(srcname, srcname[len(source):])
+                tar.add(srcname, 'qwtplot3d/' + srcname[len(source):])
                 
 
 if os.path.exists(tarname):
