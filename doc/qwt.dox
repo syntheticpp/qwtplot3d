@@ -12,8 +12,10 @@
 	\section news News
 	
 	- Apr 18 2003:
-	 - CVS: <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/autoswitch">autoswitch</a> example added 
+	 - CVS: <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/colormodels">colormodels</a>, 
+	        <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/autoswitch">autoswitch</a> examples added 
 	 - CVS: Isoline contouring
+	 - CVS: CoordinateSystem::setLineSmooth(), CoordinateSystem::lineSmooth() added
 	- Apr 17 2003: CVS: Autoswitching implemented 
 	- Apr 15 2003: simpleplot packages to  
 	<a href="http://sourceforge.net/project/showfiles.php?group_id=78209&release_id=152653">release 0.1 alpha</a> added
