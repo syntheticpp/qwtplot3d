@@ -71,7 +71,6 @@ HEADERS+=include/qwt3d_gl2ps.h
 SOURCES+=src/qwt3d_gl2ps.cpp
 gl2ps {
   DEFINES += GL2PS_HAVE_ZLIB
-#  DEFINES += GL2PSZLIB
   INCLUDEPATH   += 3rdparty/gl2ps
 	SOURCES	      += 3rdparty/gl2ps/gl2ps.c
   HEADERS       += 3rdparty/gl2ps/gl2ps.h
