@@ -28,6 +28,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
+	mouse_input_enabled_ = true;
 
 	setPolygonOffset(0.5);
 	setMeshColor(RGBA(0.0,0.0,0.0));
@@ -291,7 +292,7 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
 	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
-										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_COMPRESS;
+										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_TRANSPARENCY | GL2PS_COMPRESS;
 
 	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
 		options |= GL2PS_LANDSCAPE;
@@ -303,11 +304,17 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 		sorttype = GL2PS_SIMPLE_SORT;
 
 
+	QString version = QString::number(QWT3D_MAJOR_VERSION) + "."
+		+ QString::number(QWT3D_MINOR_VERSION) + "."
+		+ QString::number(QWT3D_PATCH_VERSION); 
+	
+	QString producer = QString("QwtPlot3D ") + version + 
+		" (beta) , (C) 2002-2003 Micha Bieber <krischnamurti@users.sourceforge.net>";
 
 	while( state == GL2PS_OVERFLOW )
 	{ 
 		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", "qwtplot3d", viewport,
+		gl2psBeginPage ( "---", producer, viewport,
 										 gl2ps_format, sorttype,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
 										 fp, fileName.latin1() );
