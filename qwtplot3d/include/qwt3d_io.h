@@ -6,7 +6,7 @@
 
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qwt3d_global.h>
+#include "qwt3d_global.h"
 
 namespace Qwt3D
 {
