@@ -44,6 +44,7 @@ Drawable::restoreGLState()
 	glPolygonMode(polmode[0], polmode[1]);
 	glMatrixMode(matrixmode);
 	glPolygonOffset(poloffs[0], poloffs[1]);
+	setDevicePolygonOffset(poloffs[0], poloffs[1]);
 
 	Enable(GL_POLYGON_OFFSET_FILL, poloffsfill);
 }

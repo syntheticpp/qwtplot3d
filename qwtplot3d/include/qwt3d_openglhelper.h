@@ -14,6 +14,7 @@ public:
 	
 	GLStateBewarer(GLenum what, bool on, bool persist=false)
 	{
+		state_ = what;
 		stateval_ = glIsEnabled(what);	
 		if (on)
 			turnOn(persist);

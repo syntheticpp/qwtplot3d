@@ -106,3 +106,9 @@ Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Tripl
   return ret;
 }
 
+void 
+Qwt3D::setDevicePolygonOffset(GLfloat factor, GLfloat units)
+{
+	glPolygonOffset(factor, units);
+	gl2psEnable(GL2PS_POLYGON_OFFSET_FILL);
+}

@@ -116,7 +116,7 @@ Axis::draw()
 
 	saveGLState();
 
-	glEnable(GL_LINE_SMOOTH);
+	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(color.r,color.g,color.b,color.a);		
 

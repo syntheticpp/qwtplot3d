@@ -1,4 +1,5 @@
 #include "qwt3d_surfaceplot.h"
+#include "qwt3d_gl2ps.h"
 
 using namespace Qwt3D;
 
@@ -118,6 +119,8 @@ SurfacePlot::createData()
 {
 	if (plotStyle() != NOPLOT)
 	{
+		setDeviceLineWidth(meshLineWidth());
+		
 		if (meshtype() == GRID)
 			updateGridData();
 		else

@@ -48,6 +48,9 @@ public:
 
 	void draw();
 
+	void drawMajorGrid(); //!< Draws a grid between the major tics on bottom
+	void drawMinorGrid(); //!< Draws a grid between the minor tics on bottom
+
 	std::vector<Axis> axes;
 
 private:

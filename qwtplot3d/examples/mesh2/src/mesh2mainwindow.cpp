@@ -72,9 +72,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect( dataWidget, SIGNAL(resolutionChanged(int)), resSlider, SLOT(setValue(int)) );
 		resSlider->setValue(1);             
 		
-		offsSlider->setRange(0,10);
 		connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
-		offsSlider->setValue(5);             
 
 		connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 		
@@ -578,6 +576,7 @@ void
 Mesh2MainWindow::setPolygonOffset(int val)
 {
 	dataWidget->setPolygonOffset(val / 10.0);
+	dataWidget->updateData();
 	dataWidget->updateGL();
 }
 

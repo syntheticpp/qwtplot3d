@@ -5,6 +5,7 @@
 
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_vectorfield.h"
+#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -12,14 +13,14 @@ using namespace Qwt3D;
 void 
 SurfacePlot::updateCellData()
 {		
+	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	int idx = 0;
 	if (plotStyle() != WIREFRAME)
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(polygonOffset(),1.0);
-		
+		setDevicePolygonOffset(polygonOffset(),1.0);
+
 		bool hl = (plotStyle() == HIDDENLINE);
 		if (hl)
 		{
@@ -39,7 +40,6 @@ SurfacePlot::updateCellData()
 			}
 			glEnd();
 		}
-		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
 
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)

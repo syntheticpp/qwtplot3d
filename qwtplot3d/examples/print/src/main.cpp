@@ -21,6 +21,7 @@ int main( int argc, char** argv )
   }
 
 	printMainWindow mainwindow;
+	
 	app.setMainWidget(&mainwindow);
 
 	mainwindow.show();
