@@ -1,9 +1,6 @@
 #include <qframe.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
-#include <qwt_knob.h>
-#include <qwt_wheel.h>
-#include <qwt_slider.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -25,7 +22,6 @@
 #include <qfontdialog.h>
 
 #include "mesh2mainwindow.h"
-#include "alphadlgimpl.h"
 
 #include "functions.h"
 #include "../src/reader.h"
@@ -68,81 +64,40 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 	  timer = new QTimer( this );
 		connect( timer, SIGNAL(timeout()), this, SLOT(rotate()) );
 
-		// Create the three sliders; one for each rotation axis
-    xR->setRange(0,360,1);
-    connect( xR, SIGNAL(valueChanged(double)), this, SLOT(xRotate(double)) );
-    
-		yR->setRange(0,360,1);
-    connect( yR, SIGNAL(valueChanged(double)), this, SLOT(yRotate(double)) );
-    
-		zR->setRange(0,360,1);
-    connect( zR, SIGNAL(valueChanged(double)), this, SLOT(zRotate(double)) );
-
-    xS->setRange(-1.5,1.5,0.05);
-    connect( xS, SIGNAL(valueChanged(double)), this, SLOT(xShift(double)) );
-
-    yS->setRange(-1.5,1.5,0.05);
-    connect( yS, SIGNAL(valueChanged(double)), this, SLOT(yShift(double)) );
-    
-		zS->setRange(-1.5,1.5,0.05);
-    connect( zS, SIGNAL(valueChanged(double)), this, SLOT(zShift(double)) );
-    
-		xSc->setRange(0.0,100,0.02);
-    connect( xSc, SIGNAL(valueChanged(double)), this, SLOT(xScale(double)) );
-
-    ySc->setRange(0.0,100,0.02);
-    connect( ySc, SIGNAL(valueChanged(double)), this, SLOT(yScale(double)) );
-    
-		zSc->setRange(0.0,100,0.02);
-    connect( zSc, SIGNAL(valueChanged(double)), this, SLOT(zScale(double)) );
- 
-		zoomWheel->setRange(0,100,0.01,10);
-		connect( zoomWheel, SIGNAL(valueChanged(double)), dataWidget, SLOT(setZoom(double)) );
-
 		resSlider->setRange(1,70);
-		resSlider->setStep(1);
-		connect( resSlider, SIGNAL(valueChanged(double)), this, SLOT(setResolution(double)) );
+		connect( resSlider, SIGNAL(valueChanged(int)), this, SLOT(setResolution(int)) );
 		connect( dataWidget, SIGNAL(resolutionChanged(double)), resSlider, SLOT(setValue(double)) );
 		resSlider->setValue(1);             
 		
-		offsetSlider->setRange(0,1);
-		offsetSlider->setStep(0.1);
-		connect( offsetSlider, SIGNAL(valueChanged(double)), this, SLOT(setPolygonOffset(double)) );
-		offsetSlider->setValue(0.5);             
+		offsSlider->setRange(0,10);
+		connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
+		offsSlider->setValue(5);             
 
 		connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 		
-		alphaLabel->setText(QChar (0x3b1));
-		betaLabel->setText(QChar (0x3b2));
-		gammaLabel->setText(QChar (0x3b3));
-
 		QLabel* info = new QLabel("QwtPlot3D <by krischnamurti 2003>", statusBar());       
 		info->setPaletteForegroundColor(Qt::darkBlue);
 		statusBar()->addWidget(info, 0, false);
 		filenameWidget = new QLabel("                                  ", statusBar());
 		statusBar()->addWidget(filenameWidget,0, false);
-		positionWidget = new QLabel("                         ", statusBar());
-		statusBar()->addWidget(positionWidget,0, false);
+		rotateLabel = new QLabel("", statusBar());
+		statusBar()->addWidget(rotateLabel,0, false);
+		shiftLabel = new QLabel("", statusBar());
+		statusBar()->addWidget(shiftLabel,0, false);
+		scaleLabel = new QLabel("", statusBar());
+		statusBar()->addWidget(scaleLabel,0, false);
+		zoomLabel = new QLabel("", statusBar());
+		statusBar()->addWidget(zoomLabel,0, false);
 		
-		
-		connect(dataWidget, SIGNAL(screenpositionChanged(double,double)), this, SLOT(showPosition(double,double))); 
+		connect(dataWidget, SIGNAL(rotationChanged(double,double,double)),this,SLOT(showRotate(double,double,double)));
+		connect(dataWidget, SIGNAL(vieportShiftChanged(double,double)),this,SLOT(showShift(double,double)));
+		connect(dataWidget, SIGNAL(scaleChanged(double,double,double)),this,SLOT(showScale(double,double,double)));
+		connect(dataWidget, SIGNAL(zoomChanged(double)),this,SLOT(showZoom(double)));
 
 		connect(functionCB, SIGNAL(activated(const QString&)), this, SLOT(createFunction(const QString&)));
 		connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 		connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 		connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
-
-
-		
-		alphaDlg->polygonsSld->setRange(0,1);
-		alphaDlg->polygonsSld->setStep(0.1);
-		connect( alphaDlg->polygonsSld, SIGNAL(valueChanged(double)), this, SLOT(setPolygonsAlpha(double)) );
-		alphaDlg->polygonsSld->setValue(1);             
-					
-		alphaDlg->meshSld->setRange(0,1);
-		alphaDlg->meshSld->setStep(0.1);
-		connect( alphaDlg->meshSld, SIGNAL(valueChanged(double)), this, SLOT(setMeshAlpha(double)) );
-		alphaDlg->meshSld->setValue(1);             
 				
 		setStandardView();
 
@@ -150,7 +105,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		// dataWidget->setCaptionPosition(0.7, 0.2);
 		
-		// dataWidget->setMouseTracking(true);
+		dataWidget->setMouseTracking(true);
 }
 
 void Mesh2MainWindow::open()
@@ -400,22 +355,10 @@ void Mesh2MainWindow::resetFonts()
 
 void Mesh2MainWindow::setStandardView()
 {
-	zoomWheel->setValue(1);
-	xRotate(30); xR->setValue(30); 
-	yRotate(0); yR->setValue(0); 
-	zRotate(15); zR->setValue(15);
-	xShift(0.1); xS->setValue(0.1);
-	yShift(0); yS->setValue(0);
-	zShift(0); zS->setValue(0);
-	xScale(1); xSc->setValue(1);
-	yScale(1); ySc->setValue(1);
-	zScale(1); zSc->setValue(1);
-}
-
-void Mesh2MainWindow::showPosition(double x, double y)
-{
-	QString a = QString::number(x) + "," + QString::number(y);
-	positionWidget->setText(QString("  Pos: ") + a + QString("  "));
+	dataWidget->setRotation(30,0,15);
+	dataWidget->setShift(0.1,0,0);
+	dataWidget->setScale(1,1,1);
+	dataWidget->setZoom(1);
 }
 
 void Mesh2MainWindow::dumpImage()
@@ -436,22 +379,12 @@ void Mesh2MainWindow::toggleAnimation(bool val)
 {
 	if ( val )
 	{
-		disconnect(xR);
-		disconnect(yR);
-		disconnect(zR);
 		timer->start( redrawWait, false ); // Wait this many msecs before redraw
 	}
 	else
 	{
 		timer->stop();
-		connect(xR, SIGNAL(valueChanged(double)), this, SLOT(xRotate(double)));
-		connect(yR, SIGNAL(valueChanged(double)), this, SLOT(yRotate(double)));
-		connect(zR, SIGNAL(valueChanged(double)), this, SLOT(zRotate(double)));
-		xR->setValue(dataWidget->xRotation());
-		yR->setValue(dataWidget->yRotation());
-		zR->setValue(dataWidget->zRotation());
 	}
-//	normButton->setEnabled(!val);
 }
 
 void Mesh2MainWindow::rotate()
@@ -465,146 +398,6 @@ void Mesh2MainWindow::rotate()
 			);
 	}	
 }
-
-void Mesh2MainWindow::xRotate(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setRotation(
-			val,
-			dataWidget->yRotation(),
-			dataWidget->zRotation()
-			);
-}
-
-void Mesh2MainWindow::yRotate(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setRotation(
-			dataWidget->xRotation(),
-			val,
-			dataWidget->zRotation()
-			);
-}
-
-void Mesh2MainWindow::zRotate(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setRotation(
-			dataWidget->xRotation(),
-			dataWidget->yRotation(),
-			val			
-			);
-}
-
-void Mesh2MainWindow::xShift(double val)
-{
-	
-	if (!dataWidget)
-	{
-		return;
-	}
-	
-	dataWidget->calculateHull();
-	Triple a = dataWidget->hullFirst();
-	Triple b = dataWidget->hullSecond();
-	double dist = fabs((b-a).x);
-	val*=dist;
-
-	dataWidget->setShift(
-			val,
-			dataWidget->yShift(),
-			dataWidget->zShift()			
-			);
-}
-
-void Mesh2MainWindow::yShift(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-
-	dataWidget->calculateHull();
-	Triple a = dataWidget->hullFirst();
-	Triple b = dataWidget->hullSecond();
-	double dist = fabs((b-a).y);
-	val*=dist;
-
-	dataWidget->setShift(
-			dataWidget->xShift(),
-			val,
-			dataWidget->zShift()			
-			);
-}
-
-void Mesh2MainWindow::zShift(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-
-	dataWidget->calculateHull();
-	Triple a = dataWidget->hullFirst();
-	Triple b = dataWidget->hullSecond();
-	double dist = fabs((b-a).z);
-	val*=dist;
-
-	dataWidget->setShift(
-			dataWidget->xShift(),			
-			dataWidget->yShift(),
-			val
-			);
-}
-
-void Mesh2MainWindow::xScale(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setScale(
-			val,
-			dataWidget->yScale(),
-			dataWidget->zScale()			
-			);
-}
-
-void Mesh2MainWindow::yScale(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setScale(
-			dataWidget->xScale(),
-			val,
-			dataWidget->zScale()			
-			);
-}
-
-void Mesh2MainWindow::zScale(double val)
-{
-	if (!dataWidget)
-	{
-		return;
-	}
-	dataWidget->setScale(
-			dataWidget->xScale(),			
-			dataWidget->yScale(),
-			val
-			);
-}
-
 
 void Mesh2MainWindow::createFunction(QString const& name)
 {
@@ -692,15 +485,15 @@ Mesh2MainWindow::toggleAutoScale(bool val)
 }
 
 void
-Mesh2MainWindow::setResolution(double val)
+Mesh2MainWindow::setResolution(int val)
 {
-	dataWidget->setResolution((int)val);
+	dataWidget->setResolution(val);
 }
 
 void
-Mesh2MainWindow::setPolygonOffset(double val)
+Mesh2MainWindow::setPolygonOffset(int val)
 {
-	dataWidget->setPolygonOffset(val);
+	dataWidget->setPolygonOffset(val / 10.0);
 	dataWidget->updateData();
 	dataWidget->updateGL();
 }
@@ -724,19 +517,29 @@ Mesh2MainWindow::createColorLegend(ColorVector const& col)
 }
 
 void
-Mesh2MainWindow::setPolygonsAlpha(double d)
+Mesh2MainWindow::showRotate(double x, double y, double z)		
 {
-	dataWidget->modifyStandardColorAlpha(d);
-	dataWidget->updateData();
-	dataWidget->updateGL();
+	rotateLabel->setText(" Angles ("  + QString::number(x) + " ," 
+																	+ QString::number(y) + " ,"
+																	+ QString::number(z) + ")");
+}
+void
+Mesh2MainWindow::showShift(double x, double y)		
+{
+	shiftLabel->setText(" Shifts (" + QString::number(x) + " ," 
+																	+ QString::number(y) + " )"
+																	);
+}
+void
+Mesh2MainWindow::showScale(double x, double y, double z)		
+{
+	scaleLabel->setText(" Scales (" + QString::number(x) + " ," 
+																	+ QString::number(y) + " ,"
+																	+ QString::number(z) + ")");
+}
+void
+Mesh2MainWindow::showZoom(double z)		
+{
+	zoomLabel->setText(" Zoom "  + QString::number(z)); 
 }
 
-void
-Mesh2MainWindow::setMeshAlpha(double d)
-{
-	RGBA rgba = dataWidget->meshColor();
-	rgba.a = d;
-	dataWidget->setMeshColor(rgba);
-	dataWidget->updateData();
-	dataWidget->updateGL();
-}

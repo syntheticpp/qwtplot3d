@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Sa 19. Apr 19:37:11 2003
+** Created: So 27. Apr 21:42:48 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -14,10 +14,8 @@
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qlabel.h>
-#include <qlcdnumber.h>
 #include <qpushbutton.h>
-#include <qwt_slider.h>
-#include <qwt_wheel.h>
+#include <qslider.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
@@ -1363,92 +1361,60 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     QPixmap image15( ( const char** ) image15_data );
     if ( !name )
 	setName( "Mesh2MainWindowBase" );
-    resize( 904, 586 ); 
-    setMinimumSize( QSize( 778, 456 ) );
+    resize( 906, 585 ); 
+    setMinimumSize( QSize( 336, 181 ) );
     setCaption( trUtf8( "Mesh2" ) );
     setCentralWidget( new QWidget( this, "qt_central_widget" ) );
     Mesh2MainWindowBaseLayout = new QGridLayout( centralWidget(), 1, 1, 11, 6, "Mesh2MainWindowBaseLayout"); 
 
-    Frame3 = new QFrame( centralWidget(), "Frame3" );
-    Frame3->setFrameShape( QFrame::StyledPanel );
-    Frame3->setFrameShadow( QFrame::Sunken );
-    Frame3Layout = new QGridLayout( Frame3, 1, 1, 11, 6, "Frame3Layout"); 
+    Layout5 = new QHBoxLayout( 0, 0, 6, "Layout5"); 
 
-    dataWidget = new QwtPlot3D( Frame3, "dataWidget" );
+    normButton = new QPushButton( centralWidget(), "normButton" );
+    normButton->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, normButton->sizePolicy().hasHeightForWidth() ) );
+    normButton->setMinimumSize( QSize( 50, 35 ) );
+    normButton->setMaximumSize( QSize( 50, 35 ) );
+    normButton->setCursor( QCursor( 0 ) );
+    normButton->setText( trUtf8( "Std" ) );
+    Layout5->addWidget( normButton );
 
-    Frame3Layout->addWidget( dataWidget, 0, 0 );
-
-    Mesh2MainWindowBaseLayout->addMultiCellWidget( Frame3, 0, 0, 1, 3 );
-
-    Layout19 = new QVBoxLayout( 0, 0, 6, "Layout19"); 
-
-    Layout17 = new QVBoxLayout( 0, 0, 6, "Layout17"); 
-
-    TextLabel1 = new QLabel( centralWidget(), "TextLabel1" );
-    TextLabel1->setText( trUtf8( "Polygon Offs." ) );
-    Layout17->addWidget( TextLabel1 );
-
-    offsetSlider = new QwtSlider( centralWidget(), "offsetSlider" );
-    offsetSlider->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)3, 0, 0, offsetSlider->sizePolicy().hasHeightForWidth() ) );
-    offsetSlider->setOrientation( QwtSlider::Vertical );
-    offsetSlider->setThumbLength( 15 );
-    offsetSlider->setThumbWidth( 23 );
-    offsetSlider->setBgStyle( QwtSlider::BgSlot );
-    offsetSlider->setScalePos( QwtSlider::Left );
-    QToolTip::add( offsetSlider, trUtf8( "Paint improvement mesh-polygon boundary" ) );
-    QWhatsThis::add( offsetSlider, trUtf8( "Paint improvement mesh-polygon boundary" ) );
-    Layout17->addWidget( offsetSlider );
-    Layout19->addLayout( Layout17 );
-    QSpacerItem* spacer = new QSpacerItem( 0, 85, QSizePolicy::Minimum, QSizePolicy::Expanding );
-    Layout19->addItem( spacer );
-
-    Layout11 = new QGridLayout( 0, 1, 1, 0, 6, "Layout11"); 
-
-    yS = new QwtWheel( centralWidget(), "yS" );
-    yS->setMinimumSize( QSize( 0, 100 ) );
-    yS->setMaximumSize( QSize( 32767, 100 ) );
-    yS->setFocusPolicy( QwtWheel::StrongFocus );
-    yS->setOrientation( QwtWheel::Vertical );
-    yS->setTickCnt( 20 );
-
-    Layout11->addWidget( yS, 2, 1 );
-
-    ySc = new QwtWheel( centralWidget(), "ySc" );
-    ySc->setMinimumSize( QSize( 0, 100 ) );
-    ySc->setMaximumSize( QSize( 32767, 100 ) );
-    ySc->setFocusPolicy( QwtWheel::StrongFocus );
-    ySc->setMass( 0.1 );
-    ySc->setOrientation( QwtWheel::Vertical );
-    ySc->setTickCnt( 20 );
-
-    Layout11->addWidget( ySc, 2, 0 );
-
-    yR = new QwtWheel( centralWidget(), "yR" );
-    yR->setMinimumSize( QSize( 0, 100 ) );
-    yR->setMaximumSize( QSize( 32767, 100 ) );
-    yR->setCursor( QCursor( 0 ) );
-    yR->setFocusPolicy( QwtWheel::StrongFocus );
-    yR->setMass( 0.1 );
-    yR->setOrientation( QwtWheel::Vertical );
-    yR->setTickCnt( 10 );
-
-    Layout11->addWidget( yR, 2, 2 );
-
-    TextLabel1_2 = new QLabel( centralWidget(), "TextLabel1_2" );
-    TextLabel1_2->setText( trUtf8( "Y" ) );
-    TextLabel1_2->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout11->addMultiCellWidget( TextLabel1_2, 0, 0, 0, 2 );
+    Layout10 = new QVBoxLayout( 0, 0, 6, "Layout10"); 
 
     TextLabel2 = new QLabel( centralWidget(), "TextLabel2" );
-    TextLabel2->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, TextLabel2->sizePolicy().hasHeightForWidth() ) );
-    TextLabel2->setText( trUtf8( "scale   shift  rot" ) );
+    TextLabel2->setText( trUtf8( "Polygon Offset" ) );
     TextLabel2->setAlignment( int( QLabel::AlignCenter ) );
+    Layout10->addWidget( TextLabel2 );
 
-    Layout11->addMultiCellWidget( TextLabel2, 1, 1, 0, 2 );
-    Layout19->addLayout( Layout11 );
+    offsSlider = new QSlider( centralWidget(), "offsSlider" );
+    offsSlider->setMinimumSize( QSize( 0, 35 ) );
+    offsSlider->setMaxValue( 10 );
+    offsSlider->setValue( 5 );
+    offsSlider->setOrientation( QSlider::Horizontal );
+    offsSlider->setTickmarks( QSlider::Right );
+    offsSlider->setTickInterval( 0 );
+    Layout10->addWidget( offsSlider );
+    Layout5->addLayout( Layout10 );
+    QSpacerItem* spacer = new QSpacerItem( 41, 16, QSizePolicy::Fixed, QSizePolicy::Minimum );
+    Layout5->addItem( spacer );
 
-    Mesh2MainWindowBaseLayout->addLayout( Layout19, 0, 0 );
+    Layout9 = new QVBoxLayout( 0, 0, 6, "Layout9"); 
+
+    TextLabel1_2 = new QLabel( centralWidget(), "TextLabel1_2" );
+    TextLabel1_2->setText( trUtf8( "Resolution" ) );
+    TextLabel1_2->setAlignment( int( QLabel::AlignCenter ) );
+    Layout9->addWidget( TextLabel1_2 );
+
+    resSlider = new QSlider( centralWidget(), "resSlider" );
+    resSlider->setMinimumSize( QSize( 0, 35 ) );
+    resSlider->setMinValue( 1 );
+    resSlider->setMaxValue( 100 );
+    resSlider->setLineStep( 1 );
+    resSlider->setOrientation( QSlider::Horizontal );
+    resSlider->setTickmarks( QSlider::Right );
+    resSlider->setTickInterval( 5 );
+    Layout9->addWidget( resSlider );
+    Layout5->addLayout( Layout9 );
+
+    Mesh2MainWindowBaseLayout->addLayout( Layout5, 1, 0 );
 
     Layout21 = new QVBoxLayout( 0, 0, 6, "Layout21"); 
 
@@ -1476,292 +1442,18 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     QSpacerItem* spacer_2 = new QSpacerItem( 0, 130, QSizePolicy::Minimum, QSizePolicy::Expanding );
     Layout21->addItem( spacer_2 );
 
-    Layout13_2 = new QGridLayout( 0, 1, 1, 0, 6, "Layout13_2"); 
+    Mesh2MainWindowBaseLayout->addMultiCellLayout( Layout21, 0, 1, 1, 1 );
 
-    zR = new QwtWheel( centralWidget(), "zR" );
-    zR->setMinimumSize( QSize( 0, 100 ) );
-    zR->setMaximumSize( QSize( 32767, 100 ) );
-    zR->setCursor( QCursor( 0 ) );
-    zR->setFocusPolicy( QwtWheel::StrongFocus );
-    zR->setMass( 0.1 );
-    zR->setOrientation( QwtWheel::Vertical );
-    zR->setTickCnt( 10 );
+    Frame3 = new QFrame( centralWidget(), "Frame3" );
+    Frame3->setFrameShape( QFrame::StyledPanel );
+    Frame3->setFrameShadow( QFrame::Sunken );
+    Frame3Layout = new QGridLayout( Frame3, 1, 1, 11, 6, "Frame3Layout"); 
 
-    Layout13_2->addWidget( zR, 2, 0 );
+    dataWidget = new QwtPlot3D( Frame3, "dataWidget" );
 
-    TextLabel1_2_2 = new QLabel( centralWidget(), "TextLabel1_2_2" );
-    TextLabel1_2_2->setText( trUtf8( "Z" ) );
-    TextLabel1_2_2->setAlignment( int( QLabel::AlignCenter ) );
+    Frame3Layout->addWidget( dataWidget, 0, 0 );
 
-    Layout13_2->addMultiCellWidget( TextLabel1_2_2, 0, 0, 0, 2 );
-
-    TextLabel2_4 = new QLabel( centralWidget(), "TextLabel2_4" );
-    TextLabel2_4->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, TextLabel2_4->sizePolicy().hasHeightForWidth() ) );
-    TextLabel2_4->setText( trUtf8( "rot   shift  scale" ) );
-    TextLabel2_4->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout13_2->addMultiCellWidget( TextLabel2_4, 1, 1, 0, 2 );
-
-    zSc = new QwtWheel( centralWidget(), "zSc" );
-    zSc->setMinimumSize( QSize( 0, 100 ) );
-    zSc->setMaximumSize( QSize( 32767, 100 ) );
-    zSc->setFocusPolicy( QwtWheel::StrongFocus );
-    zSc->setMass( 0.1 );
-    zSc->setOrientation( QwtWheel::Vertical );
-    zSc->setTickCnt( 20 );
-
-    Layout13_2->addWidget( zSc, 2, 2 );
-
-    zS = new QwtWheel( centralWidget(), "zS" );
-    zS->setMinimumSize( QSize( 0, 100 ) );
-    zS->setMaximumSize( QSize( 32767, 100 ) );
-    zS->setFocusPolicy( QwtWheel::StrongFocus );
-    zS->setOrientation( QwtWheel::Vertical );
-    zS->setTickCnt( 20 );
-
-    Layout13_2->addWidget( zS, 2, 1 );
-    Layout21->addLayout( Layout13_2 );
-    QSpacerItem* spacer_3 = new QSpacerItem( 16, 130, QSizePolicy::Minimum, QSizePolicy::Preferred );
-    Layout21->addItem( spacer_3 );
-
-    Mesh2MainWindowBaseLayout->addMultiCellLayout( Layout21, 0, 1, 4, 4 );
-
-    normButton = new QPushButton( centralWidget(), "normButton" );
-    normButton->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, normButton->sizePolicy().hasHeightForWidth() ) );
-    normButton->setMinimumSize( QSize( 50, 35 ) );
-    normButton->setMaximumSize( QSize( 50, 35 ) );
-    normButton->setCursor( QCursor( 0 ) );
-    normButton->setText( trUtf8( "Std" ) );
-
-    Mesh2MainWindowBaseLayout->addWidget( normButton, 1, 0 );
-
-    Layout22 = new QGridLayout( 0, 1, 1, 0, 6, "Layout22"); 
-
-    Layout5_3 = new QHBoxLayout( 0, 0, 6, "Layout5_3"); 
-
-    betaLabel = new QLabel( centralWidget(), "betaLabel" );
-    betaLabel->setText( trUtf8( "b" ) );
-    betaLabel->setTextFormat( QLabel::RichText );
-    betaLabel->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-    Layout5_3->addWidget( betaLabel );
-
-    LCDNumber2_3 = new QLCDNumber( centralWidget(), "LCDNumber2_3" );
-    LCDNumber2_3->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2_3->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2_3->setSmallDecimalPoint( TRUE );
-    LCDNumber2_3->setSegmentStyle( QLCDNumber::Flat );
-    Layout5_3->addWidget( LCDNumber2_3 );
-
-    Layout22->addLayout( Layout5_3, 2, 1 );
-
-    TextLabel1_4 = new QLabel( centralWidget(), "TextLabel1_4" );
-    TextLabel1_4->setText( trUtf8( "Resolution" ) );
-    TextLabel1_4->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout22->addMultiCellWidget( TextLabel1_4, 0, 0, 0, 3 );
-    QSpacerItem* spacer_4 = new QSpacerItem( 80, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Layout22->addItem( spacer_4, 2, 3 );
-
-    resSlider = new QwtSlider( centralWidget(), "resSlider" );
-    resSlider->setThumbLength( 16 );
-    resSlider->setThumbWidth( 34 );
-    resSlider->setBgStyle( QwtSlider::BgSlot );
-    resSlider->setScalePos( QwtSlider::Bottom );
-
-    Layout22->addMultiCellWidget( resSlider, 1, 1, 0, 3 );
-
-    l5 = new QHBoxLayout( 0, 0, 6, "l5"); 
-
-    gammaLabel = new QLabel( centralWidget(), "gammaLabel" );
-    gammaLabel->setText( trUtf8( "c" ) );
-    gammaLabel->setTextFormat( QLabel::RichText );
-    gammaLabel->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-    l5->addWidget( gammaLabel );
-
-    LCDNumber2_2 = new QLCDNumber( centralWidget(), "LCDNumber2_2" );
-    LCDNumber2_2->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2_2->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2_2->setSmallDecimalPoint( TRUE );
-    LCDNumber2_2->setSegmentStyle( QLCDNumber::Flat );
-    l5->addWidget( LCDNumber2_2 );
-
-    Layout22->addLayout( l5, 2, 2 );
-
-    Layout5_4 = new QHBoxLayout( 0, 0, 6, "Layout5_4"); 
-
-    alphaLabel = new QLabel( centralWidget(), "alphaLabel" );
-    alphaLabel->setText( trUtf8( "a" ) );
-    alphaLabel->setTextFormat( QLabel::RichText );
-    alphaLabel->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-    Layout5_4->addWidget( alphaLabel );
-
-    LCDNumber2_4 = new QLCDNumber( centralWidget(), "LCDNumber2_4" );
-    LCDNumber2_4->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2_4->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2_4->setSmallDecimalPoint( TRUE );
-    LCDNumber2_4->setSegmentStyle( QLCDNumber::Flat );
-    Layout5_4->addWidget( LCDNumber2_4 );
-
-    Layout22->addLayout( Layout5_4, 2, 0 );
-
-    Mesh2MainWindowBaseLayout->addLayout( Layout22, 1, 3 );
-    QSpacerItem* spacer_5 = new QSpacerItem( 53, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
-    Mesh2MainWindowBaseLayout->addItem( spacer_5, 1, 2 );
-
-    Layout24 = new QGridLayout( 0, 1, 1, 0, 6, "Layout24"); 
-
-    Layout5_6 = new QHBoxLayout( 0, 0, 6, "Layout5_6"); 
-
-    TextLabel1_3_6 = new QLabel( centralWidget(), "TextLabel1_3_6" );
-    TextLabel1_3_6->setText( trUtf8( "y:" ) );
-    TextLabel1_3_6->setTextFormat( QLabel::AutoText );
-    TextLabel1_3_6->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-    Layout5_6->addWidget( TextLabel1_3_6 );
-
-    LCDNumber2_6 = new QLCDNumber( centralWidget(), "LCDNumber2_6" );
-    LCDNumber2_6->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2_6->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2_6->setSmallDecimalPoint( TRUE );
-    LCDNumber2_6->setSegmentStyle( QLCDNumber::Flat );
-    Layout5_6->addWidget( LCDNumber2_6 );
-
-    Layout24->addMultiCellLayout( Layout5_6, 1, 1, 1, 2 );
-
-    TextLabel2_3 = new QLabel( centralWidget(), "TextLabel2_3" );
-    TextLabel2_3->setText( trUtf8( "X" ) );
-
-    Layout24->addWidget( TextLabel2_3, 0, 2 );
-
-    Layout16 = new QVBoxLayout( 0, 0, 6, "Layout16"); 
-
-    zoomWheel = new QwtWheel( centralWidget(), "zoomWheel" );
-    zoomWheel->setMinimumSize( QSize( 40, 10 ) );
-    zoomWheel->setMaximumSize( QSize( 32767, 100 ) );
-    zoomWheel->setCursor( QCursor( 0 ) );
-    zoomWheel->setFocusPolicy( QwtWheel::StrongFocus );
-    zoomWheel->setOrientation( QwtWheel::Vertical );
-    zoomWheel->setTotalAngle( 720 );
-    zoomWheel->setTickCnt( 8 );
-    zoomWheel->setInternalBorder( 2 );
-    Layout16->addWidget( zoomWheel );
-
-    LCDNumber1 = new QLCDNumber( centralWidget(), "LCDNumber1" );
-    LCDNumber1->setFrameShape( QLCDNumber::Panel );
-    LCDNumber1->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber1->setSmallDecimalPoint( TRUE );
-    LCDNumber1->setNumDigits( 3 );
-    LCDNumber1->setSegmentStyle( QLCDNumber::Flat );
-    LCDNumber1->setProperty( "intValue", 0 );
-    Layout16->addWidget( LCDNumber1 );
-
-    Layout24->addLayout( Layout16, 0, 4 );
-    QSpacerItem* spacer_6 = new QSpacerItem( 70, 16, QSizePolicy::Fixed, QSizePolicy::Minimum );
-    Layout24->addItem( spacer_6, 0, 3 );
-
-    Layout17_2 = new QGridLayout( 0, 1, 1, 0, 6, "Layout17_2"); 
-
-    TextLabel1_3_5 = new QLabel( centralWidget(), "TextLabel1_3_5" );
-    TextLabel1_3_5->setText( trUtf8( "z:" ) );
-    TextLabel1_3_5->setTextFormat( QLabel::AutoText );
-    TextLabel1_3_5->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-
-    Layout17_2->addWidget( TextLabel1_3_5, 0, 0 );
-
-    LCDNumber2_5 = new QLCDNumber( centralWidget(), "LCDNumber2_5" );
-    LCDNumber2_5->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2_5->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2_5->setSmallDecimalPoint( TRUE );
-    LCDNumber2_5->setSegmentStyle( QLCDNumber::Flat );
-
-    Layout17_2->addWidget( LCDNumber2_5, 0, 1 );
-
-    Layout24->addLayout( Layout17_2, 1, 3 );
-
-    Layout12 = new QGridLayout( 0, 1, 1, 0, 6, "Layout12"); 
-
-    TextLabel2_2 = new QLabel( centralWidget(), "TextLabel2_2" );
-    TextLabel2_2->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, TextLabel2_2->sizePolicy().hasHeightForWidth() ) );
-    TextLabel2_2->setMinimumSize( QSize( 31, 25 ) );
-    TextLabel2_2->setMaximumSize( QSize( 31, 25 ) );
-    TextLabel2_2->setText( trUtf8( "rot" ) );
-    TextLabel2_2->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout12->addWidget( TextLabel2_2, 0, 1 );
-
-    xR = new QwtWheel( centralWidget(), "xR" );
-    xR->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, xR->sizePolicy().hasHeightForWidth() ) );
-    xR->setMinimumSize( QSize( 100, 0 ) );
-    xR->setMaximumSize( QSize( 100, 32767 ) );
-    xR->setCursor( QCursor( 0 ) );
-    xR->setFocusPolicy( QwtWheel::StrongFocus );
-    xR->setMass( 0.1 );
-    xR->setTickCnt( 10 );
-
-    Layout12->addWidget( xR, 0, 0 );
-
-    xS = new QwtWheel( centralWidget(), "xS" );
-    xS->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, xS->sizePolicy().hasHeightForWidth() ) );
-    xS->setMinimumSize( QSize( 100, 0 ) );
-    xS->setMaximumSize( QSize( 100, 32767 ) );
-    xS->setCursor( QCursor( 0 ) );
-    xS->setFocusPolicy( QwtWheel::StrongFocus );
-    xS->setMass( 0.1 );
-    xS->setTickCnt( 20 );
-
-    Layout12->addWidget( xS, 1, 0 );
-
-    TextLabel2_2_2 = new QLabel( centralWidget(), "TextLabel2_2_2" );
-    TextLabel2_2_2->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, TextLabel2_2_2->sizePolicy().hasHeightForWidth() ) );
-    TextLabel2_2_2->setMinimumSize( QSize( 31, 25 ) );
-    TextLabel2_2_2->setMaximumSize( QSize( 31, 25 ) );
-    TextLabel2_2_2->setText( trUtf8( "scale" ) );
-    TextLabel2_2_2->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout12->addWidget( TextLabel2_2_2, 2, 1 );
-
-    TextLabel2_2_3 = new QLabel( centralWidget(), "TextLabel2_2_3" );
-    TextLabel2_2_3->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, TextLabel2_2_3->sizePolicy().hasHeightForWidth() ) );
-    TextLabel2_2_3->setMinimumSize( QSize( 31, 25 ) );
-    TextLabel2_2_3->setMaximumSize( QSize( 31, 25 ) );
-    TextLabel2_2_3->setText( trUtf8( "shift" ) );
-    TextLabel2_2_3->setAlignment( int( QLabel::AlignCenter ) );
-
-    Layout12->addWidget( TextLabel2_2_3, 1, 1 );
-
-    xSc = new QwtWheel( centralWidget(), "xSc" );
-    xSc->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, xSc->sizePolicy().hasHeightForWidth() ) );
-    xSc->setMinimumSize( QSize( 100, 0 ) );
-    xSc->setMaximumSize( QSize( 100, 32767 ) );
-    xSc->setCursor( QCursor( 0 ) );
-    xSc->setFocusPolicy( QwtWheel::StrongFocus );
-    xSc->setMass( 0.1 );
-    xSc->setTickCnt( 20 );
-
-    Layout12->addWidget( xSc, 2, 0 );
-
-    Layout24->addMultiCellLayout( Layout12, 0, 0, 0, 1 );
-
-    Layout11_2 = new QGridLayout( 0, 1, 1, 0, 6, "Layout11_2"); 
-
-    LCDNumber2 = new QLCDNumber( centralWidget(), "LCDNumber2" );
-    LCDNumber2->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)0, (QSizePolicy::SizeType)0, 0, 0, LCDNumber2->sizePolicy().hasHeightForWidth() ) );
-    LCDNumber2->setFrameShape( QLCDNumber::Panel );
-    LCDNumber2->setFrameShadow( QLCDNumber::Sunken );
-    LCDNumber2->setSmallDecimalPoint( TRUE );
-    LCDNumber2->setSegmentStyle( QLCDNumber::Flat );
-
-    Layout11_2->addWidget( LCDNumber2, 0, 1 );
-
-    TextLabel1_3 = new QLabel( centralWidget(), "TextLabel1_3" );
-    TextLabel1_3->setText( trUtf8( "x:" ) );
-    TextLabel1_3->setTextFormat( QLabel::AutoText );
-    TextLabel1_3->setAlignment( int( QLabel::WordBreak | QLabel::AlignVCenter | QLabel::AlignRight ) );
-
-    Layout11_2->addWidget( TextLabel1_3, 0, 0 );
-
-    Layout24->addLayout( Layout11_2, 1, 0 );
-
-    Mesh2MainWindowBaseLayout->addLayout( Layout24, 1, 1 );
+    Mesh2MainWindowBaseLayout->addWidget( Frame3, 0, 0 );
 
     // actions
     openFile = new QAction( this, "openFile" );
@@ -1871,10 +1563,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     resetcolor->setText( trUtf8( "Reset" ) );
     resetcolor->setMenuText( trUtf8( "&Reset" ) );
     resetcolor->setToolTip( trUtf8( "Reset" ) );
-    alpha = new QAction( color, "alpha" );
-    alpha->setText( trUtf8( "Alpha values" ) );
-    alpha->setMenuText( trUtf8( "Alpha values ..." ) );
-    alpha->setToolTip( trUtf8( "Alpha values" ) );
     font = new QActionGroup( this, "font" );
     font->setText( trUtf8( "Fonts" ) );
     font->setMenuText( trUtf8( "&Fonts" ) );
@@ -1974,8 +1662,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     labelcolor->addTo( PopupMenu_3 );
     titlecolor->addTo( PopupMenu_3 );
     resetcolor->addTo( PopupMenu_3 );
-    PopupMenu_3->insertSeparator();
-    alpha->addTo( PopupMenu_3 );
     menubar->insertItem( trUtf8( "&Color" ), PopupMenu_3 );
 
     PopupMenu = new QPopupMenu( this ); 
@@ -1989,13 +1675,6 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
 
     // signals and slots connections
     connect( Exit, SIGNAL( activated() ), this, SLOT( close() ) );
-    connect( zoomWheel, SIGNAL( valueChanged(double) ), LCDNumber1, SLOT( display(double) ) );
-    connect( yS, SIGNAL( valueChanged(double) ), LCDNumber2_6, SLOT( display(double) ) );
-    connect( xS, SIGNAL( valueChanged(double) ), LCDNumber2, SLOT( display(double) ) );
-    connect( xR, SIGNAL( valueChanged(double) ), LCDNumber2_4, SLOT( display(double) ) );
-    connect( yR, SIGNAL( valueChanged(double) ), LCDNumber2_3, SLOT( display(double) ) );
-    connect( zR, SIGNAL( valueChanged(double) ), LCDNumber2_2, SLOT( display(double) ) );
-    init();
 }
 
 /*  

@@ -6,15 +6,3 @@
 ** a constructor, and a destroy() slot in place of a destructor.
 *****************************************************************************/
 
-#include "alphadlgimpl.h"
-
-void Mesh2MainWindowBase::showAlphaDlg()
-{
-    alphaDlg->show();
-}
-
-
-void Mesh2MainWindowBase::init()
-{
-    alphaDlg = new alphadlg(this);
-}

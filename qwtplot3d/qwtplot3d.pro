@@ -52,4 +52,7 @@ SOURCES += src/compares.cpp \
 					 src/plane.cpp \
 					 src/functiongenerator.cpp \
 					 src/colorgenerator.cpp \
-					 src/mapping.cpp
+					 src/mapping.cpp \
+					 src/mousekeyboard.cpp \
+					 src/movements.cpp \
+					 src/dataviews.cpp

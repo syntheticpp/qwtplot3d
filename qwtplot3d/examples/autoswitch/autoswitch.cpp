@@ -53,9 +53,9 @@ void Plot::rotate()
 	int prec = 3;
 		
 	setRotation(
-			(int(prec*xRotation() + 1) % (360*prec))/double(prec),
-			(int(prec*yRotation() + 1) % (360*prec))/double(prec),
-			(int(prec*zRotation() + 1) % (360*prec))/double(prec)
+			(int(prec*xRotation() + 2) % (360*prec))/double(prec),
+			(int(prec*yRotation() + 2) % (360*prec))/double(prec),
+			(int(prec*zRotation() + 2) % (360*prec))/double(prec)
 			);
 }
 

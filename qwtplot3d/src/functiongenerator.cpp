@@ -61,12 +61,12 @@ Function::create()
 		return false;
 	
 	/* allocate some space for the mesh */
- 	GLdouble** data         = new GLdouble* [xmesh_] ;
+ 	double** data         = new double* [xmesh_] ;
 
 	unsigned i,j;
 	for ( i = 0; i < xmesh_; i++) 
 	{
-		data[i]         = new GLdouble [ymesh_];
+		data[i]         = new double [ymesh_];
 	}
 	
 	/* get the data */

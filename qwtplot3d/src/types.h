@@ -17,6 +17,10 @@
 #include <math.h>
 #include <float.h>
 
+#ifndef WHEEL_DELTA
+	#define WHEEL_DELTA 120
+#endif
+
 namespace Qwt3d
 {
 
@@ -77,9 +81,12 @@ inline int round(double d)
 	return (d>0) ? int(d+0.5) : int(d-0.5);
 }
 
-inline bool isZero(double a, double b = 0.)
+inline bool isPracticallyZero(double a, double b = 0)
 {
-  return (fabs (a - b) <= min (fabs(a), fabs(b))*DBL_EPSILON);	
+  if (!b)
+		return (fabs (a) <=  DBL_EPSILON);	
+
+	return (fabs (a - b) <= min (fabs(a), fabs(b))*DBL_EPSILON);	
 }
 
 
@@ -137,7 +144,7 @@ struct Triple
 
 	bool operator!=(Triple t) const
 	{
-		return !isZero(x,t.x) || !isZero(y,t.y) || !isZero(z,t.z);
+		return !isPracticallyZero(x,t.x) || !isPracticallyZero(y,t.y) || !isPracticallyZero(z,t.z);
 	}
 	
 	bool operator==(Triple t) const
@@ -148,7 +155,7 @@ struct Triple
 	double length() const
 	{
 		double l2 = x*x + y*y + z*z;
-		return (isZero(l2)) ? 0 :sqrt(l2);
+		return (isPracticallyZero(l2)) ? 0 :sqrt(l2);
 	}
 	
 	void normalize()
