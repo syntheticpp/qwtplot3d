@@ -14,7 +14,9 @@ namespace Qwt3D
 class Plot3D;
 /** 
 IO provides a generic interface for standard and user written I/O handlers. 
-The interfaces mimics roughly Qt's QImageIO functions for defining  
+It also provides functionality for the registering of such handlers in the
+framework.\n 
+The interface mimics roughly Qt's QImageIO functions for defining  
 image input/output functions. 
 */
 class QWT3D_EXPORT IO
@@ -182,11 +184,11 @@ private:
 };
 
 //! Provides Qt's Pixmap output facilities
-class QtPixmap : public IO::Functor
+class QtWriter : public IO::Functor
 {
 friend class IO;
 private:
-  IO::Functor* clone() const {return new QtPixmap(*this);}
+  IO::Functor* clone() const {return new QtWriter(*this);}
   bool operator()(Plot3D* plot, QString const& fname);
   QString fmt_;
 };

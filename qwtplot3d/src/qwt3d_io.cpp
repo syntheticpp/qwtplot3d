@@ -51,8 +51,12 @@ bool IO::defineOutputHandler(QString const& format, IO::Functor const& func)
 }
 
 /*!
-  Returns a pointer to a reading IO::Function if such a function has been registered by 
-  defineInputHandler and 0 else. 
+  Applies a reading IO::Function or IO::Functor.
+  \param plot Plot with the content that should be loaded
+  \param fname File name 
+  \param format Input format
+  \return The return value from the called Function/Functor. 
+  The function returns false, if no registered handler could be found.
 */
 bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
 {
@@ -65,8 +69,12 @@ bool IO::load(Plot3D* plot, QString const& fname, QString const& format)
 }
 
 /*!
-  Returns a pointer to a writing IO::Function if such a function has been registered by 
-  defineOutputHandler and 0 else. 
+  Applies a writing IO::Function or IO::Functor.
+  \param plot Plot with the content that should be saved
+  \param fname File name
+  \param format Input format
+  \return The return value from the called Function/Functor.
+  The function returns false, if no registered handler could be found.
 */
 bool IO::save(Plot3D* plot, QString const& fname, QString const& format)
 {
@@ -128,7 +136,7 @@ IO::Functor* IO::outputHandler(QString const& format)
   return it->iofunc;
 }
 
-bool QtPixmap::operator()(Plot3D* plot, QString const& fname)
+bool QtWriter::operator()(Plot3D* plot, QString const& fname)
 {
   QImage im = plot->grabFrameBuffer(true);
   return im.save(fname, (const char*)fmt_.local8Bit());
@@ -139,11 +147,11 @@ void IO::setupHandler()
 {
   QStringList list = QImage::outputFormatList();
   QStringList::Iterator it = list.begin();
-  QtPixmap qtpix;
+  QtWriter qtw;
   while( it != list.end() ) 
   {
-    qtpix.fmt_ = *it;
-    defineOutputHandler(*it, qtpix);
+    qtw.fmt_ = *it;
+    defineOutputHandler(*it, qtw);
     ++it;
   }
   GL2PS vecfunc; 
