@@ -81,6 +81,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		statusBar()->addWidget(info, 0, false);
 		filenameWidget = new QLabel("                                  ", statusBar());
 		statusBar()->addWidget(filenameWidget,0, false);
+		dimWidget = new QLabel("", statusBar());
+		statusBar()->addWidget(dimWidget,0, false);
 		rotateLabel = new QLabel("", statusBar());
 		statusBar()->addWidget(rotateLabel,0, false);
 		shiftLabel = new QLabel("", statusBar());
@@ -104,6 +106,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
 		connect(normalsquality,  SIGNAL(valueChanged(int)), this, SLOT(setNormalQuality(int)) );
 		connect(normalslength,  SIGNAL(valueChanged(int)), this, SLOT(setNormalLength(int)) );
+		connect(gridlines, SIGNAL( toggled(bool) ), this, SLOT( showGridLines(bool) ) );
 				
 		setStandardView();
 
@@ -135,15 +138,23 @@ void Mesh2MainWindow::open()
 		if ( s.isEmpty() || !dataWidget)
         return;
 
-		filenameWidget->setText(QString("  ") + s + QString("  "));
 		QFileInfo fi( s );
     QString ext = fi.extension( false );   // ext = "gz"
+
+		QToolTip::add(filenameWidget, s);
+		filenameWidget->setText(fi.fileName());
   
 		NativeReader r(dataWidget,s);
 		if ((ext == "MES") || (ext == "mes")) 
 		{
 			if (r.read())
 			{
+				double a = dataWidget->facets().first;
+				double b = dataWidget->facets().second;
+
+				dimWidget->setText(QString("Cells ") + QString::number(a*b) 
+					+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
+				
 				dataWidget->setResolution(3);
 			}
 		}
@@ -216,6 +227,12 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		dataWidget->coordinates()->axes[i].setMinors(5);
 	}
 
+	double a = dataWidget->facets().first;
+	double b = dataWidget->facets().second;
+
+	dimWidget->setText(QString("Cells ") + QString::number(a*b) 
+		+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
+
 	updateColorLegend(7,5);
 
 
@@ -263,11 +280,13 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 			dataWidget->setCoordinateStyle(BOX);
 		if (action == Frame)
 			dataWidget->setCoordinateStyle(FRAME);
+		gridlines->setEnabled(true);
 	}
 	else if (action == None)
 	{
 		dataWidget->setTitle("QwtPlot3D");
 		dataWidget->setCoordinateStyle(NOCOORD);
+		gridlines->setEnabled(false);
 	}
 }
 
@@ -314,10 +333,6 @@ Mesh2MainWindow::pickFloorStyle( QAction* action )
 	{
 		dataWidget->setFloorStyle(FLOORISO);
 	}
-	else if (action == floormesh)
-	{
-		dataWidget->setFloorStyle(FLOORMESH);
-	}
 	else
 	{
 		dataWidget->setFloorStyle(NOFLOOR);
@@ -326,6 +341,16 @@ Mesh2MainWindow::pickFloorStyle( QAction* action )
 	dataWidget->updateData();
 	dataWidget->updateGL();
 }	
+
+void
+Mesh2MainWindow::showGridLines( bool val )
+{
+  if (!dataWidget)
+		return;
+	
+	dataWidget->coordinates()->setGridLines(val, val);
+	dataWidget->updateGL();
+}
 
 void Mesh2MainWindow::resetColors()
 {
@@ -628,6 +653,8 @@ void Mesh2MainWindow::openMesh()
 		readConnections(vpoly, edges, CellFilter());
 		
 		dataWidget->createDataRepresentation(vdata, vpoly);
+		
+		dimWidget->setText(QString("Cells ") + QString::number(dataWidget->facets().first));
 
  		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 		{

@@ -58,9 +58,10 @@ public slots:
 	bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
 	void adaptDataColors(const QString&);
 	void updateColorLegend(int majors, int minors);
+	void showGridLines( bool );
 
 private:
-	QLabel *filenameWidget,
+	QLabel *filenameWidget, *dimWidget,
 		*rotateLabel, *shiftLabel, *scaleLabel, *zoomLabel;
 	
 	QTimer* timer;

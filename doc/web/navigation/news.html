@@ -106,31 +106,38 @@ Changes in <a href="download.html#Anonymous_CVS">CVS </a>only
 <h3></h3>
 <ul>
   <li>...</li>
-  <li>[Rectangular meshes]: Performance improvement for drawing of
-filled polygons (uses&nbsp; GL_TRIANGLE_STRIP now)</li>
-  <li>[Rectangular meshes]: Mesh drawing algorithm complexity is <span
- style="font-style: italic;">O(m+n)</span> instead <span
- style="font-style: italic;">O(mn)</span> where&nbsp; <span
+  <li>Style FLOORMESH removed<br>
+  </li>
+  <li>[CoordinateSystem]&nbsp; A coordinate grid can be drawn. See
+setGridLines() etc.<br>
+  </li>
+  <li>[SurfacePlot] new functin facets() <br>
+  </li>
+  <li>[Rectangular meshes] <br>
+Performance improvement for drawing of
+filled polygons (uses&nbsp; GL_TRIANGLE_STRIP now)<br>
+Mesh drawing algorithm complexity is <span style="font-style: italic;">O(m+n)</span>
+instead <span style="font-style: italic;">O(mn)</span> where&nbsp; <span
  style="font-style: italic;">m </span>and&nbsp; <span
  style="font-style: italic;">n</span> are the row and column number<br>
   </li>
   <li>C++ sources by <span style="font-family: monospace;">qwt3d_ </span>prefixed
 (consistent with header naming scheme)<br>
   </li>
-  <li>Plot3D::setPlotStyle, Plot3D::setFloorStyle call not longer
-updateData() and updateGL()<br>
-  </li>
-  <li>Plot3D::setShading(SHADINGSTYLE), Plot3D::shading() pair for
+  <li>[Plot3D] <br>
+setPlotStyle, setFloorStyle don't call
+updateData() and updateGL() any longer<br>
+setShading(SHADINGSTYLE), shading() pair for
 setting/returning shading style (flat or Gouraud). Default is
-Gouraud.</li>
-  <li>Plot3D::updateColorLegend()<br>
-  </li>
-  <li>Plot3D::legend() for color legend access</li>
-  <li>LabelPixmap: obsolete setColor() functions removed<br>
+Gouraud.<br>
+updateColorLegend(), legend() for color legend access</li>
+  <li>[LabelPixmap] Obsolete setColor() functions removed<br>
   </li>
   <li>Global transformation helper functions moved to Drawable<br>
   </li>
-  <li>Axis::limits() to get start and stop value<br>
+  <li>[Axis] <br>
+new function limits() to get start and stop value<br>
+new functions to access tic mark positions <br>
   </li>
   <li>AutoScaler class encapsulates auto scaling for axes<br>
   </li>

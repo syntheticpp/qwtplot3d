@@ -57,7 +57,6 @@ enum COORDSTYLE
 enum FLOORSTYLE
 {
 	NOFLOOR,   //!< Empty floor
-	FLOORMESH, //!< Mesh visible
 	FLOORISO,  //!< Isoline projections visible
 	FLOORDATA, //!< Projected polygons visible
 };
@@ -375,48 +374,6 @@ private:
 
 	ParallelEpiped hull_;
 };
-
-////! simplified glut routine (glProject): object coord --> windows coord 
-///**
-//	Don't rely on (use) this in display lists !
-//*/
-//inline Triple World2ViewPort(Triple obj,	bool* err = 0)
-//{
-//  Triple win;
-//
-//  GLdouble modelMatrix[16];
-//  GLdouble projMatrix[16];
-//  GLint viewport[4];
-//
-//	getMatrices(modelMatrix, projMatrix, viewport);
-//	
-//	int res = gluProject(obj.x, obj.y, obj.z, modelMatrix, projMatrix, viewport, &win.x, &win.y, &win.z);
-//	if (err)
-//		*err = (res) ? false : true;
-//	return win;
-//}
-//
-////! simplified glut routine (glUnProject): windows coord --> object coord 
-///**
-//	Don't rely on (use) this in display lists !
-//*/
-//inline Triple ViewPort2World(Triple win, bool* err = 0)
-//{
-//  Triple obj;
-//	
-//	GLdouble modelMatrix[16];
-//  GLdouble projMatrix[16];
-//  GLint viewport[4];
-//
-//	getMatrices(modelMatrix, projMatrix, viewport);
-//	
-//	int res = gluUnProject(win.x, win.y, win.z, modelMatrix, projMatrix, viewport, &obj.x, &obj.y, &obj.z);
-//
-//	if (err)
-//		*err = (res) ? false : true;
-//	return obj;
-//}
-
 
 inline Triple normalizedcross(Triple const& u, Triple const& v)
 {

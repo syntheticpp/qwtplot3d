@@ -556,6 +556,9 @@
         <property name="name">
             <cstring>Toolbar</cstring>
         </property>
+        <property name="enabled">
+            <bool>true</bool>
+        </property>
         <property name="cursor">
             <cursor>0</cursor>
         </property>
@@ -651,6 +654,7 @@
         <action name="Box"/>
         <action name="Frame"/>
         <action name="None"/>
+        <action name="gridlines"/>
         <separator/>
         <action name="wireframe"/>
         <action name="hiddenline"/>
@@ -660,7 +664,6 @@
         <separator/>
         <action name="floordata"/>
         <action name="flooriso"/>
-        <action name="floormesh"/>
         <action name="floornone"/>
         <action name="normals"/>
     </toolbar>
@@ -1266,29 +1269,6 @@
         </action>
         <action>
             <property name="name">
-                <cstring>floormesh</cstring>
-            </property>
-            <property name="toggleAction">
-                <bool>true</bool>
-            </property>
-            <property name="enabled">
-                <bool>true</bool>
-            </property>
-            <property name="iconSet">
-                <iconset>image14</iconset>
-            </property>
-            <property name="text">
-                <string>Floor Mesh</string>
-            </property>
-            <property name="toolTip">
-                <string>Floor Mesh</string>
-            </property>
-            <property name="statusTip">
-                <string>Floor Mesh</string>
-            </property>
-        </action>
-        <action>
-            <property name="name">
                 <cstring>floornone</cstring>
             </property>
             <property name="toggleAction">
@@ -1298,7 +1278,7 @@
                 <bool>true</bool>
             </property>
             <property name="iconSet">
-                <iconset>image15</iconset>
+                <iconset>image14</iconset>
             </property>
             <property name="text">
                 <string>Empty Floor</string>
@@ -1316,7 +1296,7 @@
             <cstring>openMeshFile</cstring>
         </property>
         <property name="iconSet">
-            <iconset>image16</iconset>
+            <iconset>image15</iconset>
         </property>
         <property name="text">
             <string>Open FEM files</string>
@@ -1330,10 +1310,27 @@
             <bool>true</bool>
         </property>
         <property name="iconSet">
-            <iconset>image17</iconset>
+            <iconset>image16</iconset>
         </property>
         <property name="text">
             <string>Show normal vectors</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>gridlines</cstring>
+        </property>
+        <property name="toggleAction">
+            <bool>true</bool>
+        </property>
+        <property name="enabled">
+            <bool>false</bool>
+        </property>
+        <property name="iconSet">
+            <iconset>image17</iconset>
+        </property>
+        <property name="text">
+            <string>Floor Grid</string>
         </property>
     </action>
 </actions>
@@ -1381,16 +1378,16 @@
         <data format="XPM.GZ" length="629">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232540022130543251d2e253d856405bffcbc54105b19c856360003103709cc3534344c4901711341dc144b034b03b0623d6c60504828a3018404884884137009a078622258085d02229a9404924904a98348800d020b278135a14a24c1096598ab9441da4162403d40ab129124c076828c4a84b9101c1570c7c09c049340f71cbd431753a2d69a0b001cf2764f</data>
     </image>
     <image name="image14">
-        <data format="XPM.GZ" length="614">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232540022630543251d2e253d856405bffcbc54105b19c856360003103711cc35344e4c4901abc406068584321a404800712202c325d0c4912412518032cc0e4c0dd8259461ae423328112181a9012c81c506a804bae7e81dba9812b5d65c0048877601</data>
-    </image>
-    <image name="image15">
         <data format="XPM.GZ" length="599">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade65232325400210543251d2e253d856405bffcbc54105b19c856360003b0143630282494d1004202553d5c024d1ca78432cc0e4c0dd8259461aec2a201ab8432cc1fd8344024d03d87ec730c4017895a6b2e0001486945</data>
     </image>
-    <image name="image16">
+    <image name="image15">
         <data format="XPM.GZ" length="394">789c5d8ecb0ac2301045f7f98aa1d915e98344bb103f417129888bc9b4411755d0ba10f1dfede45153ef9064eee166923287c37e0b79291e030e17023ae31df2f6d9f7afe369f31659bd825ac1b8650b911540b0bb5d3beedbb197956abaaa628bce6a2eb6926dad352d9d356c7567ad0f135bab6c63951b1b25a5e42365d22d396321eb1922a6d7dd5f0c19f42ae23c24132a611199bf1cfe34cd6ba330e65214e6cd90677314d824ffee672dbe92b5620d</data>
     </image>
-    <image name="image17">
+    <image name="image16">
         <data format="XPM.GZ" length="3668">789c8d96c76e1c471086ef7c8a85ea2618a5c901860fcc39891249c9f0a1263473dc5d26c3efeeaabf662542c9de5f12f0a1abbb2bf6e8dddbd1f1def6e8edbbb9f1442667eda83d95fbd1db6e7a75f5fce75f7ffc3df7268947fa272e8a51f2e6b7b937fb93513bdab9b9ee0db857a0a83381d7c0bdc958aec1c18475318e2313b801e3073e01a726635a07e726f01db830c1fe005c9ac01db832812fc0b509bc0516133806377136dcb73db00abc0f6e4de01d706fc2fe161c4c88f7c13889bef0a3b309bc018e4d60c497a4269c0fff93cc047e021726dcf7095c9ac047e0ca84f390ffa43661fd182c26f029b8d17c219fbcef6c0207706b02bf07078ddff74f9d4de043e33432c1df4b70aaf9447c84fd69967409fa43a6ce5a5eb75f1c5805467ed2c284f3919fb436613ffa2d6d4de0157067022f817b13f6a31e5adcdccf97276713d6711fd28de6a65570aafe8019fe65f861ff32b836c11efd97355a6fef973d706b023f1be7a909e76560fcc0c8575e9b608f7ecdb51f23cfff99b309fc196cfde6f55e753661ffae31c6c3f3ff024eb226f379c0fc14699cfbbceaa883b563bd5fe6c1baddd709fd5494daef5e8f25e7d97decfbaba22cbc1f116f61f3e6f9dd74368113706fc2fdc86f114c60e4a34cf57ecf1fde83b2c8a214fd47c85f5926b1c74f91b3fdb01ff353d679957b3f613eca364e22f70ff35b6af686f8d9b84a34dfee5f012e558857c66031e13cbc1f556f82fd47633c2f1eef048c80617f05aed3dce78b169cf32cf3fb07b61ff6e3bdac1bad8fd76b796019ea3175d689f279dc76b601c13ae6a3ee4c60e4bbeebf703cb00af7a35e1299701efc9544fdf7f716ef87e4655d7a3ed3819b21df042ee3d6df7b42fc5265a5cf23f97aadf5f4fc9f835b13d6d1cfd299b08ef991de84f3d1ff1aae64ee1ffabdc94a717f04fe36a59eeffd897e6f6c7e900f39754e637f5ff903b837816b70d07ce33cc6fcb45155579ecf5be73af17a13ce6bf3b41bdebfcab9c872af470e2e4cb0772eb3c2df2fc27cb5a2ede1f1a0fe6ddb36adf707e6a9ed4cf01ff1749909ebf0bfb378dd3fcc575799701edeb7aed17af87df8de76ade45e5fb9706eeac6eb5b823bfd22b83dfabfebd376e857cc4717f43e7f4ff0bdc3f87a7c88bf2f67eb8cf3faaaad87f8579c4d607c2f7aeb077fffd10fbdba97f97d4bce269c77030e337bb973d6f7c2efc3f7354445e7f924cc63d0d721f2f7dcd7e3beef3d9fc1d984fda86f48e2d2cfe715679d57ff3e8b7396f8f74a26ce26d8e3fd09d96c3fa19f42fee5bcb1b3098c7950e767f6d7ce599d7a7ed0efc1e607f6d2385b83611df9087551f9f742508f20755679fd1e9cbbbc73fff17e8646e7dffbc5e36f8204e457e60756813d1f6d930ff3773e70dd205ef1fb7bada7cf5bea6cc2f9f8ff49085a20f7b7195882fb371e78b88f9607d69ff1fee4bfc564ffba3593e93b0be16666fbdafa7b7b6eb9e39e039ff0e9d7b5d79e7cb557cb333ee70bbee42bbee69b99c5b77eeb8e5bbee37b1ef384a7fcc08ffcc4cf3fb356fb179ee705b55ee4255ee6155ee5b55f589ff03a6ff0266ff136eff02eeff13ebf7f6dfd3a463ee00ffc910f75d711371aed317fe2cf1c99c5b739e198134e5599c699ab7dc125575c9bf5b79ee80622a1865aeaa8a74027744a67744e173ff29b2ee98aaee9866ee98eee694c139ad2033dd2d38fac798d9ee985e6698116698996a9e7235a51add2dacc7ae633add3066dd2965a6ed30e6fd02eedd1beee7f4f07f4813e7a946e4d877444c7f4494ffccc4211c594504a19e554504915d5b39cd8c9a22622d2e897aad3c728e8aeb19cc8a99cc9b95cc8a55cbdf65baeb9901bb9953bb997b1daba7aadd45826329587573dd8cba33ca9d5bd3c231f83b5bc682eef655eebd5cfac699d0f684b6b7cc9c7f2481d6fca82fa1deb13b9a8a72cc9321fc9231fbab5ac7ccda2acd28676864ad6b4eeadacebdf0dcfefff9db49ff5e02fadfff97dee5f5fa75acb</data>
+    </image>
+    <image name="image17">
+        <data format="XPM.GZ" length="614">789cd3d7528808f055d0d2e72a2e492cc94c5648ce482c52d04a29cdcdad8c8eb5ade6523232540022630543251d2e253d856405bffcbc54105b19c856360003103711cc35344e4c4901abc406068584321a404800712202c325d0c4912412518032cc0e4c0dd8259461ae423328112181a9012c81c506a804bae7e81dba9812b5d65c0048877601</data>
     </image>
 </images>
 <connections>

@@ -143,33 +143,6 @@ SurfacePlot::GridData2Floor()
 }
 
 void 
-SurfacePlot::Grid2Floor()
-{
-	if (actualGridData_->empty())
-		return;
-	
-	unsigned int cstep = resolution();
-	unsigned int rstep = resolution();
-	
-	double zshift = actualGridData_->minimum();
-
-	glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
-	for (unsigned int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
-	{
-		for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-		{
-			glBegin(GL_LINE_LOOP);
-				glVertex3d(actualGridData_->vertices[i][j][0], actualGridData_->vertices[i][j][1], zshift);
-				glVertex3d(actualGridData_->vertices[i+cstep][j][0],actualGridData_->vertices[i+cstep][j][1], zshift);
-				glVertex3d(actualGridData_->vertices[i+cstep][j+rstep][0],actualGridData_->vertices[i+cstep][j+rstep][1], zshift);
-				glVertex3d(actualGridData_->vertices[i][j+rstep][0],actualGridData_->vertices[i][j+rstep][1], zshift);
-			glEnd();
-		}
-	}
-}
-
-
-void 
 SurfacePlot::GridIsolines2Floor()
 {
 	if (isolines() <= 0 || actualGridData_->empty())

@@ -14,8 +14,10 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	init(first,second);
 
 	setAxesColor(RGBA(0,0,0,1));
+	setGridLinesColor(RGBA(0.2,0.2,0.2,1));
 	setNumberFont("Courier", 12);
 	setNumberColor(RGBA(0,0,0));
+	setGridLines(false, false);
 }
 
 CoordinateSystem::~CoordinateSystem()
@@ -119,12 +121,17 @@ CoordinateSystem::draw()
 
 	if (autoDecoration())
 		chooseAxes();
-
-	drawMajorGrid();
-	drawMinorGrid();
 	
 	Drawable::draw();
 
+	if( style_ == NOCOORD)
+		return;
+
+	if (majorgridlines_)
+		drawMajorGridLines();
+	if (minorgridlines_)
+		drawMinorGridLines();
+	
 	//	restoreGLState();
 }
 
@@ -527,18 +534,74 @@ CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_
 }
 
 void 
-CoordinateSystem::drawMajorGrid()
+CoordinateSystem::setGridLines(bool majors, bool minors) 
 {
+	majorgridlines_ = majors; 
+	minorgridlines_ = minors;
+} 
+
+void 
+CoordinateSystem::drawMajorGridLines()
+{
+	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
 	setDeviceLineWidth(axes[X1].majLineWidth());
 
-	glBegin( GL_LINES );
-//		glVertex3d( beg_.x, beg_.y, beg_.z); 
-//		glVertex3d( end_.x, end_.y, end_.z);
-	glEnd();
+	unsigned i=0;
 	
+	Axis axpair[2];
+
+	axpair[0] = axes[X1];
+	axpair[1] = axes[X4];
+	
+	glBegin( GL_LINES );
+		double length = axpair[1].begin().y-axpair[0].begin().y;
+		for (i=0; i!=axpair[0].majorPositions().size(); ++i)
+		{
+			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
+			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y + length, axpair[0].majorPositions()[i].z ); 
+		}
+		axpair[0] = axes[Y1];
+		axpair[1] = axes[Y2];
+		length = axpair[1].begin().x-axpair[0].begin().x;
+		for (i=0; i!=axpair[0].majorPositions().size(); ++i)
+		{
+			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
+			glVertex3d( axpair[0].majorPositions()[i].x + length, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
+		}
+	glEnd();
 }
 
 void 
-CoordinateSystem::drawMinorGrid()
+CoordinateSystem::drawMinorGridLines()
 {
+	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
+	setDeviceLineWidth(axes[X1].minLineWidth());
+
+	unsigned i=0;
+	
+	Axis axpair[2];
+
+	axpair[0] = axes[X1];
+	axpair[1] = axes[X4];
+	
+	glBegin( GL_LINES );
+		double length = axpair[1].begin().y-axpair[0].begin().y;
+		for (i=0; i!=axpair[0].minorPositions().size(); ++i)
+		{
+			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
+			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y + length, axpair[0].minorPositions()[i].z ); 
+		}
+		axpair[0] = axes[Y1];
+		axpair[1] = axes[Y2];
+		length = axpair[1].begin().x-axpair[0].begin().x;
+		for (i=0; i!=axpair[0].minorPositions().size(); ++i)
+		{
+			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
+			glVertex3d( axpair[0].minorPositions()[i].x + length, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
+		}
+	glEnd();
 }

@@ -22,8 +22,8 @@ public:
 	
 	virtual void draw();
 
-	void setPosition(const Qwt3D::Triple& beg, const Qwt3D::Triple& end);
-	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;}
+	void setPosition(const Qwt3D::Triple& beg, const Qwt3D::Triple& end); //!< Positionate axis
+	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;} //!< Get axis' position
 	Qwt3D::Triple begin() const { return beg_; }
 	Qwt3D::Triple end() const { return end_; }
 
@@ -41,30 +41,35 @@ public:
 	void setLabelColor(Qwt3D::RGBA col);
 	void setLabel(bool d) {drawLabel_ = d;}
 
-	void setScale(bool d) {drawTics_ = d;}
-	void setNumbers(bool d) {drawNumbers_ = d;}
-	bool numbers() const {return drawNumbers_;}
-	void setNumberColor(Qwt3D::RGBA col);
-	Qwt3D::RGBA numberColor() const {return numbercolor_;}
+	void setScale(bool d) {drawTics_ = d;} //!< Turns scale drawing on or off
+	bool scale() const {return drawTics_;} //!< Returns, if scale drawing is on or off
+	void setNumbers(bool d) {drawNumbers_ = d;} //!< Turns number drawing on or off
+	bool numbers() const {return drawNumbers_;} //!< Returns, if number drawing is on or off
+	void setNumberColor(Qwt3D::RGBA col); //!< Sets the color for axes numbers
+	Qwt3D::RGBA numberColor() const {return numbercolor_;} //!< Returns the color for axes numbers
+	//! Sets font for numbering
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void setNumberFont(QFont const&);
-	void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;}
+	void setNumberFont(QFont const&); //!< Overloaded member, works like the above function
+	void setNumberAnchor(Qwt3D::ANCHOR a) { scaleNumberAnchor_ = a;} //!< Sets anchor position for numbers
 
-	void setAutoScale(bool val = true) {autoscale_ = val;};
-	bool autoScale() const { return autoscale_;}
+	void setAutoScale(bool val = true) {autoscale_ = val;} //!< Turns Autoscaling on or off
+	bool autoScale() const { return autoscale_;} //!< actual Autoscaling mode
 
-	void setMajors(int val);
-	void setMinors(int val);
-	int majors() const { return majorintervals_; }
-	int minors() const { return minorintervals_; }
+	void setMajors(int val); //! Requests major intervals (maybe changed, if autoscaling is present)
+	void setMinors(int val); //! Requests minor intervals
+	int majors() const { return majorintervals_; } //!< Returns number of major intervals
+	int minors() const { return minorintervals_; } //!< Returns number of minor intervals
+	Qwt3D::TripleField const& majorPositions() const {return majorpos_;} //!< Returns positions for actual major tics (also if invisible)
+	Qwt3D::TripleField const& minorPositions() const {return minorpos_;} //!< Returns positions for actual minor tics (also if invisible)
 
+	//! Sets line width for axis components
 	void setLineWidth(double val, double majfac = 1, double minfac = 0.5);
 	double lineWidth() const { return lineWidth_;} //!< \return Line width for axis body
 	double majLineWidth() const { return majLineWidth_;} //!< \return Line width for major tics
 	double minLineWidth() const { return minLineWidth_;} //!< \return Line width for minor tics
 
-	void setLimits(double start, double stop) {start_=start; stop_=stop;}
-	void limits(double& start, double& stop) const {start = start_; stop = stop_;}
+	void setLimits(double start, double stop) {start_=start; stop_=stop;} //!< Sets interval
+	void limits(double& start, double& stop) const {start = start_; stop = stop_;} //!< Returns axis interval
 
 	
 private:
@@ -73,7 +78,7 @@ private:
 	void drawBase();
 	void drawTics();
 	void drawNumber(Qwt3D::Triple Pos, int mtic);
-	void drawTic(Qwt3D::Triple nadir, double length);
+	Triple drawTic(Qwt3D::Triple nadir, double length);
 	
 	
 	Qwt3D::ANCHOR scaleNumberAnchor_;
@@ -81,6 +86,7 @@ private:
 	std::vector<LabelPixmap> markerLabel_;
 
 	Qwt3D::Triple beg_, end_;
+	Qwt3D::TripleField majorpos_, minorpos_; //! vectors, holding major resp. minor tic positions;
 
 	Qwt3D::Triple ncube_beg_, ncube_end_; //!< enclosing parallelepiped for axis numbering
 

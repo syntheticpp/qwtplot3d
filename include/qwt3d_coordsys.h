@@ -13,7 +13,6 @@ class QWT3D_EXPORT CoordinateSystem : public Drawable
 {
 
 public:
-	
 	explicit CoordinateSystem(Qwt3D::Triple blb = Qwt3D::Triple(0,0,0), Qwt3D::Triple ftr = Qwt3D::Triple(0,0,0), Qwt3D::COORDSTYLE = Qwt3D::BOX);
   ~CoordinateSystem();	
 	
@@ -28,6 +27,8 @@ public:
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setNumberFont(QFont const& font);
 	void setNumberColor(Qwt3D::RGBA val);
+
+	void setGridLinesColor(Qwt3D::RGBA val) {gridlinecolor_ = val;}
 	
 	void setLabelFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	void setLabelFont(QFont const& font);
@@ -47,20 +48,20 @@ public:
 	bool lineSmooth() const {return smooth_;}            //!< smooth axes ? 
 
 	void draw();
-
-	void drawMajorGrid(); //!< Draws a grid between the major tics on bottom
-	void drawMinorGrid(); //!< Draws a grid between the minor tics on bottom
-
+	
+	//! Defines whether a grid between the major and/or minor tics should be drawn on bottom
+	void setGridLines(bool majors, bool minors); 
+	
 	std::vector<Axis> axes;
 
-private:
 
+private:
 	void destroy();
 	
 	Qwt3D::Triple first_, second_;
 	Qwt3D::COORDSTYLE style_;
 	
-	double ared_, agreen_, ablue_; 
+	Qwt3D::RGBA gridlinecolor_;
 
 	bool smooth_;
 
@@ -68,8 +69,11 @@ private:
 	
 	void chooseAxes();
 	void autoDecorateExposedAxis(Axis& ax, bool left);
+	void drawMajorGridLines(); //!< Draws a grid between the major tics on bottom
+	void drawMinorGridLines(); //!< Draws a grid between the minor tics on bottom
 
 	bool autodecoration_;
+	bool majorgridlines_, minorgridlines_;
 };
 
 } // ns
