@@ -37,7 +37,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
 	floorstyle_ = NOFLOOR;
-	isolines_ = 5;
+	isolines_ = 10;
 
 	setPolygonOffset(0.5);
 	setMeshColor(RGBA(0.0,0.0,0.0));
@@ -418,6 +418,7 @@ QwtPlot3D::calcFloorListAsData()
 	glEnd();
 }
 
+/*
 void 
 QwtPlot3D::calcFloorListAsIsolines()
 {
@@ -476,6 +477,108 @@ QwtPlot3D::calcFloorListAsIsolines()
 								}
 							}
 						}
+					}
+				}
+			}
+		}
+	}
+}
+*/
+
+void 
+QwtPlot3D::calcFloorListAsIsolines()
+{
+	if (isolines_ <= 0 || actualData_.empty())
+		return;
+
+	double step = (actualData_.maximum() - actualData_.minimum()) / isolines_;		
+
+	RGBA col;
+	int cstep = resolution_;
+	int rstep = resolution_;
+
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	unsigned i,j;
+	double zshift = actualData_.minimum();
+	for (int k = isolines_; k > 0; --k) 
+	{
+		double hi = actualData_.minimum() + k * step;
+		double lo = hi - step;
+		
+		for (i = cstep; i < actualData_.columns() - cstep; i += cstep) 
+		{
+			for (j = rstep; j < actualData_.rows() - rstep; j += rstep) 
+			{
+				col = (*dataColor_)(
+					actualData_.vertices[i][j][0],
+					actualData_.vertices[i][j][1],
+					actualData_.vertices[i][j][2]);
+
+				glColor4d(col.r, col.g, col.b, col.a);
+				
+				Triple thi = Triple(	actualData_.vertices[i][j][0],
+															actualData_.vertices[i][j][1],
+															actualData_.vertices[i][j][2]);
+				if ( lo<thi.z && thi.z<hi)
+				{
+					Triple tlo[8];
+					tlo[0] = Triple(actualData_.vertices[i+cstep][j][0],
+												 	actualData_.vertices[i+cstep][j][1],
+										  		actualData_.vertices[i+cstep][j][2]);
+					tlo[1] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
+									  			actualData_.vertices[i+cstep][j+rstep][1],
+								  				actualData_.vertices[i+cstep][j+rstep][2]);
+					tlo[2] = Triple(actualData_.vertices[i][j+rstep][0],
+													actualData_.vertices[i][j+rstep][1],
+								 					actualData_.vertices[i][j+rstep][2]);
+					tlo[3] = Triple(actualData_.vertices[i-cstep][j+rstep][0],
+													actualData_.vertices[i-cstep][j+rstep][1],
+								 					actualData_.vertices[i-cstep][j+rstep][2]);
+					tlo[4] = Triple(actualData_.vertices[i-cstep][j][0],
+													actualData_.vertices[i-cstep][j][1],
+								 					actualData_.vertices[i-cstep][j][2]);
+					tlo[5] = Triple(actualData_.vertices[i-cstep][j-rstep][0],
+												 	actualData_.vertices[i-cstep][j-rstep][1],
+										  		actualData_.vertices[i-cstep][j-rstep][2]);
+					tlo[6] = Triple(actualData_.vertices[i][j-rstep][0],
+									  			actualData_.vertices[i][j-rstep][1],
+								  				actualData_.vertices[i][j-rstep][2]);
+					tlo[7] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
+													actualData_.vertices[i+cstep][j-rstep][1],
+								 					actualData_.vertices[i+cstep][j-rstep][2]);
+					
+					Triple tlo0 = tlo[0]; // remember for last step in while
+					
+					unsigned k=0;
+					while (k<8)
+					{
+						tlo[0] = tlo[k];
+						tlo[1] = (k<7) ? tlo[k+1] : tlo0;
+						
+						Triple rp1, rp2;
+						if (tlo[0].z <= lo)
+						{
+							rp1 = tlo[0] + ((lo - tlo[0].z) / (thi.z - tlo[0].z)) * (thi-tlo[0]);
+							if (tlo[1].z <= lo)
+								rp2 = tlo[1] + ((lo - tlo[1].z) / (thi.z - tlo[1].z)) * (thi-tlo[1]);
+							else
+								rp2 = tlo[0] + ((lo - tlo[0].z) / (tlo[1].z - tlo[0].z)) * (tlo[1]-tlo[0]);
+							glBegin(GL_LINES);
+								glVertex3d(rp1.x,rp1.y,zshift);
+								glVertex3d(rp2.x,rp2.y,zshift);
+							glEnd();
+						}
+						else if (tlo[1].z <= lo)
+						{
+							rp1 = tlo[1] + ((lo - tlo[1].z) / (thi.z - tlo[1].z)) * (thi-tlo[1]);
+							rp2 = tlo[1] + ((lo - tlo[1].z) / (tlo[0].z - tlo[1].z)) * (tlo[0]-tlo[1]);
+							glBegin(GL_LINES);
+								glVertex3d(rp1.x,rp1.y,zshift);
+								glVertex3d(rp2.x,rp2.y,zshift);
+							glEnd();
+						}
+						++k;
 					}
 				}
 			}
