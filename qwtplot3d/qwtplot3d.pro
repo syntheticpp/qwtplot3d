@@ -71,9 +71,9 @@ HEADERS+=include/qwt3d_gl2ps.h
 SOURCES+=src/qwt3d_gl2ps.cpp
 gl2ps {
 	INCLUDEPATH   += 3rdparty/gl2ps
-	SOURCES	      += 3rdparty/gl2ps/gl2ps.c \
-                   3rdparty/gl2ps/gl2pdf.c
-  HEADERS       += 3rdparty/gl2ps/gl2ps.h \
-                   3rdparty/gl2ps/gl2ps_p.h    
+	
+	SOURCES	      += 3rdparty/gl2ps/gl2ps.c
+  
+  HEADERS       += 3rdparty/gl2ps/gl2ps.h
 }
 

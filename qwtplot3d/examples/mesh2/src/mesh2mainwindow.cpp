@@ -179,7 +179,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		
 		rosenbrock.setMesh(70,71);
 		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
-		//rosenbrock.setDomain(-5,5.5,-1,2);
+		//rosenbrock.setDomain(-0.0000005,0.0000007,-0.000003,0.000002);
 		rosenbrock.setMinZ(-100);
 		
 		rosenbrock.create();

@@ -25,7 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>Layout6</cstring>
             </property>
@@ -143,9 +143,17 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="1" column="0">
+        <widget class="QCheckBox" row="1" column="2">
             <property name="name">
-                <cstring>Layout9</cstring>
+                <cstring>meshsmooth</cstring>
+            </property>
+            <property name="text">
+                <string>Smooth data mesh</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="1">
+            <property name="name">
+                <cstring>Layout8_2</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -157,29 +165,86 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <spacer>
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>Spacer7</cstring>
+                        <cstring>TextLabel1_2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Label gap</string>
+                    </property>
+                </widget>
+                <widget class="QSlider">
+                    <property name="name">
+                        <cstring>labelgapslider</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>10</number>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
                     </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
+                    <property name="tickmarks">
+                        <enum>Right</enum>
                     </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>525</width>
-                            <height>0</height>
-                        </size>
+                    <property name="tickInterval">
+                        <number>1</number>
                     </property>
-                </spacer>
-                <widget class="QCheckBox">
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>Layout8</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLabel">
                     <property name="name">
-                        <cstring>meshsmooth</cstring>
+                        <cstring>TextLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>Smooth data mesh</string>
+                        <string>Number gap</string>
+                    </property>
+                </widget>
+                <widget class="QSlider">
+                    <property name="name">
+                        <cstring>numbergapslider</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maxValue">
+                        <number>10</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="tickmarks">
+                        <enum>Right</enum>
+                    </property>
+                    <property name="tickInterval">
+                        <number>1</number>
                     </property>
                 </widget>
             </hbox>
@@ -261,6 +326,37 @@
             <item>
                 <property name="text">
                     <string>BSP</string>
+                </property>
+            </item>
+        </widget>
+        <widget class="QComboBox">
+            <property name="name">
+                <cstring>fontsizeCB</cstring>
+            </property>
+            <property name="currentItem">
+                <number>0</number>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Change font size</string>
+            </property>
+            <item>
+                <property name="text">
+                    <string>8</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>10</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>12</string>
+                </property>
+            </item>
+            <item>
+                <property name="text">
+                    <string>16</string>
                 </property>
             </item>
         </widget>

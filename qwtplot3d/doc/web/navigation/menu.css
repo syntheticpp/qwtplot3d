@@ -11,3 +11,5 @@ TD.inside{background-color: #FAF8D0; text-align: center; font-size:10pt;}
 TD.selected_outside{background-color: #0000E0}
 TD.alt_outside{background-color:#88BBAA}
 
+TD.soutside{background-color: #004040} 
+TD.sinside{font-family:Arial,sans-serif; font-weight:bold; background-color: #FAF8D0; text-align: center; font-size:10pt;} 

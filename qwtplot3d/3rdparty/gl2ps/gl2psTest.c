@@ -1,11 +1,7 @@
+/* $Id$ */
 /*
  * GL2PS, an OpenGL to PostScript Printing Library
- * Copyright (C) 1999-2003 Christophe Geuzaine 
- *
- * $Id$
- *
- * E-mail: geuz@geuz.org
- * URL: http://www.geuz.org/gl2ps/
+ * Copyright (C) 1999-2003 Christophe Geuzaine <geuz@geuz.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,19 +20,28 @@
  * Contributor(s):
  *   Rouben Rostamian <rostamian@umbc.edu>
  *   Guy Barrand <barrand@lal.in2p3.fr>
+ *
+ * For the latest info about gl2ps, see http://www.geuz.org/gl2ps/
  */
 
 /*
-  To compile on a Linux system, type:
+  To compile on Linux:
+  gcc -O3 gl2psTest.c gl2ps.c -lglut -lGL -L/usr/X11R6/lib -lX11 -lXi -lXmu -lm
 
-  gcc -O3 gl2psTest.c gl2ps.c -lglut -lGL -L/usr/X11R6/lib -lX11 -lm
+  To compile on MacOSX:
+  gcc -O3 gl2psTest.c gl2ps.c -framework OpenGL -framework GLUT -framework Cocoa
 */
 
+#ifdef __APPLE__
+#  include <GLUT/glut.h>
+#else
+#  include <GL/glut.h>
+#endif
 
-#pragma comment( linker, "/entry:\"mainCRTStartup\"" )  // set the entry point to be main()
+#ifdef _MSC_VER /* MSVC Compiler */
+#pragma comment(linker, "/entry:\"mainCRTStartup\"")
+#endif
 
-
-#include <GL/glut.h>
 #include <string.h>
 #include "gl2ps.h"
 
@@ -114,18 +119,15 @@ static char *pixmap[] = {
   "****************************************************************"};
 
 void init(void){
-  float pos[3] = {0.,0.,1000.};
-
   glEnable(GL_DEPTH_TEST);
+  glDepthFunc(GL_LESS);
   glShadeModel(GL_SMOOTH);
-  glLightfv(GL_LIGHT0, GL_POSITION, pos);
   glEnable(GL_LIGHT0);
   glEnable(GL_SCISSOR_TEST);
 }
 
 void triangles(void){
   /* two intersecting triangles */
-  glDisable(GL_LIGHTING);
   glBegin(GL_TRIANGLES);
   
   glColor3f(1., 0., 0.);
@@ -213,8 +215,8 @@ void extras(void){
 }
 
 void objects(void){
-  glEnable(GL_LIGHTING);
   glPushMatrix();
+  glEnable(GL_LIGHTING);
   glRotatef(rotation, 2., 0., 1.);
   if(teapot){
     glutSolidTeapot(0.7);
@@ -222,6 +224,7 @@ void objects(void){
   else{
     glutSolidTorus(0.3, 0.6, 20, 20);
   }
+  glDisable(GL_LIGHTING);
   glPopMatrix();
 }
 
@@ -238,13 +241,14 @@ void printstring(char *string){
 }
 
 void text(){
-  double x = -1.25, y = -0.58, dy = 0.13;
+  double x = -1.25, y = -0.46, dy = 0.13;
 
-  glDisable(GL_LIGHTING);
   glColor3f(1., 1., 0.);
 
   glRasterPos2d(x, y); y -= dy;
   printstring("Press:");
+  glRasterPos2d(x, y); y -= dy;
+  printstring("  p: to change the print format (PostScript, PDF)");
   glRasterPos2d(x, y); y -= dy;
   printstring("  s: to save the images");
   glRasterPos2d(x, y); y -= dy;
@@ -258,7 +262,6 @@ void text(){
 }
 
 void cube(void) {
-  glDisable(GL_LIGHTING);
   glLineWidth(4.0);
   glColor3d (1.0,0.0,0.);   
   glBegin(GL_POLYGON);
@@ -333,15 +336,14 @@ void draw_single(void){
 void draw_multi(void){
   GLint viewport[4];
 
-  glScissor(0., 0., window_w, window_h);
+  glScissor(0, 0, window_w, window_h);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   /* First viewport with triangles, teapot or torus, etc. */
-
-  glViewport(window_w * 0.05, window_h * 0.525 , 
-	     (GLsizei) (window_w * 0.9), (GLsizei) (window_h * 0.45));
-  glScissor(window_w * 0.05, window_h * 0.525 , 
-	    (GLsizei) (window_w * 0.9), (GLsizei) (window_h * 0.45));
+  glViewport((GLint)(window_w * 0.05), (GLint)(window_h * 0.525), 
+	     (GLsizei)(window_w * 0.9), (GLsizei)(window_h * 0.45));
+  glScissor((GLint)(window_w * 0.05), (GLint)(window_h * 0.525), 
+	    (GLsizei)(window_w * 0.9), (GLsizei)(window_h * 0.45));
   glClearColor(0.3, 0.3, 0.3, 0.);
   glGetIntegerv(GL_VIEWPORT, viewport);
 
@@ -360,12 +362,11 @@ void draw_multi(void){
 
   gl2psEndViewport();
 
-
   /* Second viewport with cube, image, etc. */
-  glViewport(window_w * 0.05, window_h * 0.025 , 
-	     (GLsizei) (window_w * 0.9), (GLsizei) (window_h * 0.45));
-  glScissor(window_w * 0.05, window_h * 0.025 , 
-	     (GLsizei) (window_w * 0.9), (GLsizei) (window_h * 0.45));
+  glViewport((GLint)(window_w * 0.05), (GLint)(window_h * 0.025), 
+	     (GLsizei)(window_w * 0.9), (GLsizei)(window_h * 0.45));
+  glScissor((GLint)(window_w * 0.05), (GLint)(window_h * 0.025), 
+	     (GLsizei)(window_w * 0.9), (GLsizei)(window_h * 0.45));
   glClearColor(0.5, 0.5, 0.5, 0.);
 
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -383,7 +384,7 @@ void draw_multi(void){
   cube();
   image(-0.8, -0.8);
   image(0.8, 0.2);
-   extras();
+  extras();
   glPopMatrix();
 
   gl2psEndViewport();
@@ -405,7 +406,7 @@ void reshape(int w, int h){
   window_w = w;
   window_h = h;
 
-  glViewport(0, 0, (GLsizei) window_w, (GLsizei) window_h);
+  glViewport(0, 0, (GLsizei)window_w, (GLsizei)window_h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(-1.3,1.3, -1.3,1.3, -1.3,1.3);
@@ -415,10 +416,16 @@ void reshape(int w, int h){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void writeps(int format, int sort, int options, int nbcol, char *file){
+void writefile(int format, int sort, int options, int nbcol,
+	       char *filename, char *extension){
   FILE *fp;
+  char file[256];
   int state = GL2PS_OVERFLOW, buffsize = 0;
   GLint viewport[4];
+
+  strcpy(file, filename);
+  strcat(file, ".");
+  strcat(file, extension);
 
   viewport[0] = 0;
   viewport[1] = 0;
@@ -452,6 +459,8 @@ void writeps(int format, int sort, int options, int nbcol, char *file){
 
 void keyboard(unsigned char key, int x, int y){
   int opt;
+  static int format = GL2PS_EPS;
+  static char *ext = "eps";
 
   switch(key){
   case 27:
@@ -461,6 +470,18 @@ void keyboard(unsigned char key, int x, int y){
   case 't':
     teapot = !teapot;
     display();
+    break;
+  case 'p':
+    if(format == GL2PS_EPS){
+      format = GL2PS_PDF;
+      ext = "pdf";
+    }
+    else{
+      format = GL2PS_EPS;
+      ext = "eps";
+    }
+    printf("Print format changed to '%s'\n",
+	   (format == GL2PS_EPS) ? "EPS" : "PDF");
     break;
   case 'v':
     display_multi = !display_multi;
@@ -475,28 +496,27 @@ void keyboard(unsigned char key, int x, int y){
     break;
   case 's':
     opt = GL2PS_DRAW_BACKGROUND;
-    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimple.eps");
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimple", ext);
 
     opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
-    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled.eps");
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled", ext);
 
     opt = GL2PS_NO_PS3_SHADING | GL2PS_DRAW_BACKGROUND;
-    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading2.eps");
-    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8.eps");
-    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 16, "outSimpleShading16.eps");
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading2", ext);
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8", ext);
+    writefile(format, GL2PS_SIMPLE_SORT, opt, 16, "outSimpleShading16", ext);
 
     opt = GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
-    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outBsp.eps");
+    writefile(format, GL2PS_BSP_SORT, opt, 0, "outBsp", ext);
 
     opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
-    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outBspCulled.eps");
-    writeps(GL2PS_PDF, GL2PS_BSP_SORT, opt, 0, "outBspCulled.pdf");
+    writefile(format, GL2PS_BSP_SORT, opt, 0, "outBspCulled", ext);
 
     opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_NO_TEXT;
-    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outLatex.eps");
+    writefile(format, GL2PS_BSP_SORT, opt, 0, "outLatex", ext);
 
     opt = GL2PS_NONE;
-    writeps(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex.tex");
+    writefile(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex", "tex");
 
     printf("GL2PS %d.%d.%d done with all images\n",
 	   GL2PS_MAJOR_VERSION, GL2PS_MINOR_VERSION, GL2PS_PATCH_VERSION);

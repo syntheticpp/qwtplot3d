@@ -4,7 +4,7 @@
 
 using namespace Qwt3D;
 
-bool Label::printerFonts_ = false;
+bool Label::devicefonts_ = false;
 
 Label::Label()
 {
@@ -30,16 +30,17 @@ Label::init()
 	beg_ = Triple(0.0, 0.0, 0.0);
 	end_ = beg_;
 	pos_ = beg_;
-	setColor(0,0,0,1);
+	setColor(0,0,0);
 	pm_ = QPixmap(0, 0, -1);
 	font_ = QFont();
 	anchor_ = BottomLeft;
+	gap_ = 0;
 }
 
 void 
-Label::usePrinterFonts(bool val)
+Label::useDeviceFonts(bool val)
 {
-	printerFonts_ = val;
+	devicefonts_ = val;
 }
 
 void 
@@ -50,7 +51,6 @@ Label::setFont(const QString & family, int pointSize, int weight, bool italic)
 }
 
 /**
- 
 example:
 
 \verbatim
@@ -122,36 +122,55 @@ Label::update()
 	tex_ = QGLWidget::convertToGLFormat( buf_ );	  // flipped 32bit RGBA ?		
 }
 
+/**
+Adds an additional shift to the anchor point. This happens in a more or less intelligent manner
+depending on the nature of the anchor:
+\verbatim
+anchor type         shift
+
+left aligned         -->
+right aligned        <--
+top aligned          top-down            
+bottom aligned       bottom-up
+\endverbatim
+The unit is user space dependend (one pixel on screen - play around to get satisfying results)
+*/
+void
+Label::adjust(int gap)
+{
+	gap_ = gap;
+}
+
 void
 Label::convert2screen()
 {
 	Triple start = World2ViewPort(pos_);
-
+	
 	switch (anchor_)
 	{
 		case BottomLeft :
 			beg_ = pos_;
 			break;
 		case BottomRight:
-			beg_ = ViewPort2World(start - Triple(width(), 0, 0));
+			beg_ = ViewPort2World(start - Triple(width() + gap_, 0, 0));
 			break;
 		case BottomCenter:
-			beg_ = ViewPort2World(start - Triple(width() / 2, 0, 0));
+			beg_ = ViewPort2World(start - Triple(width() / 2, -gap_, 0));
 			break;
 		case TopRight:
-			beg_ = ViewPort2World(start - Triple(width(), height(), 0));
+			beg_ = ViewPort2World(start - Triple(width() + gap_, height(), 0));
 			break;
 		case TopLeft:
-			beg_ = ViewPort2World(start - Triple(0, height(), 0));
+			beg_ = ViewPort2World(start - Triple(-gap_, height(), 0));
 			break;
 		case TopCenter:
-			beg_ = ViewPort2World(start - Triple(width() / 2, height(), 0));
+			beg_ = ViewPort2World(start - Triple(width() / 2, height() + gap_, 0));
 			break;
 		case CenterLeft:
-			beg_ = ViewPort2World(start - Triple(0, height() / 2, 0));
+			beg_ = ViewPort2World(start - Triple(-gap_, height() / 2, 0));
 			break;
 		case CenterRight:
-			beg_ = ViewPort2World(start - Triple(width(), height() / 2, 0));
+			beg_ = ViewPort2World(start - Triple(width() + gap_, height() / 2, 0));
 			break;
 		case Center:
 			beg_ = ViewPort2World(start - Triple(width() / 2, height() / 2, 0));
@@ -159,6 +178,7 @@ Label::convert2screen()
 		default:
 			break;
 	}
+	start = World2ViewPort(beg_);
 	end_ = ViewPort2World(start + Triple(width(), height(), 0));	
 }
 
@@ -185,19 +205,16 @@ Label::draw()
 	int w = tex_.width();
 	int h = tex_.height();
  
-	drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits(), printerFonts_ );
-
-	if (printerFonts_)
+	if (devicefonts_)
 	{
-		Triple start = World2ViewPort(pos_);
-		double gapx	 = ViewPort2World(start + Triple(4, 0, 0)).x - pos_.x;
-		double gapy	 = ViewPort2World(start + Triple(0, 7, 0)).y - pos_.y;
-		double gapz  = 0;
-		
-		Triple gap(gapx,gapy,gapz);
-
-		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, color, anchor_, gap);
+		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
+		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
 	}
+	else
+	{
+		glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());	
+	}
+
 
 	glAlphaFunc(func,v);
 	Enable(GL_ALPHA_TEST, b);
