@@ -1,6 +1,7 @@
 #ifndef __plot3d_2003_06_09_12_14__
 #define __plot3d_2003_06_09_12_14__
 
+#include "qwt3d_data.h"
 #include "qwt3d_extglwidget.h"
 #include "qwt3d_coordsys.h"
 #include "qwt3d_enrichment_std.h"

@@ -87,7 +87,8 @@ void SurfacePlot::setResolution( int res )
 
 void SurfacePlot::updateNormals()
 {
-	SaveGlDeleteLists(displaylists_p[NormalObject], 1); 
+	makeCurrent();
+  SaveGlDeleteLists(displaylists_p[NormalObject], 1); 
 	
 	if (plotStyle() == NOPLOT && !normals() || !actualData_p)
 		return;
@@ -101,6 +102,37 @@ void SurfacePlot::updateNormals()
     createNormalsG();
 		
 	glEndList();
+}
+
+void SurfacePlot::drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col)
+{
+	if (intersection.empty())
+    return;
+	
+  glColor4d(col.r, col.g, col.b, col.a);
+	if (intersection.size()>2)
+	{
+		glBegin(GL_LINE_STRIP);
+		for (unsigned dd = 0; dd!=intersection.size(); ++dd)
+		{
+			glVertex3d(intersection[dd].x, intersection[dd].y, intersection[0].z);
+		}
+		glEnd();
+		glBegin(GL_POINTS);
+			glVertex3d(intersection[0].x,intersection[0].y,intersection[0].z);
+		glEnd();
+	}
+	else if (intersection.size() == 2)
+	{
+		glBegin(GL_LINES);
+			glVertex3d(intersection[0].x,intersection[0].y,intersection[0].z);
+			glVertex3d(intersection[1].x,intersection[1].y,intersection[0].z);
+			
+			// small pixel gap problem (see OpenGL spec.)
+			glVertex3d(intersection[1].x,intersection[1].y,intersection[0].z);
+			glVertex3d(intersection[0].x,intersection[0].y,intersection[0].z);
+		glEnd();
+	}
 }
 
 void SurfacePlot::createData()
@@ -150,29 +182,42 @@ void SurfacePlot::createPoints()
 void SurfacePlot::createEnrichment(Enrichment& p)
 {
 	if (!actualData_p)
-    return;
-  
-  //todo future work
-  if (p.type() != Enrichment::VERTEXENRICHMENT)
-    return;
-  
-  p.assign(*this);
-	p.drawBegin();
+    return;  
 
-  VertexEnrichment* ve = (VertexEnrichment*)&p; 
-  if (actualData_p->datatype == Qwt3D::POLYGON)
-  {	
-    for (unsigned i = 0; i != actualDataC_->normals.size(); ++i) 
-	    ve->draw(actualDataC_->nodes[i]);
+  switch(p.type()) {
+  case Enrichment::USERENRICHMENT:
+    {
+      p.assign(*this);
+      UserEnrichment* ue = (UserEnrichment*)&p; 
+	    ue->drawBegin();
+      ue->draw();
+      ue->drawEnd();
+    }
+    break;
+  case Enrichment::VERTEXENRICHMENT:
+    {
+      p.assign(*this);
+	    p.drawBegin();
+
+      VertexEnrichment* ve = (VertexEnrichment*)&p; 
+      if (actualData_p->datatype == Qwt3D::POLYGON)
+      {	
+        for (unsigned i = 0; i != actualDataC_->normals.size(); ++i) 
+	        ve->draw(actualDataC_->nodes[i]);
+      }
+      else if (actualData_p->datatype == Qwt3D::GRID)
+ 	    {
+        int step = resolution();
+        for (int i = 0; i <= actualDataG_->columns() - step; i += step) 
+          for (int j = 0; j <= actualDataG_->rows() - step; j += step) 
+  			    ve->draw(actualDataG_->point(i,j));
+      }
+      p.drawEnd(); 
+    }
+    break;
+  case Enrichment::EDGEENRICHMENT:
+  	break;
+  default:
+    break; //todo
   }
-  else if (actualData_p->datatype == Qwt3D::GRID)
- 	{
-    int step = resolution();
-    for (int i = 0; i <= actualDataG_->columns() - step; i += step) 
-      for (int j = 0; j <= actualDataG_->rows() - step; j += step) 
-  			ve->draw(Triple(actualDataG_->vertices[i][j][0],
-										              actualDataG_->vertices[i][j][1],
-                                  actualDataG_->vertices[i][j][2]));
-  }
-  p.drawEnd(); 
 }

@@ -10,22 +10,25 @@ OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
 DESTDIR      			= lib
+#DESTDIR      			= ../../lib
+#QT += opengl
 
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll 
 win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
-win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL 
+win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL -GX
 
 # Comment the next line, if you have zlib on your windows system
 # win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
-unix:VERSION = 0.2.4
+unix:VERSION = 0.3.0
 
 # Input
 SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_color.cpp \
            src/qwt3d_coordsys.cpp \
+           src/qwt3d_data.cpp \
            src/qwt3d_drawable.cpp \
            src/qwt3d_lighting.cpp \
            src/qwt3d_colorlegend.cpp \
@@ -53,6 +56,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_types.h \
 	         include/qwt3d_axis.h \
            include/qwt3d_coordsys.h \
+           include/qwt3d_data.h \
            include/qwt3d_drawable.h \
            include/qwt3d_helper.h \
            include/qwt3d_label.h \

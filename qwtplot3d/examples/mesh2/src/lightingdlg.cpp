@@ -92,18 +92,13 @@ Pointer::Pointer(double rad)
   configure(rad);
 }
 
-Pointer::~Pointer()
-{
-}
-
 void Pointer::configure(double rad)
 {
   plot = 0;
-  
   radius_ = rad;
 }
 
-void Pointer::drawBegin()
+void Pointer::draw()
 {
   GLint mode;
 	glGetIntegerv(GL_MATRIX_MODE, &mode);

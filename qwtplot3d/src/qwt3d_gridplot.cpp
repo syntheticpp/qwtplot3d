@@ -477,11 +477,7 @@ void SurfacePlot::Isolines2FloorG()
 		return;
 
 	double count = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
-
-	RGBA col;
-
   int step = resolution();
-
 	double zshift = actualData_p->hull().minVertex.z;
 	
 	int cols = actualDataG_->columns();
@@ -505,10 +501,6 @@ void SurfacePlot::Isolines2FloorG()
 				t[0] =  Triple(	actualDataG_->vertices[i][j][0],
 												actualDataG_->vertices[i][j][1],
 												actualDataG_->vertices[i][j][2]);
-
-				col = (*datacolor_p)(t[0].x,t[0].y,t[0].z);
-  			glColor4d(col.r, col.g, col.b, col.a);
-//  			glColor4d(0,0,0,1);
 				
 				t[1] =  Triple(	actualDataG_->vertices[i+step][j][0],
 												actualDataG_->vertices[i+step][j][1],
@@ -536,38 +528,13 @@ void SurfacePlot::Isolines2FloorG()
 						}
 						
 						lambda =  (val - t[m].z) / diff;
-						intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), val));
+						//intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), val));
+						intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), zshift));
 					}
 				}
 				
-				if (!intersection.empty())
-				{
-					if (intersection.size()>2)
-					{
-						glBegin(GL_LINE_STRIP);
-						for (unsigned dd = 0; dd!=intersection.size(); ++dd)
-						{
-							glVertex3d(intersection[dd].x, intersection[dd].y, zshift);
-						}
-						glEnd();
-						glBegin(GL_POINTS);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-						glEnd();
-					}
-					else if (intersection.size() == 2)
-					{
-						glBegin(GL_LINES);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-							glVertex3d(intersection[1].x,intersection[1].y,zshift);
-							
-							// small pixel gap problem (see OpenGL spec.)
-							glVertex3d(intersection[1].x,intersection[1].y,zshift);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-						glEnd();
-					}
-					
-					intersection.clear();
-				}
+        drawIntersection(intersection, (*datacolor_p)(t[0].x,t[0].y,t[0].z));
+				intersection.clear();
 			}
 		}
 	}

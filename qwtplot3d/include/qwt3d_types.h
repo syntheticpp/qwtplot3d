@@ -69,13 +69,6 @@ enum FLOORSTYLE
 	FLOORDATA, //!< Projected polygons visible
 };
 
-//! Mesh type
-enum DATATYPE
-{
-  GRID,		//!< Rectangular grid
-	POLYGON //!< Convex polygon
-};	
-
 //! The 12 axes
 /**
 \image html axes.png 
@@ -326,69 +319,6 @@ typedef std::vector<RGBA> ColorVector;
 QWT3D_EXPORT QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
 QWT3D_EXPORT Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
 
-typedef double *Vertex;
-typedef std::vector<Vertex> DataRow;
-typedef std::vector<DataRow> DataMatrix;
-
-
-class Data
-{
-public:
-  Qwt3D::DATATYPE datatype;
-  Data() {datatype= Qwt3D::POLYGON;}
-  virtual ~Data() {}
-  virtual void clear() = 0; //!< destroy content
-  virtual bool empty() const = 0; //!< no data
-  void setHull(Qwt3D::ParallelEpiped const& h) {hull_p = h;}
-  Qwt3D::ParallelEpiped const& hull() const {return hull_p;} 
-
-protected:
-  Qwt3D::ParallelEpiped hull_p;
-};
-
-
-//! Implements a matrix of z-Values with limit access functions 
-class GridData : public Qwt3D::Data
-{
-public:
-  GridData();
-	GridData(unsigned int columns, unsigned int rows);//!< see setSize()
-  ~GridData() { clear();}
-
-	int columns() const;
-	int rows() const;
-
-	void clear(); //!< destroy content
-	bool empty() const { return vertices.empty();}
-	void setSize(unsigned int columns, unsigned int rows); //!< destroys content and set new size, elements are uninitialized
-	
-	DataMatrix vertices;		//!< mesh vertices
-	DataMatrix normals;		//!< mesh normals
-  void setPeriodic(bool u, bool v) {uperiodic_ = u; vperiodic_ = v;}
-  bool uperiodic() const {return uperiodic_;} 
-  bool vperiodic() const {return vperiodic_;} 
-
-private:
-  bool uperiodic_, vperiodic_;
-};
-
-
-//! Implements a graph-like cell structure with limit access functions 
-class CellData : public Qwt3D::Data
-{
-public:
-  CellData() {datatype=Qwt3D::POLYGON;}
-  ~CellData() { clear();}
-
-	void clear(); //!< destroy content
-	bool empty() const { return cells.empty();}
-	
-	Triple const& operator()(unsigned cellnumber, unsigned vertexnumber);
-	
-	CellField cells;   //!< polygon/cell mesh 
-	TripleField    nodes;
-	TripleField    normals; //!< mesh normals
-};
 
 inline Triple normalizedcross(Triple const& u, Triple const& v)
 {

@@ -10,17 +10,15 @@
 
 #include "lightingdlgbase.h"
 
-class Pointer : public Qwt3D::VertexEnrichment
+class Pointer : public Qwt3D::UserEnrichment
 {
 public:
-  Pointer(double rad);
-  ~Pointer();
+  explicit Pointer(double rad);
 
   Qwt3D::Enrichment* clone() const {return new Pointer(*this);}
   
   void configure(double rad);
-  void drawBegin();
-  void draw(Qwt3D::Triple const&){}
+  void draw();
   void setPos(double x, double y, double z) {pos_ = Qwt3D::Triple(x,y,z);}
 
 private:

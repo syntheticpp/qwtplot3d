@@ -60,7 +60,8 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 Plot3D::~Plot3D()
 {
-	SaveGlDeleteLists( displaylists_p[0], displaylists_p.size() );
+	makeCurrent();
+  SaveGlDeleteLists( displaylists_p[0], displaylists_p.size() );
 	datacolor_p->destroy();
   delete userplotstyle_p;
   for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
@@ -235,6 +236,8 @@ void Plot3D::setDataColor( Color* col )
 
 	datacolor_p->destroy();
 	datacolor_p = col;
+//  if ( displaylegend_ )
+//    datacolor_p->createVector(legend_.colors);
 }
 
 /*!

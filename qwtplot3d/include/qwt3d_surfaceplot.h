@@ -81,7 +81,6 @@ protected:
   virtual void createData();
   virtual void createEnrichment(Qwt3D::Enrichment& p);
 	virtual void createFloorData();
- 	void createNormals();
 	void createPoints();	
 
 	int resolution_p;
@@ -95,7 +94,8 @@ protected:
   //void calcLowResolution();
 private:
 
-	void Data2Floor();
+  void drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col);
+  void Data2Floor();
 	void Isolines2Floor();
 	
   Qwt3D::FLOORSTYLE floorstyle_;

@@ -4,7 +4,7 @@
 
 #include <algorithm>
 #include "float.h"
-#include "qwt3d_types.h"
+#include "qwt3d_data.h"
 
 using namespace Qwt3D;
 
@@ -121,22 +121,22 @@ void GridData::clear()
 void GridData::setSize(unsigned int columns, unsigned int rows)
 {
 	this->clear();
-	vertices = std::vector<DataRow>(columns);
+	vertices = std::vector<DataColumn>(columns);
 	{
 		for (unsigned int i=0; i!=vertices.size(); ++i)
 		{
-			vertices[i] = DataRow(rows);
+			vertices[i] = DataColumn(rows);
 			for (unsigned int j=0; j!=vertices[i].size(); ++j)
 			{
 				vertices[i][j] = new GLdouble[3];
 			}
 		}
 	}
-	normals = std::vector<DataRow>(columns);
+	normals = std::vector<DataColumn>(columns);
 	{
 		for (unsigned int i=0; i!=normals.size(); ++i)
 		{
-			normals[i] = DataRow(rows);
+			normals[i] = DataColumn(rows);
 			for (unsigned int j=0; j!=normals[i].size(); ++j)
 			{
 				normals[i][j] = new GLdouble[3];
