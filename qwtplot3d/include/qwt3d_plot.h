@@ -101,7 +101,11 @@ public:
       );
 		
 		bool keyboardEnabled() const; //!< Returns true, if the widget accept keyboard input from the user
-    
+    //! Sets speed for keyboard driven transformations
+    void setKeySpeed(double rot, double scale, double shift); 
+    //! Gets speed for keyboard driven transformations
+    void keySpeed(double& rot, double& scale, double& shift) const; 
+      
     bool lightingEnabled() const; //!< Returns true, if Lighting is enabled, false else
     //! Turn light on
     void illuminate(unsigned light = 0);
@@ -280,11 +284,12 @@ private:
 				xshift_kstate_[2],
 				yshift_kstate_[2];
 
-		bool keyboard_input_enabled_;
+		bool kbd_input_enabled_;
+    double kbd_rot_speed_, kbd_scale_speed_, kbd_shift_speed_;
 
-		void setRotationKeyboard(int kseq, double accel);
-		void setScaleKeyboard(int kseq, double accel);
-		void setShiftKeyboard(int kseq, double accel);
+		void setRotationKeyboard(int kseq, double speed);
+		void setScaleKeyboard(int kseq, double speed);
+		void setShiftKeyboard(int kseq, double speed);
 
     
 

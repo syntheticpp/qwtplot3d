@@ -198,19 +198,19 @@ void Plot3D::keyPressEvent( QKeyEvent *e )
   int bstate = e->state() & Qt::KeyButtonMask; // filter kbd modifier only
   int keyseq = bstate + e->key();
 
-	setRotationKeyboard(keyseq, 3);	
-	setScaleKeyboard(keyseq, 5);	
-	setShiftKeyboard(keyseq, 5);	
+	setRotationKeyboard(keyseq, kbd_rot_speed_);	
+	setScaleKeyboard(keyseq, kbd_scale_speed_);	
+	setShiftKeyboard(keyseq, kbd_shift_speed_);	
 }
 
-void Plot3D::setRotationKeyboard(int kseq, double accel)
+void Plot3D::setRotationKeyboard(int kseq, double speed)
 {
 	// Rotation
 	double w = max(1,width());
 	double h = max(1,height());
 		
-	double relx = accel*360 / w; 
-	double relyz = accel*360 / h; 
+	double relx = speed*360 / w; 
+	double relyz = speed*360 / h; 
 	
 	double new_xrot = xRotation();
 	double new_yrot = yRotation();
@@ -232,14 +232,14 @@ void Plot3D::setRotationKeyboard(int kseq, double accel)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void Plot3D::setScaleKeyboard(int kseq, double accel)
+void Plot3D::setScaleKeyboard(int kseq, double speed)
 {
 	// Scale
 		double w = max(1,width());
 		double h = max(1,height());
 
-		double relx = accel / w; relx = exp(relx) - 1;
-		double relyz = accel / h; relyz = exp(relyz) - 1; 
+		double relx = speed / w; relx = exp(relx) - 1;
+		double relyz = speed / h; relyz = exp(relyz) - 1; 
 
 		double new_xscale = xScale();
 		double new_yscale = yScale();
@@ -266,14 +266,14 @@ void Plot3D::setScaleKeyboard(int kseq, double accel)
 			setZoom(max(0.0,zoom() + relyz));
 }
 
-void Plot3D::setShiftKeyboard(int kseq, double accel)
+void Plot3D::setShiftKeyboard(int kseq, double speed)
 {
 	// Shift
 	double w = max(1,width());
 	double h = max(1,height());
 
-	double relx = accel / w; 
-	double relyz = accel / h;
+	double relx = speed / w; 
+	double relyz = speed / h;
 
 	double new_xshift = xViewportShift();
 	double new_yshift = yViewportShift();
@@ -345,11 +345,30 @@ The function has no effect if you derive from Plot3D and overrides the keyboard 
 In this case check first against keyboardEnabled() in your version of keyPressEvent()
 A more fine grained input control can be achieved by combining assignKeyboard() with enableKeyboard(). 
 */
-void Plot3D::enableKeyboard(bool val) {keyboard_input_enabled_ = val;}
+void Plot3D::enableKeyboard(bool val) {kbd_input_enabled_ = val;}
 
 /** 
 \see enableKeyboard()
 */
-void Plot3D::disableKeyboard(bool val) {keyboard_input_enabled_ = !val;}
-bool Plot3D::keyboardEnabled() const {return keyboard_input_enabled_;}
+void Plot3D::disableKeyboard(bool val) {kbd_input_enabled_ = !val;}
+bool Plot3D::keyboardEnabled() const {return kbd_input_enabled_;}
 
+/**
+Values < 0 are ignored. Default is (3,5,5)
+*/
+void Plot3D::setKeySpeed(double rot, double scale, double shift)
+{
+  if (rot > 0)
+    kbd_rot_speed_ = rot;
+  if (scale > 0)
+    kbd_scale_speed_ = scale;
+  if (shift > 0)
+    kbd_shift_speed_ = shift;
+}
+
+void Plot3D::keySpeed(double& rot, double& scale, double& shift) const
+{
+  rot = kbd_rot_speed_;
+  scale = kbd_scale_speed_;
+  shift = kbd_shift_speed_;
+}

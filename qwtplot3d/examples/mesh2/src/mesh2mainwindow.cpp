@@ -130,6 +130,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		dataWidget->coordinates()->setLineSmooth(true);
     dataWidget->coordinates()->setGridLinesColor(RGBA(0.35,0.35,0.35,1));
 		dataWidget->enableMouse(true);
+    dataWidget->setKeySpeed(15,20,20);
 
 		colormappv_ = new ColorMapPreview;
 		datacolordlg_ = new QFileDialog( this );
@@ -344,7 +345,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 
 	activeCoordSystem = action;
 	
-	dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel)");
+	dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
 
 	if (!dataWidget->hasData())
 	{

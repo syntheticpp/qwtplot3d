@@ -61,7 +61,7 @@
 
     coordinates()->axes[X1].setLabelString("x-axis");
     coordinates()->axes[Y1].setLabelString("y-axis");
-    coordinates()->axes[Z1].setLabelString(QChar (0x38f)); // Omega - see http://www.unicode.org/charts/
+    coordinates()->axes[Z1].setLabelString(QChar(0x38f)); // Omega - see http://www.unicode.org/charts/
 
 
     setCoordinateStyle(BOX);
