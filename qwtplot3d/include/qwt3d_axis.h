@@ -51,8 +51,8 @@ public:
 
 	void setMajors(int val);
 	void setMinors(int val);
-	int majors() const { return tmaj_; }
-	int minors() const { return tmin_; }
+	int majors() const { return majorintervals_; }
+	int minors() const { return minorintervals_; }
 
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
 
@@ -86,7 +86,7 @@ private:
 	double lmaj_, lmin_;
 	Qwt3D::Triple orientation_;
 
-	int tmaj_, tmin_;
+	int majorintervals_, minorintervals_;
 
 	double lineWidth_, majLineWidth_, minLineWidth_;
 	bool symtics_;

@@ -36,7 +36,7 @@
 <div style="margin-left: 40px;">With <span
  style="font-family: monospace;">qwtplot3d.pro</span> you can create a<br>
 <ul>
-  <li>VC6  DLL project (Windows)&nbsp;</li>
+  <li>VC6 DLL project (Windows)&nbsp;</li>
   <li>Shared library for POSIX systems.&nbsp;</li>
 </ul>
 <p>Adjust the target path and perhaps the library directories. The same
@@ -47,19 +47,22 @@ files. &nbsp;<br>
 3.1.? on Debian Linux. Older Qt versions are likely working. If I'm
 wrong&nbsp; please don't hesitate to contact me. I'll try to provide a
 code fix in this case.</p>
-<p> The library requires OpenGL &gt;= 1.1 or equivalent and a true color
+<p> The library requires OpenGL &gt;= 1.1 or equivalent and a true
+color
 mode with 24 or 32 bits color depth.</p>
 <p>The API Documentation has been created using <a
  href="http://www.doxygen.org" target="_blank">doxygen</a>. If you
-prefer to generate your own version, you will find the configuration in <code>./doc/Doxyfile.doxygen.</code>
-Also, a developer version &nbsp;also has been placed under&nbsp; <code>./doc/Developer.doxygen.</code><b
+prefer to generate your own version, you will find the configuration in
+<code>./doc/Doxyfile.doxygen.</code>
+Also, a developer version&nbsp; has been placed under&nbsp; <code>./doc/Developer.doxygen.</code><b
  style="font-family: monospace;"><br>
 </b></p>
 <p><br>
 <span style="font-style: italic;">Remark:</span><br>
 </p>
-<p>You can test almost all abilities of QwtPlot3D&nbsp; from within the <span
- style="font-family: monospace;">mesh2 </span>example,&nbsp; including:<br>
+<p>You can test almost all abilities of QwtPlot3D&nbsp; from within the
+<span style="font-family: monospace;">mesh2 </span>example,&nbsp;
+including:<br>
 </p>
 <ol>
   <li>Colors, fonts, normal vectors, mouse handling etc.</li>
@@ -88,7 +91,8 @@ See e.g. <a
 <br>
 <h4><span style="text-decoration: underline;"><a name="simple"></a></span>First
 Plot</h4>
-<small> </small><small> </small><small> </small><small> </small><small> </small> <small> </small>
+<small> </small><small> </small><small> </small><small> </small><small>
+</small> <small> </small>
 <table cellpadding="0" cellspacing="0" border="0" frame="box"
  style="text-align: left; width: 90%; margin-right: auto; background-color: rgb(204, 204, 204);"
  rules="none">
@@ -131,9 +135,11 @@ Plot</h4>
 The code above shows the almost most simple application of a
 SurfacePlot. Data are provided by a mathematical function object
 (Rosenbrock). &nbsp;You can derive from this kind of classes by
-including <code>qwt3d_function.h. </code>A base for the other player -
+including <code>qwt3d_function.h. </code>A base for the other player
+-
 the widget itself - resides inside <code>qwt3d_surfaceplot.h.</code><br>
-The derived class makes only small adaptions to the standard behaviour,
+The derived class makes only small adaptations to the standard
+behaviour,
 mainly providing scales and label for the axes and a boxed coordinate
 system . The axes themselves are autoscaled.<br>
 <br>
@@ -151,7 +157,7 @@ Plot3D::assignMouse().<br>
 <h4><span style="text-decoration: underline;"><a name="coords"></a></span>Coordinate
 Systems and Axes</h4>
 <div style="text-align: left; margin-left: 120px;"><img
- src="../../images/axes.png" title="" alt="Axes"
+ src="../../doxygenimages/axes.png" title="" alt="Axes"
  style="width: 641px; height: 333px;"><br>
 </div>
 <h4><span style="text-decoration: underline;"></span></h4>

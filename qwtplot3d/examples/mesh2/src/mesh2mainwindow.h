@@ -42,6 +42,7 @@ public slots:
 	void toggleProjectionMode(bool);
 	void toggleColorLegend(bool);
 	void toggleAutoScale(bool val);
+	void toggleShader(bool val);
 	void rotate();
 	void setPolygonOffset(int);
 	void createColorLegend(Qwt3D::ColorField const&);

@@ -47,6 +47,8 @@ public:
 		bool ortho() const { return ortho_; } //!< \return Orthogonal (true) or perspective (false) projection
 		void		setPlotStyle( Qwt3D::PLOTSTYLE val );
 		Qwt3D::PLOTSTYLE plotStyle() const { return plotstyle_; }//!< \return Plotting style
+		void		setShading( Qwt3D::SHADINGSTYLE val );
+		Qwt3D::SHADINGSTYLE shading() const { return shading_; }//!< \return Shading style
 		void		setFloorStyle( Qwt3D::FLOORSTYLE val );
 		Qwt3D::FLOORSTYLE floorStyle() const { return floorstyle_; }//!< \return Floor style 
 		void setIsolines(int isolines);
@@ -148,6 +150,7 @@ private:
 		Qwt3D::RGBA meshcolor_;
 		Qwt3D::RGBA bgcolor_;
 		Qwt3D::PLOTSTYLE plotstyle_;
+		Qwt3D::SHADINGSTYLE shading_;
 		Qwt3D::FLOORSTYLE floorstyle_;
 		bool ortho_;
 		double polygonOffset_;

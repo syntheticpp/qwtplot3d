@@ -38,6 +38,13 @@ enum PLOTSTYLE
 	FILLEDMESH   //!< Color filled polygons w/ separately colored edges
 };
 
+//! Shading style
+enum SHADINGSTYLE
+{
+	FLAT,      //!< Flat shading (OpenGL)
+	GOURAUD    //!< Gouraud Shading (OpenGL)
+};
+
 //! Style of Coordinate system
 enum COORDSTYLE
 {
