@@ -3,6 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include "qwt3d_gl2ps.h"
 #include "qwt3d_plot.h"
 
 using namespace Qwt3D;
@@ -213,7 +214,7 @@ Plot3D::updateCoordinateSystem()
 	glEndList();
 }
 
-/**
+/*!
 	Create a coordinate system with generating corners beg and end 
 */
 void
@@ -223,7 +224,7 @@ Plot3D::createCoordinateSystem( Triple beg, Triple end )
 		coord.init(beg, end);
 }
 
-/**
+/*!
 	Create a coordinate system from data
 */
 void
@@ -234,7 +235,7 @@ Plot3D::createCoordinateSystem()
 }
 
 /*!
-  Show a color legend <tt>(experimental)</tt>
+  Show a color legend
 */
 void 
 Plot3D::updateColorLegend()
@@ -249,14 +250,17 @@ Plot3D::showColorLegend( bool show )
 	updateGL();
 }
 
-
-/**
-	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt 
+/*!
+	Saves as vector data supported by gl2ps. The corresponding format types are "EPS" and "PS".
+	The last parameter is one of gl2ps' sorting types: GL2PS_NO_SORT, GL2PS_SIMPLE_SORT or GL2PS_BSP_SORT.
+  Default is GL2PS_SIMPLE_SORT.\n 
+	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
+	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.
 */
 bool 
-Plot3D::saveContent(QString fileName, QString format)
+Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 {
-#ifdef QWT3D_GL2PS
+	makeCurrent();
 	GLint gl2ps_format;
 	if (format == QString("EPS"))
 	{
@@ -266,45 +270,60 @@ Plot3D::saveContent(QString fileName, QString format)
 	{
 		gl2ps_format = GL2PS_PS;
 	}
+	else if (format == QString("TEX"))
+	{
+		gl2ps_format = GL2PS_TEX;
+	}
 	else if (format == QString("PDF"))
 	{
 		gl2ps_format = GL2PS_PDF;
 	}
 
-	if ((gl2ps_format == GL2PS_EPS) || (gl2ps_format == GL2PS_PS) || (gl2ps_format == GL2PS_PDF))
-	{
-		FILE *fp = fopen(fileName.latin1(), "wb");
-		if (!fp)
-			return false;
+	FILE *fp = fopen(fileName.latin1(), "wb");
+	if (!fp)
+		return false;
 
-		GLint bufsize = 0, state = GL2PS_OVERFLOW;
-		GLint viewport[4];
+	GLint bufsize = 0, state = GL2PS_OVERFLOW;
+	GLint viewport[4];
 
-		glGetIntegerv(GL_VIEWPORT, viewport);
+	glGetIntegerv(GL_VIEWPORT, viewport);
 
-		while( state == GL2PS_OVERFLOW )
-		{ 
-			bufsize += 1024*1024;
-			gl2psBeginPage ( "---", "qwtplot3d", viewport,
-											 gl2ps_format, GL2PS_SIMPLE_SORT,
-											 GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
-											 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT,
-											 GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-											 fp, NULL );
-			updateGL(); 
-			state = gl2psEndPage();
-		}
-		fclose(fp);
+	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
+										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT;
+
+	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
+		options |= GL2PS_LANDSCAPE;
+
+	if (notext)
+		options |= GL2PS_NO_PIXMAP | GL2PS_NO_TEXT;
+
+	if (sorttype < 0)
+		sorttype = GL2PS_SIMPLE_SORT;
+
+
+
+	while( state == GL2PS_OVERFLOW )
+	{ 
+		bufsize += 1024*1024;
+		gl2psBeginPage ( "---", "qwtplot3d", viewport,
+										 gl2ps_format, sorttype,
+										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
+										 fp, NULL );
 		
-		return true;
+		updateGL(); 
+		state = gl2psEndPage();
 	}
-	else
-#endif
-	
-	{
-		QImage im = grabFrameBuffer(true);
-		return im.save(fileName,format);
-	}
+	fclose(fp);
+	return true;
+}	
+/*!
+	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt
+*/
+bool 
+Plot3D::savePixmap(QString fileName, QString format)
+{
+	QImage im = grabFrameBuffer(true);
+	return im.save(fileName,format);
 }
 
 void 
@@ -367,9 +386,6 @@ Plot3D::setPlotStyle( PLOTSTYLE val )
 	if (val == plotstyle_)
 		return;
 	plotstyle_ = val;
-	
-	updateData();
-	updateGL();
 }
 
 /*!
@@ -407,9 +423,6 @@ Plot3D::setFloorStyle( FLOORSTYLE val )
 		return;
 	
 	floorstyle_ = val;
-			
- 	updateData(); 
-	updateGL();
 }
 
 /*!
@@ -444,7 +457,7 @@ Plot3D::setPolygonOffset( double val )
 Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen
 */
 void 
-Plot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
+Plot3D::setCaptionPosition(double rely, double relx, Qwt3D::ANCHOR anchor)
 {
 	titlerel_.y = (rely<0 || rely>1) ? 0.5 : rely;
 	titlerel_.x = (relx<0 || relx>1) ? 0.5 : relx;
@@ -452,7 +465,7 @@ Plot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
 	titleanchor_ = anchor;
 }
 
-/**
+/*!
 Set caption font
 */
 void 

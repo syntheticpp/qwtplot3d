@@ -16,7 +16,7 @@ ColorLegend::ColorLegend()
 	axis_.setNumbers(true);
 	axis_.setScale(true);
 	axis_.setNumberColor(RGBA(0,0,0,1));
-	axis_.setNumberAnchor(LabelPixmap::CenterRight);
+	axis_.setNumberAnchor(CenterRight);
 	axis_.setNumberFont(QFont("Courier",8));
 
 	caption_.setFont("Courier", 10, QFont::Bold);
@@ -109,28 +109,28 @@ ColorLegend::setGeometryInternal()
 		b = pe_.minVertex;
 		e = pe_.maxVertex; e.x = b.x;
 		axis_.setTicOrientation(-1,0,0);
-		axis_.setNumberAnchor(LabelPixmap::CenterRight);
+		axis_.setNumberAnchor(CenterRight);
 		diff = pe_.maxVertex.x - pe_.minVertex.x;
 		break;
 	case ColorLegend::Right:
 		e = pe_.maxVertex;
 		b = pe_.minVertex; b.x = e.x; 
 		axis_.setTicOrientation(+1,0,0);
-		axis_.setNumberAnchor(LabelPixmap::CenterLeft);
+		axis_.setNumberAnchor(CenterLeft);
 		diff = pe_.maxVertex.x - pe_.minVertex.x;
 		break;
 	case ColorLegend::Top:
 		e = pe_.maxVertex;
 		b = pe_.minVertex; b.z = e.z; 
 		axis_.setTicOrientation(0,0,+1);
-		axis_.setNumberAnchor(LabelPixmap::BottomCenter);
+		axis_.setNumberAnchor(BottomCenter);
 		diff = pe_.maxVertex.z - pe_.minVertex.z;
 		break;
 	case ColorLegend::Bottom:
 		b = pe_.minVertex;
 		e = pe_.maxVertex; e.z = b.z;
 		axis_.setTicOrientation(0,0,-1);
-		axis_.setNumberAnchor(LabelPixmap::TopCenter);
+		axis_.setNumberAnchor(TopCenter);
 		diff = pe_.maxVertex.z - pe_.minVertex.z;
 		break;
 	default:
@@ -148,7 +148,7 @@ ColorLegend::setGeometryInternal()
 	c.z += (pe_.maxVertex.z-pe_.minVertex.z)/20;
 	c.y = pe_.maxVertex.y;
 
-	caption_.setPosition(c, LabelPixmap::BottomCenter);	
+	caption_.setPosition(c, BottomCenter);	
 	caption_.update();
 }
 

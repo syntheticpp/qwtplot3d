@@ -1,7 +1,10 @@
 #include <qbitmap.h>
+#include "qwt3d_gl2ps.h"
 #include "qwt3d_labelpixmap.h"
 
 using namespace Qwt3D;
+
+bool LabelPixmap::printerFonts_ = false;
 
 LabelPixmap::LabelPixmap()
 {
@@ -31,6 +34,12 @@ LabelPixmap::init()
 	pm_ = QPixmap(0, 0, -1);
 	font_ = QFont();
 	anchor_ = BottomLeft;
+}
+
+void 
+LabelPixmap::usePrinterFonts(bool val)
+{
+	printerFonts_ = val;
 }
 
 void 
@@ -172,15 +181,24 @@ LabelPixmap::draw()
 	convert2screen();
 	glRasterPos3d(beg_.x, beg_.y, beg_.z);
  
-#ifdef QWT3D_GL2PS	
-	gl2psText(text_.latin1(), "Courier", font_.pointSize()); //GL2PS
-#endif
 	
 	int w = tex_.width();
 	int h = tex_.height();
+ 
+	drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits(), printerFonts_ );
 
-  glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits() );
-	
+	if (printerFonts_)
+	{
+		Triple start = World2ViewPort(pos_);
+		double gapx	 = ViewPort2World(start + Triple(4, 0, 0)).x - pos_.x;
+		double gapy	 = ViewPort2World(start + Triple(0, 7, 0)).y - pos_.y;
+		double gapz  = 0;
+		
+		Triple gap(gapx,gapy,gapz);
+
+		drawDeviceText(text_.latin1(), "Courier", font_.pointSize(), pos_, anchor_, gap);
+	}
+
 	glAlphaFunc(func,v);
 	Enable(GL_ALPHA_TEST, b);
 }
