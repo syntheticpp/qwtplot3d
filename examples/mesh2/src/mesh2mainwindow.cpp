@@ -237,8 +237,10 @@ void Mesh2MainWindow::createFunction(QString const& name)
 
 	updateColorLegend(7,5);
 
+  static int z=0;
+
 	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
-	dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
+  dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
 	dataWidget->coordinates()->axes[X3].setLabelString(QString("X3"));
 	dataWidget->coordinates()->axes[X4].setLabelString(QString("X4"));
 
@@ -371,6 +373,7 @@ void Mesh2MainWindow::resetColors()
 	const RGBA msc = RGBA(0,0,0,1);
 	const RGBA nuc = RGBA(0,0,0,1);
 	const RGBA lbc = RGBA(0,0,0,1);
+	const RGBA tc = RGBA(0,0,0,1);
 
 	dataWidget->coordinates()->setAxesColor(axc);
 	dataWidget->setBackgroundColor(bgc);
@@ -378,6 +381,7 @@ void Mesh2MainWindow::resetColors()
 	dataWidget->updateData();
 	dataWidget->coordinates()->setNumberColor(nuc);
 	dataWidget->coordinates()->setLabelColor(lbc);
+  dataWidget->setTitleColor(tc);
 
 	col_ = new StandardColor(dataWidget);
 	dataWidget->setDataColor(col_);
@@ -509,6 +513,7 @@ void Mesh2MainWindow::resetFonts()
 {
 	dataWidget->coordinates()->setNumberFont(QFont("Courier", 12));
 	dataWidget->coordinates()->setLabelFont(QFont("Courier", 14, QFont::Bold));
+  dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
 	dataWidget->updateGL();
 }
 

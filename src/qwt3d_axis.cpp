@@ -46,7 +46,7 @@ void Axis::init()
 
 	setNumberAnchor(Center);
 
-	label_ = Label();
+	//label_ = Label();
 	numbergap_ = 0;
 	labelgap_ = 0;
 }

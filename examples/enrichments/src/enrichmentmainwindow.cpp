@@ -75,7 +75,7 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
   connect( levelSlider, SIGNAL(valueChanged(int)), this, SLOT(setLevel(int)) );
 
   connect( barBtn, SIGNAL(clicked()), this, SLOT(barSlot()) );
-  connect( sliceBtn, SIGNAL(clicked()), this, SLOT(sliceSlot()) );
+  //connect( sliceBtn, SIGNAL(clicked()), this, SLOT(sliceSlot()) );
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glDisable(GL_LINE_SMOOTH);
