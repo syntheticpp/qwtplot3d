@@ -16,7 +16,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(SurfacePlot* pw)
+	Hat(SurfacePlot& pw)
 	:Function(pw)
 	{
 	}
@@ -35,6 +35,11 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
 	: enrichmentMainWindowBase( parent, name, f )
 {
 	setCaption("enrichment");
+  QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+
+  plot = new SurfacePlot(frame);
+  grid->addWidget( plot, 0, 0 );
+
   plot->setTitle("Bar Style (Vertex Enrichment)");
   plot->setTitleFont("Arial",12);
 
@@ -44,7 +49,7 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
 	plot->setCoordinateStyle(BOX);
   bar = (Bar*)plot->setPlotStyle(Bar(0.007,0.5));
 
-  hat = new Hat(plot);
+  hat = new Hat(*plot);
 	
 	hat->setMesh(23,21);
 	hat->setDomain(-1.8,1.7,-1.6,1.7);	

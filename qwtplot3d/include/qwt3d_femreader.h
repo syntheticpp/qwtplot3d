@@ -1,5 +1,5 @@
-#ifndef __FEMREADER_H__
-#define __FEMREADER_H__
+#ifndef qwt3d_femreader_h__2004_03_07_14_03_begin_guarded_code
+#define qwt3d_femreader_h__2004_03_07_14_03_begin_guarded_code
 
 #include <math.h>
 #include <fstream>
@@ -81,5 +81,4 @@ bool readConnections(Qwt3D::CellField& v, const char* fname, FILTER fil)
 	return true;
 }
 
-
-#endif
+#endif /* include guarded */

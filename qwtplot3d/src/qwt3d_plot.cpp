@@ -16,18 +16,21 @@ using namespace Qwt3D;
 Plot3D::Plot3D( QWidget* parent, const char* name )
     : QGLWidget( parent, name )
 {
-	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
-
+  initializedGL_ = false;
+  xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
+  
 	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
 	xScale_ = yScale_ = zScale_ = 1.0;
 	zoom_ = 1;
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
-  userplotstyle = 0;
+  userplotstyle_p = 0;
 	shading_ = GOURAUD;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
 	displaylegend_ = false;
+	smoothdatamesh_p = false;
+  actualData_p = 0;
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
@@ -38,13 +41,13 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	setMeshLineWidth(1);
 	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 
-	DisplayLists = std::vector<GLuint>(DisplayListSize);
-	for (unsigned k=0; k!=DisplayLists.size(); ++k)
+	displaylists_p = std::vector<GLuint>(DisplayListSize);
+	for (unsigned k=0; k!=displaylists_p.size(); ++k)
 	{
-		DisplayLists[k] = 0;
+		displaylists_p[k] = 0;
 	}
 
-	datacolor = new StandardColor(this, 100);
+	datacolor_p = new StandardColor(this, 100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -65,6 +68,9 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	legend_.setMajors(10);
 	legend_.setMinors(2);
 	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+
+  disableLighting();
+  lights_ = std::vector<Light>(8);
 }
 
 /*!
@@ -73,13 +79,13 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 Plot3D::~Plot3D()
 {
-	SaveGlDeleteLists( DisplayLists[0], DisplayLists.size() );
-	datacolor->destroy();
-  delete userplotstyle;
-  for (ELIT it = elist.begin(); it!=elist.end(); ++it)
+	SaveGlDeleteLists( displaylists_p[0], displaylists_p.size() );
+	datacolor_p->destroy();
+  delete userplotstyle_p;
+  for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
     delete (*it);
 
-  elist.clear();
+  elist_p.clear();
 }
 
 
@@ -94,29 +100,23 @@ void Plot3D::initializeGL()
 
 	// Set up the lights
 
-
-  glDisable(GL_LIGHTING);
-
+  disableLighting();
 	
-	GLfloat whiteDir[4] = {2.0, 2.0, 2.0, 1.0};
-  GLfloat reflection[4] = {0.0, 0.0, 0.0, 0.0};
   GLfloat whiteAmb[4] = {1.0, 1.0, 1.0, 1.0};
-  GLfloat lightPos[4] = {300.0, 300.0, 300.0, 1.0};
-
-  glEnable(GL_LIGHT0);
+    
+  setLightShift(0, 0, 3000);
   glEnable(GL_COLOR_MATERIAL);
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, whiteAmb);
 
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteDir);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, reflection);
-  glMaterialf(GL_FRONT, GL_SHININESS, 100.0);
+  setMaterialComponent(GL_DIFFUSE, 1.0);
+  setMaterialComponent(GL_SPECULAR, 0.3);
+  setMaterialComponent(GL_SHININESS, 5.0);
+  setLightComponent(GL_DIFFUSE, 1.0);
+  setLightComponent(GL_SPECULAR, 1.0);
 
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDir);		// enable diffuse
-  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteDir);
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos); 
-	
+  initializedGL_ = true;	
 }
 
 /*!
@@ -126,9 +126,11 @@ void Plot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+	
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
+  applyLights();
+
   glRotatef( -90, 1.0, 0.0, 0.0 ); 
   glRotatef( 0.0, 0.0, 1.0, 0.0 ); 
   glRotatef( 0.0, 0.0, 0.0, 1.0 );
@@ -140,26 +142,24 @@ void Plot3D::paintGL()
 	title_.setRelPosition(titlerel_, titleanchor_);
 	title_.draw();
 	
-  glColor3f(1.0, 1.0, 1.0);
+	Triple beg = coordinates_p.first();
+	Triple end = coordinates_p.second();
+	
+	Triple center = beg + (end-beg) / 2;
+	double radius = (center-beg).length();
 	
 	glLoadIdentity();
+
   glRotatef( xRot_-90, 1.0, 0.0, 0.0 ); 
   glRotatef( yRot_, 0.0, 1.0, 0.0 ); 
   glRotatef( zRot_, 0.0, 0.0, 1.0 );
 
-	glEnable(GL_NORMALIZE);
+  glEnable(GL_NORMALIZE);
 	glScalef( zoom_ * xScale_, zoom_ * yScale_, zoom_ * zScale_ );
 	glDisable(GL_NORMALIZE);
 	
-	
-	Triple beg = coord.first();
-	Triple end = coord.second();
-	
-	Triple center = beg + (end-beg) / 2;
-	double radius = (center-beg).length();
-
 	glTranslatef(xShift_-center.x, yShift_-center.y, zShift_-center.z);
-
+  
   glMatrixMode( GL_PROJECTION );
   glLoadIdentity();
 
@@ -177,19 +177,19 @@ void Plot3D::paintGL()
 		else
 			glFrustum( -1.0, 1.0, -1.0, 1.0, 10.0, 100.0 );
 	}
-  
-	glTranslatef( xVPShift_ * 2 * radius, yVPShift_ * 2 * radius, -7 * radius );
+
+  glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
 	
-	for (unsigned i=0; i!= DisplayLists.size(); ++i)
+	for (unsigned i=0; i!= displaylists_p.size(); ++i)
 	{
 		if (i!=LegendObject && i!=CoordObject)
-			glCallList( DisplayLists[i] );
+			glCallList( displaylists_p[i] );
 	}
 	
-	coord.draw();
- 
-	glMatrixMode( GL_MODELVIEW );
-	glPopMatrix();
+	coordinates_p.draw();
+
+  glMatrixMode( GL_MODELVIEW );
+  glPopMatrix();
 }
 
 
@@ -202,25 +202,25 @@ void Plot3D::resizeGL( int w, int h )
 	paintGL();
 }
 
-void Plot3D::updateCoordinateSystem()
-{
-	SaveGlDeleteLists(DisplayLists[CoordObject], 1);
-			
-	DisplayLists[CoordObject] = glGenLists(1);
-	glNewList(DisplayLists[CoordObject], GL_COMPILE);
-
-	coord.draw();
-
-	glEndList();
-}
+//void Plot3D::updateCoordinateSystem()
+//{
+//	SaveGlDeleteLists(displaylists_p[CoordObject], 1);
+//			
+//	displaylists_p[CoordObject] = glGenLists(1);
+//	glNewList(displaylists_p[CoordObject], GL_COMPILE);
+//
+//	coordinates_p.draw();
+//
+//	glEndList();
+//}
 
 /*!
 	Create a coordinate system with generating corners beg and end 
 */
 void Plot3D::createCoordinateSystem( Triple beg, Triple end )
 {
-	if (beg != coord.first() || end != coord.second())
-		coord.init(beg, end);
+	if (beg != coordinates_p.first() || end != coordinates_p.second())
+		coordinates_p.init(beg, end);
 }
 
 /*!
@@ -235,14 +235,11 @@ void Plot3D::createCoordinateSystem()
 /*!
   Show a color legend
 */
-void Plot3D::updateColorLegend()
-{
-	datacolor->createVector(legend_.colors);
-}
-
 void Plot3D::showColorLegend( bool show )
 {
  	displaylegend_ = show;
+	if (show)
+    datacolor_p->createVector(legend_.colors);
 	updateGL();
 }
 
@@ -362,11 +359,10 @@ void Plot3D::setBackgroundColor(RGBA rgba)
 */
 void Plot3D::setDataColor( Color* col )
 {
-	Q_ASSERT(datacolor);
+	Q_ASSERT(datacolor_p);
 
-	datacolor->destroy();
-	datacolor = col;
-	updateColorLegend();
+	datacolor_p->destroy();
+	datacolor_p = col;
 }
 
 /*!
@@ -387,8 +383,7 @@ void Plot3D::setOrtho( bool val )
 */
 void Plot3D::setCoordinateStyle(COORDSTYLE st)
 {
-	coord.setStyle(st);
-//	updateCoordinateSystem();
+	coordinates_p.setStyle(st);
 	updateGL();
 }
 
@@ -400,8 +395,8 @@ void Plot3D::setPlotStyle( PLOTSTYLE val )
 {
   if (val == Qwt3D::USER)
     return;
-  delete userplotstyle;
-  userplotstyle = 0;
+  delete userplotstyle_p;
+  userplotstyle_p = 0;
   plotstyle_ = val;
 }
 
@@ -410,13 +405,13 @@ void Plot3D::setPlotStyle( PLOTSTYLE val )
 */
 Qwt3D::Enrichment* Plot3D::setPlotStyle( Qwt3D::Enrichment const& obj )
 {
-  if (&obj == userplotstyle)
-    return userplotstyle;
+  if (&obj == userplotstyle_p)
+    return userplotstyle_p;
   
-  delete userplotstyle;
-  userplotstyle = obj.clone();
+  delete userplotstyle_p;
+  userplotstyle_p = obj.clone();
   plotstyle_ = Qwt3D::USER;
-  return userplotstyle;
+  return userplotstyle_p;
 }
 
 /*!
@@ -441,17 +436,6 @@ void Plot3D::setShading( SHADINGSTYLE val )
 			break;
 	}
 	updateGL();
-}
-
-/*!
-  Set style of floor data
-*/
-void Plot3D::setFloorStyle( FLOORSTYLE val )
-{
-	if (val == floorstyle_)
-		return;
-	
-	floorstyle_ = val;
 }
 
 /*!
@@ -506,20 +490,28 @@ void Plot3D::setTitleFont(const QString& family, int pointSize, int weight, bool
 
 Enrichment* Plot3D::addEnrichment(Enrichment const& e)
 {
-  if ( elist.end() == std::find( elist.begin(), elist.end(), &e ) )
-    elist.push_back(e.clone());
-  return elist.back();
+  if ( elist_p.end() == std::find( elist_p.begin(), elist_p.end(), &e ) )
+    elist_p.push_back(e.clone());
+  return elist_p.back();
 }
 
 bool Plot3D::degrade(Enrichment* e)
 {
-	ELIT it = std::find(elist.begin(), elist.end(), e);
+	ELIT it = std::find(elist_p.begin(), elist_p.end(), e);
 	
-	if ( it != elist.end() )
+	if ( it != elist_p.end() )
 	{
 		delete (*it);
-    elist.erase(it);
+    elist_p.erase(it);
     return true;
 	}
   return false;
+}
+
+void Plot3D::createEnrichments()
+{
+  for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
+  {
+    this->createEnrichment(**it);
+  } 
 }

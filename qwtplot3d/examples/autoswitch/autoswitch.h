@@ -11,7 +11,7 @@ class Saddle : public Function
 {
 public:
 
-	Saddle(SurfacePlot* pw)
+	Saddle(SurfacePlot& pw)
 	:Function(pw)
 	{
 		setDomain(-2.5,2.5,-2.5,2.5);
@@ -30,7 +30,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(SurfacePlot* pw)
+	Hat(SurfacePlot& pw)
 	:Function(pw)
 	{
 		setDomain(-1.5,1.5,-1.5,1.5);

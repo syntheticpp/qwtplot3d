@@ -7,7 +7,6 @@
 #include <qpainter.h>
 #include <qfontmetrics.h>
 
-#include "qwt3d_global.h"
 #include "qwt3d_drawable.h"
 
 namespace Qwt3D

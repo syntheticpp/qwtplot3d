@@ -16,7 +16,6 @@ Plot::Plot(QWidget* pw, int updateinterval)
 :SurfacePlot(pw)
 {
 	setRotation(30,0,15);
-	setScale(1,1,1);
 	setShift(0.1,0,0);
 	setZoom(0.8);
 	coordinates()->setNumberFont("Courier",8);
@@ -71,7 +70,7 @@ int main(int argc, char **argv)
 		Plot* plot1 = new Plot(spl,30);
 		plot1->setFloorStyle(FLOORISO);
 		plot1->setCoordinateStyle(BOX);
-		Saddle saddle(plot1);
+		Saddle saddle(*plot1);
 		saddle.create();
 		plot1->setTitle("Autoswitching axes");
 		plot1->setBackgroundColor(RGBA(1,1, 157./255));
@@ -82,7 +81,7 @@ int main(int argc, char **argv)
 
 		Plot* plot2 = new Plot(spl,80);
 		plot2->setZoom(0.8);
-		Hat hat(plot2);
+		Hat hat(*plot2);
 		hat.create();
 		plot2->setPlotStyle(HIDDENLINE);
 		plot2->setFloorStyle(FLOORDATA);

@@ -1,7 +1,6 @@
 #ifndef __COORDSYS_H__
 #define __COORDSYS_H__
 
-#include "qwt3d_global.h"
 #include "qwt3d_axis.h"
 #include "qwt3d_colorlegend.h"
 
@@ -54,7 +53,8 @@ public:
 	void draw();
 	
 	//! Defines whether a grid between the major and/or minor tics should be drawn on bottom
-	void setGridLines(bool majors, bool minors); 
+  void setGridLines(bool majors, bool minors, int = Qwt3D::NOSIDEGRID); 
+  int grids() const {return sides_;} //!< Returns grids switched on
 	
 	std::vector<Axis> axes;
 
@@ -71,11 +71,15 @@ private:
 	
 	void chooseAxes();
 	void autoDecorateExposedAxis(Axis& ax, bool left);
-	void drawMajorGridLines(); //!< Draws a grid between the major tics on bottom
-	void drawMinorGridLines(); //!< Draws a grid between the minor tics on bottom
+  void drawMajorGridLines(); //!< Draws a grid between the major tics on the site
+	void drawMinorGridLines(); //!< Draws a grid between the minor tics on the site
+  void drawMajorGridLines(Qwt3D::Axis&, Qwt3D::Axis&); //! Helper
+  void drawMinorGridLines(Qwt3D::Axis&, Qwt3D::Axis&); //! Helper
+  void recalculateAxesTics();
 
 	bool autodecoration_;
 	bool majorgridlines_, minorgridlines_;
+  int  sides_;
 };
 
 } // ns

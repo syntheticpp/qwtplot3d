@@ -28,6 +28,8 @@
 namespace Qwt3D
 {
 
+const double PI = 3.14159265358979323846264338328;
+
 //! Plotting style
 enum PLOTSTYLE
 {
@@ -64,9 +66,9 @@ enum FLOORSTYLE
 };
 
 //! Mesh type
-enum MESHTYPE
+enum DATATYPE
 {
-	GRID,		//!< Rectangular grid
+  GRID,		//!< Rectangular grid
 	POLYGON //!< Convex polygon
 };	
 
@@ -89,6 +91,18 @@ enum AXIS
 	Z2 = 9,   //!<  2nd z-axis
 	Z3 = 11,  //!<  3th z-axis
 	Z4 = 10   //!<  4th z-axis
+};
+
+//! The 6 sides
+enum SIDE
+{
+  NOSIDEGRID = 0,
+  LEFT   = 1 << 0,
+  RIGHT  = 1 << 1,
+  CEIL   = 1 << 2,
+  FLOOR  = 1 << 3,
+  FRONT  = 1 << 4,
+  BACK   = 1 << 5
 };
 
 //! Possible anchor points for drawing operations
@@ -312,14 +326,30 @@ typedef double *Vertex;
 typedef std::vector<Vertex> DataRow;
 typedef std::vector<DataRow> DataMatrix;
 
-//! Implements a matrix of z-Values with limit access functions 
-class GridData
+
+class Data
 {
 public:
-	
-	GridData();
+  Qwt3D::DATATYPE datatype;
+  Data() {datatype= Qwt3D::POLYGON;}
+  virtual ~Data() {}
+  virtual void clear() = 0; //!< destroy content
+  virtual bool empty() const = 0; //!< no data
+  void setHull(Qwt3D::ParallelEpiped const& h) {hull_p = h;}
+  Qwt3D::ParallelEpiped const& hull() const {return hull_p;} 
+
+protected:
+  Qwt3D::ParallelEpiped hull_p;
+};
+
+
+//! Implements a matrix of z-Values with limit access functions 
+class GridData : public Qwt3D::Data
+{
+public:
+  GridData();
 	GridData(unsigned int columns, unsigned int rows);//!< see setSize()
-	~GridData();
+  ~GridData() { clear();}
 
 	int columns() const;
 	int rows() const;
@@ -328,54 +358,32 @@ public:
 	bool empty() const { return vertices.empty();}
 	void setSize(unsigned int columns, unsigned int rows); //!< destroys content and set new size, elements are uninitialized
 	
-	double maximum() const { return hull().maxVertex.z;} //!< \return minimal z value
-	double minimum() const { return hull().minVertex.z;} //!< \return maximal z value 
-
 	DataMatrix vertices;		//!< mesh vertices
 	DataMatrix normals;		//!< mesh normals
-
-	ParallelEpiped hull() const;
-	void setHull(ParallelEpiped h) { hull_ = h; }
+  void setPeriodic(bool u, bool v) {uperiodic_ = u; vperiodic_ = v;}
+  bool uperiodic() const {return uperiodic_;} 
+  bool vperiodic() const {return vperiodic_;} 
 
 private:
-
-	GridData(GridData const&);						//!< no copy
-	GridData& operator=(GridData const&); //!< no copy
-
-	ParallelEpiped hull_;
+  bool uperiodic_, vperiodic_;
 };
 
 
 //! Implements a graph-like cell structure with limit access functions 
-class CellData
+class CellData : public Qwt3D::Data
 {
 public:
-
-	CellData() {}
+  CellData() {datatype=Qwt3D::POLYGON;}
+  ~CellData() { clear();}
 
 	void clear(); //!< destroy content
 	bool empty() const { return cells.empty();}
 	
-	double maximum() const { return hull().maxVertex.z;} //!< \return minimal z value
-	double minimum() const { return hull().minVertex.z;} //!< \return maximal z value 
-
 	Triple const& operator()(unsigned cellnumber, unsigned vertexnumber);
 	
-	//	ParallelEpiped hull() const;
-
 	CellField cells;   //!< polygon/cell mesh 
 	TripleField    nodes;
 	TripleField    normals; //!< mesh normals
-
-	ParallelEpiped hull() const;
-	void setHull(ParallelEpiped h) { hull_ = h; }
-
-private:
-
-	CellData(CellData const&);						//!< no copy
-	CellData& operator=(CellData const&); //!< no copy
-
-	ParallelEpiped hull_;
 };
 
 inline Triple normalizedcross(Triple const& u, Triple const& v)

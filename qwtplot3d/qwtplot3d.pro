@@ -26,43 +26,55 @@ linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
 SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_color.cpp \
            src/qwt3d_coordsys.cpp \
-           src/qwt3d_dataviews.cpp \
-           src/qwt3d_dataviews_cell.cpp \
-           src/qwt3d_dataviews_grid.cpp \
            src/qwt3d_drawable.cpp \
-           src/qwt3d_function.cpp \
-           src/qwt3d_label.cpp \
-           src/qwt3d_mapping.cpp \
            src/qwt3d_mousekeyboard.cpp \
            src/qwt3d_movements.cpp \
+           src/qwt3d_lighting.cpp \
            src/qwt3d_colorlegend.cpp \
            src/qwt3d_plot.cpp \
-           src/qwt3d_reader.cpp \
-           src/qwt3d_surfaceplot.cpp \
+           src/qwt3d_label.cpp \
            src/qwt3d_types.cpp \
-           src/qwt3d_enrichment.cpp \
            src/qwt3d_enrichment_std.cpp \
-           src/qwt3d_autoscaler.cpp 
+           src/qwt3d_autoscaler.cpp \
+           src/qwt3d_reader.cpp \
+           src/qwt3d_dataviews.cpp
+
+SOURCES += src/qwt3d_gridmapping.cpp \
+					 src/qwt3d_parametricsurface.cpp \
+           src/qwt3d_function.cpp
+
+SOURCES += src/qwt3d_surfaceplot.cpp \
+           src/qwt3d_gridplot.cpp \
+           src/qwt3d_meshplot.cpp
+          
 
 HEADERS += include/qwt3d_color.h \
-           include/qwt3d_function.h \
            include/qwt3d_global.h \
-           include/qwt3d_io.h \
-           include/qwt3d_surfaceplot.h \
            include/qwt3d_types.h \
 	         include/qwt3d_axis.h \
            include/qwt3d_coordsys.h \
            include/qwt3d_drawable.h \
-           include/qwt3d_femreader.h \
            include/qwt3d_helper.h \
            include/qwt3d_label.h \
            include/qwt3d_openglhelper.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
-           include/qwt3d_reader.h \
            include/qwt3d_enrichment.h \
            include/qwt3d_enrichment_std.h \
-           include/qwt3d_autoscaler.h
+           include/qwt3d_autoscaler.h \
+           include/qwt3d_io.h \
+           include/qwt3d_femreader.h \
+           include/qwt3d_reader.h
+
+HEADERS += include/qwt3d_mapping.h \
+					 include/qwt3d_gridmapping.h \
+           include/qwt3d_parametricsurface.h \
+           include/qwt3d_function.h
+
+HEADERS += include/qwt3d_surfaceplot.h \
+           include/qwt3d_volumeplot.h \
+           include/qwt3d_graphplot.h \
+           include/qwt3d_multiplot.h
 
 
 # gl2ps support

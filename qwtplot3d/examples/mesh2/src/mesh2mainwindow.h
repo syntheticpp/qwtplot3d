@@ -1,5 +1,8 @@
-#include "qwt3d_plot3d.h"
+#ifndef mesh2mainwindow_h__2004_03_07_13_38_begin_guarded_code
+#define mesh2mainwindow_h__2004_03_07_13_38_begin_guarded_code
+
 #include "mesh2mainwindowbase.h"
+#include "../../../include/qwt3d_surfaceplot.h"
 
 
 class QLabel;
@@ -7,6 +10,7 @@ class QTimer;
 class QAction;
 class QFileDialog;
 class ColorMapPreview;
+class LightingDlg;
 
 class Mesh2MainWindow : public Mesh2MainWindowBase
 {
@@ -14,12 +18,15 @@ class Mesh2MainWindow : public Mesh2MainWindowBase
 public:
 	Mesh2MainWindow( QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel );
 	~Mesh2MainWindow();
+
+  Qwt3D::SurfacePlot* dataWidget;
 	
 public slots:
 	void open();
 	void openMesh();
 
 	void createFunction(QString const& name);
+	void createPSurface(QString const& name);
 	void setFileType(QString const& name);
 
 	void pickCoordSystem( QAction* );
@@ -32,6 +39,7 @@ public slots:
 	void pickLabelColor();
 	void pickTitleColor();
 	void pickDataColor();
+	void pickLighting();
 	void resetColors();
 	void pickNumberFont();
 	void pickLabelFont();
@@ -58,7 +66,16 @@ public slots:
 	bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
 	void adaptDataColors(const QString&);
 	void updateColorLegend(int majors, int minors);
-	void showGridLines( bool );
+
+	void setLeftGrid( bool b );
+	void setRightGrid( bool b );
+	void setCeilGrid( bool b );
+	void setFloorGrid( bool b );
+	void setFrontGrid( bool b );
+	void setBackGrid( bool b );
+  void setGrid( Qwt3D::SIDE, bool );
+
+  void enableLighting(bool val);
 
 private:
 	QLabel *filenameWidget, *dimWidget,
@@ -74,6 +91,9 @@ private:
 
 	QFileDialog* datacolordlg_;
 	ColorMapPreview* colormappv_; 
+  LightingDlg* lightingdlg_;
 
 	QString filetype_;
 };
+
+#endif /* include guarded */

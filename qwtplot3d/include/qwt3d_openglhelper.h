@@ -85,7 +85,7 @@ inline void getMatrices(GLdouble* modelMatrix, GLdouble* projMatrix, GLint* view
 	glGetDoublev(GL_PROJECTION_MATRIX,	projMatrix);
 }
 
-//! simplified glut routine (glUnProject): windows coord --> object coord 
+//! simplified glut routine (glUnProject): windows coordinates_p --> object coordinates_p 
 /**
 	Don't rely on (use) this in display lists !
 */
@@ -101,7 +101,7 @@ inline bool ViewPort2World(double& objx, double& objy, double& objz, double winx
 	return (res == GL_FALSE) ? false : true;
 }
 
-//! simplified glut routine (glProject): object coord --> windows coord 
+//! simplified glut routine (glProject): object coordinates_p --> windows coordinates_p 
 /**
 	Don't rely on (use) this in display lists !
 */

@@ -1,59 +1,36 @@
 #include "qwt3d_surfaceplot.h"
-#include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
 
-SurfacePlot::SurfacePlot( QWidget* parent, const char* name, MESHTYPE mt )
+/**
+Initializes with dataNormals()==false, NOFLOOR, resolution() == 1
+*/
+SurfacePlot::SurfacePlot( QWidget* parent, const char* name )
     : Plot3D( parent, name )
 {
-	meshtype_ = mt;
-	resolution_ = 1;
-	
-	datanormals_ = false;
-	normalLength_ = 0.02;
-	normalQuality_ = 3;
+	datanormals_p = false;
+	normalLength_p = 0.02;
+	normalQuality_p = 3;
 
-		
-	actualGridData_ = new GridData();
-	actualCellData_ = new CellData();
+	resolution_p = 1;
+	actualDataG_ = new GridData();
+	actualDataC_ = new CellData();
 
-	smoothdatamesh_ = false;
+  actualData_p = actualDataG_;
+
+  floorstyle_ = NOFLOOR;
 }
-
-/*!
-  Releases allocated resources
-*/
 
 SurfacePlot::~SurfacePlot()
 {
-	delete actualGridData_;
-	delete actualCellData_;
-}
-
-/**
-	Calculates the smallest x-y-z parallelepiped enclosing the data.
-	It can be accessed by hull();
-*/
-void SurfacePlot::calculateHull()
-{
-	if (meshtype_ == GRID)
-	{
-		if (actualGridData_->empty())
-			return;
-		setHull(actualGridData_->hull());
-	}
-	else
-	{
-		if (actualCellData_->empty())
-			return;
-		setHull(actualCellData_->hull());
-	}
+	delete actualDataG_;
+	delete actualDataC_;
 }
 
 void SurfacePlot::showNormals(bool b)
 {
-  datanormals_ = b;
+  datanormals_p = b;
 }
 
 /**
@@ -63,7 +40,7 @@ void SurfacePlot::setNormalLength(double val)
 {
 	if (val<0 || val>1)
 		return;
-	normalLength_ = val;
+	normalLength_p = val;
 }
 
 /**
@@ -73,7 +50,18 @@ void SurfacePlot::setNormalQuality(int val)
 {
 	if (val<3)
 		return;
-	normalQuality_ = val;
+	normalQuality_p = val;
+}
+
+/**
+	Calculates the smallest x-y-z parallelepiped enclosing the data.
+	It can be accessed by hull();
+*/
+void SurfacePlot::calculateHull()
+{
+	if (actualData_p->empty())
+		return;
+	setHull(actualData_p->hull());
 }
 
 /*!
@@ -82,91 +70,102 @@ void SurfacePlot::setNormalQuality(int val)
 */
 void SurfacePlot::setResolution( int res )
 {
-	if ((resolution_ == res) || res < 1)
+  if (!actualData_p || actualData_p->datatype == Qwt3D::POLYGON)
+    return;
+  
+  if ((resolution_p == res) || res < 1)
 		return;
 	
-	resolution_ = res;
+	resolution_p = res;
 	updateNormals();
 	updateData();
-	updateGL();
+	if (initializedGL())
+    updateGL();
 
 	emit resolutionChanged(res);
 }
 
 void SurfacePlot::updateNormals()
 {
-	SaveGlDeleteLists(DisplayLists[NormalObject], 1); 
+	SaveGlDeleteLists(displaylists_p[NormalObject], 1); 
 	
-	if (plotStyle() == NOPLOT && !normals())
+	if (plotStyle() == NOPLOT && !normals() || !actualData_p)
 		return;
 
-	DisplayLists[NormalObject] = glGenLists(1);
-	glNewList(DisplayLists[NormalObject], GL_COMPILE);
+	displaylists_p[NormalObject] = glGenLists(1);
+	glNewList(displaylists_p[NormalObject], GL_COMPILE);
 
-	if (meshtype() == GRID)
-		updateGridNormals();
-	else
-		updateCellNormals();
+  if (actualData_p->datatype == Qwt3D::POLYGON)
+    createNormalsC();
+  else if (actualData_p->datatype == Qwt3D::GRID)
+    createNormalsG();
 		
 	glEndList();
 }
 
 void SurfacePlot::createData()
 {
-	if (plotStyle() != NOPLOT)
-	{
-		setDeviceLineWidth(meshLineWidth());
-		
-		if (meshtype() == GRID)
-			updateGridData();
-		else
-			updateCellData();
-	}
+	if (!actualData_p)
+		return;
+  if (actualData_p->datatype == Qwt3D::POLYGON)
+    createDataC();
+  else if (actualData_p->datatype == Qwt3D::GRID)
+    createDataG();
 }
+
 
 void SurfacePlot::createFloorData()
 {
-	if (meshtype() == GRID)
-	{
-		switch (floorStyle())
-		{
-		case FLOORDATA:
-			GridData2Floor();
-			break;
-		case FLOORISO:
-			GridIsolines2Floor();
-			break;
-		default:
-			break;
-		}
-	}
-	else // cells
-	{
-		switch (floorStyle())
-		{
-		case FLOORDATA:
-			CellData2Floor();
-			break;
-		case FLOORISO:
-			CellIsolines2Floor();
-			break;
-		default:
-			break;
-		}
-	}
+	if (!actualData_p)
+    return;
+  if (actualData_p->datatype == Qwt3D::POLYGON)
+    createFloorDataC();
+  else if (actualData_p->datatype == Qwt3D::GRID)
+   createFloorDataG();  
 }
 
 /**
 	The returned value is not affected by resolution(). The pair gives (columns,rows) for grid data
-, (number of cells,1) for free formed data (meshtype() == POLYGON) and (0,0) else
+, (number of cells,1) for free formed data (datatype() == POLYGON) and (0,0) else
 */
 pair<int,int> SurfacePlot::facets() const
 {
 	if (!hasData())
 		return pair<int,int>(0,0);
 
-	if (meshtype() == GRID)
-		return pair<int,int>(actualGridData_->columns(), actualGridData_->rows()); 	
-	else
-		return pair<int,int>(int(actualCellData_->cells.size()), 1);
+  if (actualData_p->datatype == Qwt3D::POLYGON)
+  	return pair<int,int>(int(actualDataC_->cells.size()), 1);
+  else if (actualData_p->datatype == Qwt3D::GRID)
+  	return pair<int,int>(actualDataG_->columns(), actualDataG_->rows()); 	
+  else
+    return pair<int,int>(0,0);    
+}
+
+void SurfacePlot::createPoints()
+{
+  Dot pt;
+  createEnrichment(pt);
+}
+
+void SurfacePlot::createEnrichment(Qwt3D::Enrichment& p)
+{
+	if (!actualData_p)
+    return;
+  p.assign(*this);
+	p.drawBegin();
+  if (actualData_p->datatype == Qwt3D::POLYGON)
+  {	
+    for (unsigned i = 0; i != actualDataC_->normals.size(); ++i) 
+	    p.draw(actualDataC_->nodes[i]);
+  }
+  else if (actualData_p->datatype == Qwt3D::GRID)
+ 	{
+    int step = resolution();
+    for (int i = 0; i <= actualDataG_->columns() - step; i += step) 
+      for (int j = 0; j <= actualDataG_->rows() - step; j += step) 
+  			p.draw(Triple(actualDataG_->vertices[i][j][0],
+										              actualDataG_->vertices[i][j][1],
+                                  actualDataG_->vertices[i][j][2]));
+  }
+  p.drawEnd(); 
 }

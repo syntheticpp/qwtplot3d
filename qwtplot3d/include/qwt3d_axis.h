@@ -1,7 +1,6 @@
 #ifndef __AXIS_H__
 #define __AXIS_H__
 
-#include "qwt3d_global.h"
 #include "qwt3d_label.h"
 #include "qwt3d_autoscaler.h"
 
@@ -26,6 +25,7 @@ public:
 	void position(Qwt3D::Triple& beg, Qwt3D::Triple& end) const {beg = beg_; end = end_;} //!< Get axis' position
 	Qwt3D::Triple begin() const { return beg_; }
 	Qwt3D::Triple end() const { return end_; }
+  double length() const { return (end_-beg_).length(); }
 
 	void setTicLength(double majorl, double minorl);
 	void ticLength(double& majorl, double& minorl) const {majorl = lmaj_; minorl = lmin_;}
@@ -66,13 +66,14 @@ public:
 	
 	//! Sets line width for axis components
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
-	double lineWidth() const { return lineWidth_;} //!< \return Line width for axis body
-	double majLineWidth() const { return majLineWidth_;} //!< \return Line width for major tics
-	double minLineWidth() const { return minLineWidth_;} //!< \return Line width for minor tics
+	double lineWidth() const { return lineWidth_;} //!< Returns line width for axis body
+	double majLineWidth() const { return majLineWidth_;} //!< Returns Line width for major tics
+	double minLineWidth() const { return minLineWidth_;} //!< Returns Line width for minor tics
 
 	void setLimits(double start, double stop) {start_=start; stop_=stop;} //!< Sets interval
 	void limits(double& start, double& stop) const {start = start_; stop = stop_;} //!< Returns axis interval
-	
+  void recalculateTics(); //!< Enforces recalculation of ticmark positions
+
 private:
 
 	void init();

@@ -13,20 +13,19 @@ using namespace Qwt3D;
 */
 void Plot3D::updateData()
 {
-	GLStateBewarer dt(GL_DEPTH_TEST, true);
+	makeCurrent();
+  GLStateBewarer dt(GL_DEPTH_TEST, true);
 	GLStateBewarer ls(GL_LINE_SMOOTH, true);
 
 	calculateHull();	
 
-	SaveGlDeleteLists(DisplayLists[DataObject], 1); // nur Daten
+	SaveGlDeleteLists(displaylists_p[DataObject], 1); // nur Daten
 	
-	DisplayLists[DataObject] = glGenLists(1);
-	glNewList(DisplayLists[DataObject], GL_COMPILE);
-
-	this->createFloorData();
+	displaylists_p[DataObject] = glGenLists(1);
+	glNewList(displaylists_p[DataObject], GL_COMPILE);
 	
-	if (plotStyle() != NOPLOT)
-		this->createData();
+  this->createEnrichments();
+	this->createData();
 		
 	glEndList();
 }

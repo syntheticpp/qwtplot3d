@@ -302,6 +302,11 @@
                     <string>tex (both)</string>
                 </property>
             </item>
+            <item>
+                <property name="text">
+                    <string>hsf</string>
+                </property>
+            </item>
         </widget>
         <widget class="QComboBox">
             <property name="name">

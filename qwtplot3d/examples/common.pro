@@ -6,9 +6,15 @@ INCLUDEPATH    += ../../include
 DEPENDPATH	= $$INCLUDEPATH
 
 unix:LIBS += -lqwtplot3d -L./../../lib
-win32:LIBS += ./../../lib/qwtplot3d.lib
+#win32:LIBS += ./../../lib/qwtplot3d.lib
+win32:LIBS += qwtplot3d.lib
 
 win32:TEMPLATE  = vcapp
 win32:DEFINES  += QT_DLL QWT_DLL
 win32:QMAKE_CXXFLAGS     += -GX 
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions
+
+
+RC_FILE = ../icon.rc
+
+

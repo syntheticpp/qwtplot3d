@@ -4,108 +4,75 @@
 using namespace Qwt3D;
 
 Function::Function()
+:GridMapping()
 {
-	init(0);
 }
 
-Function::Function(SurfacePlot* pw)
+Function::Function(SurfacePlot& pw)
+:GridMapping()
 {
-	init(pw);
+  plotwidget_p = &pw;
 }
 
-void Function::init(SurfacePlot* plotWidget)
+void Function::assign(SurfacePlot& plotWidget)
 {
-	plotwidget_ = plotWidget;
-	setMesh(0,0);
-	setDomain(0,0,0,0);
-	setMinZ(-DBL_MAX);
-	setMaxZ(DBL_MAX);
-}
-
-Function::~Function()
-{ 
-}
-
-void Function::assign(SurfacePlot* plotWidget)
-{
-	Q_ASSERT(plotWidget);
-	if (plotWidget && (plotWidget != plotwidget_))
-		plotwidget_ = plotWidget;
-}
-
-void Function::setMesh(unsigned int columns,unsigned int rows)
-{
-	xmesh_ = columns;
-	ymesh_ = rows;
-}
-
-void Function::	setDomain(double minx, double maxx, double miny, double maxy)
-{
-	minx_ = minx;
-	maxx_ = maxx;
-	miny_ = miny;
-	maxy_ = maxy;
+	if (&plotWidget != plotwidget_p)
+		plotwidget_p = &plotWidget;
 }
 
 void Function::	setMinZ(double val)
 {
-	minz_ = val;
+	range_p.minVertex.z = val;
 }
 
 void Function::	setMaxZ(double val)
 {
-	maxz_ = val;
+	range_p.maxVertex.z = val;
 }
 
-/**
-For plotWidget != 0 the function permanently assigns her argument (In fact, assign(plotWidget) is called)
-*/
-bool Function::create(SurfacePlot* plotWidget)
+bool Function::create()
 {
-	if (plotWidget)
-		assign(plotWidget);
-
-	if ((xmesh_<=2) || (ymesh_<=2) || !plotwidget_)
+	if ((umesh_p<=2) || (vmesh_p<=2) || !plotwidget_p)
 		return false;
 	
 	/* allocate some space for the mesh */
- 	double** data         = new double* [xmesh_] ;
+ 	double** data         = new double* [umesh_p] ;
 
 	unsigned i,j;
-	for ( i = 0; i < xmesh_; i++) 
+	for ( i = 0; i < umesh_p; i++) 
 	{
-		data[i]         = new double [ymesh_];
+		data[i]         = new double [vmesh_p];
 	}
 	
 	/* get the data */
 
-	double dx = (maxx_ - minx_) / (xmesh_ - 1);
-	double dy = (maxy_ - miny_) / (ymesh_ - 1);
+	double dx = (maxu_p - minu_p) / (umesh_p - 1);
+	double dy = (maxv_p - minv_p) / (vmesh_p - 1);
 	
-	for (i = 0; i < xmesh_; ++i) 
+	for (i = 0; i < umesh_p; ++i) 
 	{
-		for (j = 0; j < ymesh_; ++j) 
+		for (j = 0; j < vmesh_p; ++j) 
 		{
-			data[i][j] = operator()(minx_ + i*dx, miny_ + j*dy);
+			data[i][j] = operator()(minu_p + i*dx, minv_p + j*dy);
 			
-			if (data[i][j] > maxz_)
-				data[i][j] = maxz_;
-			else if (data[i][j] < minz_)
-				data[i][j] = minz_;
+			if (data[i][j] > range_p.maxVertex.z)
+				data[i][j] = range_p.maxVertex.z;
+			else if (data[i][j] < range_p.minVertex.z)
+				data[i][j] = range_p.minVertex.z;
 		}
 	}
 
-	Q_ASSERT(plotwidget_);
-	if (!plotwidget_)
+	Q_ASSERT(plotwidget_p);
+	if (!plotwidget_p)
 	{
 		fprintf(stderr,"Function: no valid Plot3D Widget assigned");
 	}
 	else
 	{
-		plotwidget_->createDataRepresentation(data, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_);
+		((SurfacePlot*)plotwidget_p)->createDataRepresentation(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
 	}
 
-	for ( i = 0; i < xmesh_; i++) 
+	for ( i = 0; i < umesh_p; i++) 
 	{
 		delete [] data[i];
 	}
@@ -113,4 +80,10 @@ bool Function::create(SurfacePlot* plotWidget)
 	delete data;
 
 	return true;
+}
+
+bool Function::create(SurfacePlot& pl)
+{
+  assign(pl);
+  return create();
 }

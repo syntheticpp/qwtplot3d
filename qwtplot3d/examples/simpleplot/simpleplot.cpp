@@ -16,7 +16,7 @@
   {
   public:
 
-    Rosenbrock(SurfacePlot* pw)
+    Rosenbrock(SurfacePlot& pw)
     :Function(pw)
     {
     }
@@ -39,7 +39,7 @@
   {
     setTitle("A Simple SurfacePlot Demonstration");
     
-    Rosenbrock rosenbrock(this);
+    Rosenbrock rosenbrock(*this);
 
     rosenbrock.setMesh(41,31);
     rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
