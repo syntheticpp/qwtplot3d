@@ -12,9 +12,10 @@ Scale::Scale()
 /*! The function maps the double value at tic-position idx to a final
 representation. The default return value is simply the tic values QString 
 representation. Overwrite this function, if you plan to transform the value 
-in some way. 
+in some way. See e.g. LogScale::ticLabel.
 \param idx the current major tic index
-\return val's QString representation for valid i, empty QString else
+\return The QString representation for the value corresponding to a valid index, 
+an empty QString else.
 */
 QString Scale::ticLabel(unsigned int idx) const
 {
@@ -52,12 +53,13 @@ void Scale::setMajorLimits(double start, double stop)
 } 
 
 /*!
-  \param a first major tic after applying autoscaling
-  \param b last major tic after applying autoscaling
-  \param start scale begin
-  \param stop scale end
-  \param ivals requested number of major intervals
-  \return number of major intervals after autoscaling
+  \param a First major tic after applying autoscaling
+  \param b Last major tic after applying autoscaling
+  \param start Scale begin
+  \param stop Scale end
+  \param ivals Requested number of major intervals
+  \return Number of major intervals after autoscaling\n
+  
   The default implementation sets a=start, b=stop and returns ivals.
 */
 int Scale::autoscale(double& a, double& b, double start, double stop, int ivals)
@@ -81,7 +83,7 @@ int LinearScale::autoscale(double& a, double& b, double start, double stop, int 
 }
 
 //! Creates the major and minor vector for the scale
-void LinearScale::create()
+void LinearScale::calculate()
 {		
   majors_p.clear();
 	minors_p.clear();
@@ -161,7 +163,7 @@ void LinearScale::create()
   }
 }
 
-void LogScale::setupCounter(int& k, int& step)
+void LogScale::setupCounter(double& k, int& step)
 {
   switch(minorintervals_p) 
   {
@@ -187,8 +189,12 @@ void LogScale::setupCounter(int& k, int& step)
   }
 }
 
-//! Creates major and minor vectors for the scale.
-void LogScale::create()
+/*! Creates major and minor vectors for the scale.
+\warning If the interval is too small, the scale becomes empty
+or will contain only a single major tic. Better switch to linear 
+scales in such cases.
+*/
+void LogScale::calculate()
 {
   majors_p.clear();
 	minors_p.clear();
@@ -213,11 +219,8 @@ void LogScale::create()
   if (majorintervals_p)
     --majorintervals_p;
 
-  if (majors_p.size()<2) // not even a single major tic
+  if (majors_p.size()<1) // not even a single major tic
   {
-    double mant = log10(interval);
-    
-
     return;
   }
   
@@ -227,7 +230,8 @@ void LogScale::create()
   // start_p      mstart_p
   //  |_____________|_____ _ _ _
 
-  int k,step;
+  double k;
+  int step;
   setupCounter(k,step);
 	runningval = log10(k)+(majors_p[0]-1);
   while (runningval>start_p && k>1)
@@ -293,7 +297,7 @@ QString LogScale::ticLabel(unsigned int idx) const
   if (idx<majors_p.size())
   {
     double val = majors_p[idx];
-    return QString::number(pow(10, val));
+    return QString::number(pow(double(10), val));
   }
   return QString("");
 }

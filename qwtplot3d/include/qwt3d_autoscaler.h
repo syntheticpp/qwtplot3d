@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "qwt3d_global.h"
+#include "qwt3d_autoptr.h"
 
 namespace Qwt3D
 {
@@ -10,24 +11,27 @@ namespace Qwt3D
 //! ABC for autoscaler
 class QWT3D_EXPORT AutoScaler
 {
-public:
+friend class qwt3d_ptr<AutoScaler>;
+protected:
   //! Returns a new heap based object of the derived class.  
   virtual AutoScaler* clone() const = 0;
-  void destroy() const {delete this;}    
+  //! To implement from subclasses
   virtual int execute(double& a, double& b, double start, double stop, int ivals) = 0;
-
-protected:
   virtual ~AutoScaler(){}
   static double floor125( int& exponent, double x);
   static double floorExt( int& exponent, double x, std::vector<double>& sortedmantissi);
+
+private:
+  void destroy() const {delete this;} //!< Used by qwt3d_ptr      
 };
 
 //! Automatic beautifying of linear scales
 class QWT3D_EXPORT LinearAutoScaler : public AutoScaler
 {
-public:
-	LinearAutoScaler();
-  explicit LinearAutoScaler(std::vector<double>& mantissi); // mantissi increasing sorted !
+friend class LinearScale;
+protected:
+  LinearAutoScaler();
+  explicit LinearAutoScaler(std::vector<double>& mantisses); // mantisses increasing sorted !
   AutoScaler* clone() const {return new LinearAutoScaler(*this);}
 	int execute(double& a, double& b, double start, double stop, int ivals);
 
