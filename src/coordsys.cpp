@@ -2,7 +2,7 @@
 
 
 using namespace std;
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 
 CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
@@ -114,29 +114,23 @@ CoordinateSystem::draw()
 	
 	if (lineSmooth())
 		glEnable(GL_LINE_SMOOTH);
+		
+
+	if (autoDecoration())
+		chooseAxes();
 	
 	Drawable::draw();
-	
+
 	if (lineSmooth())
 		glDisable(GL_LINE_SMOOTH);
 
 	//	restoreGLState();
 }
 
-void 
-CoordinateSystem::postDraw()
-{
-	if (autoDecoration())
-		chooseAxesForAutoDecoration();
-
-	Drawable::postDraw();
-}
-
-
 
 //! build convex hull (6 axes: 2 x, 2 y, 2 z) and choose one of them at a time for scales, labels etc.  
 void 
-CoordinateSystem::chooseAxesForAutoDecoration()
+CoordinateSystem::chooseAxes()
 {
 	vector<Triple> beg(axes.size());
 	vector<Triple> end(axes.size());

@@ -10,14 +10,14 @@ class CoordinateSystem : public Drawable
 
 public:
 	
-	explicit CoordinateSystem(Triple blb = Triple(0,0,0), Triple ftr = Triple(0,0,0), Qwt3d::COORDSTYLE = Qwt3d::BOX);
+	explicit CoordinateSystem(Triple blb = Triple(0,0,0), Triple ftr = Triple(0,0,0), Qwt3D::COORDSTYLE = Qwt3D::BOX);
   ~CoordinateSystem();	
 	
 	void init(Triple beg = Triple(0,0,0), Triple end = Triple(0,0,0));
-	void setStyle(Qwt3d::COORDSTYLE s,	Qwt3d::AXIS frame_1 = Qwt3d::X1, 
-																			Qwt3d::AXIS frame_2 = Qwt3d::Y1, 
-																			Qwt3d::AXIS frame_3 = Qwt3d::Z1);
-	Qwt3d::COORDSTYLE style() const { return style_;}
+	void setStyle(Qwt3D::COORDSTYLE s,	Qwt3D::AXIS frame_1 = Qwt3D::X1, 
+																			Qwt3D::AXIS frame_2 = Qwt3D::Y1, 
+																			Qwt3D::AXIS frame_3 = Qwt3D::Z1);
+	Qwt3D::COORDSTYLE style() const { return style_;}
 	void setPosition(Triple first, Triple second); //!< first == front_left_bottom, second == back_right_top
 	
 	void setAxesColor(RGBA val);
@@ -43,7 +43,6 @@ public:
 	bool lineSmooth() const {return smooth_;}            //!< smooth axes ? 
 
 	void draw();
-	void postDraw();
 
 	std::vector<Axis> axes;
 
@@ -52,7 +51,7 @@ private:
 	void destroy();
 	
 	Triple first_, second_;
-	Qwt3d::COORDSTYLE style_;
+	Qwt3D::COORDSTYLE style_;
 	
 	double ared_, agreen_, ablue_; 
 	double lineWidth_, majLineWidth_, minLineWidth_;
@@ -61,7 +60,7 @@ private:
 
 	void positionateLabel(Axis& ax, LabelPixmap::ANCHOR an);
 	
-	void chooseAxesForAutoDecoration();
+	void chooseAxes();
 	void autoDecorateExposedAxis(Axis& ax, bool left);
 
 	bool autodecoration_;
