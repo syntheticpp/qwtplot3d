@@ -4,6 +4,7 @@
 #include "axis.h"
 #include "plane.h"
 
+//! A coordinate system with different styles (BOX, FRAME)
 class CoordinateSystem : public Drawable
 {
 
@@ -15,7 +16,7 @@ public:
 	void init(Triple beg = Triple(0,0,0), Triple end = Triple(0,0,0));
 	void setStyle(Qwt3d::COORDSTYLE s);
 	Qwt3d::COORDSTYLE style() const { return style_;}
-	void setPosition(Triple first, Triple second); // first == front_left_bottom, second == back_right_top
+	void setPosition(Triple first, Triple second); //!< first == front_left_bottom, second == back_right_top
 	
 	void setAxesColor(RGBA val);
 	void setNumberFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
@@ -33,11 +34,11 @@ public:
 	Triple first() const { return first_;}
 	Triple second() const { return second_;}
 
-	void setAutoDecoration(bool val = true) {autodecoration_ = val;};
+	void setAutoDecoration(bool val = true) {autodecoration_ = val;}
 	bool autoDecoration() const { return autodecoration_;}
 
-	void setLineSmooth(bool val = true) {smooth_ = val;};
-	bool lineSmooth() const {return smooth_;};
+	void setLineSmooth(bool val = true) {smooth_ = val;} //!< draw smooth axes
+	bool lineSmooth() const {return smooth_;}            //!< smooth axes ? 
 
 	void draw();
 	void postDraw();

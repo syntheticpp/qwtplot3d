@@ -6,6 +6,7 @@
 
 class LabelTexture;
 
+//! Autoscalable axis with caption
 class Axis : public Drawable
 {
 
