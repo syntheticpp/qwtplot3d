@@ -65,12 +65,12 @@ ColorLegend::setAutoScale(bool val)
 
 
 void
-ColorLegend::setOrientation(ORIENTATION or, SCALEPOSITION pos)
+ColorLegend::setOrientation(ORIENTATION ori, SCALEPOSITION pos)
 {
-	orientation_ = or;
+	orientation_ = ori;
 	axisposition_ = pos;
 
-	if (or==BottomTop)
+	if (ori==BottomTop)
 	{
 		if (pos == Bottom || pos == Top)
 			axisposition_ = Left;
@@ -80,7 +80,6 @@ ColorLegend::setOrientation(ORIENTATION or, SCALEPOSITION pos)
 		if (pos == Left || pos == Right)
 			axisposition_ = Bottom;
 	}
-			
 }
 
 void 
