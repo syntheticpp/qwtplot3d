@@ -205,6 +205,8 @@ NativeReader::read(double minz, double maxz)
 	{
 		delete [] data[i];
 	}
+	delete data;
+
 	return true;
 }
 
