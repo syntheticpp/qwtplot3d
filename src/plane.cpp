@@ -3,6 +3,7 @@
 #endif
 
 #include "plane.h"
+using namespace Qwt3D;
 
 
 Quad::Quad()

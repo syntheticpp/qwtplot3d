@@ -3,15 +3,17 @@
 
 #include <qstring.h>
 
+namespace Qwt3D
+{
 
-class QwtPlot3D;
+class Plot3D;
 
 class Function
 {
 
 public:
 	
-  Function(QwtPlot3D* plotWidget);
+  Function(Plot3D* plotWidget);
 	virtual ~Function();
 	virtual double operator()(double x, double y) = 0;
 	virtual QString name() const { return QString(""); }
@@ -22,14 +24,15 @@ public:
 	void setDomain(double minx, double maxx, double miny, double maxy);
 	void setMinZ(double val);
 	void setMaxZ(double val);
-	void assign(QwtPlot3D* plotWidget); //!< assign to other widget to see the changes, you have to call create() afterwards
+	void assign(Plot3D* plotWidget); //!< assign to other widget to see the changes, you have to call create() afterwards
 
 private:
-	QwtPlot3D* plotwidget_;
+	Plot3D* plotwidget_;
 	double minx_, maxx_, miny_, maxy_, minz_, maxz_;
 	unsigned int xmesh_, ymesh_;
 
 };
 
+} // ns
 
 #endif // __FUNCTIONGENERATOR_H__

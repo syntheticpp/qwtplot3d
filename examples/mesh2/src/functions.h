@@ -3,14 +3,16 @@
 
 #include <math.h>
 #include "../src/functiongenerator.h"
+#include "qwt3d_plot3d.h"
 
-class QwtPlot3D;
+using namespace Qwt3D;
+
 
 class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(QwtPlot3D* pw)
+	Rosenbrock(Plot3D* pw)
 	:Function(pw)
 	{
 	}
@@ -25,7 +27,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(QwtPlot3D* pw)
+	Hat(Plot3D* pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     
@@ -41,7 +43,7 @@ class Saddle : public Function
 {
 public:
 
-	Saddle(QwtPlot3D* pw)
+	Saddle(Plot3D* pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     
@@ -57,7 +59,7 @@ class Mex : public Function
 {
 public:
 
-	Mex(QwtPlot3D* pw)
+	Mex(Plot3D* pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     

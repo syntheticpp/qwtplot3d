@@ -3,6 +3,7 @@
 
 #include "colormodels.h"
 
+using namespace Qwt3D;
 
 //--------------------------------------------------------------------
 //              colormodels.cpp
@@ -53,7 +54,7 @@ public:
 
 
 Plot::Plot(QWidget* pw)
-:QwtPlot3D(pw)
+:Plot3D(pw)
 {
 	Saddle saddle(this);
 	

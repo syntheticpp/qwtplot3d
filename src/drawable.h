@@ -5,6 +5,9 @@
 #include <list>
 #include "types.h"
 
+namespace Qwt3D
+{
+
 //! ABC for Drawables
 class Drawable 
 {
@@ -23,11 +26,11 @@ public:
 	void detachAll();
 	
 	virtual void setColor(double r, double g, double b, double a = 1);	
-	virtual void setColor(RGBA rgba);	
+	virtual void setColor(Qwt3D::RGBA rgba);	
 
 protected:
 	
-	RGBA color;
+	Qwt3D::RGBA color;
 	void Enable(GLenum what, GLboolean val);
 	
 
@@ -46,7 +49,8 @@ private:
 
 	std::list<Drawable*> dlist;
 
-
 };
+
+} // ns
 
 #endif // __DRAWABLE_H__

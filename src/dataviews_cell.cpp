@@ -10,7 +10,7 @@ using namespace std;
 using namespace Qwt3D;
 
 void 
-QwtPlot3D::updateCellData()
+Plot3D::updateCellData()
 {
 	int idx = 0;
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
@@ -64,14 +64,10 @@ QwtPlot3D::updateCellData()
 		}
 		glDisable(GL_POLYGON_OFFSET_FILL);
 	}
-	if (normals())
-	{
-		CellNormals();
-	}
 }
 
 void 
-QwtPlot3D::CellData2Floor()
+Plot3D::CellData2Floor()
 {	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
@@ -100,7 +96,7 @@ QwtPlot3D::CellData2Floor()
 
 
 void 
-QwtPlot3D::Cell2Floor()
+Plot3D::Cell2Floor()
 {
 	if (actualCellData_->empty() || meshtype() == GRID)
 		return;
@@ -121,7 +117,7 @@ QwtPlot3D::Cell2Floor()
 }
 
 void 
-QwtPlot3D::CellIsolines2Floor()
+Plot3D::CellIsolines2Floor()
 {
 	if (isolines_ <= 0 || actualCellData_->empty())
 		return;
@@ -206,7 +202,7 @@ QwtPlot3D::CellIsolines2Floor()
 }
 
 void 
-QwtPlot3D::CellNormals()
+Plot3D::updateCellNormals()
 {
 	if (!normals() || actualCellData_->empty())
 		return;
@@ -215,6 +211,7 @@ QwtPlot3D::CellNormals()
 		return;
 
 	VectorField v(dataColor_);
+	v.setQuality(normalQuality());
 	v.bases = TripleVector(actualCellData_->normals.size());
 	v.tops = TripleVector(v.bases.size());
 	
@@ -223,7 +220,7 @@ QwtPlot3D::CellNormals()
 	Triple basev;
 	Triple topv;	
 	
-	double diag = (actualCellData_->hull().maxVertex-actualCellData_->hull().minVertex).length() / 60;
+	double diag = (actualCellData_->hull().maxVertex-actualCellData_->hull().minVertex).length() * normalLength();
 
 	for (unsigned i = 0; i != v.bases.size(); ++i) 
 	{

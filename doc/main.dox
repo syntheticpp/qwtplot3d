@@ -60,7 +60,7 @@
  	 <b>  ...Proposals !	</b>
  	 
  	 \e Remark: I skipped plans for including a native method of mesh generation  (Delaunay triangulation).
- 	 There are very sophisticated programs you can use to prepare your data in a preliminary step. As an example,
+ 	 There are very sophisticated programs in use to prepare your data in a preliminary step. As an example,
  	 I'll likely provide a plugin for reading <a href="http://www-2.cs.cmu.edu/~quake/triangle.html">Triangle</a>
  	 output.
  	 

@@ -3,6 +3,9 @@
 
 #include "types.h"
 
+namespace Qwt3D
+{
+
 class Color;
 class VectorField
 {
@@ -12,11 +15,12 @@ public:
 	~VectorField();
 
 	void configureArrows(int segs, double relconelength, double relconerad, double relstemrad);
+	void setQuality(int val);
 	void drawArrows();	
-	void drawArrow(Triple const& beg, Triple const& end, RGBA col);	
+	void drawArrow(Qwt3D::Triple const& beg, Qwt3D::Triple const& end, Qwt3D::RGBA col);	
 
-	TripleVector bases;
-	TripleVector tops;
+	Qwt3D::TripleVector bases;
+	Qwt3D::TripleVector tops;
 
 private:
 
@@ -25,7 +29,7 @@ private:
 	GLUquadricObj *base;
 	GLUquadricObj *bottom;
 
-	double calcRotation(Triple& axis, Triple const& beg, Triple const& end);
+	double calcRotation(Qwt3D::Triple& axis, Qwt3D::Triple const& beg, Qwt3D::Triple const& end);
 
 	Color* colors;
 
@@ -35,9 +39,11 @@ private:
 	double rel_cone_radius;
 	double rel_stem_radius;
 
-	void drawArrow(Triple const& beg, Triple const& end);	
+	void drawArrow(Qwt3D::Triple const& beg, Qwt3D::Triple const& end);	
 
 	static const double PI;
 };
+
+} // ns
 
 #endif  // __vectorfield_2003_05_27_09_06__

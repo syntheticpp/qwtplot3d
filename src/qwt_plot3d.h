@@ -3,8 +3,10 @@
 
 #include "coordsys.h"
 
+namespace Qwt3D
+{
 
-class QwtPlot3D : public QGLWidget
+class Plot3D : public QGLWidget
 {
     Q_OBJECT
 
@@ -19,11 +21,11 @@ public:
 			POLYGON
 		};	
 	
-    QwtPlot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = GRID );
-    virtual ~QwtPlot3D();
+    Plot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = GRID );
+    virtual ~Plot3D();
 
 	  void updateData();
-		void createCoordinateSystem(Triple beg, Triple end);
+		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		void updateCoordinateSystem();
 		CoordinateSystem* coordinates() { return &coord; } //!< \return Pointer to CoordinateSystem object
 		
@@ -56,18 +58,18 @@ public:
 		void showNormals(bool); //!< draw normals to every vertex
 		bool normals() const { return datanormals_;} //!< \return true, if normal drawing is on
 	
-		void setBackgroundColor(RGBA rgba);
-		void setMeshColor(RGBA rgba);
-		RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
+		void setBackgroundColor(Qwt3D::RGBA rgba);
+		void setMeshColor(Qwt3D::RGBA rgba);
+		Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
 		bool hasData() const { return !actualGridData_->empty() || !actualCellData_->empty() ; } //!< \return Valid data available (true) or not (false)
 		MESHTYPE meshtype() const { return meshtype_; }	
 
 		void calculateHull();
-		ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
+		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
 
-		void createColorLegend(ColorVector const&, Triple a = Triple(), Triple b = Triple(), Triple c = Triple(), Triple d = Triple());
+		void createColorLegend(Qwt3D::ColorVector const&, Qwt3D::Triple a = Qwt3D::Triple(), Qwt3D::Triple b = Qwt3D::Triple(), Qwt3D::Triple c = Qwt3D::Triple(), Qwt3D::Triple d = Qwt3D::Triple());
 		void	showColorLegend(bool);
 
 		void setCoordinateStyle(Qwt3D::COORDSTYLE st);
@@ -76,8 +78,14 @@ public:
 		
 		void setCaptionPosition(double rely, double relx = 0.5, LabelPixmap::ANCHOR = LabelPixmap::TopCenter);
 		void setCaptionFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-		void setCaptionColor(RGBA col) {title_.setColor(col);} //!< Set caption color
+		void setCaptionColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
 		void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
+
+		void setNormalLength(double val); //!< set length of normals in percent per hull diagonale
+		double normalLength() const { return normalLength_; }//!< \return relative length of normals
+		void setNormalQuality(int val); //!< increase plotting quality of normal arrows
+		double normalQuality() const { return normalQuality_; }//!< \return plotting quality of normal arrows
+
 
 		
 		void assignMouse(int xrot, int yrot, int zrot,
@@ -89,7 +97,7 @@ public:
 		bool createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
 		
-		bool createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype = POLYGON);
+		bool createDataRepresentation(Qwt3D::TripleVector const& data, Qwt3D::Tesselation const& poly, MESHTYPE mtype = POLYGON);
 
 
 signals:
@@ -123,8 +131,8 @@ public slots:
 protected:
 		
 		//! No copies
-		QwtPlot3D(QwtPlot3D const&);
-		QwtPlot3D& operator=(QwtPlot3D const&);
+		Plot3D(Plot3D const&);
+		Plot3D& operator=(Plot3D const&);
     
 		void		initializeGL();
     void		paintGL();
@@ -150,24 +158,26 @@ private:
 
 		void updateFloorData();
 		
-		void GridNormals();
+		void updateGridNormals();
 		void GridData2Floor();
 		void GridIsolines2Floor();
 		void Grid2Floor();
-		void CellNormals();
+		void updateCellNormals();
 		void CellData2Floor();
 		void CellIsolines2Floor();
 		void Cell2Floor();
 
 		int resolution_;
-		RGBA meshcolor_;
-		RGBA bgcolor_;
+		Qwt3D::RGBA meshcolor_;
+		Qwt3D::RGBA bgcolor_;
 		Qwt3D::PLOTSTYLE plotstyle_;
 		Qwt3D::FLOORSTYLE floorstyle_;
 		bool ortho_;
 		double polygonOffset_;
 		int isolines_;
 		bool datanormals_;
+		double normalLength_;
+		int normalQuality_;
 
 		enum OBJECTS
 		{
@@ -179,10 +189,10 @@ private:
 
 		std::vector<GLuint> objectList_;
 
-		GridData* actualGridData_;
-		CellData* actualCellData_;
+		Qwt3D::GridData* actualGridData_;
+		Qwt3D::CellData* actualCellData_;
 
-		ParallelEpiped hull_;
+		Qwt3D::ParallelEpiped hull_;
 
 		Color* dataColor_;
 		ColorLegend legend_;
@@ -218,9 +228,9 @@ private:
 				glDeleteLists(list, range);
 			list = 0;
 		}
-
-
-
 };
+
+
+} // ns
  
 #endif // GLTEXOBJ_H

@@ -4,13 +4,15 @@
 #endif
 
 #include "qwt_plot3d.h"
+using namespace Qwt3D;
+
 
 /*! 
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
 bool 
-QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
+Plot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																				, double minx, double maxx, double miny, double maxy)
 {
 	meshtype_ = GRID;
@@ -23,33 +25,14 @@ QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigne
 	double dx = (maxx - minx) / (actualGridData_->columns() - 1);
 	double dy = (maxy - miny) / (actualGridData_->rows() - 1);
 
-
-	// normals
-	  
-	GLdouble u[3], v[3], n[3], l;  // for cross product
-	DataMatrix data_normals = std::vector<DataRow>(actualGridData_->columns());
-	{
-		for (i=0; i!=(int)data_normals.size(); ++i)
-		{
-			data_normals[i] = DataRow(actualGridData_->rows());
-			for (j=0; j!=(int)data_normals[i].size(); ++j)
-			{
-				data_normals[i][j] = new GLdouble[3];
-			}
-		}
-	}
-
 	double tmin = DBL_MAX;
 	double tmax = -DBL_MAX;
 
 	/* fill out the vertex array for the mesh. */
-	for (i = 0; i < actualGridData_->columns() - 1; ++i) 
+	for (i = 0; i != actualGridData_->columns(); ++i) 
 	{
-		for (j = 0; j < actualGridData_->rows() - 1; ++j) 
+		for (j = 0; j != actualGridData_->rows(); ++j) 
 		{
-			/* assign the data to vertices.  some of the vertices will be
-				 overwritten in subsequent iterations of the loop, but this is
-				 okay, since they will be identical. */
 			actualGridData_->vertices[i][j][0] = minx + i*dx; 
 			actualGridData_->vertices[i][j][1] = miny + j*dy;
 			actualGridData_->vertices[i][j][2] = data[i][j];
@@ -58,74 +41,81 @@ QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigne
 				tmax = data[i][j];
 			if (data[i][j] < tmin)
 				tmin = data[i][j];
-
-    
-			actualGridData_->vertices[i][j+1][0] = actualGridData_->vertices[i][j][0];
-			actualGridData_->vertices[i][j+1][1] = miny + (j+1)*dy;
-			actualGridData_->vertices[i][j+1][2] = data[i][j+1];
-    
-			actualGridData_->vertices[i+1][j][0] = minx + (i+1)*dx;
-			actualGridData_->vertices[i+1][j][1] = actualGridData_->vertices[i][j][1];
-			actualGridData_->vertices[i+1][j][2] = data[i+1][j];
-
-			/*	get two vectors to cross */
-      u[0] = actualGridData_->vertices[i+1][j][0] - actualGridData_->vertices[i][j][0];
-      u[1] = actualGridData_->vertices[i+1][j][1] - actualGridData_->vertices[i][j][1];
-      u[2] = actualGridData_->vertices[i+1][j][2] - actualGridData_->vertices[i][j][2];
-
-      v[0] = actualGridData_->vertices[i][j+1][0] - actualGridData_->vertices[i][j][0];
-      v[1] = actualGridData_->vertices[i][j+1][1] - actualGridData_->vertices[i][j][1];
-      v[2] = actualGridData_->vertices[i][j+1][2] - actualGridData_->vertices[i][j][2];
-
-      /* get the normalized cross product */ 
-      normalizedcross(u, v, n); // right hand system here !
-      
-     /*  put the facet normal in the i, j position for later averaging
-         with other normals.*/ 
-      data_normals[i][j][0] = n[0];
-      data_normals[i][j][1] = n[1];
-      data_normals[i][j][2] = n[2];     
-		}
+ 		}
 	}
 
-  /* fill in the last vertex & it's facet normal */
-  actualGridData_->vertices[i][j][0] = minx + i*dx; 
-  actualGridData_->vertices[i][j][1] = miny + j*dy;
-  actualGridData_->vertices[i][j][2] = data[i][j];
-  
-  data_normals[i][j][0] = n[0];
-  data_normals[i][j][1] = n[1];
-  data_normals[i][j][2] = n[2];
-	
-  /* calculate normals for the mesh */
-  for (i = 1; i < actualGridData_->columns() - 1; ++i) 
+	// normals
+	  
+	Triple u, v, n;  // for cross product
+
+	for (i = 1; i != actualGridData_->columns() - 1; ++i) 
 	{
-    for (j = 1; j < actualGridData_->rows() - 1; ++j) 
+		for (j = 1; j != actualGridData_->rows() - 1; ++j) 
 		{
-      /* average all the neighboring normals. */
-      n[0] = data_normals[i-1][j-1][0];
-      n[1] = data_normals[i-1][j-1][1];
-      n[2] = data_normals[i-1][j-1][2];
+			/*	get two vectors to cross */
+      u = Triple(
+									actualGridData_->vertices[i+1][j][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i+1][j][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i+1][j][2] - actualGridData_->vertices[i][j][2]
+								);
 
-      n[0] += data_normals[i][j-1][0];
-      n[1] += data_normals[i][j-1][1];
-      n[2] += data_normals[i][j-1][2];
-
-      n[0] += data_normals[i-1][j][0];
-      n[1] += data_normals[i-1][j][1];
-      n[2] += data_normals[i-1][j][2];
-
-      n[0] += data_normals[i][j][0];
-      n[1] += data_normals[i][j][1];
-      n[2] += data_normals[i][j][2];
+      v = Triple(
+									actualGridData_->vertices[i][j+1][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i][j+1][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i][j+1][2] - actualGridData_->vertices[i][j][2]
+								);
+      /* get the normalized cross product */ 
+      n = normalizedcross(u,v); // right hand system here !
       
-      l = (GLdouble)sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]);
-      actualGridData_->normals[i][j][0] = n[0] /= l;
-      actualGridData_->normals[i][j][1] = n[1] /= l;
-      actualGridData_->normals[i][j][2] = n[2] /= l;
-    }
-  }
+      u = Triple(
+									actualGridData_->vertices[i][j+1][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i][j+1][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i][j+1][2] - actualGridData_->vertices[i][j][2]
+								);
+			v = Triple(
+									actualGridData_->vertices[i-1][j][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i-1][j][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i-1][j][2] - actualGridData_->vertices[i][j][2]
+								);
 
+      n += normalizedcross(u,v); 
+
+
+      u = Triple(
+									actualGridData_->vertices[i-1][j][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i-1][j][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i-1][j][2] - actualGridData_->vertices[i][j][2]
+								);
+
+      v = Triple(
+									actualGridData_->vertices[i][j-1][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i][j-1][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i][j-1][2] - actualGridData_->vertices[i][j][2]
+								);
+			
+      n += normalizedcross(u,v); 
+
+      u = Triple(
+									actualGridData_->vertices[i][j-1][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i][j-1][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i][j-1][2] - actualGridData_->vertices[i][j][2]
+								);
+
+      v = Triple(
+									actualGridData_->vertices[i+1][j][0] - actualGridData_->vertices[i][j][0],
+									actualGridData_->vertices[i+1][j][1] - actualGridData_->vertices[i][j][1],
+									actualGridData_->vertices[i+1][j][2] - actualGridData_->vertices[i][j][2]
+								);
+
+      n += normalizedcross(u,v);
+			n.normalize();
+
+			actualGridData_->normals[i][j][0] = n.x;
+			actualGridData_->normals[i][j][1] = n.y;
+			actualGridData_->normals[i][j][2] = n.z;
+		}
+	} 
+	
   /* fill in the normals on the top/bottom edge of the mesh (simply
      copy the one below/above it). */
   for (i = 0; i < actualGridData_->columns(); ++i) 
@@ -153,15 +143,6 @@ QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigne
   }
   
 	
-	/* free the mesh data */
-	for (i = 0; i < actualGridData_->columns(); ++i) 
-	{
-		for (j = 0; j < actualGridData_->rows(); ++j)
-		{
-			delete [] data_normals[i][j];
-		}
-	}
-	
 	ParallelEpiped hull = 
 		ParallelEpiped(
 										Triple(	
@@ -185,14 +166,12 @@ QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigne
 }	
 
 
-
-
 /*! 
 	Convert user (non-rectangular) mesh based data to internal structure.
 	See also Qwt3D::TripleVector and Qwt3D::Tesselation
 */
 bool 
-QwtPlot3D::createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype)
+Plot3D::createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype)
 {
 	if (mtype == GRID)
 		return false;

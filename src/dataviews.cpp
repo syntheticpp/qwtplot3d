@@ -12,7 +12,7 @@ using namespace Qwt3D;
   Generate an OpenGL display list for the object to be shown
 */
 void 
-QwtPlot3D::updateData()
+Plot3D::updateData()
 {
 	calculateHull();
 	updateFloorData();
@@ -38,20 +38,18 @@ QwtPlot3D::updateData()
 			else
 				updateCellData();
 		}
+		if (meshtype() == GRID)
+			updateGridNormals();
 		else
-		{
-			if (meshtype() == GRID)
-				GridNormals();
-			else
-				CellNormals();
-		}
+			updateCellNormals();
+
 	glEndList();
 }
 
 
 
 void 
-QwtPlot3D::updateFloorData()
+Plot3D::updateFloorData()
 {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);

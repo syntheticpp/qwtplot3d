@@ -4,7 +4,6 @@
 #endif
 
 #include "qwt_plot3d.h"
-
 using namespace Qwt3D;
 
 /**
@@ -12,7 +11,7 @@ using namespace Qwt3D;
 	\see mouseMoveEvent()
 */
 void 
-QwtPlot3D::mousePressEvent( QMouseEvent *e )
+Plot3D::mousePressEvent( QMouseEvent *e )
 {
 	lastMouseMovePosition_ = e->pos();
 	mpressed_ = true;
@@ -25,7 +24,7 @@ QwtPlot3D::mousePressEvent( QMouseEvent *e )
 	\see mouseMoveEvent()
 */
 void 
-QwtPlot3D::mouseReleaseEvent( QMouseEvent *e )
+Plot3D::mouseReleaseEvent( QMouseEvent *e )
 {
 	mpressed_ = false;
 	//setResolution(resolution() / 5);
@@ -36,7 +35,7 @@ QwtPlot3D::mouseReleaseEvent( QMouseEvent *e )
 	\see assignMouse()
 */
 void 
-QwtPlot3D::mouseMoveEvent( QMouseEvent *e )
+Plot3D::mouseMoveEvent( QMouseEvent *e )
 {
 	if (!mpressed_ || !mouseEnabled())
 		return;
@@ -52,7 +51,7 @@ QwtPlot3D::mouseMoveEvent( QMouseEvent *e )
 }
 
 void 
-QwtPlot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
+Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Rotation
 	double w = max(1,width());
@@ -76,7 +75,7 @@ QwtPlot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 }
 
 void 
-QwtPlot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
+Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Scale
 		double w = max(1,width());
@@ -103,7 +102,7 @@ QwtPlot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 }
 
 void 
-QwtPlot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
+Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 {
 	// Shift
 	double w = max(1,width());
@@ -127,7 +126,7 @@ QwtPlot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 	Standard wheel handler - zoom (wheel only) or z-scale (shift+wheel)
 */
 void 
-QwtPlot3D::wheelEvent( QWheelEvent *e )
+Plot3D::wheelEvent( QWheelEvent *e )
 {
 	if (!mouseEnabled())
 		return;
@@ -162,7 +161,7 @@ QwtPlot3D::wheelEvent( QWheelEvent *e )
 	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
 void 
-QwtPlot3D::assignMouse(int xrot, int yrot, int zrot,
+Plot3D::assignMouse(int xrot, int yrot, int zrot,
 											 int xscale, int yscale, int zscale,
 											 int zoom, int xshift, int yshift)
 {
@@ -178,14 +177,14 @@ QwtPlot3D::assignMouse(int xrot, int yrot, int zrot,
 }
 
 /** 
-The function has no effect if you derive from QwtPlot3D and overrides the mouse handler too careless.
+The function has no effect if you derive from Plot3D and overrides the mouse handler too careless.
 In this case check first against mouseEnabled() in your version of mouseMoveEvent() and wheelEvent().
 A more fine grained input control can be achieved by combining assignMouse() with enableMouse(). 
 */
-void QwtPlot3D::enableMouse(bool val) {mouse_input_enabled_ = val;}
+void Plot3D::enableMouse(bool val) {mouse_input_enabled_ = val;}
 
 /** 
 \see enableMouse()
 */
-void QwtPlot3D::disableMouse(bool val) {mouse_input_enabled_ = !val;}
-bool QwtPlot3D::mouseEnabled() const {return mouse_input_enabled_;}
+void Plot3D::disableMouse(bool val) {mouse_input_enabled_ = !val;}
+bool Plot3D::mouseEnabled() const {return mouse_input_enabled_;}

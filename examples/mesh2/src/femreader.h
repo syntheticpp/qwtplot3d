@@ -13,13 +13,13 @@ class NodeFilter
 			values = std::vector<double>(6);
 		}
 		
-		Triple readLine(istream& str)
+		Qwt3D::Triple readLine(istream& str)
 		{
 			for (unsigned i = 0; i!=values.size(); ++i)
 				str >> values[i];
 //			return Triple(values[1], values[2], atan2(values[3],values[4]) / 1000);
 //				return Triple(values[1], values[2], Triple(values[3],values[4],0).length() / 1000000000);
-				return Triple(values[1], values[2], values[5] / 1000);
+				return Qwt3D::Triple(values[1], values[2], values[5] / 1000);
 		}
 	
 	private:				
@@ -30,9 +30,9 @@ class CellFilter
 {
 	public:
 		
-		Cell readLine(istream& str)
+		Qwt3D::Cell readLine(istream& str)
 		{
-			Cell cell(4);
+			Qwt3D::Cell cell(4);
 			str >> cell[0]; // dummy (cell number) - overridden in next step
 			for (unsigned i = 0; i<cell.size(); ++i)
 			{
@@ -45,13 +45,13 @@ class CellFilter
 
 
 template <typename FILTER>
-bool readNodes(TripleVector& v, const char* fname, FILTER fil)
+bool readNodes(Qwt3D::TripleVector& v, const char* fname, FILTER fil)
 {
 	ifstream file(fname);
 	
 	v.clear();
 
-	Triple t;
+	Qwt3D::Triple t;
 	while ( file ) 
 	{
 		t = fil.readLine( file );			
@@ -63,13 +63,13 @@ bool readNodes(TripleVector& v, const char* fname, FILTER fil)
 }
 
 template <typename FILTER>
-bool readConnections(Tesselation& v, const char* fname, FILTER fil)
+bool readConnections(Qwt3D::Tesselation& v, const char* fname, FILTER fil)
 {
 	ifstream file(fname);
 
 	v.clear();
 
-	Cell cell;
+	Qwt3D::Cell cell;
 	while ( file ) 
 	{
 		cell = fil.readLine( file );

@@ -9,6 +9,7 @@
 #include "reader.h"
 
 using namespace std;
+using namespace Qwt3D;
 
 
 namespace
@@ -151,12 +152,12 @@ namespace
 	}
 }
 
-NativeReader::NativeReader(QwtPlot3D* pw, QString fname)
+NativeReader::NativeReader(Plot3D* pw, QString fname)
 : magicstring("jk:11051895-17021986")
 {
 	if (!pw)
 	{
-		fprintf(stderr,"NativeReader: no valid QwtPlot3D Widget");
+		fprintf(stderr,"NativeReader: no valid Plot3D Widget");
 		return;
 	}
 	plotwidget_ = pw;

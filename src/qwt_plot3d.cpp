@@ -4,13 +4,12 @@
 #endif
 
 #include "qwt_plot3d.h"
-
 using namespace Qwt3D;
 	
 /*!
-  Create a QwtPlot3D widget
+  Create a Plot3D widget
 */
-QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
+Plot3D::Plot3D( QWidget* parent, const char* name, MESHTYPE mt )
     : QGLWidget( parent, name )
 {
 	actualGridData_ = new GridData();
@@ -28,6 +27,8 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
 	datanormals_ = false;
+	normalLength_ = 0.02;
+	normalQuality_ = 3;
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
@@ -63,7 +64,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
   Release allocated resources
 */
 
-QwtPlot3D::~QwtPlot3D()
+Plot3D::~Plot3D()
 {
 	SaveGlDeleteLists( objectList_[0], objectList_.size() );
 	dataColor_->destroy();
@@ -76,7 +77,7 @@ QwtPlot3D::~QwtPlot3D()
   Set up the OpenGL rendering state
 */
 void 
-QwtPlot3D::initializeGL()
+Plot3D::initializeGL()
 {
   glEnable( GL_BLEND );
   glEnable(GL_DEPTH_TEST);
@@ -113,7 +114,7 @@ QwtPlot3D::initializeGL()
   Paint the widgets content.
 */
 void 
-QwtPlot3D::paintGL()
+Plot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -182,7 +183,7 @@ QwtPlot3D::paintGL()
   Set up the OpenGL view port
 */
 void 
-QwtPlot3D::resizeGL( int w, int h )
+Plot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
 
@@ -190,7 +191,7 @@ QwtPlot3D::resizeGL( int w, int h )
 }
 
 void 
-QwtPlot3D::updateCoordinateSystem()
+Plot3D::updateCoordinateSystem()
 {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
@@ -210,7 +211,7 @@ QwtPlot3D::updateCoordinateSystem()
 	If res < 1, the function does nothing
 */
 void 
-QwtPlot3D::setResolution( int res )
+Plot3D::setResolution( int res )
 {
 	if ((resolution_ == res) || res < 1)
 		return;
@@ -226,7 +227,7 @@ QwtPlot3D::setResolution( int res )
 	Create a coordinate system with generating corners beg and end 
 */
 void
-QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
+Plot3D::createCoordinateSystem( Triple beg, Triple end )
 {
 	if (beg != coord.first() || end != coord.second())
 		coord.init(beg, end);
@@ -236,7 +237,7 @@ QwtPlot3D::createCoordinateSystem( Triple beg, Triple end )
 	Create a coordinate system from data
 */
 void
-QwtPlot3D::createCoordinateSystem()
+Plot3D::createCoordinateSystem()
 {
 	calculateHull();
 	
@@ -247,7 +248,7 @@ QwtPlot3D::createCoordinateSystem()
   Show a color legend <tt>(experimental)</tt>
 */
 void 
-QwtPlot3D::showColorLegend( bool show )
+Plot3D::showColorLegend( bool show )
 {
  	SaveGlDeleteLists(objectList_[LegendObject], 1);
 	
@@ -269,20 +270,20 @@ QwtPlot3D::showColorLegend( bool show )
 	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt 
 */
 bool 
-QwtPlot3D::saveContent(QString fileName, QString format)
+Plot3D::saveContent(QString fileName, QString format)
 {
 	QImage im = grabFrameBuffer(true);
 	return im.save(fileName,format);
 }
 
 void 
-QwtPlot3D::setMeshColor(RGBA rgba)
+Plot3D::setMeshColor(RGBA rgba)
 {
 	meshcolor_ = rgba;
 }
 
 void 
-QwtPlot3D::setBackgroundColor(RGBA rgba)
+Plot3D::setBackgroundColor(RGBA rgba)
 {
 	bgcolor_ = rgba;
 }
@@ -292,7 +293,7 @@ QwtPlot3D::setBackgroundColor(RGBA rgba)
 	It can be accessed by hull();
 */
 void 
-QwtPlot3D::calculateHull()
+Plot3D::calculateHull()
 {
 	if (meshtype() == GRID)
 	{
@@ -313,7 +314,7 @@ QwtPlot3D::calculateHull()
 	assign a new coloring object for the data.
 */
 void 
-QwtPlot3D::setDataColor( Color* col )
+Plot3D::setDataColor( Color* col )
 {
 	Q_ASSERT(dataColor_);
 
@@ -325,7 +326,7 @@ QwtPlot3D::setDataColor( Color* col )
   <tt>(experimental)</tt>
 */
 void 
-QwtPlot3D::modifyStandardColorAlpha(double d)
+Plot3D::modifyStandardColorAlpha(double d)
 {
 	dataColor_->setAlpha(d);
 }
@@ -334,7 +335,7 @@ QwtPlot3D::modifyStandardColorAlpha(double d)
   Set up ortogonal or perspective mode and updates widget
 */
 void
-QwtPlot3D::setOrtho( bool val )
+Plot3D::setOrtho( bool val )
 {
 	if (val == ortho_)
 		return;
@@ -348,7 +349,7 @@ QwtPlot3D::setOrtho( bool val )
   <tt>(experimental)</tt>
 */
 void 
-QwtPlot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
+Plot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
 {
 		legend_.setPosition(a,b,c,d);
 		legend_.colors = col;
@@ -358,7 +359,7 @@ QwtPlot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple 
   Set style of coordinate system
 */
 void 
-QwtPlot3D::setCoordinateStyle(COORDSTYLE st)
+Plot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coord.setStyle(st);
 	updateCoordinateSystem();
@@ -369,7 +370,7 @@ QwtPlot3D::setCoordinateStyle(COORDSTYLE st)
   Set plotting style
 */
 void
-QwtPlot3D::setPlotStyle( PLOTSTYLE val )
+Plot3D::setPlotStyle( PLOTSTYLE val )
 {
 	if (val == plotstyle_)
 		return;
@@ -383,7 +384,7 @@ QwtPlot3D::setPlotStyle( PLOTSTYLE val )
   Set style of floor data
 */
 void
-QwtPlot3D::setFloorStyle( FLOORSTYLE val )
+Plot3D::setFloorStyle( FLOORSTYLE val )
 {
 	if (val == floorstyle_)
 		return;
@@ -398,7 +399,7 @@ QwtPlot3D::setFloorStyle( FLOORSTYLE val )
   Set number of isolines. The lines are equidistant between minimal and maximal Z value
 */
 void 
-QwtPlot3D::setIsolines(int steps)
+Plot3D::setIsolines(int steps)
 {
 	if (steps < 0)
 		return;
@@ -407,7 +408,7 @@ QwtPlot3D::setIsolines(int steps)
 }
 
 void 
-QwtPlot3D::showNormals(bool b)
+Plot3D::showNormals(bool b)
 {
 	datanormals_ = b;
 }
@@ -418,7 +419,7 @@ QwtPlot3D::showNormals(bool b)
 	The value is clamped to [0..1]
 */
 void
-QwtPlot3D::setPolygonOffset( double val )
+Plot3D::setPolygonOffset( double val )
 {
 	Q_ASSERT(val>=0 && val<=1);
 
@@ -432,7 +433,7 @@ QwtPlot3D::setPolygonOffset( double val )
 Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen
 */
 void 
-QwtPlot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
+Plot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
 {
 	titlerely_= (rely<0 || rely>1) ? 0.5 : rely;
 	titlerelx_= (relx<0 || relx>1) ? 0.5 : relx;
@@ -444,7 +445,29 @@ QwtPlot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anch
 Set caption font
 */
 void 
-QwtPlot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool italic)
+Plot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool italic)
 { 
 	title_.setFont(family, pointSize, weight, italic);
+}
+
+/**
+Values < 0 or > 1 are ignored
+*/
+void 
+Plot3D::setNormalLength(double val)
+{
+	if (val<0 || val>1)
+		return;
+	normalLength_ = val;
+}
+
+/**
+Values < 3 are ignored 
+*/
+void 
+Plot3D::setNormalQuality(int val) 
+{
+	if (val<3)
+		return;
+	normalQuality_ = val;
 }
