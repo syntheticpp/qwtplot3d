@@ -25,7 +25,7 @@ public:
       IRREGULAR
 		};	
 	
-    QwtPlot3D( QWidget* parent, const char* name, MESHTYPE  = REGULAR );
+    QwtPlot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = REGULAR );
     virtual ~QwtPlot3D();
 
 		void updateCoordinates();

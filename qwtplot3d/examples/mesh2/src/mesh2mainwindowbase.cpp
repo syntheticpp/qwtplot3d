@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: So 13. Apr 18:54:13 2003
+** Created: Di 15. Apr 08:54:16 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
