@@ -42,7 +42,7 @@
  	 
  	 -# More topic specific examples
  	 -# Autoswitching axes scales (axes in front should automatically get a scale)
- 	 -# General input interface for matrix-like data structures (all the things representable as <tt> data[i][j] </tt> and suiting iterators)
+ 	 -# General input interface for matrix-like data structures (all the things representable as <tt> data[i][j] </tt> and appropriate iterators)
  	 -# Reader plugin (Interface to other data sources)
 	 -# Input: FEM files providing nodes and triangulation 
  	 -# Performance (reading)

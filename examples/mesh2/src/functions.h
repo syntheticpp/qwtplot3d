@@ -21,7 +21,6 @@ public:
 	}
 
 	QString name() const { return QString("Rosenbrock"); }
-	QString formula() const { return QString("log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x))"); }
 };
 
 class Hat : public Function
@@ -40,7 +39,6 @@ public:
 	}
 
 	QString name() const { return QString("Hat"); }
-	QString formula() const { return QString("1 / (x*x+y*y+0.5)"); }
 };
 
 
