@@ -1,0 +1,23 @@
+/* Formatdatei */
+
+p,td,li,ul,body {font-family:arial,helvetica; font-size:9pt; color:#404040;}
+
+p.sub {font-family:arial,helvetica; font-size:8pt; color:#333399;}
+
+h1 {font-family:arial,helvetica; font-size:12pt; color:#333399;text-align: center;}
+h2 {font-family:arial,helvetica; font-size:11pt; color:#333399;}
+h3 {font-family:arial,helvetica; font-size:10pt; color:#333399;}
+
+
+	a:link {color:#333399;}
+	a:visited {color:#333399;}
+	a:hover {color:#333399; text-decoration:underline}
+	a {text-decoration:none;font-size:10pt;}
+	
+	a.sub:link {color:#333399;}
+	a.sub:visited {color:#333399;}
+	a.sub:hover {color:#CC0000; text-decoration:underline}
+	a.sub {text-decoration:none;font-size:8pt;}
+	
+	
+	#s {font-size:8pt;}
