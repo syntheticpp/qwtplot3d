@@ -10,6 +10,7 @@ class QwtPlot3D : public QGLWidget
 
 public:
 
+		//! Not really used at this point, provided for future extensions
 		enum MESHTYPE
 		{
 			REGULAR,
@@ -19,73 +20,71 @@ public:
     QwtPlot3D( QWidget* parent = 0, const char* name = 0, MESHTYPE  = REGULAR );
     virtual ~QwtPlot3D();
 
-		void updateCoordinates();
 	  void updateData();
 		void createCoordinateSystem(Triple beg, Triple end);
+		void updateCoordinateSystem();
+		CoordinateSystem* coordinates() { return &coord; } //!< \return Pointer to CoordinateSystem object
 		
-		//! \name Movements
-		//@{
-		double xRotation() const { return xRot_;}
-		double yRotation() const { return yRot_;}
-		double zRotation() const { return zRot_;}
+		double xRotation() const { return xRot_;}  //!< \return Rotation around X axis [-360..360] (some angles are equivalent)
+		double yRotation() const { return yRot_;}  //!< \return Rotation around Y axis [-360..360] (some angles are equivalent)
+		double zRotation() const { return zRot_;}  //!< \return Rotation around Z axis [-360..360] (some angles are equivalent)
 
-		double xShift() const { return xShift_;}
-		double yShift() const { return yShift_;}
-		double zShift() const { return zShift_;}
+		double xShift() const { return xShift_;} //!< \return Shift along X axis (object coordinates)
+		double yShift() const { return yShift_;} //!< \return Shift along Y axis (object coordinates)
+		double zShift() const { return zShift_;} //!< \return Shift along Z axis (object coordinates)
 		
-		double xViewportShift() const { return xVPShift_;}
-		double yViewportShift() const { return yVPShift_;}
+		double xViewportShift() const { return xVPShift_;} //!< \return Relative shift [-1..1] along X axis (view coordinates)
+		double yViewportShift() const { return yVPShift_;} //!< \return Relative shift [-1..1] along Y axis (view coordinates)
 		
-		double xScale() const { return xScale_;}
-		double yScale() const { return yScale_;}
-		double zScale() const { return zScale_;}
+		double xScale() const { return xScale_;} //!< \return Scaling for X values [0..inf]
+		double yScale() const { return yScale_;} //!< \return Scaling for Y values [0..inf]
+		double zScale() const { return zScale_;} //!< \return Scaling for Z values [0..inf]
 
-		double zoom() const { return zoom_;}
-		//@}
+		double zoom() const { return zoom_;} //!< \return Zoom [0..inf]
 
-		bool ortho() const { return ortho_; } 
-		void		setPlotStyle( Qwt3d::PLOTSTYLE val );
-		Qwt3d::PLOTSTYLE plotStyle() const { return plotstyle_; } 
-		void		setFloorStyle( Qwt3d::FLOORSTYLE val );
-		Qwt3d::FLOORSTYLE floorStyle() const { return floorstyle_; } 
+		bool ortho() const { return ortho_; } //!< \return Orthogonal (true) or perspective (false) projection
+		int			resolution() const {return resolution_;} //!< \return data resolution (1 means all data)
+		void		setPlotStyle( Qwt3D::PLOTSTYLE val );
+		Qwt3D::PLOTSTYLE plotStyle() const { return plotstyle_; }//!< \return Plotting style
+		void		setFloorStyle( Qwt3D::FLOORSTYLE val );
+		Qwt3D::FLOORSTYLE floorStyle() const { return floorstyle_; }//!< \return Floor style 
 		void setIsolines(int isolines);
-		int isolines() const { return isolines_;}
+		int isolines() const { return isolines_;} //!< \return Number of isolines
 		
 		void setBackgroundColor(RGBA rgba);
 		void setMeshColor(RGBA rgba);
-		RGBA meshColor() const {return meshcolor_;}
+		RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
-		bool hasData() const { return !actualData_.empty(); }
+		bool hasData() const { return !actualData_.empty(); } //!< \return Valid data available (true) or not (false)
 
 		void calculateHull();
-		Triple hullFirst() const { return datafirst_;}
-		Triple hullSecond() const { return datasecond_;}
+		Triple hullFirst() const { return datafirst_;} //!< \return Rear wall leftmost bottom Triple \see calculateHull()
+		Triple hullSecond() const { return datasecond_;} //!< \return Front wall rightmost top Triple \see calculateHull()
 
 		void showColorLegend(bool);
 		void createColorLegend(ColorVector const&, Triple a = Triple(), Triple b = Triple(), Triple c = Triple(), Triple d = Triple());
 
-		void setCoordinateStyle(Qwt3d::COORDSTYLE st);
+		void setCoordinateStyle(Qwt3D::COORDSTYLE st);
 		void setPolygonOffset(double d);
-		double polygonOffset() const {return polygonOffset_;}
-		CoordinateSystem* coordinates() { return &coord; }
+		double polygonOffset() const {return polygonOffset_;} //!< \return Relative value for polygon offset [0..1] \see setPolygonOffset()
 		
 		void setCaptionPosition(double rely, double relx = 0.5, LabelPixmap::ANCHOR = LabelPixmap::TopCenter);
 		void setCaptionFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-		void setCaptionColor(RGBA col) {title_.setColor(col);}
-		void setTitle(const QString& title) {title_.setString(title);}
+		void setCaptionColor(RGBA col) {title_.setColor(col);} //!< Set caption color
+		void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
 
 		
 		void assignMouse(int xrot, int yrot, int zrot,
 										 int xscale, int yscale, int zscale,
 										 int zoom, int xshift, int yshift);
 		
-		bool mouseEnabled() const; //!< returns true, if the widget accept mouse input from the user
+		bool mouseEnabled() const; //!< Returns true, if the widget accept mouse input from the user
 
 		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
 																			,double minx, double maxx, double miny, double maxy);
 
-		GridData const& data() const {return actualData_;}
+		GridData const& data() const {return actualData_;} //!< Access to data 
 
 signals:
 		
@@ -95,29 +94,29 @@ signals:
 		void scaleChanged( double xScale, double yScale, double zScale );
 		void zoomChanged(double);
 		
-		void resolutionChanged(double);
+		void resolutionChanged(int);
 		void projectionChanged(bool);
 
 public slots:
 
-		void		setRotation( double xAngle, double yAngle, double zAngle );
-		void		setShift( double xShift, double yShift, double zShift );
-		void		setViewportShift( double xShift, double yShift );
-		void		setScale( double x, double y, double z);
+		void		setRotation( double xVal, double yVal, double zVal );
+		void		setShift( double xVal, double yVal, double zVal );
+		void		setViewportShift( double xVal, double yVal );
+		void		setScale( double xVal, double yVal, double zVal );
 		void		setZoom( double );
 		
 		void    setOrtho(bool);
 		void		setResolution( int );
 
-		void enableMouse(bool val=true); //!< enable mouse input
-		void disableMouse(bool val =true); //!< disable mouse input
+		void enableMouse(bool val=true); //!< Enable mouse input
+		void disableMouse(bool val =true); //!< Disable mouse input
 
-		bool    dump(QString fileName, QString format); //!< Dumps grabbed frame buffer to file
+		bool    saveContent(QString fileName, QString format);
 
 
 protected:
 		
-		//! no copies
+		//! No copies
 		QwtPlot3D(QwtPlot3D const&);
 		QwtPlot3D& operator=(QwtPlot3D const&);
     
@@ -145,8 +144,8 @@ private:
 		int resolution_;
 		RGBA meshcolor_;
 		RGBA bgcolor_;
-		Qwt3d::PLOTSTYLE plotstyle_;
-		Qwt3d::FLOORSTYLE floorstyle_;
+		Qwt3D::PLOTSTYLE plotstyle_;
+		Qwt3D::FLOORSTYLE floorstyle_;
 		bool ortho_;
 		double polygonOffset_;
 		int isolines_;
@@ -156,8 +155,8 @@ private:
 		{
 			DataObject				= 0,
 			LegendObject			= 1,
-			CoordSystemObject = 2,
-			FloorObject
+			CoordObject				= 2,
+			FloorObject       = 3
 		};
 
 		std::vector<GLuint> objectList_;
