@@ -9,7 +9,7 @@
 //      A simple example which shows how to use QwtPlot3D
 //-----------------------------------------------------------------
 
-using namespace Qwt3d;
+using namespace Qwt3D;
 
 class Rosenbrock : public Function
 {
@@ -69,7 +69,7 @@ Plot::Plot()
 	setCoordinateStyle(BOX);
 	
 	updateData();
-	updateCoordinates();
+	updateGL();
 }
 
 int main(int argc, char **argv)

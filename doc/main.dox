@@ -24,6 +24,7 @@
 	\section features Features 
 
    -# Scaling, rotating, shifting, zooming of data sets and mathematical functions (see \ref datatopics)
+   -# Interactive mouse handling
    -# Resolution changing on the fly
    -# Reading from MESH data files :See the 'examples/data' directory and NativeReader documentation
    for this . You will find example datasets <a href="http://sourceforge.net/projects/qwtplot3d">here</a> 
@@ -41,7 +42,7 @@
  	 Next release:
 	 
 	 -# Input: FEM files providing nodes and triangulation 
- 	 -# Configurable Illumination model	
+ 	 -# Configurable illumination model	
    -# Documentation improvement
 	 
 
