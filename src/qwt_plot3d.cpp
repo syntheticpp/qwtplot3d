@@ -78,11 +78,11 @@ QwtPlot3D::updateData()
 	int cstep = resolution_;
 	int rstep = resolution_;
 
+	updateFloorData();
+	
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
 
-	updateFloorData();
-	
 	SaveGlDeleteLists(objectList_[DataObject], 1); // nur Daten
 	
 	if (plotStyle() == NOPLOT)
@@ -176,14 +176,8 @@ QwtPlot3D::paintGL()
 	glTranslatef(xShift_, yShift_, zShift_);
 	glEnable(GL_NORMALIZE);
 	glScalef( zoom_ * xScale_, zoom_ * yScale_, zoom_ * zScale_ );
-//	glScalef( zoom_, zoom_, zoom_ );
 	glDisable(GL_NORMALIZE);
 	
-//	calculateHull();
-//	Triple beg = hullFirst();
-//	Triple end = hullSecond();
-
-//	createCoordinateSystem();
 	
 	Triple beg = coord.first();
 	Triple end = coord.second();
@@ -240,7 +234,6 @@ QwtPlot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
 
-//	title.setPosition(Triple(ViewPort2World(Triple(w/2,h-h/15,0))),LabelPixmap::TopCenter);
 	paintGL();
 }
 
@@ -389,6 +382,9 @@ QwtPlot3D::updateFloorData()
 void 
 QwtPlot3D::calcFloorListAsData()
 {
+	if (actualData_.empty())
+		return;
+	
 	RGBA col;
 	unsigned int cstep = resolution_;
 	unsigned int rstep = resolution_;
@@ -417,73 +413,6 @@ QwtPlot3D::calcFloorListAsData()
 		}
 	glEnd();
 }
-
-/*
-void 
-QwtPlot3D::calcFloorListAsIsolines()
-{
-	if (isolines_ <= 0)
-		return;
-
-	double step = (actualData_.maximum() - actualData_.minimum()) / isolines_;		
-
-	RGBA col;
-	int cstep = resolution_;
-	int rstep = resolution_;
-
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
-	double zshift = actualData_.minimum();
-	for (int k = isolines_; k > 0; --k) 
-	{
-		double hi = actualData_.minimum() + k * step;
-		double lo = hi - step;
-		
-		for (int i = cstep; i < int(actualData_.columns()-cstep); i+=cstep) 
-		{
-			for (int j = rstep; j < int(actualData_.rows()-rstep); j+=rstep) 
-			{
-				col = (*dataColor_)(
-					actualData_.vertices[i][j][0],
-					actualData_.vertices[i][j][1],
-					actualData_.vertices[i][j][2]);
-
-				glColor4d(col.r, col.g, col.b, col.a);
-				
-				Triple thi = Triple(	actualData_.vertices[i][j][0],
-															actualData_.vertices[i][j][1],
-															actualData_.vertices[i][j][2]);
-				if ( lo<=thi.z && thi.z<=hi)
-				{
-					for (int ii = i-cstep; ii <= i+cstep; ii+=cstep)
-					{
-						for (int  jj = j-rstep; jj <= j+rstep; jj+=rstep)
-						{
-							{
-								if (i!=ii && j!=jj)
-								{
-									Triple tlo = Triple(	actualData_.vertices[ii][jj][0],
-																				actualData_.vertices[ii][jj][1],
-																				actualData_.vertices[ii][jj][2]);
-								
-									if (tlo.z <= lo)
-									{
-										Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
-											glBegin(GL_POINTS);
-												glVertex3d(rp.x, rp.y, zshift);
-												//glVertex3d(rp.x, rp.y, rp.z);
-											glEnd();
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-*/
 
 void 
 QwtPlot3D::calcFloorListAsIsolines()
