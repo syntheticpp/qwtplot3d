@@ -1,0 +1,39 @@
+/****************************************************************************
+** $Id$
+**
+** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
+**
+** This file is part of an example program for Qt.  This example
+** program may be used, distributed and modified without limitation.
+**
+*****************************************************************************/
+
+
+#include <qapplication.h>
+#include <qgl.h>
+
+#include "mesh2mainwindow.h"
+
+/*
+  The main program is here. 
+*/
+
+int main( int argc, char **argv )
+{
+  QApplication::setColorSpec( QApplication::CustomColor );
+  QApplication app(argc,argv);
+
+  if ( !QGLFormat::hasOpenGL() ) 
+	{
+		qWarning( "This system has no OpenGL support. Exiting." );     
+		return -1;
+  }
+    
+	Mesh2MainWindow mainwindow;
+	app.setMainWidget(&mainwindow);
+
+	mainwindow.show();
+
+	return app.exec();
+}
+

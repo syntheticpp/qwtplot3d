@@ -1,0 +1,215 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>alphadlgBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>alphadlgBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>500</width>
+            <height>280</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>0</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>500</width>
+            <height>280</height>
+        </size>
+    </property>
+    <property name="maximumSize">
+        <size>
+            <width>500</width>
+            <height>280</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Alpha Values</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout2_2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>95</x>
+                <y>5</y>
+                <width>60</width>
+                <height>170</height>
+            </rect>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel1_2_2</cstring>
+                </property>
+                <property name="text">
+                    <string>Mesh</string>
+                </property>
+                <property name="alignment">
+                    <set>AlignCenter</set>
+                </property>
+            </widget>
+            <widget class="QwtSlider">
+                <property name="name">
+                    <cstring>meshSld</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="thumbLength">
+                    <number>16</number>
+                </property>
+                <property name="thumbWidth">
+                    <number>23</number>
+                </property>
+                <property name="bgStyle">
+                    <enum>BgSlot</enum>
+                </property>
+                <property name="scalePos">
+                    <enum>Left</enum>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QLayoutWidget">
+        <property name="name">
+            <cstring>Layout2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>20</x>
+                <y>5</y>
+                <width>60</width>
+                <height>170</height>
+            </rect>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <property name="margin">
+                <number>0</number>
+            </property>
+            <property name="spacing">
+                <number>6</number>
+            </property>
+            <widget class="QLabel">
+                <property name="name">
+                    <cstring>TextLabel1_2</cstring>
+                </property>
+                <property name="text">
+                    <string>Polygons</string>
+                </property>
+                <property name="alignment">
+                    <set>AlignCenter</set>
+                </property>
+            </widget>
+            <widget class="QwtSlider">
+                <property name="name">
+                    <cstring>polygonsSld</cstring>
+                </property>
+                <property name="orientation">
+                    <enum>Vertical</enum>
+                </property>
+                <property name="thumbLength">
+                    <number>16</number>
+                </property>
+                <property name="thumbWidth">
+                    <number>23</number>
+                </property>
+                <property name="bgStyle">
+                    <enum>BgSlot</enum>
+                </property>
+                <property name="scalePos">
+                    <enum>Left</enum>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QPushButton">
+        <property name="name">
+            <cstring>buttonHide</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>310</x>
+                <y>230</y>
+                <width>82</width>
+                <height>25</height>
+            </rect>
+        </property>
+        <property name="caption">
+            <string></string>
+        </property>
+        <property name="text">
+            <string>&amp;Hide</string>
+        </property>
+        <property name="accel">
+            <number>0</number>
+        </property>
+        <property name="autoDefault">
+            <bool>true</bool>
+        </property>
+        <property name="default">
+            <bool>true</bool>
+        </property>
+    </widget>
+    <widget class="QLabel">
+        <property name="name">
+            <cstring>TextLabel1</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>175</x>
+                <y>80</y>
+                <width>295</width>
+                <height>25</height>
+            </rect>
+        </property>
+        <property name="font">
+            <font>
+                <family>Arial</family>
+                <pointsize>12</pointsize>
+                <bold>1</bold>
+            </font>
+        </property>
+        <property name="text">
+            <string>Feature under construction !</string>
+        </property>
+        <property name="scaledContents">
+            <bool>false</bool>
+        </property>
+    </widget>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonHide</sender>
+        <signal>clicked()</signal>
+        <receiver>alphadlgBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+</connections>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

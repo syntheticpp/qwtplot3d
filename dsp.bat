@@ -1,0 +1,1 @@
+qmake -o qwtplot3d.dsp qwtplot3d.pro 
