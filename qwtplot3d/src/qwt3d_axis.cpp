@@ -365,4 +365,3 @@ Triple Axis::biggestNumberString()
 	}
 	return ret;
 }
-

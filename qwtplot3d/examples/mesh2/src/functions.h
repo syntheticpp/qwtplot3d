@@ -80,4 +80,4 @@ public:
 //	QString name() const {return "$\\frac{20\\sin\\sqrt{x^2+y^2}}{\\sqrt{x^2+y^2}}$";}
 };
 
-#endif // __EXAMPLE_H__
+#endif

@@ -46,7 +46,7 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
 
   hat = new Hat(plot);
 	
-	hat->setMesh(43,41);
+	hat->setMesh(23,21);
 	hat->setDomain(-1.8,1.7,-1.6,1.7);	
 
 	hat->create();
@@ -136,4 +136,3 @@ void enrichmentMainWindow::barSlot()
   plot->updateData();
   plot->updateGL();
 }
-

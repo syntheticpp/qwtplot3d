@@ -23,4 +23,4 @@ private:
 
   
 
-#endif  // __colormapreader_2003_06_08_13_23__
+#endif

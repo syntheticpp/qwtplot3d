@@ -145,5 +145,3 @@ void Label3D::draw(Qwt3D::Triple const& pos, double w, double h)
     glVertex3d(pos.x,pos.y,pos.z + gap);
   glEnd();
 }
-
-

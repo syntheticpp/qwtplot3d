@@ -82,4 +82,4 @@ bool readConnections(Qwt3D::CellField& v, const char* fname, FILTER fil)
 }
 
 
-#endif // __FEMREADER_H__
+#endif

@@ -26,4 +26,4 @@ void setDevicePolygonOffset(GLfloat factor, GLfloat units);
 
 } // ns
 
-#endif  // __qwt3d_gl2ps_2003_09_04_23_54__
+#endif

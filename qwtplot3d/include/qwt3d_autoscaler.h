@@ -32,4 +32,4 @@ private:
 } // ns
 
 
-#endif  // __qwt3d_autoscaler_2003_08_18_12_05__
+#endif

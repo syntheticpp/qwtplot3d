@@ -228,4 +228,3 @@ bool NativeReader::read(double minz, double maxz)
 
 	return true;
 }
-

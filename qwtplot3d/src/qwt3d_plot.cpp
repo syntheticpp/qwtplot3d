@@ -512,5 +512,3 @@ bool Plot3D::degrade(Enrichment* e)
 	}
   return false;
 }
-
-

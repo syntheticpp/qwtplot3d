@@ -27,4 +27,5 @@ class  Label3D
 public:
   void draw(Qwt3D::Triple const&, double w, double h);
 };
+
 #endif

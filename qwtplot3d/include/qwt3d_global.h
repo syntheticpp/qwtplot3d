@@ -51,4 +51,4 @@
 #endif
 
 
-#endif // QWT3D_GLOBAL_H
+#endif
