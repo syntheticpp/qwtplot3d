@@ -4,15 +4,6 @@
 #endif
 
 #include "qwt_plot3d.h"
-#include "colorgenerator.h"
-
-#include <qimage.h>
-#include <qbitmap.h>
-#include <qpainter.h>
-
-#include <stdio.h>
-#include <math.h>
-
 
 namespace{
 
@@ -90,6 +81,8 @@ QwtPlot3D::updateData()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
 
+	updateFloorData();
+	
 	SaveGlDeleteLists(objectList_[DataObject], 1); // nur Daten
 	
 	if (plotStyle() == NOPLOT)
@@ -186,12 +179,14 @@ QwtPlot3D::paintGL()
 //	glScalef( zoom_, zoom_, zoom_ );
 	glDisable(GL_NORMALIZE);
 	
-	calculateHull();
-	Triple beg = hullFirst();
-	Triple end = hullSecond();
+//	calculateHull();
+//	Triple beg = hullFirst();
+//	Triple end = hullSecond();
 
-	beg = coord.first();
-	end = coord.second();
+//	createCoordinateSystem();
+	
+	Triple beg = coord.first();
+	Triple end = coord.second();
 	
 	Triple center = beg + (end-beg) / 2;
 	double radius = (center-beg).length();
@@ -220,11 +215,13 @@ QwtPlot3D::paintGL()
 
 	for (unsigned i=0; i!= objectList_.size(); ++i)
 	{
-		glCallList( objectList_[i] );
+		if (i!=CoordSystemObject)
+			glCallList( objectList_[i] );
 	}
 
 	coord.postDraw();
-	
+	coord.draw();
+		
 	glMatrixMode( GL_MODELVIEW );
 	glPopMatrix();  
 
@@ -360,14 +357,13 @@ QwtPlot3D::updateCoordinates()
 
 	glEndList();
 
-	updateFloorData(coord.first().z);
 
 	updateGL();
 }
 
 
 void 
-QwtPlot3D::updateFloorData(double zshift)
+QwtPlot3D::updateFloorData()
 {
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
@@ -381,17 +377,17 @@ QwtPlot3D::updateFloorData(double zshift)
 	glNewList(objectList_[FloorObject], GL_COMPILE);
 
 		if (floorstyle_ == FLOORDATA)
-			calcFloorListAsData(zshift);
+			calcFloorListAsData();
 		
 		else if (floorstyle_ == FLOORISO)
-			calcFloorListAsIsolines(isolines_, zshift);
+			calcFloorListAsIsolines();
 	
 	glEndList();
 }
 
 
 void 
-QwtPlot3D::calcFloorListAsData(double zshift)
+QwtPlot3D::calcFloorListAsData()
 {
 	RGBA col;
 	unsigned int cstep = resolution_;
@@ -401,6 +397,7 @@ QwtPlot3D::calcFloorListAsData(double zshift)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
 	glBegin(GL_QUADS);
+		double zshift = actualData_.minimum();
 		for (unsigned int i = 0; i < actualData_.columns() - cstep; i += cstep) 
 		{
 			for (unsigned int j = 0; j < actualData_.rows() - rstep; j += rstep) 
@@ -422,12 +419,12 @@ QwtPlot3D::calcFloorListAsData(double zshift)
 }
 
 void 
-QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
+QwtPlot3D::calcFloorListAsIsolines()
 {
-	if (steps <= 0)
+	if (isolines_ <= 0)
 		return;
 
-	double step = (actualData_.maximum() - actualData_.minimum()) / steps;		
+	double step = (actualData_.maximum() - actualData_.minimum()) / isolines_;		
 
 	RGBA col;
 	int cstep = resolution_;
@@ -435,7 +432,8 @@ QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
 
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-	for (int k = steps; k > 0; --k) 
+	double zshift = actualData_.minimum();
+	for (int k = isolines_; k > 0; --k) 
 	{
 		double hi = actualData_.minimum() + k * step;
 		double lo = hi - step;
@@ -457,22 +455,28 @@ QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
 				if ( lo<=thi.z && thi.z<=hi)
 				{
 					for (int ii = i-cstep; ii <= i+cstep; ii+=cstep)
+					{
 						for (int  jj = j-rstep; jj <= j+rstep; jj+=rstep)
 						{
 							{
-								Triple tlo = Triple(	actualData_.vertices[ii][jj][0],
-																		actualData_.vertices[ii][jj][1],
-																		actualData_.vertices[ii][jj][2]);
-								if (tlo.z <= lo)
+								if (i!=ii && j!=jj)
 								{
-									Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
-										glBegin(GL_POINTS);
-											glVertex3d(rp.x, rp.y, zshift);
-											//glVertex3d(rp.x, rp.y, rp.z);
-										glEnd();
+									Triple tlo = Triple(	actualData_.vertices[ii][jj][0],
+																				actualData_.vertices[ii][jj][1],
+																				actualData_.vertices[ii][jj][2]);
+								
+									if (tlo.z <= lo)
+									{
+										Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
+											glBegin(GL_POINTS);
+												glVertex3d(rp.x, rp.y, zshift);
+												//glVertex3d(rp.x, rp.y, rp.z);
+											glEnd();
+									}
 								}
 							}
 						}
+					}
 				}
 			}
 		}
@@ -620,7 +624,7 @@ QwtPlot3D::setFloorStyle( FLOORSTYLE val )
 	
 	floorstyle_ = val;
 			
- 	updateFloorData(coord.first().z); // to revise, own display list
+ 	updateData(); 
 	updateGL();
 }
 

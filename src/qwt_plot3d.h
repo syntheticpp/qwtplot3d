@@ -1,17 +1,8 @@
 #ifndef GLTEXOBJ_H
 #define GLTEXOBJ_H
 
-#include <vector>
-#include <qimage.h>
-
-#include "reader.h"
-#include "axis.h"
 #include "coordsys.h"
-#include "types.h"
-#include "colorgenerator.h"
 
-
-class Color;
 
 class QwtPlot3D : public QGLWidget
 {
@@ -130,7 +121,7 @@ private:
     GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_;
 		
 		void createCoordinateSystem();
-		void updateFloorData(double zshift);
+		void updateFloorData();
 
 		int resolution_;
 		RGBA meshcolor_;
@@ -163,8 +154,8 @@ private:
 		double titlerelx_, titlerely_;
 		LabelPixmap::ANCHOR titleanchor_;
 
-		void calcFloorListAsData(double zshift);
-		void calcFloorListAsIsolines(int steps, double zshift);
+		void calcFloorListAsData();
+		void calcFloorListAsIsolines();
 };
  
 #endif // GLTEXOBJ_H

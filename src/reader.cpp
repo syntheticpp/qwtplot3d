@@ -2,12 +2,10 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <float.h>
 #include <stdio.h>
-#include <math.h>
 
-#include "reader.h"
 #include "qwt_plot3d.h"
+#include "reader.h"
 
 using namespace std;
 

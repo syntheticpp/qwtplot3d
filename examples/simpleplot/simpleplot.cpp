@@ -65,26 +65,6 @@ Plot::Plot()
 	coordinates()->axes[Y1].setLabelString("y-axis");
 	coordinates()->axes[Z1].setLabelString(QChar (0x38f)); // Omega - see http://www.unicode.org/charts/
 
-	//The following code part is clumsy, it will be integrated in the coordinate systems style in the future
-
-	Triple first = coordinates()->first();
-	Triple second = coordinates()->second();
-
-	coordinates()->axes[X1].setLimits(first.x, second.x);
-	coordinates()->axes[Y1].setLimits(first.y, second.y);
-	coordinates()->axes[Z1].setLimits(first.z, second.z);
-
-	coordinates()->axes[X1].setScale(true);
-	coordinates()->axes[Y1].setScale(true);
-	coordinates()->axes[Z1].setScale(true);
-
-	coordinates()->axes[X1].setNumbers(true);
-	coordinates()->axes[Y1].setNumbers(true);
-	coordinates()->axes[Z1].setNumbers(true);
-	
-	coordinates()->axes[X1].setNumberAnchor(LabelPixmap::TopCenter);
-	coordinates()->axes[Y1].setNumberAnchor(LabelPixmap::CenterRight);
-	coordinates()->axes[Z1].setNumberAnchor(LabelPixmap::CenterRight);
 
 //	setFloorStyle(FLOORDATA);
 	setCoordinateStyle(BOX);

@@ -2,7 +2,6 @@
 #define __DRAWABLE_H__
 
 
-#include <qgl.h>
 #include <list>
 #include "types.h"
 

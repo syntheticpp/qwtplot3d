@@ -31,6 +31,7 @@ public:
   void setLabelString(QString const& name);
 	void setLabelPosition(const Triple& pos, LabelPixmap::ANCHOR);
 	void setLabelColor(RGBA col);
+	void setLabel(bool d) {drawLabel_ = d;}
 
 	void setScale(bool d) {drawTics_ = d;}
 	void setNumbers(bool d) {drawNumbers_ = d;}
@@ -89,7 +90,7 @@ private:
 
 	double lineWidth_, majLineWidth_, minLineWidth_;
 	bool symtics_;
-	bool drawNumbers_, drawTics_;
+	bool drawNumbers_, drawTics_, drawLabel_;
 	bool autoscale_;
 	QFont numberfont_;
 	RGBA  numbercolor_;

@@ -1,7 +1,6 @@
 #ifndef __PLANE_H__
 #define __PLANE_H__
 
-#include "types.h"
 #include "drawable.h"
 #include "colorgenerator.h"
 

@@ -28,6 +28,7 @@
 #include "alphadlgimpl.h"
 
 #include "functions.h"
+#include "../src/reader.h"
 
 
 using namespace Qwt3d;
@@ -204,25 +205,6 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 
 	if (action == Box || action == Frame)
 	{
-		Triple first = dataWidget->coordinates()->first();
-		Triple second = dataWidget->coordinates()->second();
-
-		dataWidget->coordinates()->axes[X1].setLimits(first.x, second.x);
-		dataWidget->coordinates()->axes[Y1].setLimits(first.y, second.y);
-		dataWidget->coordinates()->axes[Z1].setLimits(first.z, second.z);
-
-		dataWidget->coordinates()->axes[X1].setScale(true);
-		dataWidget->coordinates()->axes[Y1].setScale(true);
-		dataWidget->coordinates()->axes[Z1].setScale(true);
-
-		dataWidget->coordinates()->axes[X1].setNumbers(true);
-		dataWidget->coordinates()->axes[Y1].setNumbers(true);
-		dataWidget->coordinates()->axes[Z1].setNumbers(true);
-		
-		dataWidget->coordinates()->axes[X1].setNumberAnchor(LabelPixmap::TopCenter);
-		dataWidget->coordinates()->axes[Y1].setNumberAnchor(LabelPixmap::CenterRight);
-		dataWidget->coordinates()->axes[Z1].setNumberAnchor(LabelPixmap::CenterRight);
-
 		if (action == Box)
 			dataWidget->setCoordinateStyle(BOX);
 		if (action == Frame)
@@ -502,7 +484,6 @@ void Mesh2MainWindow::zRotate(double val)
 }
 
 void Mesh2MainWindow::xShift(double val)
-
 {
 	
 	if (!dataWidget)
@@ -609,10 +590,10 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	{
 		Rosenbrock rosenbrock(dataWidget);
 		
-		rosenbrock.setMesh(71,71);
+		rosenbrock.setMesh(70,71);
 		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
 		//rosenbrock.setDomain(-5,5.5,-1,2);
-		rosenbrock.setMinZ(-10);
+		rosenbrock.setMinZ(-100);
 		
 		rosenbrock.create();
 	}
@@ -623,6 +604,8 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		hat.setMesh(51,72);
 		hat.setDomain(-1.5,1.5,-1.5,1.5);
 		
+		//hat.setMaxZ(1.1);
+
 		hat.create();		
 	}
 
@@ -636,8 +619,19 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	}
 	
 	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X2].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X3].setLabelString(QChar (0x3b4) + QString("-axis"));
+	dataWidget->coordinates()->axes[X4].setLabelString(QChar (0x3b4) + QString("-axis"));
+
 	dataWidget->coordinates()->axes[Y1].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y2].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y3].setLabelString(QChar (0x3b6) + QString("-axis"));
+	dataWidget->coordinates()->axes[Y4].setLabelString(QChar (0x3b6) + QString("-axis"));
+
 	dataWidget->coordinates()->axes[Z1].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z2].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
+	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
 
 	pickCoordSystem(activeCoordSystem);
 	dataWidget->showColorLegend(legend_);

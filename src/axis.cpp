@@ -1,6 +1,4 @@
 #include "axis.h"
-#include <float.h>
-
 
 Axis::Axis()
 {
@@ -36,7 +34,7 @@ Axis::init()
 	setMinors(1);	
 	symtics_ = false;
 	drawNumbers_ = false;
-
+	drawLabel_ = false;
 
 	drawTics_ = false;
 	autoscale_ = true;
@@ -186,12 +184,15 @@ Axis::drawTics()
 	Triple step = (end-beg) / (tmaj_ * tmin_);
 	int ii = 1;
 	Triple residuum = beg_ - beg;
-	runningpoint = ii * step;
+	runningpoint = step;
 	
-	while (runningpoint.length() && (runningpoint.length() < residuum.length())) 
-	{ 
-		drawTic(beg - runningpoint, lmin_);								
-		runningpoint = (++ii) * step;
+	if (runningpoint.length())
+	{
+		while (runningpoint.length() < residuum.length())
+		{
+			drawTic(beg - runningpoint, lmin_);								
+			runningpoint = (++ii) * step;
+		}
 	}
 	
 	//     end           end_
@@ -199,12 +200,15 @@ Axis::drawTics()
 
 	ii = 1;
 	residuum = end_ - end;
-	runningpoint = ii * step;
+	runningpoint = step;
 	
-	while (runningpoint.length() && (runningpoint.length() < residuum.length())) 
-	{ 
-		drawTic(end + runningpoint, lmin_);								
-		runningpoint = (++ii) * step;
+	if (runningpoint.length())
+	{
+		while (runningpoint.length() < residuum.length()) 
+		{ 
+			drawTic(end + runningpoint, lmin_);								
+			runningpoint = (++ii) * step;
+		}
 	}	
 }
 
@@ -219,12 +223,10 @@ Axis::drawNumber(int mtic)
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
 
-	double delta = fabs(autostop_-autostart_) / tmaj_; // prevent rounding errors near zero
-	double anumber;
 	if (autoScale())
 	{
-		anumber = (1-t) * autostart_ + t * autostop_;
-		if (fabs(anumber) < delta / 10)
+		double anumber = (1-t) * autostart_ + t * autostop_;
+		if (fabs(anumber) < DBL_EPSILON) // prevent rounding errors near zero
 			anumber = 0;
 		markerLabel_[mtic].setString(QString::number(anumber));		
 	}
@@ -357,6 +359,8 @@ Axis::postDraw()
 	glColor4d(color.r,color.g,color.b,color.a);		
 
 	postDrawNumbers();
+	
+	if (drawLabel_)
 	label_.draw();
 	
 	restoreGLState();

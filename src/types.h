@@ -15,7 +15,7 @@
 
 #include <qgl.h>
 #include <math.h>
-
+#include <float.h>
 
 namespace Qwt3d
 {
@@ -142,7 +142,8 @@ struct Triple
 	
 	double length() const
 	{
-		return sqrt(x*x + y*y + z*z);
+		double l2 = x*x + y*y + z*z;
+		return (l2>DBL_EPSILON) ? sqrt(l2) : 0;
 	}
 	
 	void normalize()
@@ -312,5 +313,15 @@ inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
 double ceil125( double x);
 double floor125( double x);
 double round125( double x);
+
+
+struct Tuple
+{
+	Tuple() : x(0), y(0) {}
+	Tuple(double X, double Y) : x(X), y(Y) {}
+	double x,y;
+};
+
+void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src );
 
 #endif
