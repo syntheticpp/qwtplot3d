@@ -217,17 +217,17 @@ void Plot3D::setRotationKeyboard(int kseq, double speed)
 	double new_zrot = zRotation();
 	
 	if ( kseq == xrot_kstate_[0] )
-		new_xrot = int(xRotation() + relyz) % 360; 
+		new_xrot = round(xRotation() + relyz) % 360; 
 	if ( kseq == xrot_kstate_[1] )
-		new_xrot = int(xRotation() - relyz) % 360; 
+		new_xrot = round(xRotation() - relyz) % 360; 
 	if ( kseq == yrot_kstate_[0] )
-		new_yrot = int(yRotation() + relx) % 360; 
+		new_yrot = round(yRotation() + relx) % 360; 
 	if ( kseq == yrot_kstate_[1] )
-		new_yrot = int(yRotation() - relx) % 360; 
+		new_yrot = round(yRotation() - relx) % 360; 
 	if ( kseq == zrot_kstate_[0] )
-		new_zrot = int(zRotation() + relx) % 360; 
+		new_zrot = round(zRotation() + relx) % 360; 
 	if ( kseq == zrot_kstate_[1] )
-		new_zrot = int(zRotation() - relx) % 360; 
+		new_zrot = round(zRotation() - relx) % 360; 
 		
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
