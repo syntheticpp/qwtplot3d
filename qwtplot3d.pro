@@ -39,7 +39,7 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_enrichment_std.cpp \
            src/qwt3d_autoscaler.cpp \
            src/qwt3d_reader.cpp \
-           src/qwt3d_dataviews.cpp
+           src/qwt3d_io.cpp 
 
 SOURCES += src/qwt3d_gridmapping.cpp \
 					 src/qwt3d_parametricsurface.cpp \
@@ -67,6 +67,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_io.h \
            include/qwt3d_femreader.h \
            include/qwt3d_reader.h
+						
 
 HEADERS += include/qwt3d_mapping.h \
 					 include/qwt3d_gridmapping.h \

@@ -255,7 +255,7 @@ void SurfacePlot::createNormalsC()
 	Convert user (non-rectangular) mesh based data to internal structure.
 	See also Qwt3D::TripleField and Qwt3D::CellField
 */
-bool SurfacePlot::createDataRepresentation(TripleField const& data, CellField const& poly)
+bool SurfacePlot::loadFromData(TripleField const& data, CellField const& poly)
 {	
 	actualDataG_->clear();
   actualData_p = actualDataC_;

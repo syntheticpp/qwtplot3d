@@ -5,7 +5,7 @@ import zlib
 import zipfile
 from time import gmtime, strftime
 
-refuseddirs = ['CVS','Debug','Release','moc','obj','tmp','data','hannes','doc','lib','scripts']
+refuseddirs = ['CVS','Debug','Release','moc','obj','tmp','data','hannes','doc','lib','scripts','bin']
 refusedfiles = ['Makefile','.cvsignore','gl2psTest.c','gl2ps.bat','gl2ps.pro']
 requiredfiles = ['qwtplot3d.dsw','examples.dsw','thesis.tex']
 requiredfiletypes = ['pro','bat','cpp','c','h','ui','ts','png','rc','ico']
@@ -13,12 +13,12 @@ srcfiletypes = ['cpp','c','h']
 
 source = 'V:\\\\cvs\\uploads\\qwtplot3d\\'
 
-#tstr = strftime("%y%m%d", gmtime())
-#tarname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.tgz'
-#zipname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.zip'
+tstr = strftime("%y%m%d", gmtime())
+tarname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.tgz'
+zipname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.zip'
 
-tarname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.3-beta.tgz'
-zipname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.3-beta.zip'
+#tarname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.4-beta.tgz'
+#zipname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.4-beta.zip'
 
 
 

@@ -81,7 +81,7 @@ bool Function::create()
 	}
 	else
 	{
-		((SurfacePlot*)plotwidget_p)->createDataRepresentation(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
+		((SurfacePlot*)plotwidget_p)->loadFromData(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
 	}
 
 	for ( i = 0; i < umesh_p; i++) 

@@ -187,7 +187,7 @@ void Mesh2MainWindow::open()
 		{
 			dataWidget->coordinates()->axes[i].setMajors(4);
 			dataWidget->coordinates()->axes[i].setMinors(5);
-			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
+			dataWidget->coordinates()->axes[i].setLabelString("");
 		}
 		
 		updateColorLegend(4,5);
@@ -302,7 +302,7 @@ void Mesh2MainWindow::createPSurface(QString const& name)
     TripleField conepos;
     CellField conecell;
     createCone(conepos,conecell);
-    dataWidget->createDataRepresentation(conepos, conecell);
+    dataWidget->loadFromData(conepos, conecell);
 	}
 	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 	{
@@ -777,7 +777,7 @@ void Mesh2MainWindow::openMesh()
 		readNodes(vdata, data, NodeFilter());
 		readConnections(vpoly, edges, CellFilter());
 		
-		dataWidget->createDataRepresentation(vdata, vpoly);
+		dataWidget->loadFromData(vdata, vpoly);
 		
 		dimWidget->setText(QString("Cells ") + QString::number(dataWidget->facets().first));
 
