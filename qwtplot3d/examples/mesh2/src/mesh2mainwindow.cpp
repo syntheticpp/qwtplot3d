@@ -50,7 +50,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		activeCoordSystem = None;
 		setCaption("Mesh2");      
 
-    QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+    QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
 
     dataWidget = new SurfacePlot(frame);
     grid->addWidget( dataWidget, 0, 0 );
