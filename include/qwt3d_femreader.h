@@ -3,7 +3,8 @@
 
 #include <math.h>
 #include <fstream.h>
-#include "../../../src/types.h"
+#include "qwt3d_global.h"
+#include "qwt3d_types.h"
 
 class NodeFilter
 {
@@ -45,7 +46,7 @@ class CellFilter
 
 
 template <typename FILTER>
-bool readNodes(Qwt3D::TripleVector& v, const char* fname, FILTER fil)
+bool readNodes(Qwt3D::TripleField& v, const char* fname, FILTER fil)
 {
 	ifstream file(fname);
 	
@@ -63,7 +64,7 @@ bool readNodes(Qwt3D::TripleVector& v, const char* fname, FILTER fil)
 }
 
 template <typename FILTER>
-bool readConnections(Qwt3D::Tesselation& v, const char* fname, FILTER fil)
+bool readConnections(Qwt3D::CellField& v, const char* fname, FILTER fil)
 {
 	ifstream file(fname);
 

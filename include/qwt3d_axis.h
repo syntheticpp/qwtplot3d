@@ -1,7 +1,8 @@
 #ifndef __AXIS_H__
 #define __AXIS_H__
 
-#include "labelpixmap.h"
+#include "qwt3d_global.h"
+#include "qwt3d_labelpixmap.h"
 
 namespace Qwt3D
 {
@@ -9,7 +10,7 @@ namespace Qwt3D
 class LabelTexture;
 
 //! Autoscalable axis with caption
-class Axis : public Drawable
+class QWT3D_EXPORT Axis : public Drawable
 {
 
 public:

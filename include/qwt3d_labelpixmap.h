@@ -7,12 +7,13 @@
 #include <qpainter.h>
 #include <qfontmetrics.h>
 
-#include "drawable.h"
+#include "qwt3d_global.h"
+#include "qwt3d_drawable.h"
 
 namespace Qwt3D
 {
 
-class LabelPixmap : public Drawable 
+class QWT3D_EXPORT LabelPixmap : public Drawable 
 {
 		
 public:

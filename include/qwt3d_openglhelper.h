@@ -6,6 +6,8 @@
 namespace Qwt3D
 {
 
+#ifndef QWT3D_PRIVATE
+
 class GLStateBewarer
 {
 public:
@@ -60,6 +62,15 @@ inline const GLubyte* gl_error()
 	}
 	return err;
 }
+
+inline	void SaveGlDeleteLists(GLuint& list, GLsizei range)
+{
+	if (glIsList(list))
+		glDeleteLists(list, range);
+	list = 0;
+}
+
+#endif // QWT3D_PRIVATE
 
 } // ns
 

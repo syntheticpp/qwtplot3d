@@ -1,6 +1,6 @@
 #include <math.h>
-#include "colorgenerator.h"
-#include "vectorfield.h"
+#include "qwt3d_color.h"
+#include "qwt3d_vectorfield.h"
 
 using namespace Qwt3D;
 
@@ -42,20 +42,24 @@ VectorField::~VectorField()
 
 void VectorField::drawArrows()
 {
-	if(bases.size() != tops.size() || bases.empty() || !colors)
+	if(elements.empty() || !colors)
 		return;
 
 glEnable(GL_LIGHTING);
 	RGBA col;
-	for (unsigned i=0; i!=bases.size(); ++i)
+	for (unsigned i=0; i!=elements.size(); ++i)
 	{
-		col = (*colors)(bases[i].x, bases[i].y, bases[i].z);
+		col = (*colors)(elements[i].base.x, elements[i].base.y, elements[i].base.z);
 		glColor4d(col.r, col.g, col.b, col.a);
-		drawArrow(bases[i], tops[i]);
+		drawArrow(elements[i]);
 	}
 glDisable(GL_LIGHTING);
 }
 
+/**
+\param segs number of faces for the fields arrows (see the gallery for examples)
+\image html arrowanatomy.png 
+*/
 void VectorField::configureArrows(int segs, double relconelength, double relconerad, double relstemrad)
 {
 	segments = segs;
@@ -64,13 +68,16 @@ void VectorField::configureArrows(int segs, double relconelength, double relcone
 	rel_stem_radius = relstemrad;	
 }
 
+//! Set the number of faces for the arrow
 void VectorField::setQuality(int val)
 {
 	segments = val;
 }
 
-void VectorField::drawArrow(Triple const& beg, Triple const& end)
+void VectorField::drawArrow(Qwt3D::FreeVector const& vec)
 {	
+	Triple end = vec.top;
+	Triple beg = vec.base;
 	Triple vdiff = end-beg;
 	double length = vdiff.length();
 	
@@ -86,7 +93,7 @@ void VectorField::drawArrow(Triple const& beg, Triple const& end)
 
 
 	Triple axis;
-	double phi = calcRotation(axis,beg,end);
+	double phi = calcRotation(axis,vec);
 	
 	glTranslatef(beg.x, beg.y, beg.z);
   glRotatef(phi, axis.x, axis.y, axis.z);
@@ -107,10 +114,12 @@ void VectorField::drawArrow(Triple const& beg, Triple const& end)
 	glMatrixMode(mode);
 }
 
-void VectorField::drawArrow(Triple const& beg, Triple const& end, RGBA color)
+void VectorField::drawArrow(Qwt3D::FreeVector const& vec, RGBA color)
 {
 	glColor4d(color.r, color.g, color.b, color.a);
 	
+	Triple end = vec.top;
+	Triple beg = vec.base;
 	Triple vdiff = end-beg;
 	double length = vdiff.length();
 	int segments = 16;
@@ -121,7 +130,7 @@ void VectorField::drawArrow(Triple const& beg, Triple const& end, RGBA color)
 	glMatrixMode( GL_MODELVIEW );
   glPushMatrix();
 	Triple axis;
-	double phi = calcRotation(axis,beg,end);
+	double phi = calcRotation(axis,vec);
 	glTranslatef(beg.x, beg.y, beg.z);
   glRotatef(phi, axis.x, axis.y, axis.z);
 	double pl = 0.4;
@@ -146,8 +155,12 @@ void VectorField::drawArrow(Triple const& beg, Triple const& end, RGBA color)
 	\param beg    result vector base point
 	\param end    result vector top point
 */ 
-double VectorField::calcRotation(Triple& axis, Triple const& beg, Triple const& end)
+double VectorField::calcRotation(Triple& axis, Qwt3D::FreeVector const& vec)
 {
+	
+	Triple end = vec.top;
+	Triple beg = vec.base;
+
 	Triple firstbeg(0.0,0.0,0.0);
 	Triple firstend(0.0,0.0,(end-beg).length());
 	

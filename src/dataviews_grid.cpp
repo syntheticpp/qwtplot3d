@@ -3,22 +3,22 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt_plot3d.h"
-#include "vectorfield.h"
+#include "qwt3d_surfaceplot.h"
+#include "qwt3d_vectorfield.h"
 
 using namespace std;
 using namespace Qwt3D;
 
 void 
-Plot3D::updateGridData()
+SurfacePlot::updateGridData()
 {
 	int i, j;
 	RGBA col;
-	int cstep = resolution_;
-	int rstep = resolution_;
+	int cstep = resolution();
+	int rstep = resolution();
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
 	{
-		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 
 		for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
 		{
@@ -39,10 +39,10 @@ Plot3D::updateGridData()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 		glEnable(GL_POLYGON_OFFSET_FILL);
-		glPolygonOffset(polygonOffset_,1.0);
+		glPolygonOffset(polygonOffset(),1.0);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
-		col = bgcolor_;
+		col = backgroundRGBAColor();
 
 		glBegin(GL_QUADS);
 			for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
@@ -51,7 +51,7 @@ Plot3D::updateGridData()
 				{
 					if(!hl)
 					{
-						col = (*dataColor_)(
+						col = (*dataColor)(
 							actualGridData_->vertices[i][j][0],
 							actualGridData_->vertices[i][j][1],
 							actualGridData_->vertices[i][j][2]);
@@ -74,14 +74,14 @@ Plot3D::updateGridData()
 }
 
 void 
-Plot3D::GridData2Floor()
+SurfacePlot::GridData2Floor()
 {
 	if (actualGridData_->empty())
 		return;
 	
 	RGBA col;
-	unsigned int cstep = resolution_;
-	unsigned int rstep = resolution_;
+	unsigned int cstep = resolution();
+	unsigned int rstep = resolution();
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
@@ -92,7 +92,7 @@ Plot3D::GridData2Floor()
 		{
 			for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
 			{
-				col = (*dataColor_)(
+				col = (*dataColor)(
 					actualGridData_->vertices[i][j][0],
 					actualGridData_->vertices[i][j][1],
 					actualGridData_->vertices[i][j][2]);
@@ -109,18 +109,18 @@ Plot3D::GridData2Floor()
 }
 
 void 
-Plot3D::Grid2Floor()
+SurfacePlot::Grid2Floor()
 {
 	if (actualGridData_->empty())
 		return;
 	
 	RGBA col;
-	unsigned int cstep = resolution_;
-	unsigned int rstep = resolution_;
+	unsigned int cstep = resolution();
+	unsigned int rstep = resolution();
 	
 	double zshift = actualGridData_->minimum();
 
-	glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
+	glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 	for (unsigned int i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
 	{
 		for (unsigned int j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
@@ -137,16 +137,16 @@ Plot3D::Grid2Floor()
 
 
 void 
-Plot3D::GridIsolines2Floor()
+SurfacePlot::GridIsolines2Floor()
 {
-	if (isolines_ <= 0 || actualGridData_->empty())
+	if (isolines() <= 0 || actualGridData_->empty())
 		return;
 
-	double step = (actualGridData_->maximum() - actualGridData_->minimum()) / isolines_;		
+	double step = (actualGridData_->maximum() - actualGridData_->minimum()) / isolines();		
 
 	RGBA col;
-	int cstep = resolution_;
-	int rstep = resolution_;
+	int cstep = resolution();
+	int rstep = resolution();
 
 	double zshift = actualGridData_->minimum();
 	
@@ -159,7 +159,7 @@ Plot3D::GridIsolines2Floor()
 	int hit = -1;
 	double lambda = 0;
 	
-	for (int k = 0; k != isolines_; ++k) 
+	for (int k = 0; k != isolines(); ++k) 
 	{
 		double val = zshift + k * step;		
 				
@@ -171,7 +171,7 @@ Plot3D::GridIsolines2Floor()
 												actualGridData_->vertices[i][j][1],
 												actualGridData_->vertices[i][j][2]);
 
-				col = (*dataColor_)(t[0].x,t[0].y,t[0].z);
+				col = (*dataColor)(t[0].x,t[0].y,t[0].z);
   			glColor4d(col.r, col.g, col.b, col.a);
 //  			glColor4d(0,0,0,1);
 				
@@ -240,21 +240,20 @@ Plot3D::GridIsolines2Floor()
 
 
 void 
-Plot3D::updateGridNormals()
+SurfacePlot::updateGridNormals()
 {
 	if (!normals() || actualGridData_->empty())
 		return;
 
-	VectorField v(dataColor_);
+	VectorField v(dataColor);
 	v.setQuality(normalQuality());
-	v.bases = TripleVector(actualGridData_->columns()*actualGridData_->rows());
-	v.tops = TripleVector(v.bases.size());
-	
+	v.elements = FreeVectorField(actualGridData_->columns()*actualGridData_->rows());
+
 	Triple basev;
 	Triple topv;	
 	
-	int cstep = resolution_;
-	int rstep = resolution_;
+	int cstep = resolution();
+	int rstep = resolution();
 
 	double diag = (actualGridData_->hull().maxVertex-actualGridData_->hull().minVertex).length() * normalLength();
 
@@ -271,9 +270,9 @@ Plot3D::updateGridNormals()
 			norm.normalize();
 			norm	*= diag;
 
-			v.bases[i * actualGridData_->rows() +j] 
+			v.elements[i * actualGridData_->rows() +j].base 
 				= basev;		
-			v.tops[i * actualGridData_->rows() +j] 
+			v.elements[i * actualGridData_->rows() +j].top 
 				= basev + norm;	
 		}
 	}

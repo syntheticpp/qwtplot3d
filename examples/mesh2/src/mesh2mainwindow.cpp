@@ -24,8 +24,8 @@
 #include "mesh2mainwindow.h"
 
 #include "functions.h"
-#include "femreader.h"
-#include "../src/reader.h"
+#include "colormapreader.h"
+#include "../../../include/qwt3d_io.h"
 
 using namespace Qwt3D;
 
@@ -38,6 +38,7 @@ Mesh2MainWindow::~Mesh2MainWindow()
 Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )       
 	: Mesh2MainWindowBase( parent, name, f )
 {
+		col_ = 0;
 		legend_ = false;
 		redrawWait = 50;
 		activeCoordSystem = None;
@@ -52,6 +53,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect( numbercolor, SIGNAL( activated() ), this, SLOT( pickNumberColor() ) );
 		connect( labelcolor, SIGNAL( activated() ), this, SLOT( pickLabelColor() ) );
 		connect( titlecolor, SIGNAL( activated() ), this, SLOT( pickTitleColor() ) );
+		connect( datacolor, SIGNAL( activated() ), this, SLOT( pickDataColor() ) );
 		connect( resetcolor, SIGNAL( activated() ), this, SLOT( resetColors() ) );
  		connect( numberfont, SIGNAL( activated() ), this, SLOT( pickNumberFont() ) );
 		connect( labelfont, SIGNAL( activated() ), this, SLOT( pickLabelFont() ) );
@@ -109,7 +111,20 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		dataWidget->coordinates()->setLineSmooth(true);
 		dataWidget->enableMouse(true);
 
-		// dataWidget->setCaptionPosition(0.7, 0.2);
+
+		colormappv_ = new ColorMapPreview;
+
+		datacolordlg_ = new QFileDialog( this );
+		
+		QDir dir("../../data/colormaps");
+		if (dir.exists("../../data/colormaps"))
+			datacolordlg_->setDir("../../data/colormaps");
+		datacolordlg_->setFilter("Colormap files (*.map;*.MAP)");
+		datacolordlg_->setContentsPreviewEnabled( TRUE );
+		datacolordlg_->setContentsPreview( colormappv_, colormappv_ );
+		datacolordlg_->setPreviewMode( QFileDialog::Contents );
+  
+		connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
 }
 
 void Mesh2MainWindow::open()
@@ -172,7 +187,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	}
 	else if (name == QString("Saddle")) 
 	{
-		Saddle saddle(dataWidget);
+		Saddle saddle;
 		
 		saddle.setMesh(71,71);
 		double dom = 2.5;
@@ -180,11 +195,12 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		
 		//hat.setMaxZ(1.1);
 
+		saddle.assign(dataWidget);
 		saddle.create();
 	}
 	else if (name == QString("Sombrero")) 
 	{
-		Mex mex(dataWidget);
+		Mex mex;
 		
 		mex.setMesh(91,91);
 		double dom = 15;
@@ -192,7 +208,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		
 		//hat.setMaxZ(1.1);
 
-		mex.create();
+		mex.create(dataWidget);
 	}
 
 	createColorLegend(StandardColor(dataWidget).colVector());
@@ -219,6 +235,22 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	dataWidget->coordinates()->axes[Z2].setLabelString(QChar (0x3b8) + QString("-axis"));
 	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
 	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
+
+	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
+	dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
+	dataWidget->coordinates()->axes[X3].setLabelString(QString("X3"));
+	dataWidget->coordinates()->axes[X4].setLabelString(QString("X4"));
+
+	dataWidget->coordinates()->axes[Y1].setLabelString(QString("Y1"));
+	dataWidget->coordinates()->axes[Y2].setLabelString(QString("Y2"));
+	dataWidget->coordinates()->axes[Y3].setLabelString(QString("Y3"));
+	dataWidget->coordinates()->axes[Y4].setLabelString(QString("Y4"));
+
+	dataWidget->coordinates()->axes[Z1].setLabelString(QString("Z1"));
+	dataWidget->coordinates()->axes[Z2].setLabelString(QString("Z2"));
+	dataWidget->coordinates()->axes[Z3].setLabelString(QString("Z3"));
+	dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
+
 
 	dataWidget->showColorLegend(legend_);
 }
@@ -328,6 +360,11 @@ void Mesh2MainWindow::resetColors()
 	dataWidget->updateData();
 	dataWidget->coordinates()->setNumberColor(nuc);
 	dataWidget->coordinates()->setLabelColor(lbc);
+
+	col_ = new StandardColor(dataWidget);
+	dataWidget->setDataColor(col_);
+	
+	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
 
@@ -393,6 +430,27 @@ void Mesh2MainWindow::pickTitleColor()
 		return;
 	RGBA rgb = Qt2GL(c);
 	dataWidget->setCaptionColor(rgb);
+	dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::pickDataColor()
+{
+	datacolordlg_->show();
+}
+
+void Mesh2MainWindow::adaptDataColors(const QString& fileName)
+{
+	ColorField cv;
+	
+	if (!openColorMap(cv, fileName))
+		return;
+	
+	col_ = new StandardColor(dataWidget);
+	col_->setColorVector(cv);
+	
+	dataWidget->setDataColor(col_);
+	dataWidget->updateData();
+	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
 
@@ -506,12 +564,12 @@ void
 Mesh2MainWindow::setPolygonOffset(int val)
 {
 	dataWidget->setPolygonOffset(val / 10.0);
-	dataWidget->updateData();
+//	dataWidget->updateData();
 	dataWidget->updateGL();
 }
 
 void
-Mesh2MainWindow::createColorLegend(ColorVector const& col)
+Mesh2MainWindow::createColorLegend(ColorField const& col)
 {
 	Triple a = dataWidget->hull().minVertex;
 	Triple c = dataWidget->hull().maxVertex;
@@ -564,8 +622,8 @@ void Mesh2MainWindow::openMesh()
         return;
 
 
-		TripleVector vdata;
-		Tesselation vpoly;
+		TripleField vdata;
+		CellField vpoly;
 		
 		readNodes(vdata, data, NodeFilter());
 		readConnections(vpoly, edges, CellFilter());
@@ -586,7 +644,7 @@ void
 Mesh2MainWindow::showNormals(bool val)
 {
 	dataWidget->showNormals(val);
-	dataWidget->updateData();
+	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
 
@@ -594,7 +652,7 @@ void
 Mesh2MainWindow::setNormalLength(int val)
 {
 	dataWidget->setNormalLength(val / 400.);
-	dataWidget->updateData();
+	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
 
@@ -602,6 +660,37 @@ void
 Mesh2MainWindow::setNormalQuality(int val)
 {
 	dataWidget->setNormalQuality(val);
-	dataWidget->updateData();
+	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
+
+bool
+Mesh2MainWindow::openColorMap(ColorField& cv, QString fname)
+{	
+	ifstream file(fname.latin1());
+
+	if (!file)
+		return false;
+	
+	RGBA rgb;
+	cv.clear();
+	
+	while ( file ) 
+	{		
+		file >> rgb.r >> rgb.g >> rgb.b;
+		file.ignore(1000,'\n');
+		if (!file.good())
+			break;
+		else
+		{
+			rgb.a = 1;
+			rgb.r /= 255;
+			rgb.g /= 255;
+			rgb.b /= 255;
+			cv.push_back(rgb);	
+		}
+	}
+
+	return true;
+}
+

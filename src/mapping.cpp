@@ -3,7 +3,8 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt_plot3d.h"
+#include "qwt3d_surfaceplot.h"
+
 using namespace Qwt3D;
 
 
@@ -12,7 +13,7 @@ using namespace Qwt3D;
 	See also NativeReader::read() and Function::create()
 */
 bool 
-Plot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
+SurfacePlot::createDataRepresentation(double** data, unsigned int columns, unsigned int rows
 																				, double minx, double maxx, double miny, double maxy)
 {
 	meshtype_ = GRID;
@@ -160,6 +161,7 @@ Plot3D::createDataRepresentation(double** data, unsigned int columns, unsigned i
 	actualGridData_->setHull(hull);
 
 	updateData();
+	updateNormals();
 	createCoordinateSystem();
 
 	return true;
@@ -168,10 +170,10 @@ Plot3D::createDataRepresentation(double** data, unsigned int columns, unsigned i
 
 /*! 
 	Convert user (non-rectangular) mesh based data to internal structure.
-	See also Qwt3D::TripleVector and Qwt3D::Tesselation
+	See also Qwt3D::TripleField and Qwt3D::CellField
 */
 bool 
-Plot3D::createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype)
+SurfacePlot::createDataRepresentation(TripleField const& data, CellField const& poly, MESHTYPE mtype)
 {
 	if (mtype == GRID)
 		return false;
@@ -185,7 +187,7 @@ Plot3D::createDataRepresentation(TripleVector const& data, Tesselation const& po
 	
 	actualCellData_->nodes = data;
 	actualCellData_->cells = poly;
-	actualCellData_->normals = TripleVector(actualCellData_->nodes.size());
+	actualCellData_->normals = TripleField(actualCellData_->nodes.size());
 
 	unsigned i;
 
@@ -205,12 +207,14 @@ Plot3D::createDataRepresentation(TripleVector const& data, Tesselation const& po
 				v = actualCellData_->nodes[poly[i][pjj]]-actualCellData_->nodes[poly[i][j]];
 				n = normalizedcross(u,v);
 				actualCellData_->normals[poly[i][j]] += n;
-				actualCellData_->normals[poly[i][j]].normalize();
 			}
-
 		}
 	}
-	  
+	for ( i = 0; i != actualCellData_->normals.size(); ++i) 
+	{
+		actualCellData_->normals[i].normalize();
+	}  
+	
 	ParallelEpiped hull(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
 
 	for (i = 0; i!=data.size(); ++i)
@@ -233,6 +237,7 @@ Plot3D::createDataRepresentation(TripleVector const& data, Tesselation const& po
 	actualCellData_->setHull(hull);
 
 	updateData();
+	updateNormals();
 	createCoordinateSystem();
 
 	return true;

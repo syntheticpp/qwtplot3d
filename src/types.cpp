@@ -2,9 +2,9 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "float.h"
-#include "types.h"
 #include <algorithm>
+#include "float.h"
+#include "qwt3d_types.h"
 
 using namespace Qwt3D;
 
@@ -203,7 +203,8 @@ int _ch2d(coord **P, int n)  {
 } // ns anon
 
 
-void Qwt3D::convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
+void 
+Qwt3D::convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
 {
     idx.clear();
     if (src.empty())
@@ -236,7 +237,8 @@ void Qwt3D::convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src )
 		delete [] P;
 }
 
-unsigned Qwt3D::tesselationSize(Tesselation const& t)
+unsigned 
+Qwt3D::tesselationSize(CellField const& t)
 {
 	unsigned ret = 0;
 	

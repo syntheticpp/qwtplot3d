@@ -3,32 +3,25 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt_plot3d.h"
+#include "qwt3d_plot.h"
+
 using namespace Qwt3D;
 	
 /*!
-  Create a Plot3D widget
+  This should be the first call in your derived classes constructors.  
 */
-Plot3D::Plot3D( QWidget* parent, const char* name, MESHTYPE mt )
+Plot3D::Plot3D( QWidget* parent, const char* name )
     : QGLWidget( parent, name )
 {
-	actualGridData_ = new GridData();
-	actualCellData_ = new CellData();
-	meshtype_ = mt;
-		
 	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
 
 	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
 	xScale_ = yScale_ = zScale_ = 1.0;
 	zoom_ = 8;
-	resolution_ = 1;
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
-	datanormals_ = false;
-	normalLength_ = 0.02;
-	normalQuality_ = 3;
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
@@ -37,13 +30,13 @@ Plot3D::Plot3D( QWidget* parent, const char* name, MESHTYPE mt )
 	setMeshColor(RGBA(0.0,0.0,0.0));
 	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 
-	objectList_ = std::vector<GLuint>(4);
-	for (unsigned k=0; k!=objectList_.size(); ++k)
+	DisplayLists = std::vector<GLuint>(5);
+	for (unsigned k=0; k!=DisplayLists.size(); ++k)
 	{
-		objectList_[k] = 0;
+		DisplayLists[k] = 0;
 	}
 
-	dataColor_ = new StandardColor(this, 100);
+	dataColor = new StandardColor(this, 100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -66,10 +59,8 @@ Plot3D::Plot3D( QWidget* parent, const char* name, MESHTYPE mt )
 
 Plot3D::~Plot3D()
 {
-	SaveGlDeleteLists( objectList_[0], objectList_.size() );
-	dataColor_->destroy();
-	delete actualGridData_;
-	delete actualCellData_;
+	SaveGlDeleteLists( DisplayLists[0], DisplayLists.size() );
+	dataColor->destroy();
 }
 
 
@@ -162,10 +153,10 @@ Plot3D::paintGL()
   
 	glTranslatef( xVPShift_ * 2 * radius, yVPShift_ * 2 * radius, -7 * radius );
 
-	for (unsigned i=0; i!= objectList_.size(); ++i)
+	for (unsigned i=0; i!= DisplayLists.size(); ++i)
 	{
 		if (i!=CoordObject)
-			glCallList( objectList_[i] );
+			glCallList( DisplayLists[i] );
 	}
 
   coord.draw();
@@ -196,31 +187,14 @@ Plot3D::updateCoordinateSystem()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
 
-	SaveGlDeleteLists(objectList_[CoordObject], 1);
+	SaveGlDeleteLists(DisplayLists[CoordObject], 1);
 			
-	objectList_[CoordObject] = glGenLists(1);
-	glNewList(objectList_[CoordObject], GL_COMPILE);
+	DisplayLists[CoordObject] = glGenLists(1);
+	glNewList(DisplayLists[CoordObject], GL_COMPILE);
 
 	coord.draw();
 
 	glEndList();
-}
-
-/*!
-  Set data resolution (res == 1 original resolution) and updates widget
-	If res < 1, the function does nothing
-*/
-void 
-Plot3D::setResolution( int res )
-{
-	if ((resolution_ == res) || res < 1)
-		return;
-	
-	resolution_ = res;
-	updateData();
-	updateGL();
-
-	emit resolutionChanged(res);
 }
 
 /**
@@ -250,13 +224,13 @@ Plot3D::createCoordinateSystem()
 void 
 Plot3D::showColorLegend( bool show )
 {
- 	SaveGlDeleteLists(objectList_[LegendObject], 1);
+ 	SaveGlDeleteLists(DisplayLists[LegendObject], 1);
 	
 
 	if (show)
 	{
-		objectList_[LegendObject] = glGenLists(1);
-		glNewList(objectList_[LegendObject], GL_COMPILE);	
+		DisplayLists[LegendObject] = glGenLists(1);
+		glNewList(DisplayLists[LegendObject], GL_COMPILE);	
 
 		legend_.draw();
 
@@ -288,27 +262,6 @@ Plot3D::setBackgroundColor(RGBA rgba)
 	bgcolor_ = rgba;
 }
 
-/**
-	Calculate the smallest x-y-z parallelepiped enclosing the data.
-	It can be accessed by hull();
-*/
-void 
-Plot3D::calculateHull()
-{
-	if (meshtype() == GRID)
-	{
-		if (actualGridData_->empty())
-			return;
-		hull_ = actualGridData_->hull();
-	}
-	else
-	{
-		if (actualCellData_->empty())
-			return;
-		hull_ = actualCellData_->hull();
-	}
-}
-
 
 /*!
 	assign a new coloring object for the data.
@@ -316,19 +269,19 @@ Plot3D::calculateHull()
 void 
 Plot3D::setDataColor( Color* col )
 {
-	Q_ASSERT(dataColor_);
+	Q_ASSERT(dataColor);
 
-	dataColor_->destroy();
-	dataColor_ = col;
+	dataColor->destroy();
+	dataColor = col;
 }
 
 /*!
   <tt>(experimental)</tt>
 */
 void 
-Plot3D::modifyStandardColorAlpha(double d)
+Plot3D::setColorAlpha(double d)
 {
-	dataColor_->setAlpha(d);
+	dataColor->setAlpha(d);
 }
 
 /*!
@@ -349,7 +302,7 @@ Plot3D::setOrtho( bool val )
   <tt>(experimental)</tt>
 */
 void 
-Plot3D::createColorLegend(ColorVector const& col, Triple a, Triple b, Triple c, Triple d)
+Plot3D::createColorLegend(ColorField const& col, Triple a, Triple b, Triple c, Triple d)
 {
 		legend_.setPosition(a,b,c,d);
 		legend_.colors = col;
@@ -407,12 +360,6 @@ Plot3D::setIsolines(int steps)
 	isolines_ = steps;
 }
 
-void 
-Plot3D::showNormals(bool b)
-{
-	datanormals_ = b;
-}
-
 /*!
   Set Polygon offset. The function affects the OpenGL rendering process. 
 	Try different values for surfaces with polygons only and with mesh and polygons
@@ -450,24 +397,3 @@ Plot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool it
 	title_.setFont(family, pointSize, weight, italic);
 }
 
-/**
-Values < 0 or > 1 are ignored
-*/
-void 
-Plot3D::setNormalLength(double val)
-{
-	if (val<0 || val>1)
-		return;
-	normalLength_ = val;
-}
-
-/**
-Values < 3 are ignored 
-*/
-void 
-Plot3D::setNormalQuality(int val) 
-{
-	if (val<3)
-		return;
-	normalQuality_ = val;
-}

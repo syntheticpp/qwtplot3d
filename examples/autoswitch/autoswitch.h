@@ -2,8 +2,8 @@
 #define AUTOSWITCH_H__
 
 #include <qtimer.h>
-#include <qwt_plot3d.h>
-#include "../src/functiongenerator.h"
+#include "qwt3d_surfaceplot.h"
+#include "qwt3d_function.h"
 
 using namespace Qwt3D;
 
@@ -11,7 +11,7 @@ class Saddle : public Function
 {
 public:
 
-	Saddle(Plot3D* pw)
+	Saddle(SurfacePlot* pw)
 	:Function(pw)
 	{
 		setDomain(-2.5,2.5,-2.5,2.5);
@@ -30,7 +30,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(Plot3D* pw)
+	Hat(SurfacePlot* pw)
 	:Function(pw)
 	{
 		setDomain(-1.5,1.5,-1.5,1.5);
@@ -44,7 +44,7 @@ public:
 };
 
 
-class Plot : public Plot3D
+class Plot : public SurfacePlot
 {
 	Q_OBJECT
 

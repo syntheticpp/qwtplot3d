@@ -54,7 +54,7 @@ public:
 
 
 Plot::Plot(QWidget* pw)
-:Plot3D(pw)
+:SurfacePlot(pw)
 {
 	Saddle saddle(this);
 	
@@ -75,6 +75,7 @@ Plot::Plot(QWidget* pw)
 
 	
 	updateData();
+	updateNormals();
 	updateGL();
 
   QTimer* timer = new QTimer( this );
@@ -102,6 +103,7 @@ void Plot::changeColor()
 
 	setDataColor(col);
 	updateData();
+	updateNormals();
 	setTitle(QString::number(cnt));
 	updateGL();
 }

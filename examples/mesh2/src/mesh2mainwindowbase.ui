@@ -413,6 +413,9 @@
                                     <property name="pageStep">
                                         <number>4</number>
                                     </property>
+                                    <property name="tracking">
+                                        <bool>true</bool>
+                                    </property>
                                     <property name="orientation">
                                         <enum>Vertical</enum>
                                     </property>
@@ -485,6 +488,7 @@
         <action name="numbercolor"/>
         <action name="labelcolor"/>
         <action name="titlecolor"/>
+        <action name="datacolor"/>
         <action name="resetcolor"/>
     </item>
     <item text="&amp;Font" name="PopupMenu">
@@ -993,6 +997,17 @@
             </property>
             <property name="statusTip">
                 <string>Caption</string>
+            </property>
+        </action>
+        <action>
+            <property name="name">
+                <cstring>datacolor</cstring>
+            </property>
+            <property name="text">
+                <string>Data Color</string>
+            </property>
+            <property name="toolTip">
+                <string>Data Color</string>
             </property>
         </action>
         <action>

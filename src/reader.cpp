@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <qtextstream.h>
 
-#include "qwt_plot3d.h"
-#include "reader.h"
+#include "qwt3d_surfaceplot.h"
+#include "qwt3d_io.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -152,7 +152,7 @@ namespace
 	}
 }
 
-NativeReader::NativeReader(Plot3D* pw, QString fname)
+NativeReader::NativeReader(SurfacePlot* pw, QString fname)
 : magicstring("jk:11051895-17021986")
 {
 	if (!pw)

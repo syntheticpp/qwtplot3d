@@ -13,7 +13,7 @@ using namespace Qwt3D;
 //--------------------------------------------------------------------
 
 Plot::Plot(QWidget* pw, int updateinterval)
-:Plot3D(pw)
+:SurfacePlot(pw)
 {
 	setRotation(30,0,15);
 	setScale(1,1,1);

@@ -1,13 +1,14 @@
 #ifndef __PLANE_H__
 #define __PLANE_H__
 
-#include "drawable.h"
-#include "colorgenerator.h"
+#include "qwt3d_global.h"
+#include "qwt3d_drawable.h"
+#include "qwt3d_color.h"
 
 namespace Qwt3D
 {
 
-class Quad : public Drawable
+class QWT3D_EXPORT Quad : public Drawable
 {
 
 public:
@@ -33,7 +34,7 @@ public:
 
 	void draw();
 
-	Qwt3D::ColorVector colors;
+	Qwt3D::ColorField colors;
 };
 
 } // ns

@@ -1,83 +1,81 @@
-#include <qapplication.h>
-#include <qwt_plot3d.h>
-#include "../src/functiongenerator.h"
-#include <math.h>
+  //-----------------------------------------------------------------
+  //              simpleplot.cpp
+  //
+  //      A simple example which shows how to use SurfacePlot
+  //-----------------------------------------------------------------
 
-//-----------------------------------------------------------------
-//              simpleplot.cpp
-//
-//      A simple example which shows how to use Plot3D
-//-----------------------------------------------------------------
+  #include <math.h>
+  #include <qapplication.h>
+  #include <qwt3d_surfaceplot.h>
+  #include <qwt3d_function.h>
+  
 
-using namespace Qwt3D;
+  using namespace Qwt3D;
 
-class Rosenbrock : public Function
-{
-public:
+  class Rosenbrock : public Function
+  {
+  public:
 
-	Rosenbrock(Plot3D* pw)
-	:Function(pw)
-	{
-		setMinZ(-100);
-	}
+    Rosenbrock(SurfacePlot* pw)
+    :Function(pw)
+    {
+    }
 
-	double operator()(double x, double y)
-	{
-		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
-	}
-
-	QString name() const { return QString("Rosenbrock"); }
-};
+    double operator()(double x, double y)
+    {
+      return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
+    }
+  };
 
 
-class Plot : public Plot3D
-{
-public:
-    Plot();
-};
+  class Plot : public SurfacePlot
+  {
+  public:
+      Plot();
+  };
 
 
-Plot::Plot()
-{
-  setTitle("A Simple Plot3D Demonstration");
-	Rosenbrock rosenbrock(this);
-	
-	rosenbrock.setMesh(41,31);
-	rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
-	rosenbrock.setMinZ(-10);
-	
-	rosenbrock.create();
+  Plot::Plot()
+  {
+    setTitle("A Simple SurfacePlot Demonstration");
+    
+    Rosenbrock rosenbrock(this);
 
-	setRotation(30,0,15);
-	setScale(1,1,1);
-	setShift(0.15,0,0);
-	setZoom(1);
+    rosenbrock.setMesh(41,31);
+    rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
+    rosenbrock.setMinZ(-10);
 
-	for (unsigned i=0; i!=coordinates()->axes.size(); ++i)
-	{
-		coordinates()->axes[i].setMajors(7);
-		coordinates()->axes[i].setMinors(4);
-	}
-	
-	
-	coordinates()->axes[X1].setLabelString("x-axis");
-	coordinates()->axes[Y1].setLabelString("y-axis");
-	coordinates()->axes[Z1].setLabelString(QChar (0x38f)); // Omega - see http://www.unicode.org/charts/
+    rosenbrock.create();
+
+    setRotation(30,0,15);
+    setScale(1,1,1);
+    setShift(0.15,0,0);
+    setZoom(0.9);
+
+    for (unsigned i=0; i!=coordinates()->axes.size(); ++i)
+    {
+      coordinates()->axes[i].setMajors(7);
+      coordinates()->axes[i].setMinors(4);
+    }
 
 
-//	setFloorStyle(FLOORDATA);
-	setCoordinateStyle(BOX);
-	
-	updateData();
-	updateGL();
-}
+    coordinates()->axes[X1].setLabelString("x-axis");
+    coordinates()->axes[Y1].setLabelString("y-axis");
+    coordinates()->axes[Z1].setLabelString(QChar (0x38f)); // Omega - see http://www.unicode.org/charts/
 
-int main(int argc, char **argv)
-{
-    QApplication a(argc, argv);
-    Plot plot;
-    a.setMainWidget(&plot);
-		plot.resize(800,600);
-    plot.show();
-    return a.exec(); 
-}
+
+    setCoordinateStyle(BOX);
+
+    updateData();
+    updateGL();
+  }
+
+  int main(int argc, char **argv)
+  {
+      QApplication a(argc, argv);
+      Plot plot;
+      a.setMainWidget(&plot);
+      plot.resize(800,600);
+      plot.show();
+      return a.exec();
+  }

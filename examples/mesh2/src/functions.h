@@ -2,8 +2,8 @@
 #define __EXAMPLE_H__
 
 #include <math.h>
-#include "../src/functiongenerator.h"
-#include "qwt3d_plot3d.h"
+#include "../../../include/qwt3d_surfaceplot.h"
+#include "../../../include/qwt3d_function.h"
 
 using namespace Qwt3D;
 
@@ -12,7 +12,7 @@ class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(Plot3D* pw)
+	Rosenbrock(SurfacePlot* pw)
 	:Function(pw)
 	{
 	}
@@ -27,7 +27,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(Plot3D* pw)
+	Hat(SurfacePlot* pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     
@@ -43,8 +43,8 @@ class Saddle : public Function
 {
 public:
 
-	Saddle(Plot3D* pw)
-	:Function(pw)
+	Saddle()
+	:Function()
 	{
 	//	setMaxZ(0.8);     
 	}
@@ -59,8 +59,8 @@ class Mex : public Function
 {
 public:
 
-	Mex(Plot3D* pw)
-	:Function(pw)
+	Mex()
+	:Function()
 	{
 	//	setMaxZ(0.8);     
 	}

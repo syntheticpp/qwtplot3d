@@ -1,4 +1,4 @@
-#include "axis.h"
+#include "qwt3d_axis.h"
 
 using namespace Qwt3D;
 
@@ -234,7 +234,7 @@ Axis::drawNumber(Triple pos, int mtic)
 	{
 		double anumber = autostart_ + t * (autostop_-autostart_);
 		
-		if (isPracticallyZero(anumber)) // prevent rounding errors near zero
+		if (isPracticallyZero(autostart_ , -t * (autostop_-autostart_))) // prevent rounding errors near zero
 			anumber = 0;
 		markerLabel_[mtic].setString(QString::number(anumber));		
 	}
