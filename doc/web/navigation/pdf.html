@@ -1,11 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <meta http-equiv="content-type"
- content="text/html; charset=ISO-8859-1">
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
   <title>PDF</title>
-  <meta name="author" content="Michael Bieber">
-  <link rel="stylesheet" type="text/css" href="general.css">
+  <meta content="Michael Bieber" name="author">
+  <link href="general.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <h2 style="margin-left: 40px;"><br>
@@ -15,15 +15,15 @@
 </h2>
 <div style="margin-left: 40px;">Beginning with version 0.2.0 qwtplot3d
 supports PostScript, Encapsulated PostScript and PDF output by
-using&nbsp; <a href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>.&nbsp;
+using&nbsp; <a target="_blank" href="http://www.geuz.org/gl2ps/">gl2ps</a>.&nbsp;
 Pixmap
 output exists in generic form, seamless provided by Qt. The
 following comparison table shows (in some way arbitrary and
 oversimplified) the pros and cons for various approachs:<br>
 <br>
 <br>
-<table cellpadding="1" cellspacing="1" border="1"
- style="text-align: left; height: 214px; width: 759px;">
+<table style="text-align: left; height: 214px; width: 759px;" border="1"
+ cellspacing="1" cellpadding="1">
   <tbody>
     <tr>
       <td style="vertical-align: top; width: 20%;"><br>
@@ -112,7 +112,7 @@ Speed<br>
  style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">++(+)<br>
       </td>
       <td
- style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+++)<br>
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+)<br>
       </td>
     </tr>
     <tr>
@@ -133,7 +133,7 @@ Speed<br>
  style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">++(+)<br>
       </td>
       <td
- style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+++)
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+)
       </td>
     </tr>
     <tr>
@@ -174,9 +174,9 @@ implemented<br>
 <br>
 <h4>Example:</h4>
 <br>
-<div style="text-align: center;"><img src="../../images/pdf.png"
- title="" alt="PDF example"
- style="border: 1px solid ; width: 531px; height: 464px;"><br>
+<div style="text-align: center;"><img
+ style="border: 1px solid ; width: 531px; height: 464px;"
+ alt="PDF example" title="" src="../../images/pdf.png"><br>
 <a href="../../images/pdf.pdf"><br>
 ... link to PDF (387 kB)</a><br>
 <br>
@@ -184,8 +184,8 @@ implemented<br>
 <h4>Remarks:<br>
 </h4>
 <br>
-<table cellpadding="2" cellspacing="2" border="0"
- style="text-align: left; width: 782px; height: 172px;">
+<table style="text-align: left; width: 782px; height: 172px;" border="0"
+ cellspacing="2" cellpadding="2">
   <tbody>
     <tr>
       <td style="vertical-align: top; width: 20%; font-style: italic;">Vector
@@ -240,9 +240,9 @@ reason for the plus sign to appear in parentheses)<br>
     </tr>
     <tr>
       <td style="vertical-align: top; width: 20%; font-style: italic;">Transparency</td>
-      <td style="vertical-align: top;">PDF has a sophisticated
-transparency concept embracing OpenGL's possibilities as a subset.
-Still a todo.<br>
+      <td style="vertical-align: top;">PDF has a transparency concept
+with most important cases yet implemented in gl2ps. The utilizing by
+the widget is still a todo.<br>
       </td>
     </tr>
   </tbody>

@@ -13,8 +13,7 @@ Function::Function(SurfacePlot* pw)
 	init(pw);
 }
 
-void 
-Function::init(SurfacePlot* plotWidget)
+void Function::init(SurfacePlot* plotWidget)
 {
 	plotwidget_ = plotWidget;
 	setMesh(0,0);
@@ -27,23 +26,20 @@ Function::~Function()
 { 
 }
 
-void
-Function::assign(SurfacePlot* plotWidget)
+void Function::assign(SurfacePlot* plotWidget)
 {
 	Q_ASSERT(plotWidget);
 	if (plotWidget && (plotWidget != plotwidget_))
 		plotwidget_ = plotWidget;
 }
 
-void
-Function::setMesh(unsigned int columns,unsigned int rows)
+void Function::setMesh(unsigned int columns,unsigned int rows)
 {
 	xmesh_ = columns;
 	ymesh_ = rows;
 }
 
-void
-Function::	setDomain(double minx, double maxx, double miny, double maxy)
+void Function::	setDomain(double minx, double maxx, double miny, double maxy)
 {
 	minx_ = minx;
 	maxx_ = maxx;
@@ -51,14 +47,12 @@ Function::	setDomain(double minx, double maxx, double miny, double maxy)
 	maxy_ = maxy;
 }
 
-void
-Function::	setMinZ(double val)
+void Function::	setMinZ(double val)
 {
 	minz_ = val;
 }
 
-void
-Function::	setMaxZ(double val)
+void Function::	setMaxZ(double val)
 {
 	maxz_ = val;
 }
@@ -66,8 +60,7 @@ Function::	setMaxZ(double val)
 /**
 For plotWidget != 0 the function permanently assigns her argument (In fact, assign(plotWidget) is called)
 */
-bool 
-Function::create(SurfacePlot* plotWidget)
+bool Function::create(SurfacePlot* plotWidget)
 {
 	if (plotWidget)
 		assign(plotWidget);

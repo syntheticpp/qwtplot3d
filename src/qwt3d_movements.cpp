@@ -16,8 +16,7 @@ using namespace Qwt3D;
 	\param yVal angle in \e degree to rotate around the Y axis
 	\param zVal angle in \e degree to rotate around the Z axis
 */
-void 
-Plot3D::setRotation( double xVal, double yVal, double zVal )
+void Plot3D::setRotation( double xVal, double yVal, double zVal )
 {
   if (xRot_ == xVal && yRot_ == yVal && zRot_ == zVal)
 		return;
@@ -37,8 +36,7 @@ Plot3D::setRotation( double xVal, double yVal, double zVal )
 	\param zVal shift along (world) Z axis
 	\see setViewportShift()
 */
-void 
-Plot3D::setShift( double xVal, double yVal, double zVal )
+void Plot3D::setShift( double xVal, double yVal, double zVal )
 {
   if (xShift_ == xVal && yShift_ == yVal && zShift_ == zVal)
 		return;
@@ -59,8 +57,7 @@ Plot3D::setShift( double xVal, double yVal, double zVal )
 	\param yVal shift along (view) Y axis
 	\see setShift()
 */
-void 
-Plot3D::setViewportShift( double xVal, double yVal )
+void Plot3D::setViewportShift( double xVal, double yVal )
 {
   if (xVPShift_ == xVal && yVPShift_ == yVal)
 		return;
@@ -93,8 +90,7 @@ Plot3D::setViewportShift( double xVal, double yVal )
 
 	A respective value of 1 represents no scaling;
 */
-void 
-Plot3D::setScale( double xVal, double yVal, double zVal )
+void Plot3D::setScale( double xVal, double yVal, double zVal )
 {
   if (xScale_ == xVal && yScale_ == yVal && zScale_ == zVal)
 		return;
@@ -111,8 +107,7 @@ Plot3D::setScale( double xVal, double yVal, double zVal )
   Set the (zoom in addition to scale).
 	\param val zoom value (value == 1 indicates no zooming)
 */
-void 
-Plot3D::setZoom( double val )
+void Plot3D::setZoom( double val )
 {
   if (zoom_ == val)
 		return;

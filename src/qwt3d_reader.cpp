@@ -118,7 +118,7 @@ namespace
         return false;	
 		return true;
 	}
-  
+
 	//! find out what the type is
 	bool check_type(FILE* fp, const char* val)
 	{
@@ -141,7 +141,7 @@ namespace
 		}
 		return data;
 	}
-	
+
 	void deleteData(double**data, int columns)
 	{
 		for ( int i = 0; i < columns; i++) 
@@ -190,8 +190,7 @@ bool NativeReader::collectInfo(FILE*& file, unsigned& xmesh, unsigned& ymesh,
 }
 
 
-bool 
-NativeReader::read(double minz, double maxz)
+bool NativeReader::read(double minz, double maxz)
 {
 	
 	FILE* file;

@@ -18,8 +18,7 @@ Axis::Axis(Triple beg, Triple end)
 	setPosition(beg,end);
 }
 
-void 
-Axis::init()
+void Axis::init()
 {
 	detachAll();
 
@@ -52,15 +51,13 @@ Axis::init()
 	labelgap_ = 0;
 }
 
-void 
-Axis::setPosition(const Triple& beg, const Triple& end)
+void Axis::setPosition(const Triple& beg, const Triple& end)
 {
 	beg_ = beg;
 	end_ = end;
 }
 
-void 
-Axis::setMajors(int val)
+void Axis::setMajors(int val)
 {
 	if (val == majorintervals_)
 		return;
@@ -71,8 +68,7 @@ Axis::setMajors(int val)
 	markerLabel_ = std::vector<Label>(majorintervals_+1);
 }
 
-void 
-Axis::setMinors(int val)
+void Axis::setMinors(int val)
 {
 	if (val == minorintervals_)
 		return;
@@ -80,22 +76,19 @@ Axis::setMinors(int val)
 	minorintervals_ = (val<=0) ? 1 : val; // always >= 1
 }
 
-void 
-Axis::setTicLength(double majorl, double minorl)
+void Axis::setTicLength(double majorl, double minorl)
 {
 	lmaj_ = majorl;
 	lmin_ = minorl;
 
 }
 
-void 
-Axis::setTicOrientation(double tx, double ty, double tz)
+void Axis::setTicOrientation(double tx, double ty, double tz)
 {
 	setTicOrientation(Triple(tx,ty,tz));
 }
 
-void 
-Axis::setTicOrientation(const Triple& val)
+void Axis::setTicOrientation(const Triple& val)
 {
 	orientation_ = val;
 	orientation_.normalize();
@@ -106,16 +99,14 @@ Axis::setTicOrientation(const Triple& val)
 \param majfac relative thickness for axis major tics (majfac*val)
 \param minfac relative thickness for axis minor tics (minfac*val)
 */
-void
-Axis::setLineWidth(double val, double majfac, double minfac)
+void Axis::setLineWidth(double val, double majfac, double minfac)
 {
 	lineWidth_ = val;
 	majLineWidth_ = majfac * lineWidth_;
 	minLineWidth_ = minfac * lineWidth_;
 }
 
-void 
-Axis::draw()
+void Axis::draw()
 {
 	Drawable::draw();
 
@@ -136,8 +127,7 @@ Axis::draw()
 /**
 Always use AFTER drawNumbers() ! (Needs length of number string)
 */
-void 
-Axis::drawLabel()
+void Axis::drawLabel()
 {
 	if (!drawLabel_)
 		return;
@@ -179,8 +169,7 @@ Axis::drawLabel()
 	label_.draw();
 }
 
-void 
-Axis::drawBase()
+void Axis::drawBase()
 {
 	setDeviceLineWidth( lineWidth_ );
 	glBegin( GL_LINES );
@@ -189,8 +178,7 @@ Axis::drawBase()
 	glEnd();
 }	
 
-void 
-Axis::drawTics()
+void Axis::drawTics()
 {
 	if (!drawTics_)
 		return;
@@ -277,8 +265,7 @@ Axis::drawTics()
 	}	
 }
 
-void 
-Axis::drawNumber(Triple pos, int mtic)
+void Axis::drawNumber(Triple pos, int mtic)
 {
 	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
 		return;
@@ -304,8 +291,7 @@ Axis::drawNumber(Triple pos, int mtic)
 	markerLabel_[mtic].draw();
 }
 
-Triple 
-Axis::drawTic(Triple nadir, double length)
+Triple Axis::drawTic(Triple nadir, double length)
 {
 	double ilength = (symtics_) ? -length : 0.0;
 
@@ -320,56 +306,47 @@ Axis::drawTic(Triple nadir, double length)
 	return nadir;
 }
 
-void 
-Axis::setNumberFont(QString const& family, int pointSize, int weight, bool italic)
+void Axis::setNumberFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	numberfont_ = QFont(family, pointSize, weight, italic );
 }
 
-void 
-Axis::setNumberFont(QFont const& font)
+void Axis::setNumberFont(QFont const& font)
 {
 	numberfont_ = font;
 }
 
-void 
-Axis::setNumberColor(RGBA col)
+void Axis::setNumberColor(RGBA col)
 {
 	numbercolor_ = col;
 }
 
-void 
-Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
+void Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	label_.setFont(family, pointSize, weight, italic);
 }
 
-void 
-Axis::setLabelFont(QFont const& font)
+void Axis::setLabelFont(QFont const& font)
 {
 	setLabelFont(font.family(), font.pointSize(), font.weight(), font.italic());
 }
 
-void
-Axis::setLabelString(QString const& name)
+void Axis::setLabelString(QString const& name)
 {
 	label_.setString(name);
 }
 
-void 
-Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
+void Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 {
 	label_.setPosition(pos, an);
 }
 
-void 
-Axis::setLabelColor(RGBA col)
+void Axis::setLabelColor(RGBA col)
 {
 	label_.setColor(col);
 }
 
-Triple 
-Axis::biggestNumberString()
+Triple Axis::biggestNumberString()
 {
 	Triple ret;
 	unsigned size = markerLabel_.size();

@@ -4,23 +4,34 @@
 #endif
 
 #include "qwt3d_surfaceplot.h"
-#include "qwt3d_vectorfield.h"
+#include "qwt3d_enrichment_std.h"
 #include "qwt3d_gl2ps.h"
 
 using namespace std;
 using namespace Qwt3D;
 
-void 
-SurfacePlot::updateCellData()
+void SurfacePlot::updateCellData()
 {		
+  if (plotStyle() == Qwt3D::POINTS)
+  {
+    updateCellPoints();
+    return;
+  }
+  else if (plotStyle() == Qwt3D::USER)
+  {
+    if (userplotstyle)
+      updateCellEnrichment(*userplotstyle);
+    return;
+  }
+  updateCellEnrichments();
 	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
+	setDevicePolygonOffset(polygonOffset(),1.0);
 	GLStateBewarer sb2(GL_LINE_SMOOTH, smoothdatamesh_);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	int idx = 0;
 	if (plotStyle() != WIREFRAME)
 	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
-		setDevicePolygonOffset(polygonOffset(),1.0);
 
 		bool hl = (plotStyle() == HIDDENLINE);
 		if (hl)
@@ -64,20 +75,18 @@ SurfacePlot::updateCellData()
 
 // ci = cell index
 // cv = vertex index in cell ci
-void
-SurfacePlot::setColorFromCellVertex(int node, bool skip)
+void SurfacePlot::setColorFromCellVertex(int node, bool skip)
 {
 	if (skip)
 		return;
 
-	RGBA col = (*dataColor)(
+	RGBA col = (*datacolor)(
 		actualCellData_->nodes[node].x, actualCellData_->nodes[node].y, actualCellData_->nodes[node].z);
 		
 	glColor4d(col.r, col.g, col.b, col.a);
 }
 
-void 
-SurfacePlot::CellData2Floor()
+void SurfacePlot::CellData2Floor()
 {	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
@@ -98,8 +107,7 @@ SurfacePlot::CellData2Floor()
 	}
 }
 
-void 
-SurfacePlot::CellIsolines2Floor()
+void SurfacePlot::CellIsolines2Floor()
 {
 	if (isolines() <= 0 || actualCellData_->empty())
 		return;
@@ -152,7 +160,7 @@ SurfacePlot::CellIsolines2Floor()
 
 			if (!intersection.empty())
 			{
-				col = (*dataColor)(nodes[0].x,nodes[0].y,nodes[0].z);
+				col = (*datacolor)(nodes[0].x,nodes[0].y,nodes[0].z);
   			glColor4d(col.r, col.g, col.b, col.a);
 				if (intersection.size()>2)
 				{
@@ -184,35 +192,63 @@ SurfacePlot::CellIsolines2Floor()
 	}
 }
 
-void 
-SurfacePlot::updateCellNormals()
+void SurfacePlot::updateCellNormals()
 {
 	if (!normals() || actualCellData_->empty())
 		return;
 
 	if (actualCellData_->nodes.size() != actualCellData_->normals.size())
 		return;
+  Arrow arrow;
+  arrow.setQuality(normalQuality());
 
-	VectorField v(dataColor);
-	v.setQuality(normalQuality());
-	v.elements = FreeVectorField(actualCellData_->normals.size());
+	Triple basev, topv, norm;	
 	
-	Triple basev;
-	Triple topv;	
 	
 	double diag = (actualCellData_->hull().maxVertex-actualCellData_->hull().minVertex).length() * normalLength();
 
-	for (unsigned i = 0; i != v.elements.size(); ++i) 
+  RGBA col;
+  arrow.assign(*this);
+  arrow.drawBegin();
+	for (unsigned i = 0; i != actualCellData_->normals.size(); ++i) 
 	{
 		basev = actualCellData_->nodes[i];
 		topv = basev + actualCellData_->normals[i];
 		
-		Triple norm = (topv-basev);
-		norm.normalize();
-		norm	*= diag;
+			norm = topv-basev;
+			norm.normalize();
+			norm	*= diag;
 
-		v.elements[i].base = basev;		
-		v.elements[i].top = basev + norm;	
+      arrow.setTop(basev+norm);
+      arrow.setColor((*datacolor)(basev.x,basev.y,basev.z));
+      arrow.draw(basev);
 	}
-	v.drawArrows();
+  arrow.drawEnd();
+}
+
+void SurfacePlot::updateCellPoints()
+{
+  Dot pt;
+  updateCellEnrichment(pt);
+}
+
+void SurfacePlot::updateCellEnrichment(Qwt3D::Enrichment& p)
+{
+  int cstep = resolution();  
+  int rstep = resolution();  
+  p.assign(*this);
+	p.drawBegin();
+	for (unsigned i = 0; i != actualCellData_->normals.size(); ++i) 
+	{
+	  p.draw(actualCellData_->nodes[i]);
+  }
+  p.drawEnd(); 
+}
+
+void SurfacePlot::updateCellEnrichments()
+{
+  for (ELIT it = elist.begin(); it!=elist.end(); ++it)
+  {
+    updateCellEnrichment(**it);
+  } 
 }

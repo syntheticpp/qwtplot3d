@@ -1,28 +1,25 @@
 # pro file for building the makefile for qwtplot3d
 #
-# Qt <  3.x: tmake qwt.pro -o Makefile
-# Qt >= 3.x: qmake qwt.pro 
-#
 
 
 TARGET            = qwtplot3d
 TEMPLATE          = lib
-#VERSION           = 0.1.4
-CONFIG           += qt warn_on thread gl2ps zlib
-MOC_DIR           = moc
-OBJECTS_DIR       = obj
+CONFIG           += qt warn_on opengl thread zlib
+MOC_DIR           = tmp
+OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
-
-unix:DESTDIR      = lib
-win32:DESTDIR      = ../../lib
+DESTDIR      			= lib
+#DESTDIR = ../../lib
 
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll 
 win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
-win32:LIBS     += opengl32.lib glu32.lib
- 
-win32:QMAKE_CXXFLAGS     += -GX 
+win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL 
+
+# Comment this out, if you have zlib on your windows system
+# win32:CONFIG -= zlib
+
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
 
 # Input
@@ -43,7 +40,8 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_reader.cpp \
            src/qwt3d_surfaceplot.cpp \
            src/qwt3d_types.cpp \
-           src/qwt3d_vectorfield.cpp \
+           src/qwt3d_enrichment.cpp \
+           src/qwt3d_enrichment_std.cpp \
            src/qwt3d_autoscaler.cpp 
 
 HEADERS += include/qwt3d_color.h \
@@ -51,9 +49,8 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_global.h \
            include/qwt3d_io.h \
            include/qwt3d_surfaceplot.h \
-           include/qwt3d_vectorfield.h \
            include/qwt3d_types.h \
-					 include/qwt3d_axis.h \
+	         include/qwt3d_axis.h \
            include/qwt3d_coordsys.h \
            include/qwt3d_drawable.h \
            include/qwt3d_femreader.h \
@@ -63,34 +60,21 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
            include/qwt3d_reader.h \
+           include/qwt3d_enrichment.h \
+           include/qwt3d_enrichment_std.h \
            include/qwt3d_autoscaler.h
 
 
-#gl2ps support
-HEADERS+=include/qwt3d_gl2ps.h
-SOURCES+=src/qwt3d_gl2ps.cpp
-gl2ps {
-  DEFINES += GL2PS_HAVE_ZLIB
-  INCLUDEPATH   += 3rdparty/gl2ps
-	SOURCES	      += 3rdparty/gl2ps/gl2ps.c
-  HEADERS       += 3rdparty/gl2ps/gl2ps.h
-}
-#zlib support
-zlib {
-	INCLUDEPATH       += 3rdparty/zlib
-	SOURCES	+= 3rdparty/zlib/adler32.c \
-		  3rdparty/zlib/compress.c \
-		  3rdparty/zlib/crc32.c \
-		  3rdparty/zlib/deflate.c \
-		  3rdparty/zlib/gzio.c \
-		  3rdparty/zlib/infblock.c \
-		  3rdparty/zlib/infcodes.c \
-		  3rdparty/zlib/inffast.c \
-		  3rdparty/zlib/inflate.c \
-		  3rdparty/zlib/inftrees.c \
-		  3rdparty/zlib/infutil.c \
-		  3rdparty/zlib/trees.c \
-		  3rdparty/zlib/uncompr.c \
-		  3rdparty/zlib/zutil.c
-}
+# gl2ps support
+HEADERS+=include/qwt3d_gl2ps.h \
+         3rdparty/gl2ps/gl2ps.h
+         
+SOURCES+=src/qwt3d_gl2ps.cpp \
+         3rdparty/gl2ps/gl2ps.c
 
+# zlib support for gl2ps
+zlib {
+  DEFINES += GL2PS_HAVE_ZLIB
+  win32:LIBS += zlib.lib
+	unix:LIBS  += -lz
+}

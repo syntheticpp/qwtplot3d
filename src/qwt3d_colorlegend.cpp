@@ -27,45 +27,38 @@ ColorLegend::ColorLegend()
 	setRelPosition(Tuple(0.94, 1-0.36),Tuple(0.97, 1-0.04));
 }
 
-void 
-ColorLegend::setTitleString(QString const& s) 
+void ColorLegend::setTitleString(QString const& s) 
 { 
 	caption_.setString(s); 
 }
 
-void 
-ColorLegend::setTitleFont(QString const& family, int pointSize, int weight, bool italic) 
+void ColorLegend::setTitleFont(QString const& family, int pointSize, int weight, bool italic) 
 { 
 	caption_.setFont(family, pointSize, weight, italic);
 }
 
-void 
-ColorLegend::setLimits(double start, double stop)
+void ColorLegend::setLimits(double start, double stop)
 {
 	axis_.setLimits(start, stop);
 }
 
-void 
-ColorLegend::setMajors(int majors)
+void ColorLegend::setMajors(int majors)
 {
 	axis_.setMajors(majors);
 }
 
-void 
-ColorLegend::setMinors(int minors)
+void ColorLegend::setMinors(int minors)
 {
 	axis_.setMinors(minors);
 }
 
-void 
-ColorLegend::setAutoScale(bool val)
+void ColorLegend::setAutoScale(bool val)
 {
 	axis_.setAutoScale(val);
 }
 
 
-void
-ColorLegend::setOrientation(ORIENTATION ori, SCALEPOSITION pos)
+void ColorLegend::setOrientation(ORIENTATION ori, SCALEPOSITION pos)
 {
 	orientation_ = ori;
 	axisposition_ = pos;
@@ -82,15 +75,13 @@ ColorLegend::setOrientation(ORIENTATION ori, SCALEPOSITION pos)
 	}
 }
 
-void 
-ColorLegend::setRelPosition(Tuple relMin, Tuple relMax)
+void ColorLegend::setRelPosition(Tuple relMin, Tuple relMax)
 {
 	relMin_ = relMin;
 	relMax_ = relMax;
 }
 
-void 
-ColorLegend::setGeometryInternal()
+void ColorLegend::setGeometryInternal()
 {
 	double ot = .99;
 
@@ -150,8 +141,7 @@ ColorLegend::setGeometryInternal()
 	caption_.setPosition(c, BottomCenter);	
 }
 
-void 
-ColorLegend::draw()
+void ColorLegend::draw()
 {
 	if (colors.empty())
 		return;

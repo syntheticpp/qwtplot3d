@@ -39,6 +39,7 @@ public:
 
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
 	void setTicLength(double major, double minor);
+
 	void setAutoScale(bool val = true);
 
 	Qwt3D::Triple first() const { return first_;}

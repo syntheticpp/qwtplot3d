@@ -11,8 +11,7 @@ using namespace Qwt3D;
 /*!
   Update OpenGL data representation
 */
-void 
-Plot3D::updateData()
+void Plot3D::updateData()
 {
 	GLStateBewarer dt(GL_DEPTH_TEST, true);
 	GLStateBewarer ls(GL_LINE_SMOOTH, true);

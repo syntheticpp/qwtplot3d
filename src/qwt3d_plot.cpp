@@ -5,6 +5,7 @@
 
 #include "qwt3d_gl2ps.h"
 #include "qwt3d_plot.h"
+#include "qwt3d_enrichment.h"
 
 using namespace Qwt3D;
 	
@@ -21,6 +22,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	zoom_ = 1;
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
+  userplotstyle = 0;
 	shading_ = GOURAUD;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
@@ -41,7 +43,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 		DisplayLists[k] = 0;
 	}
 
-	dataColor = new StandardColor(this, 100);
+	datacolor = new StandardColor(this, 100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -71,15 +73,19 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 Plot3D::~Plot3D()
 {
 	SaveGlDeleteLists( DisplayLists[0], DisplayLists.size() );
-	dataColor->destroy();
+	datacolor->destroy();
+  delete userplotstyle;
+  for (ELIT it = elist.begin(); it!=elist.end(); ++it)
+    delete (*it);
+
+  elist.clear();
 }
 
 
 /*!
   Set up the OpenGL rendering state
 */
-void 
-Plot3D::initializeGL()
+void Plot3D::initializeGL()
 {
   glEnable( GL_BLEND );
   glEnable(GL_DEPTH_TEST);
@@ -115,8 +121,7 @@ Plot3D::initializeGL()
 /*!
   Paint the widgets content.
 */
-void 
-Plot3D::paintGL()
+void Plot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,15 +195,13 @@ Plot3D::paintGL()
 /*!
   Set up the OpenGL view port
 */
-void 
-Plot3D::resizeGL( int w, int h )
+void Plot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
 	paintGL();
 }
 
-void 
-Plot3D::updateCoordinateSystem()
+void Plot3D::updateCoordinateSystem()
 {
 	SaveGlDeleteLists(DisplayLists[CoordObject], 1);
 			
@@ -213,8 +216,7 @@ Plot3D::updateCoordinateSystem()
 /*!
 	Create a coordinate system with generating corners beg and end 
 */
-void
-Plot3D::createCoordinateSystem( Triple beg, Triple end )
+void Plot3D::createCoordinateSystem( Triple beg, Triple end )
 {
 	if (beg != coord.first() || end != coord.second())
 		coord.init(beg, end);
@@ -223,8 +225,7 @@ Plot3D::createCoordinateSystem( Triple beg, Triple end )
 /*!
 	Create a coordinate system from data
 */
-void
-Plot3D::createCoordinateSystem()
+void Plot3D::createCoordinateSystem()
 {
 	calculateHull();
 	createCoordinateSystem(hull().minVertex, hull().maxVertex);
@@ -233,14 +234,12 @@ Plot3D::createCoordinateSystem()
 /*!
   Show a color legend
 */
-void 
-Plot3D::updateColorLegend()
+void Plot3D::updateColorLegend()
 {
-	dataColor->createVector(legend_.colors);
+	datacolor->createVector(legend_.colors);
 }
 
-void 
-Plot3D::showColorLegend( bool show )
+void Plot3D::showColorLegend( bool show )
 {
  	displaylegend_ = show;
 	updateGL();
@@ -253,8 +252,7 @@ Plot3D::showColorLegend( bool show )
 	\b Beware: GL2PS_BSP_SORT turns out to behave very slowly and memory consuming, especially in cases where
 	many polygons appear. It is still more exact than GL2PS_SIMPLE_SORT.
 */
-bool 
-Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
+bool Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 {
 	makeCurrent();
 	Label::useDeviceFonts(true);
@@ -293,7 +291,6 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 
 	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
 										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_COMPRESS;
-//										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_TRANSPARENCY | GL2PS_COMPRESS;
 
 	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
 		options |= GL2PS_LANDSCAPE;
@@ -310,7 +307,7 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 		+ QString::number(QWT3D_PATCH_VERSION); 
 	
 	QString producer = QString("QwtPlot3D ") + version + 
-		" (beta) , (C) 2002-2003 Micha Bieber <krischnamurti@users.sourceforge.net>";
+		" (beta) , (C) 2002-2004 Micha Bieber <krischnamurti@users.sourceforge.net>";
 
 	while( state == GL2PS_OVERFLOW )
 	{ 
@@ -332,21 +329,18 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 /*!
 	Saves the framebuffer to the file fileName using one of the image file formats supported by Qt
 */
-bool 
-Plot3D::savePixmap(QString fileName, QString format)
+bool Plot3D::savePixmap(QString fileName, QString format)
 {
 	QImage im = grabFrameBuffer(true);
 	return im.save(fileName,format);
 }
 
-void 
-Plot3D::setMeshColor(RGBA rgba)
+void Plot3D::setMeshColor(RGBA rgba)
 {
 	meshcolor_ = rgba;
 }
 
-void 
-Plot3D::setBackgroundColor(RGBA rgba)
+void Plot3D::setBackgroundColor(RGBA rgba)
 {
 	bgcolor_ = rgba;
 }
@@ -355,21 +349,19 @@ Plot3D::setBackgroundColor(RGBA rgba)
 /*!
 	assign a new coloring object for the data.
 */
-void 
-Plot3D::setDataColor( Color* col )
+void Plot3D::setDataColor( Color* col )
 {
-	Q_ASSERT(dataColor);
+	Q_ASSERT(datacolor);
 
-	dataColor->destroy();
-	dataColor = col;
+	datacolor->destroy();
+	datacolor = col;
 	updateColorLegend();
 }
 
 /*!
   Set up ortogonal or perspective mode and updates widget
 */
-void
-Plot3D::setOrtho( bool val )
+void Plot3D::setOrtho( bool val )
 {
 	if (val == ortho_)
 		return;
@@ -382,8 +374,7 @@ Plot3D::setOrtho( bool val )
 /*!
   Set style of coordinate system
 */
-void 
-Plot3D::setCoordinateStyle(COORDSTYLE st)
+void Plot3D::setCoordinateStyle(COORDSTYLE st)
 {
 	coord.setStyle(st);
 //	updateCoordinateSystem();
@@ -391,21 +382,36 @@ Plot3D::setCoordinateStyle(COORDSTYLE st)
 }
 
 /*!
-  Set plotting style
+  Set plotstyle for the standard plotting types. An argument of value Qwt3D::USER
+  is ignored.
 */
-void
-Plot3D::setPlotStyle( PLOTSTYLE val )
+void Plot3D::setPlotStyle( PLOTSTYLE val )
 {
-	if (val == plotstyle_)
-		return;
-	plotstyle_ = val;
+  if (val == Qwt3D::USER)
+    return;
+  delete userplotstyle;
+  userplotstyle = 0;
+  plotstyle_ = val;
+}
+
+/*!
+  Set plotstyle to Qwt3D::USER and an associated enrichment object.
+*/
+Qwt3D::Enrichment* Plot3D::setPlotStyle( Qwt3D::Enrichment const& obj )
+{
+  if (&obj == userplotstyle)
+    return userplotstyle;
+  
+  delete userplotstyle;
+  userplotstyle = obj.clone();
+  plotstyle_ = Qwt3D::USER;
+  return userplotstyle;
 }
 
 /*!
   Set shading style
 */
-void
-Plot3D::setShading( SHADINGSTYLE val )
+void Plot3D::setShading( SHADINGSTYLE val )
 {
 	if (val == shading_)
 		return;
@@ -429,8 +435,7 @@ Plot3D::setShading( SHADINGSTYLE val )
 /*!
   Set style of floor data
 */
-void
-Plot3D::setFloorStyle( FLOORSTYLE val )
+void Plot3D::setFloorStyle( FLOORSTYLE val )
 {
 	if (val == floorstyle_)
 		return;
@@ -441,8 +446,7 @@ Plot3D::setFloorStyle( FLOORSTYLE val )
 /*!
   Set number of isolines. The lines are equidistant between minimal and maximal Z value
 */
-void 
-Plot3D::setIsolines(int steps)
+void Plot3D::setIsolines(int steps)
 {
 	if (steps < 0)
 		return;
@@ -454,14 +458,12 @@ Plot3D::setIsolines(int steps)
   Set Polygon offset. The function affects the OpenGL rendering process. 
 	Try different values for surfaces with polygons only and with mesh and polygons
 */
-void
-Plot3D::setPolygonOffset( double val )
+void Plot3D::setPolygonOffset( double val )
 {
 	polygonOffset_ = val;
 }
 
-void
-Plot3D::setMeshLineWidth( double val )
+void Plot3D::setMeshLineWidth( double val )
 {
 	Q_ASSERT(val>=0);
 
@@ -475,8 +477,7 @@ Plot3D::setMeshLineWidth( double val )
 /*!
 Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen
 */
-void 
-Plot3D::setTitlePosition(double rely, double relx, Qwt3D::ANCHOR anchor)
+void Plot3D::setTitlePosition(double rely, double relx, Qwt3D::ANCHOR anchor)
 {
 	titlerel_.y = (rely<0 || rely>1) ? 0.5 : rely;
 	titlerel_.x = (relx<0 || relx>1) ? 0.5 : relx;
@@ -487,9 +488,29 @@ Plot3D::setTitlePosition(double rely, double relx, Qwt3D::ANCHOR anchor)
 /*!
 Set caption font
 */
-void 
-Plot3D::setTitleFont(const QString& family, int pointSize, int weight, bool italic)
+void Plot3D::setTitleFont(const QString& family, int pointSize, int weight, bool italic)
 { 
 	title_.setFont(family, pointSize, weight, italic);
 }
+
+Enrichment* Plot3D::addEnrichment(Enrichment const& e)
+{
+  if ( elist.end() == std::find( elist.begin(), elist.end(), &e ) )
+    elist.push_back(e.clone());
+  return elist.back();
+}
+
+bool Plot3D::degrade(Enrichment* e)
+{
+	ELIT it = std::find(elist.begin(), elist.end(), e);
+	
+	if ( it != elist.end() )
+	{
+		delete (*it);
+    elist.erase(it);
+    return true;
+	}
+  return false;
+}
+
 

@@ -33,6 +33,7 @@
  *   Guy Barrand <barrand@lal.in2p3.fr>
  *
  * For the latest info about gl2ps, see http://www.geuz.org/gl2ps/
+ * Please report all bugs and problems to <gl2ps@geuz.org>.
  */
 
 /*
@@ -43,14 +44,18 @@
   gcc -O3 gl2psTest.c gl2ps.c -framework OpenGL -framework GLUT -framework Cocoa
 */
 
+#ifdef _MSC_VER /* MSVC Compiler */
+# ifdef WIN32
+#   include <windows.h>  /* prevents an error msg in glut.h for VC .NET */
+# endif
+# pragma comment(linker, "/entry:\"mainCRTStartup\"")
+#endif
+
+
 #ifdef __APPLE__
 #  include <GLUT/glut.h>
 #else
 #  include <GL/glut.h>
-#endif
-
-#ifdef _MSC_VER /* MSVC Compiler */
-#pragma comment(linker, "/entry:\"mainCRTStartup\"")
 #endif
 
 #include <string.h>
@@ -59,26 +64,26 @@
 static float rotation = -60.;
 static GLsizei window_w = 0; 
 static GLsizei window_h = 0;
-static GLboolean display_multi = 1;
-static GLboolean teapot = 0;
+static GLboolean display_multi = GL_TRUE;
+static GLboolean teapot = GL_FALSE;
 static char *pixmap[] = {
   "****************************************************************",
   "*..............................................................*",
   "*..................++++++++++++++++++++++++++..................*",
   "*.............+++++++++++++++++++++++++++++++++++++............*",
-  "*.......++++++++++++@@@@@@@@@@@@@@@@@@@@@@@@++++++++++++.......*",
-  "*.......++++++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@++++++.......*",
-  "*.......++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@++.......*",
-  "*.......++@@@@++++@@+@@@@@@@@++++@@@++++++@@@+++++@@@@++.......*",
-  "*.......++@@@+@@@@+@+@@@@@@@+@@@@+@@+@@@@@+@+@@@@@+@@@++.......*",
-  "*.......++@@+@@@@@@@+@@@@@@@@@@@+@@@+@@@@@+@+@@@@@@@@@++.......*",
-  "*.......++@@+@@@+++@+@@@@@@@@@@+@@@@++++++@@@+++++@@@@++.......*",
-  "*.......++@@+@@@@@+@+@@@@@@@@@+@@@@@+@@@@@@@@@@@@@+@@@++.......*",
-  "*.......++@@@+@@@@+@+@@@@@@@@+@@@@@@+@@@@@@@+@@@@@+@@@++.......*",
-  "*.......++@@@@+++++@++++++@@++++++@@+@@@@@@@@+++++@@@@++.......*",
-  "*.......++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@++.......*",
-  "*.......++@@@@@@@@@++++++++++++++++++++++++++@@@@@@@@@++.......*",
-  "*.......++@@@+++++++@@@@@@@@@@@+++++++++++++++++++@@@@++.......*",
+  "*.......++++++++++++aaaaaaaaaaaaaaaaaaaaaaaa++++++++++++.......*",
+  "*.......++++++aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa++++++.......*",
+  "*.......++aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa++.......*",
+  "*.......++aaaa++++aa+aaaaaaaa++++aaa++++++aaa+++++aaaa++.......*",
+  "*.......++aaa+aaaa+a+aaaaaaa+aaaa+aa+aaaaa+a+aaaaa+aaa++.......*",
+  "*.......++aa+aaaaaaa+aaaaaaaaaaa+aaa+aaaaa+a+aaaaaaaaa++.......*",
+  "*.......++aa+aaa+++a+aaaaaaaaaa+aaaa++++++aaa+++++aaaa++.......*",
+  "*.......++aa+aaaaa+a+aaaaaaaaa+aaaaa+aaaaaaaaaaaaa+aaa++.......*",
+  "*.......++aaa+aaaa+a+aaaaaaaa+aaaaaa+aaaaaaa+aaaaa+aaa++.......*",
+  "*.......++aaaa+++++a++++++aa++++++aa+aaaaaaaa+++++aaaa++.......*",
+  "*.......++aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa++.......*",
+  "*.......++aaaaaaaaa++++++++++++++++++++++++++aaaaaaaaa++.......*",
+  "*.......++aaa+++++++@@@@@@@@@@@+++++++++++++++++++aaaa++.......*",
   "*.......++++++@@+@@@+@@@++@@@@@+++++++++++++++++++++++++.......*",
   "*.......++@@@@@+@@@+@@@+@@@@+@@+++++++++++++++++++++++++.......*",
   "*.......++@@@@+@@@+@@+++++++@@@+++++++++++++++++++++++++.......*",
@@ -135,17 +140,22 @@ void init(void){
   glShadeModel(GL_SMOOTH);
   glEnable(GL_LIGHT0);
   glEnable(GL_SCISSOR_TEST);
+  glDisable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_COLOR_MATERIAL);
 }
 
 void triangles(void){
   /* two intersecting triangles */
+  /* gl2psDisable(GL2PS_BLEND);
+     gl2psBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);*/
   glBegin(GL_TRIANGLES);
   
   glColor3f(1., 0., 0.);
   glVertex3f(-1., 1., 0.);
-  glColor3f(1., 1., 0.);
+  glColor4f(1., 1., 0., 0.1);
   glVertex3f(-1., 0., 0.);
-  glColor3f(1., 0., 1.);
+  glColor4f(1., 0., 1., 1);
   glVertex3f(1., 0., 0.2);
   
   glColor3f(0., 1., 0.);
@@ -229,7 +239,8 @@ void objects(void){
   glPushMatrix();
   glEnable(GL_LIGHTING);
   glRotatef(rotation, 2., 0., 1.);
-  if(teapot){
+  glColor4d(0.2, 0.2, 0.9, 0.2);
+  if(GL_TRUE == teapot){
     glutSolidTeapot(0.7);
   }
   else{
@@ -241,10 +252,15 @@ void objects(void){
 
 void printstring(char *string){
   int len, i;
-
+  char *fonts[] = 
+    { "Times-Roman", "Times-Bold", "Times-Italic", "Times-BoldItalic",
+      "Helvetica", "Helvetica-Bold", "Helvetica-Oblique", "Helvetica-BoldOblique",
+      "Courier", "Courier-Bold", "Courier-Oblique", "Courier-BoldOblique",
+      "Symbol", "ZapfDingbats" };
+  
   /* call gl2psText before the glut function since glutBitmapCharacter
      changes the raster position... */
-  gl2psText(string, "Helvetica", 12);
+  gl2psText(string, fonts[4], 12);
 
   len = (int)strlen(string);
   for (i = 0; i < len; i++)
@@ -273,23 +289,27 @@ void text(){
 }
 
 void cube(void) {
-  glLineWidth(4.0);
-  glColor3d (1.0,0.0,0.);   
-  glBegin(GL_POLYGON);
-  glVertex3d( 0.5,-0.5,0.5);
-  glVertex3d( 0.5, 0.5,0.5);
-  glVertex3d(-0.5, 0.5,0.5);
-  glVertex3d(-0.5,-0.5,0.5);
-  glEnd();
-
   glColor3d (0.0,1.0,0.);   
   glBegin(GL_POLYGON);
   glVertex3d( 0.5,-0.5,-0.5);
+  glColor4d (0.0,1.0,0.,0.2);   
   glVertex3d( 0.5, 0.5,-0.5);
   glVertex3d(-0.5, 0.5,-0.5);
+  glColor4d (0.0,1.0,0.,1);   
   glVertex3d(-0.5,-0.5,-0.5);
   glEnd();
 
+  glColor3d (1.0,0.0,0.);   
+  glBegin(GL_POLYGON);
+  glColor4d (1.0,0.0,0.,0.1);   
+  glVertex3d( 0.5,-0.5,0.5);
+  glColor4d (1.0,0.5,1.,0.9);   
+  glVertex3d( 0.5, 0.5,0.5);
+  glVertex3d(-0.5, 0.5,0.5);
+  glColor4d (1.0,0.5,1.,0.1);   
+  glVertex3d(-0.5,-0.5,0.5);
+  glEnd();
+  glLineWidth(4.0);
   glColor3d (1.0,1.0,0.);   
   glBegin(GL_LINES);
   glVertex3d( 0.5,-0.5, 0.5);
@@ -303,12 +323,14 @@ void cube(void) {
   glEnd();
 }
 
-void image(float x, float y){
+void image(float x, float y, GLboolean opaque){
   int w = 64, h = 66, row, col, pos = 0;
   float *pixels, r = 0., g = 0., b = 0.;
-
+	
   /* Fill a pixmap (each pixel contains three floats defining an RGB color) */
-  pixels = (float*)malloc(3*w*h*sizeof(float));
+  pixels = (GL_TRUE == opaque)
+		?(float*)malloc(3*w*h*sizeof(float))
+		:(float*)malloc(4*w*h*sizeof(float));
 
   for(row = h-1; row >= 0; row--){
     for(col = 0; col < w; col++){
@@ -317,19 +339,35 @@ void image(float x, float y){
       case '+' : r = 0.  ; g = 0.  ; b = 0.  ; break;
       case '@' : r = 255.; g = 209.; b = 0.  ; break;
       case '#' : r = 255.; g = 0.  ; b = 0.  ; break;
+      case 'a' : r = 255.; g = 209.  ; b = 0.  ; break;
       case '*' : r = 0.;   g = 0.  ; b = 20. ; break;
       }
       r /= 255.; g /= 255.; b /= 255.; 
       pixels[pos] = r; pos++;
       pixels[pos] = g; pos++;
       pixels[pos] = b; pos++;
+
+      if (opaque)
+      	continue;
+
+      switch(pixmap[row][col]){
+      case '.' : pixels[pos] = col / (float)w ; break;
+      case 'a' : pixels[pos] = 1 - col / ((float)w - 7)  ; break;
+      default  : pixels[pos] = 1.  ; break;
+      }			 
+      pos++;
     }
   }
 
   glRasterPos2f(x, y);
-  glDrawPixels((GLsizei)w, (GLsizei)h, GL_RGB, GL_FLOAT, pixels);
-  gl2psDrawPixels((GLsizei)w, (GLsizei)h, 0, 0, GL_RGB, GL_FLOAT, pixels);
-
+  if (opaque){
+		glDrawPixels((GLsizei)w, (GLsizei)h, GL_RGB, GL_FLOAT, pixels);
+		gl2psDrawPixels((GLsizei)w, (GLsizei)h, 0, 0, GL_RGB, GL_FLOAT, pixels);
+	}
+	else{
+		glDrawPixels((GLsizei)w, (GLsizei)h, GL_RGBA, GL_FLOAT, pixels);
+		gl2psDrawPixels((GLsizei)w, (GLsizei)h, 0, 0, GL_RGBA, GL_FLOAT, pixels);
+	}
   free(pixels);
 }
 
@@ -366,9 +404,9 @@ void draw_multi(void){
   glOrtho(-1.3,1.3, -1.3,1.3, -1.3,1.3);
   glMatrixMode(GL_MODELVIEW);
   
+  objects();
   triangles();
   extras();
-  objects();
   text();
 
   gl2psEndViewport();
@@ -392,10 +430,10 @@ void draw_multi(void){
 
   glPushMatrix();
   glRotatef(rotation, 1., 1., 1.);
+  image(-0.8, -0.3, GL_TRUE);
   cube();
-  image(-0.8, -0.8);
-  image(0.8, 0.2);
   extras();
+  image(-0.8, 0.4, GL_FALSE);
   glPopMatrix();
 
   gl2psEndViewport();
@@ -405,7 +443,7 @@ void draw_multi(void){
 }
 
 void display(void){
-  if(display_multi){
+  if(GL_TRUE == display_multi){
     draw_multi();
   }
   else{
@@ -472,6 +510,10 @@ void keyboard(unsigned char key, int x, int y){
   int opt;
   static int format = GL2PS_EPS;
   static char *ext = "eps";
+/*
+  static int format = GL2PS_PDF;
+  static char *ext = "pdf";
+*/
 
   switch(key){
   case 27:
@@ -479,7 +521,7 @@ void keyboard(unsigned char key, int x, int y){
     exit(0);
     break;
   case 't':
-    teapot = !teapot;
+    teapot = (teapot) ? GL_FALSE : GL_TRUE;
     display();
     break;
   case 'p':
@@ -495,8 +537,8 @@ void keyboard(unsigned char key, int x, int y){
 	   (format == GL2PS_EPS) ? "EPS" : "PDF");
     break;
   case 'v':
-    display_multi = !display_multi;
-    if(display_multi){
+    display_multi = (display_multi) ? GL_FALSE : GL_TRUE;
+    if(GL_TRUE == display_multi){
       glEnable(GL_SCISSOR_TEST);
     }
     else{
@@ -506,34 +548,32 @@ void keyboard(unsigned char key, int x, int y){
     display();
     break;
   case 's':
-    opt = GL2PS_DRAW_BACKGROUND;
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimple", ext);
-
-    opt = GL2PS_DRAW_BACKGROUND | GL2PS_COMPRESS;
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCompressed", ext);
-
-    opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled", ext);
-
-    opt = GL2PS_NO_PS3_SHADING | GL2PS_DRAW_BACKGROUND;
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading2", ext);
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8", ext);
-    writefile(format, GL2PS_SIMPLE_SORT, opt, 16, "outSimpleShading16", ext);
-
-    opt = GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
+//    opt = GL2PS_DRAW_BACKGROUND;
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimple", ext);
+//    opt = GL2PS_DRAW_BACKGROUND | GL2PS_COMPRESS;
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCompressed", ext);
+//    opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled", ext);
+//
+//    opt = GL2PS_NO_PS3_SHADING | GL2PS_DRAW_BACKGROUND;
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading2", ext);
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8", ext);
+//    writefile(format, GL2PS_SIMPLE_SORT, opt, 16,"outSimpleShading16", ext);
+//
+    opt = GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND | GL2PS_COMPRESS;
     writefile(format, GL2PS_BSP_SORT, opt, 0, "outBsp", ext);
-
-    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
-    writefile(format, GL2PS_BSP_SORT, opt, 0, "outBspCulled", ext);
-
-    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_NO_TEXT;
-    writefile(format, GL2PS_BSP_SORT, opt, 0, "outLatex", ext);
-
-    opt = GL2PS_NONE;
-    writefile(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex", "tex");
-
+//
+//    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
+//    writefile(format, GL2PS_BSP_SORT, opt, 0, "outBspCulled", ext);
+//
+//    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_NO_TEXT;
+//    writefile(format, GL2PS_BSP_SORT, opt, 0, "outLatex", ext);
+//
+//    opt = GL2PS_NONE;
+//    writefile(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex", "tex");
+//
     printf("GL2PS %d.%d.%d done with all images\n",
-	   GL2PS_MAJOR_VERSION, GL2PS_MINOR_VERSION, GL2PS_PATCH_VERSION);
+	  GL2PS_MAJOR_VERSION, GL2PS_MINOR_VERSION, GL2PS_PATCH_VERSION);
     break;
   }
 }

@@ -41,8 +41,7 @@ void AutoScaler::init(double start, double stop, int ivals)
   
   \param x Input value
 */
-double 
-AutoScaler::floor125( int& exponent, double x)
+double AutoScaler::floor125( int& exponent, double x)
 {
     if (x == 0.0) 
     {
@@ -82,8 +81,7 @@ AutoScaler::floor125( int& exponent, double x)
 c 'minimal' (anchor-start < m*10^n)
 \endverbatim
 */
-double 
-AutoScaler::anchorvalue(double start, double m, int n)
+double AutoScaler::anchorvalue(double start, double m, int n)
 {
 	double stepval = m * pow(10.0, n);
 	return  stepval * ceil(start / stepval);
@@ -104,8 +102,7 @@ AutoScaler::anchorvalue(double start, double m, int n)
 c 'minimal' (anchor-start < m*10^n)
 \endverbatim
 */
-int 
-AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double stop, double anchor, double m, int n)
+int AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double stop, double anchor, double m, int n)
 {
 	double val =  m * pow(10.0, n);
 	double delta = (stop - anchor) / val;
@@ -130,8 +127,7 @@ AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double st
 	If the given interval has zero length the function returns the current 
 	interval number and a and b remain unchanged.
 */
-int 
-AutoScaler::execute(double& a, double& b)
+int AutoScaler::execute(double& a, double& b)
 {
   double delta = stop_ - start_;
 

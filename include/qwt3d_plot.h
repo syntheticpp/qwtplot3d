@@ -3,10 +3,11 @@
 
 #include "qwt3d_global.h"
 #include "qwt3d_coordsys.h"
+#include "qwt3d_enrichment_std.h"
 
 namespace Qwt3D
 {
-
+  
 //! Base class for all plotting widgets
 /*!
 	Plot3D handles all the common features for plotting widgets - coordinate system, transformations, mouse handling,
@@ -25,8 +26,8 @@ public:
 	  void updateData();
 		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		void updateCoordinateSystem();
-		CoordinateSystem* coordinates() { return &coord; } //!< \return Pointer to CoordinateSystem object
-		ColorLegend* legend() { return &legend_;} //!< \return Pointer to ColorLegend object
+		Qwt3D::CoordinateSystem* coordinates() { return &coord; } //!< \return Pointer to CoordinateSystem object
+		Qwt3D::ColorLegend* legend() { return &legend_;} //!< \return Pointer to ColorLegend object
 		
 		double xRotation() const { return xRot_;}  //!< \return Rotation around X axis [-360..360] (some angles are equivalent)
 		double yRotation() const { return yRot_;}  //!< \return Rotation around Y axis [-360..360] (some angles are equivalent)
@@ -46,9 +47,12 @@ public:
 		double zoom() const { return zoom_;} //!< \return Zoom [0..inf]
 
 		bool ortho() const { return ortho_; } //!< \return Orthogonal (true) or perspective (false) projection
-		void		setPlotStyle( Qwt3D::PLOTSTYLE val );
+		void setPlotStyle( Qwt3D::PLOTSTYLE val);
+		Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val);
 		Qwt3D::PLOTSTYLE plotStyle() const { return plotstyle_; }//!< \return Plotting style
-		void		setShading( Qwt3D::SHADINGSTYLE val );
+    //! \return Current Enrichment object used for plotting styles (if set, zero else)
+    Qwt3D::Enrichment* userStyle() const { return userplotstyle; }
+    void		setShading( Qwt3D::SHADINGSTYLE val );
 		Qwt3D::SHADINGSTYLE shading() const { return shading_; }//!< \return Shading style
 		void		setFloorStyle( Qwt3D::FLOORSTYLE val );
 		Qwt3D::FLOORSTYLE floorStyle() const { return floorstyle_; }//!< \return Floor style 
@@ -56,14 +60,18 @@ public:
 		int isolines() const { return isolines_;} //!< \return Number of isolines
 	
 		void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
-		RGBA backgroundRGBAColor() const {return bgcolor_;} //!< \return The widgets background color
+		Qwt3D::RGBA backgroundRGBAColor() const {return bgcolor_;} //!< \return The widgets background color
 		void setMeshColor(Qwt3D::RGBA rgba); //!< Sets color for data mesh
 		Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< \return Color for data mesh
 		void setMeshLineWidth(double lw); //!< Sets line width for data mesh
-		double meshLineWidth() const {return meshLineWidth_;} //!< \return line width for data mesh
+		double meshLineWidth() const {return meshLineWidth_;} //!< \return Line width for data mesh
 		void setDataColor(Color* col); //!< Sets new data color object
+    const Color* dataColor() const {return datacolor;} //!< \return Data color object
 		virtual bool hasData() const = 0;
-		
+
+    virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const&); //! Add an Enrichment
+    virtual bool degrade(Qwt3D::Enrichment*); //! Remove an Enrichment
+
 		virtual void calculateHull() = 0;
 		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< \return rectangular hull \see calculateHull()
 
@@ -114,9 +122,9 @@ public slots:
 		bool    saveVector(QString fileName, QString format, bool notext = false, int sorttype = -1); //!<  Saves content to vector format
 
 protected:
-
-		Color* dataColor;
-		    
+    typedef std::list<Qwt3D::Enrichment*> EnrichmentList;
+    typedef EnrichmentList::iterator ELIT;
+    
 		void		initializeGL();
     void		paintGL();
     void		resizeGL( int w, int h );
@@ -126,7 +134,10 @@ protected:
 		void mouseMoveEvent( QMouseEvent *e );
 		void wheelEvent( QWheelEvent *e );		
 		
-		CoordinateSystem coord;
+		Qwt3D::CoordinateSystem coord;
+		Qwt3D::Color* datacolor;
+    Qwt3D::Enrichment* userplotstyle;
+    EnrichmentList elist;
 
 		virtual void createData() = 0;
 		virtual void createFloorData() = 0;
@@ -146,7 +157,6 @@ protected:
 
 
 private:
-		
     GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		Qwt3D::RGBA meshcolor_;
@@ -163,14 +173,13 @@ private:
 		Qwt3D::ParallelEpiped hull_;
 
 		ColorLegend legend_;
-
+ 
 		Label title_;
 		Qwt3D::Tuple titlerel_;
 		Qwt3D::ANCHOR titleanchor_;
 
 		QPoint lastMouseMovePosition_;
 		bool mpressed_;
-
 
 		int xrot_mstate_, 
 				yrot_mstate_, 

@@ -4,7 +4,7 @@ cd ../simpleplot
 qmake simpleplot.pro -o simpleplot.dsp
 cd ../autoswitch
 qmake autoswitch.pro -o autoswitch.dsp
-cd ../colormodels
-qmake colormodels.pro -o colormodels.dsp
 cd ../print
 qmake print.pro -o print.dsp
+cd ../enrichments
+qmake enrichments.pro -o enrichments.dsp

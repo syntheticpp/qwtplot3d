@@ -8,8 +8,7 @@ Drawable::~Drawable()
   detachAll();
 }
 
-void
-Drawable::saveGLState()
+void Drawable::saveGLState()
 {
 	glGetBooleanv(GL_LINE_SMOOTH, &ls);
 	glGetBooleanv(GL_POLYGON_SMOOTH, &pols);
@@ -28,8 +27,7 @@ Drawable::saveGLState()
 	glGetBooleanv(GL_POLYGON_OFFSET_FILL, &poloffsfill);
 }
 
-void
-Drawable::restoreGLState()
+void Drawable::restoreGLState()
 {
 	Enable(GL_LINE_SMOOTH, ls);
 	Enable(GL_POLYGON_SMOOTH, pols);
@@ -49,8 +47,7 @@ Drawable::restoreGLState()
 	Enable(GL_POLYGON_OFFSET_FILL, poloffsfill);
 }
 
-void 
-Drawable::Enable(GLenum what, GLboolean val)
+void Drawable::Enable(GLenum what, GLboolean val)
 {
 	if (val)
 		glEnable(what);
@@ -58,8 +55,7 @@ Drawable::Enable(GLenum what, GLboolean val)
 		glDisable(what);
 }
 
-void 
-Drawable::attach(Drawable* dr)
+void Drawable::attach(Drawable* dr)
 {
 	if ( dlist.end() == std::find( dlist.begin(), dlist.end(), dr ) )
 		if (dr)
@@ -68,8 +64,7 @@ Drawable::attach(Drawable* dr)
 		}
 }
 
-void 
-Drawable::detach(Drawable* dr)
+void Drawable::detach(Drawable* dr)
 {
 	std::list<Drawable*>::iterator it = std::find(dlist.begin(), dlist.end(), dr);
 	
@@ -78,8 +73,7 @@ Drawable::detach(Drawable* dr)
 		dlist.erase(it);
 	}
 }
-void 
-Drawable::detachAll()
+void Drawable::detachAll()
 {
 	dlist.clear();
 }
@@ -89,8 +83,7 @@ Drawable::detachAll()
 /**
 	Don't rely on (use) this in display lists !
 */
-Triple 
-Drawable::ViewPort2World(Triple win, bool* err)
+Triple Drawable::ViewPort2World(Triple win, bool* err)
 {
   Triple obj;
 	
@@ -106,8 +99,7 @@ Drawable::ViewPort2World(Triple win, bool* err)
 /**
 	Don't rely on (use) this in display lists !
 */
-Triple 
-Drawable::World2ViewPort(Triple obj,	bool* err)
+Triple Drawable::World2ViewPort(Triple obj,	bool* err)
 {
   Triple win;
 	
@@ -122,14 +114,12 @@ Drawable::World2ViewPort(Triple obj,	bool* err)
 /**
 	Don't rely on (use) this in display lists !
 */
-Triple 
-Drawable::relativePosition(Triple rel)
+Triple Drawable::relativePosition(Triple rel)
 {
 	return ViewPort2World(Triple((rel.x-viewport[0])*viewport[2],(rel.y-viewport[1])*viewport[3],rel.z));
 }
 
-void 
-Drawable::draw()
+void Drawable::draw()
 {
 	saveGLState();
 
@@ -140,14 +130,12 @@ Drawable::draw()
 	restoreGLState();
 }
 
-void
-Drawable::setColor(double r, double g, double b, double a)
+void Drawable::setColor(double r, double g, double b, double a)
 {
 	color = RGBA(r,g,b,a);
 }	
 
-void
-Drawable::setColor(RGBA rgba)
+void Drawable::setColor(RGBA rgba)
 {
 	color = rgba;
 }	

@@ -28,7 +28,8 @@
  * library in the file named "COPYING.GL2PS"; if not, I will be glad
  * to provide one.
  *
- * For the latest info about gl2ps, see http://www.geuz.org/gl2ps/
+ * For the latest info about gl2ps, see http://www.geuz.org/gl2ps/.
+ * Please report all bugs and problems to <gl2ps@geuz.org>.
  */
 
 #ifndef __GL2PS_H__
@@ -40,7 +41,11 @@
 
 /* To generate a Windows dll, define GL2PSDLL at compile time */
 
-#ifdef WIN32
+#ifdef _WIN32
+/* Shut up warning due to bad windows header file */
+#  if defined(_MSC_VER) 
+#    pragma warning(disable:4115)
+#  endif
 #  include <windows.h>
 #  ifdef GL2PSDLL
 #    ifdef GL2PSDLL_EXPORTS
@@ -73,7 +78,7 @@
 /* Version number */
 
 #define GL2PS_MAJOR_VERSION 1
-#define GL2PS_MINOR_VERSION 1
+#define GL2PS_MINOR_VERSION 2
 #define GL2PS_PATCH_VERSION 0
 
 #define GL2PS_VERSION (GL2PS_MAJOR_VERSION + \
@@ -113,6 +118,7 @@
 #define GL2PS_POLYGON_OFFSET_FILL 1
 #define GL2PS_POLYGON_BOUNDARY    2
 #define GL2PS_LINE_STIPPLE        3
+#define GL2PS_BLEND               4
 
 /* Magic numbers */
 
@@ -178,6 +184,10 @@
 #define GL2PS_END_LINE_STIPPLE          6
 #define GL2PS_SET_POINT_SIZE            7
 #define GL2PS_SET_LINE_WIDTH            8
+#define GL2PS_BEGIN_BLEND               9
+#define GL2PS_END_BLEND                10
+#define GL2PS_SRC_BLEND                11
+#define GL2PS_DST_BLEND                12
 
 typedef GLfloat GL2PSrgba[4];
 typedef GLfloat GL2PSxyz[3];
@@ -208,7 +218,10 @@ typedef struct {
   GL2PSrgba rgba;
 } GL2PSvertex;
 
-typedef GL2PSvertex GL2PStriangle[3];
+typedef struct {
+  GL2PSvertex vertex[3];
+	int prop;
+} GL2PStriangle;
 
 typedef struct {
   GLshort fontsize;
@@ -227,8 +240,10 @@ typedef struct {
   char boundary, dash, culled;
   GLfloat width, depth;
   GL2PSvertex *verts;
-  GL2PSstring *text;
-  GL2PSimage *image;
+  union {
+    GL2PSstring *text;
+    GL2PSimage *image;
+  } data;
 } GL2PSprimitive;
 
 typedef struct {
@@ -241,12 +256,14 @@ typedef struct {
 } GL2PScompress;
 
 typedef struct {
-  /* general */
+  /* General */
   GLint format, sort, options, colorsize, colormode, buffersize;
-  const char *title, *producer, *filename;
+  char *title, *producer, *filename;
   GLboolean boundary;
   GLfloat *feedback, offset[2], lastlinewidth;
   GLint viewport[4];
+  GLenum blendfunc[2];
+  GLboolean blending;
   GL2PSrgba *colormap, lastrgba, threshold;
   GL2PSlist *primitives;
   FILE *stream;
@@ -255,46 +272,48 @@ typedef struct {
   /* BSP-specific */
   GLint maxbestroot;
 
-  /* occlusion culling-specific */
+  /* Occlusion culling-specific */
   GLboolean zerosurfacearea;
   GL2PSbsptree2d *imagetree;
   GL2PSprimitive *primitivetoadd;
   
   /* PDF-specific */
-  int cref[GL2PS_FIXED_XREF_ENTRIES];
   int streamlength;
-  GL2PSlist *tlist, *tidxlist, *ilist, *slist; 
-  int lasttype, consec_cnt, consec_inner_cnt;
-  int line_width_diff, line_rgb_diff, last_line_finished, last_triangle_finished;
 } GL2PScontext;
 
-/* public functions */
+/* Private prototypes */
+
+GLint gl2psPrintPrimitives(void);
+
+/* Public functions */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 GL2PSDLL_API GLint gl2psBeginPage(const char *title, const char *producer, 
-				  GLint viewport[4], GLint format, GLint sort,
-				  GLint options, GLint colormode,
-				  GLint colorsize, GL2PSrgba *colormap, 
-				  GLint nr, GLint ng, GLint nb, GLint buffersize,
-				  FILE *stream, const char *filename);
+                                  GLint viewport[4], GLint format, GLint sort,
+                                  GLint options, GLint colormode,
+                                  GLint colorsize, GL2PSrgba *colormap, 
+                                  GLint nr, GLint ng, GLint nb, GLint buffersize,
+                                  FILE *stream, const char *filename);
 GL2PSDLL_API GLint gl2psEndPage(void);
 GL2PSDLL_API GLint gl2psBeginViewport(GLint viewport[4]);
 GL2PSDLL_API GLint gl2psEndViewport(void);
 GL2PSDLL_API GLint gl2psText(const char *str, const char *fontname, GLshort fontsize);
 GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
-				   GLint xorig, GLint yorig,
-				   GLenum format, GLenum type, const void *pixels);
+                                   GLint xorig, GLint yorig,
+                                   GLenum format, GLenum type, const void *pixels);
 GL2PSDLL_API GLint gl2psEnable(GLint mode);
 GL2PSDLL_API GLint gl2psDisable(GLint mode);
 GL2PSDLL_API GLint gl2psPointSize(GLfloat value);
 GL2PSDLL_API GLint gl2psLineWidth(GLfloat value);
+GL2PSDLL_API GLint gl2psBlendFunc(GLenum sfactor, GLenum dfactor);
 
 /* Undocumented */
 GL2PSDLL_API GLint gl2psTextOpt(const char *str, const char *fontname, GLshort fontsize,
-				GLint align, GL2PSrgba color);
+                                GLint align, GL2PSrgba color);
+
 
 #ifdef __cplusplus
 };

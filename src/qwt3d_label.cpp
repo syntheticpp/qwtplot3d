@@ -17,15 +17,13 @@ Label::Label(const QString & family, int pointSize, int weight, bool italic)
 }
 
 
-void 
-Label::init(const QString & family, int pointSize, int weight, bool italic)
+void Label::init(const QString & family, int pointSize, int weight, bool italic)
 {
 	init();
 	font_ = QFont(family, pointSize, weight, italic );
 }
 
-void 
-Label::init()
+void Label::init()
 {
 	beg_ = Triple(0.0, 0.0, 0.0);
 	end_ = beg_;
@@ -38,21 +36,18 @@ Label::init()
 	flagforupdate_ = true;
 }
 
-void 
-Label::useDeviceFonts(bool val)
+void Label::useDeviceFonts(bool val)
 {
 	devicefonts_ = val;
 }
 
-void 
-Label::setFont(const QString & family, int pointSize, int weight, bool italic)
+void Label::setFont(const QString & family, int pointSize, int weight, bool italic)
 {
 	font_ = QFont(family, pointSize, weight, italic );
 	flagforupdate_ = true;
 }
 
-void 
-Label::setString(QString const& s)
+void Label::setString(QString const& s)
 {
   text_ = s;
 	flagforupdate_ = true;
@@ -71,15 +66,13 @@ example:
 
 \endverbatim
 */
-void 
-Label::setPosition(Triple pos, ANCHOR a)
+void Label::setPosition(Triple pos, ANCHOR a)
 {
 	anchor_ = a;
 	pos_ = pos;
 }
 
-void
-Label::setRelPosition(Tuple rpos, ANCHOR a)
+void Label::setRelPosition(Tuple rpos, ANCHOR a)
 {
 	double ot = 0.99;
 
@@ -88,8 +81,7 @@ Label::setRelPosition(Tuple rpos, ANCHOR a)
 	setPosition(beg_, a);	
 }
 
-void 
-Label::update()
+void Label::update()
 {
 	QPainter p;
 	QFontMetrics fm(font_);
@@ -142,14 +134,12 @@ bottom aligned       bottom-up
 \endverbatim
 The unit is user space dependend (one pixel on screen - play around to get satisfying results)
 */
-void
-Label::adjust(int gap)
+void Label::adjust(int gap)
 {
 	gap_ = gap;
 }
 
-void
-Label::convert2screen()
+void Label::convert2screen()
 {
 	Triple start = World2ViewPort(pos_);
 	
@@ -189,8 +179,7 @@ Label::convert2screen()
 	end_ = ViewPort2World(start + Triple(width(), height(), 0));	
 }
 
-void 
-Label::draw()
+void Label::draw()
 {
 	if (flagforupdate_)
 	{
@@ -234,14 +223,12 @@ Label::draw()
 }
 
 
-double 
-Label::width() const 
+double Label::width() const 
 { 
 	return pm_.width(); 
 }
 
-double
-Label::height() const 
+double Label::height() const 
 { 
 	return pm_.height(); 
 }	

@@ -25,8 +25,7 @@ CoordinateSystem::~CoordinateSystem()
 	destroy();
 }
 
-void
-CoordinateSystem::destroy()
+void CoordinateSystem::destroy()
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setLabelString("");
@@ -34,8 +33,7 @@ CoordinateSystem::destroy()
 	detachAll();
 }
 
-void
-CoordinateSystem::init(Triple first, Triple second)
+void CoordinateSystem::init(Triple first, Triple second)
 {
 	destroy();
 		
@@ -97,8 +95,7 @@ CoordinateSystem::init(Triple first, Triple second)
 	setStyle(style_);
 }
 
-void 
-CoordinateSystem::draw()
+void CoordinateSystem::draw()
 {	
 //	saveGLState();
 	
@@ -126,8 +123,7 @@ CoordinateSystem::draw()
 
 
 //! build convex hull (6 axes: 2 x, 2 y, 2 z) and choose one of them at a time for scales, labels etc.  
-void 
-CoordinateSystem::chooseAxes()
+void CoordinateSystem::chooseAxes()
 {
 	vector<Triple> beg(axes.size());
 	vector<Triple> end(axes.size());
@@ -300,8 +296,7 @@ CoordinateSystem::chooseAxes()
 }
 
 
-void 
-CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
+void CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 {
 	Triple diff = World2ViewPort(ax.end()) - World2ViewPort(ax.begin());
 
@@ -393,99 +388,85 @@ CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 }
 
 
-void 
-CoordinateSystem::setPosition(Triple first, Triple second)
+void CoordinateSystem::setPosition(Triple first, Triple second)
 {
 	first_ = first;
 	second_ = second;
 }
 
-void 
-CoordinateSystem::setTicLength(double major, double minor)
+void CoordinateSystem::setTicLength(double major, double minor)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setTicLength(major, minor);
 }
 
-void 
-CoordinateSystem::adjustNumbers(int val)
+void CoordinateSystem::adjustNumbers(int val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].adjustNumbers(val);
 }
 
-void 
-CoordinateSystem::adjustLabels(int val)
+void CoordinateSystem::adjustLabels(int val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].adjustLabel(val);
 }
 
-void 
-CoordinateSystem::setAutoScale(bool val)
+void CoordinateSystem::setAutoScale(bool val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setAutoScale(val);
 }
 
-void 
-CoordinateSystem::setAxesColor(RGBA val)
+void CoordinateSystem::setAxesColor(RGBA val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setColor(val);
 }
 
-void 
-CoordinateSystem::setNumberFont(QString const& family, int pointSize, int weight, bool italic)
+void CoordinateSystem::setNumberFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setNumberFont(family,pointSize,weight,italic);
 }
 
-void 
-CoordinateSystem::setNumberFont(QFont const& font)
+void CoordinateSystem::setNumberFont(QFont const& font)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setNumberFont(font);
 }
 
-void 
-CoordinateSystem::setNumberColor(RGBA val)
+void CoordinateSystem::setNumberColor(RGBA val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setNumberColor( val);
 }
 
-void 
-CoordinateSystem::setLabelFont(QFont const& font)
+void CoordinateSystem::setLabelFont(QFont const& font)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setLabelFont(font);
 }
 
 
-void 
-CoordinateSystem::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
+void CoordinateSystem::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	setLabelFont(QFont(family,pointSize,weight,italic));
 }
 
-void 
-CoordinateSystem::setLabelColor(RGBA val)
+void CoordinateSystem::setLabelColor(RGBA val)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setLabelColor(val);
 }
 
-void 
-CoordinateSystem::setLineWidth(double val, double majfac, double minfac)
+void CoordinateSystem::setLineWidth(double val, double majfac, double minfac)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
 		axes[i].setLineWidth(val, majfac, minfac);
 }
 
-void 
-CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_3) 
+void CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_3) 
 { 
 	style_ = s;
 
@@ -520,15 +501,13 @@ CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_
 	}
 }
 
-void 
-CoordinateSystem::setGridLines(bool majors, bool minors) 
+void CoordinateSystem::setGridLines(bool majors, bool minors) 
 {
 	majorgridlines_ = majors; 
 	minorgridlines_ = minors;
 } 
 
-void 
-CoordinateSystem::drawMajorGridLines()
+void CoordinateSystem::drawMajorGridLines()
 {
 	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -560,8 +539,7 @@ CoordinateSystem::drawMajorGridLines()
 	glEnd();
 }
 
-void 
-CoordinateSystem::drawMinorGridLines()
+void CoordinateSystem::drawMinorGridLines()
 {
 	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

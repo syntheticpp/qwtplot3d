@@ -14,12 +14,10 @@ h1, h2, h3, h4 {
 
 H1 {
 	text-align: center;
-	font-family: Arial, Helvetica, sans-serif;
-  font-size: 20px;  
+  font-size: 18px;  
 }
 H2 {
-	font-family: Geneva, Arial, Helvetica, sans-serif;
-  font-size: 18px;  
+  font-size: 16px;  
 }
 CAPTION { font-weight: bold }
 DIV.qindex { width: 100%;
