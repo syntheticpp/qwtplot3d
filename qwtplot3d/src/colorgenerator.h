@@ -32,7 +32,7 @@ class StandardColor : public Color
 {
 public:
 	//! initialize with data and set up a ColorVector with a size of 100 z values (default);
-	explicit StandardColor(Data const& data, int size = 100);
+	explicit StandardColor(GridData const& data, int size = 100);
 	RGBA operator()(double x, double y, double z); //!< get z dependend Color from ColorVector
 	ColorVector const& colVector() const { return colors_;}
 	void setAlpha(double a);
@@ -41,7 +41,7 @@ protected:
 	ColorVector colors_;
 
 private:
-	Data const& data_;
+	GridData const& data_;
 };
 
 

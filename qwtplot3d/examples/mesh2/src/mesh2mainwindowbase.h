@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Do 17. Apr 18:23:17 2003
+** Created: Fr 18. Apr 22:35:43 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -104,11 +104,13 @@ public:
     QAction* meshcolor;
     QAction* numbercolor;
     QAction* labelcolor;
+    QAction* titlecolor;
     QAction* resetcolor;
     QAction* alpha;
     QActionGroup* font;
     QAction* numberfont;
     QAction* labelfont;
+    QAction* titlefont;
     QAction* resetfont;
     QActionGroup* floorstyle;
     QAction* floordata;
