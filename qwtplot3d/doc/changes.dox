@@ -1,0 +1,27 @@
+/*!
+\page changes Changelog   
+ 	
+\par Changes:
+
+Apr 19 2003: 
+- Datatype Data renamed to GridData
+- autoswitch example modified
+
+Apr 17 2003: 
+- Autoswitching CoordinateSystem::setAutoDecoration()
+  
+Apr 14 2003: 
+- QwtPlot3D ctor with default values for all arguments - simpleplot adapted
+- CVS: added qwt independent example examples/simpleplot
+<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/simpleplot">see here</a>
+
+\par Bugfixes:
+
+Apr 17 2003: 
+- some values close to zero caused problems 
+(\ref conventions)
+
+Apr 14 2003: 
+- pending CreateFunction declaration from Mesh2/functions.h removed
+	
+*/
