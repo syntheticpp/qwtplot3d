@@ -5,7 +5,7 @@ Function::Function(QwtPlot3D* pw)
 {
 	if (!pw)
 	{
-		fprintf(stderr,"NativeReader: no valid QwtPlot3D Widget");
+		fprintf(stderr,"Function: no valid QwtPlot3D Widget");
 		return;
 	}
 	plotwidget_ = pw;
@@ -17,6 +17,13 @@ Function::Function(QwtPlot3D* pw)
 
 Function::~Function()
 { 
+}
+
+void
+Function::assign(QwtPlot3D* plotWidget)
+{
+	if (plotWidget && plotWidget != plotwidget_)
+		plotwidget_ = plotWidget;
 }
 
 void

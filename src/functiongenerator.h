@@ -22,6 +22,7 @@ public:
 	void setDomain(double minx, double maxx, double miny, double maxy);
 	void setMinZ(double val);
 	void setMaxZ(double val);
+	void assign(QwtPlot3D* plotWidget); //!< assign to other widget to see the changes, you have to call create() afterwards
 
 private:
 	QwtPlot3D* plotwidget_;
