@@ -33,6 +33,8 @@ public:
 	Qwt3D::Triple first() const { return beg_;} //!< Receives bottom left label position
 	Qwt3D::Triple second() const { return end_;} //!< Receives top right label position
 	ANCHOR anchor() const { return anchor_; } //!< Defines an anchor point for the labels surrounding rectangle
+	virtual void setColor(double r, double g, double b, double a = 1);	
+	virtual void setColor(Qwt3D::RGBA rgba);	
 
 	/*!
 	\brief Sets the labels string

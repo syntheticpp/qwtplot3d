@@ -3,6 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <time.h>
 #include "qwt3d_gl2ps.h"
 #include "qwt3d_plot.h"
 #include "qwt3d_enrichment.h"
@@ -305,9 +306,19 @@ bool Plot3D::saveVector(QString fileName, QString format, bool notext, int sortt
 	QString version = QString::number(QWT3D_MAJOR_VERSION) + "."
 		+ QString::number(QWT3D_MINOR_VERSION) + "."
 		+ QString::number(QWT3D_PATCH_VERSION); 
-	
+	    
 	QString producer = QString("QwtPlot3D ") + version + 
-		" (beta) , (C) 2002-2004 Micha Bieber <krischnamurti@users.sourceforge.net>";
+		" (beta) , (C) 2002";
+  
+  // calculate actual year
+  time_t now;
+  struct tm *newtime;
+  time(&now);
+  newtime = gmtime(&now);
+	if (newtime && newtime->tm_year + 1900 > 2002)
+	  producer += "-" + QString::number(newtime->tm_year+1900); 
+  
+  producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
 
 	while( state == GL2PS_OVERFLOW )
 	{ 

@@ -17,6 +17,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	setGridLinesColor(RGBA(0.2,0.2,0.2,1));
 	setNumberFont("Courier", 12);
 	setNumberColor(RGBA(0,0,0));
+	setLabelFont("Courier", 14, QFont::Bold);
 	setGridLines(false, false);
 }
 
@@ -89,8 +90,6 @@ void CoordinateSystem::init(Triple first, Triple second)
 	axes[Z2].setTicOrientation(-1,0,0);
 	axes[Z4].setTicOrientation(1,0,0);
 	axes[Z3].setTicOrientation(1,0,0);
-
-	setLabelFont("Courier", 14, QFont::Bold);
 	
 	setStyle(style_);
 }

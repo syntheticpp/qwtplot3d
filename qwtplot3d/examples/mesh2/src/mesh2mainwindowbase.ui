@@ -949,7 +949,10 @@
                 <iconset>image12</iconset>
             </property>
             <property name="text">
-                <string>Action</string>
+                <string>Points</string>
+            </property>
+            <property name="toolTip">
+                <string>Points</string>
             </property>
         </action>
     </actiongroup>

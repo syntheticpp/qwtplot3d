@@ -6,7 +6,7 @@
 
 #define QWT3D_MAJOR_VERSION 0
 #define QWT3D_MINOR_VERSION 2
-#define QWT3D_PATCH_VERSION 1
+#define QWT3D_PATCH_VERSION 3
 
 //
 // Create Qwt3d DLL if QWT3D_DLL is defined (Windows only)
@@ -28,14 +28,14 @@
 #endif
 
 #ifdef QWT3D_DLL
-#if defined(QWT3D_MAKEDLL)     /* create a Qwt DLL library */
+#if defined(QWT3D_MAKEDLL)     /* create a Qwt3d DLL library */
 #undef QWT3D_DLL
 #define QWT3D_EXPORT  __declspec(dllexport)
 #define QWT3D_TEMPLATEDLL
 #endif
 #endif
 
-#if defined(QWT3D_DLL)     /* use a Qwt DLL library */
+#if defined(QWT3D_DLL)     /* use a Qwt3d DLL library */
 #define QWT3D_EXPORT  __declspec(dllimport)
 #define QWT3D_TEMPLATEDLL
 #endif

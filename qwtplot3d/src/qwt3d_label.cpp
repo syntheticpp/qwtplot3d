@@ -53,6 +53,18 @@ void Label::setString(QString const& s)
 	flagforupdate_ = true;
 }
 
+void Label::setColor(double r, double g, double b, double a)
+{
+  Drawable::setColor(r,g,b,a);
+  flagforupdate_ = true;
+}	
+
+void Label::setColor(Qwt3D::RGBA rgba)
+{
+  Drawable::setColor(rgba);
+  flagforupdate_ = true;
+}
+
 /**
 example:
 
