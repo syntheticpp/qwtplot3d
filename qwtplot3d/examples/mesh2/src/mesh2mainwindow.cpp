@@ -129,6 +129,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		filetype_ = "png";
 		filetypeCB->setCurrentText("png");
+
+    dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
 }
 
 void Mesh2MainWindow::open()
@@ -260,7 +262,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 
 	activeCoordSystem = action;
 	
-	dataWidget->setTitle("QwtPlot3D");
+	dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel)");
 
 	if (!dataWidget->hasData())
 	{
@@ -283,7 +285,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 	}
 	else if (action == None)
 	{
-		dataWidget->setTitle("QwtPlot3D");
+	  dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel)");
 		dataWidget->setCoordinateStyle(NOCOORD);
 		gridlines->setEnabled(false);
 	}
