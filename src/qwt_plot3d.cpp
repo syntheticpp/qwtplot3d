@@ -32,9 +32,11 @@ using namespace Qwt3d;
 /*!
   Create a QwtPlot3D widget
 */
-QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name )
+QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
     : QGLWidget( parent, name )
 {
+	meshtype_ = mt;
+		
 	xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
 
 	xShift_ = yShift_ = zShift_ = 0.0;
@@ -57,7 +59,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name )
 	}
 
 	dataColor_ = new StandardColor(actualData_);
-	title_.setFont("Times", 18, QFont::Bold);
+	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
 	setCaptionPosition(0.95);
@@ -70,7 +72,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name )
 QwtPlot3D::~QwtPlot3D()
 {
 	SaveGlDeleteLists( objectList_[0], objectList_.size() );
-	delete dataColor_;
+	dataColor_->destroy();
 }
 
 
@@ -99,17 +101,17 @@ QwtPlot3D::updateData()
 	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
 	{
 		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
-
+		
 		for (i = 0; i < actualData_.columns() - cstep; i += cstep) 
 		{
 			for (j = 0; j < actualData_.rows() - rstep; j += rstep) 
 
 			{
 				glBegin(GL_LINE_LOOP);
-					glVertex3fv(actualData_.vertices[i][j]);
-					glVertex3fv(actualData_.vertices[i+cstep][j]);
-					glVertex3fv(actualData_.vertices[i+cstep][j+rstep]);
-					glVertex3fv(actualData_.vertices[i][j+rstep]);
+					glVertex3dv(actualData_.vertices[i][j]);
+					glVertex3dv(actualData_.vertices[i+cstep][j]);
+					glVertex3dv(actualData_.vertices[i+cstep][j+rstep]);
+					glVertex3dv(actualData_.vertices[i][j+rstep]);
 				glEnd();
 			}
 		}
@@ -139,15 +141,15 @@ QwtPlot3D::updateData()
 					}
 					glColor4d(col.r, col.g, col.b, col.a);
 					
-					glVertex3fv(actualData_.vertices[i][j]);
-					glVertex3fv(actualData_.vertices[i+cstep][j]);
-					glVertex3fv(actualData_.vertices[i+cstep][j+rstep]);
-					glVertex3fv(actualData_.vertices[i][j+rstep]);
+					glVertex3dv(actualData_.vertices[i][j]);
+					glVertex3dv(actualData_.vertices[i+cstep][j]);
+					glVertex3dv(actualData_.vertices[i+cstep][j+rstep]);
+					glVertex3dv(actualData_.vertices[i][j+rstep]);
 
-					glNormal3fv(actualData_.normals[i][j]);
-					glNormal3fv(actualData_.normals[i+cstep][j]);
-					glNormal3fv(actualData_.normals[i+cstep][j+rstep]);
-					glNormal3fv(actualData_.normals[i][j+rstep]);
+					glNormal3dv(actualData_.normals[i][j]);
+					glNormal3dv(actualData_.normals[i+cstep][j]);
+					glNormal3dv(actualData_.normals[i+cstep][j+rstep]);
+					glNormal3dv(actualData_.normals[i][j+rstep]);
 				}
 			}
 		glEnd();
@@ -392,16 +394,16 @@ void
 QwtPlot3D::calcFloorListAsData(double zshift)
 {
 	RGBA col;
-	int cstep = resolution_;
-	int rstep = resolution_;
+	unsigned int cstep = resolution_;
+	unsigned int rstep = resolution_;
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
 	glBegin(GL_QUADS);
-		for (int i = 0; i < actualData_.columns() - cstep; i += cstep) 
+		for (unsigned int i = 0; i < actualData_.columns() - cstep; i += cstep) 
 		{
-			for (int j = 0; j < actualData_.rows() - rstep; j += rstep) 
+			for (unsigned int j = 0; j < actualData_.rows() - rstep; j += rstep) 
 			{
 				col = (*dataColor_)(
 					actualData_.vertices[i][j][0],
@@ -410,10 +412,10 @@ QwtPlot3D::calcFloorListAsData(double zshift)
 
 				glColor4d(col.r, col.g, col.b, col.a);
 				
-				glVertex3f(actualData_.vertices[i][j][0], actualData_.vertices[i][j][1], zshift);
-				glVertex3f(actualData_.vertices[i+cstep][j][0],actualData_.vertices[i+cstep][j][1], zshift);
-				glVertex3f(actualData_.vertices[i+cstep][j+rstep][0],actualData_.vertices[i+cstep][j+rstep][1], zshift);
-				glVertex3f(actualData_.vertices[i][j+rstep][0],actualData_.vertices[i][j+rstep][1], zshift);
+				glVertex3d(actualData_.vertices[i][j][0], actualData_.vertices[i][j][1], zshift);
+				glVertex3d(actualData_.vertices[i+cstep][j][0],actualData_.vertices[i+cstep][j][1], zshift);
+				glVertex3d(actualData_.vertices[i+cstep][j+rstep][0],actualData_.vertices[i+cstep][j+rstep][1], zshift);
+				glVertex3d(actualData_.vertices[i][j+rstep][0],actualData_.vertices[i][j+rstep][1], zshift);
 			}
 		}
 	glEnd();
@@ -438,9 +440,9 @@ QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
 		double hi = actualData_.minimum() + k * step;
 		double lo = hi - step;
 		
-		for (int i = cstep; i < actualData_.columns()-cstep; i+=cstep) 
+		for (int i = cstep; i < int(actualData_.columns()-cstep); i+=cstep) 
 		{
-			for (int j = rstep; j < actualData_.rows()-rstep; j+=rstep) 
+			for (int j = rstep; j < int(actualData_.rows()-rstep); j+=rstep) 
 			{
 				col = (*dataColor_)(
 					actualData_.vertices[i][j][0],
@@ -465,8 +467,8 @@ QwtPlot3D::calcFloorListAsIsolines(int steps, double zshift)
 								{
 									Triple rp = tlo + ((lo - tlo.z) / (thi.z - tlo.z)) * (thi-tlo);
 										glBegin(GL_POINTS);
-											glVertex3f(rp.x, rp.y, zshift);
-											//glVertex3f(rp.x, rp.y, rp.z);
+											glVertex3d(rp.x, rp.y, zshift);
+											//glVertex3d(rp.x, rp.y, rp.z);
 										glEnd();
 								}
 							}
@@ -558,20 +560,14 @@ QwtPlot3D::calculateHull()
 	datasecond_.y = actualData_.vertices[actualData_.columns()-1][actualData_.rows()-1][1];
 }
 
-void 
-QwtPlot3D::assignData( Data const& data )
-{
-	actualData_ = data;
 
-	updateData();
-
-	createCoordinateSystem();
-}
-
+/*!
+	assign a new coloring object for the data.
+*/
 void 
 QwtPlot3D::assignDataColor( Color* col )
 {
-	delete dataColor_;
+	dataColor_->destroy();
 	dataColor_ = col;
 }
 

@@ -1,0 +1,61 @@
+Unix
+====
+
+For building Qwt for Qt 2.x you need tmake. On SuSE it is hidden
+in a package called qt-freebies. It can be downloaded from
+http://www.trolltech.com/developer/download/tmake.html.
+
+You have to set TMAKEPATH to point
+to your development environment and run tmake:
+
+export TMAKEPATH=/usr/lib/tmake/linux-g++ # path depends on your system
+tmake qwt.pro -o Makefile
+make
+
+If you like to build the examples:
+
+cd examples
+tmake examples.pro -o Makefile
+make
+
+Builds for Qt 3.x need qmake, that is official part of Qt 3.x.
+
+qmake qwt.pro 
+make
+
+The designer plugin is available for Qt > 3.x only. You can build and 
+install it with:
+
+cd designer
+qmake qwtplugin.pro
+make
+make install
+
+
+If you like to build the examples:
+
+cd examples
+qmake examples.pro 
+make
+
+If you like to run the examples, don't forget to install the qwt libraries
+or set the LD_LIBRARY_PATH to the lib directory of your local build.
+
+qwt doesn't distribute binary unix packages. qwt.spec is a template
+spec file for building rpm packages. Read the comments at the beginning 
+of qwt.pro how to use it.
+
+Win32
+-----
+
+Please read the qmake/tmake documentation how to convert 
+your *.pro files into your development environment.
+
+For Visual Studio users, tmake/qmake can also generate '.dsp' files:
+This is the default platform in the qwt project files on Win32 platforms. 
+All you need to do is:
+
+Qt < 3.0: tmake qwt.pro
+Qt >= 3.0: qmake qwt.pro 
+
+Good luck !

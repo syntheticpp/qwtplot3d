@@ -1,19 +1,3 @@
-/****************************************************************************
-** $Id$
-**
-** Copyright (C) 1992-2000 Trolltech AS.  All rights reserved.
-**
-** This file is part of an example program for Qt.  This example
-** program may be used, distributed and modified without limitation.
-**
-*****************************************************************************/
-
-/****************************************************************************
-**
-** This is a simple QGLWidget displaying an openGL wireframe box
-**
-****************************************************************************/
-
 #ifndef GLTEXOBJ_H
 #define GLTEXOBJ_H
 
@@ -34,8 +18,14 @@ class QwtPlot3D : public QGLWidget
     Q_OBJECT
 
 public:
-		
-    QwtPlot3D( QWidget* parent, const char* name );
+
+		enum MESHTYPE
+		{
+			REGULAR,
+      IRREGULAR
+		};	
+	
+    QwtPlot3D( QWidget* parent, const char* name, MESHTYPE  = REGULAR );
     virtual ~QwtPlot3D();
 
 		void updateCoordinates();
@@ -70,7 +60,6 @@ public:
 		void setBackgroundColor(RGBA rgba);
 		void setMeshColor(RGBA rgba);
 		RGBA meshColor() const {return meshcolor_;}
-		void assignData(Data const& data );
 		void assignDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
 		bool hasData() const { return !actualData_.empty(); }
@@ -92,7 +81,10 @@ public:
 		void setCaptionColor(RGBA col) {title_.setColor(col);}
 		void setTitle(const QString& title) {title_.setString(title);}
 
+		void createInternalRepresentation(double** data, unsigned int columns, unsigned int rows
+																			,double minx, double maxx, double miny, double maxy);
 
+		Data const& data() const {return actualData_;}
 
 signals:
 		
@@ -119,8 +111,12 @@ public slots:
 
 
 protected:
-
-    void		initializeGL();
+		
+		//! no copies
+		QwtPlot3D(QwtPlot3D const&);
+		QwtPlot3D& operator=(QwtPlot3D const&);
+    
+		void		initializeGL();
     void		paintGL();
     void		resizeGL( int w, int h );
 
@@ -129,7 +125,9 @@ protected:
 
 private:
 
-    GLfloat xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_;
+		MESHTYPE meshtype_;
+		
+    GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_, xScale_, yScale_, zScale_;
 		
 		void createCoordinateSystem();
 		void updateFloorData(double zshift);

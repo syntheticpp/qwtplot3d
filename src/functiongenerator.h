@@ -1,22 +1,34 @@
 #ifndef __FUNCTIONGENERATOR_H__
 #define __FUNCTIONGENERATOR_H__
 
+#include <float.h>
 #include <qstring.h>
 
-#include "datasource.h"
 
-class Function : public DataSource
+class QwtPlot3D;
+
+class Function
 {
 
 public:
 	
-  Function();
+  Function(QwtPlot3D* plotWidget);
 	virtual ~Function();
 	virtual double operator()(double x, double y) = 0;
 	virtual QString name() const { return QString(""); }
-	virtual QString formula() const { return QString(""); }
 		
-	virtual bool createData(Data& res);
+	virtual bool create();
+
+	void setMesh(unsigned int columns,unsigned int rows);
+	void setDomain(double minx, double maxx, double miny, double maxy);
+	void setMinZ(double val);
+	void setMaxZ(double val);
+
+private:
+	QwtPlot3D* plotwidget_;
+	double minx_, maxx_, miny_, maxy_, minz_, maxz_;
+	unsigned int xmesh_, ymesh_;
+
 };
 
 

@@ -92,9 +92,13 @@ LabelPixmap::update()
 	
 	pm_ = QPixmap(r.width(), r.bottom(), -1);
 
-//	if (pm_.isNull())
-//		return;
-
+	if (pm_.isNull()) // else crash under linux
+	{
+		r = 	QRect(QPoint(0,0),fm.size(Qt::SingleLine, QString(" "))); // draw empty space else //todo
+ 		r.moveBy(0, -r.top());
+		pm_ = QPixmap(r.width(), r.bottom(), -1);		
+	}
+	
 	QBitmap bm(pm_.width(),pm_.height(),true);
 	p.begin( &bm );
 		p.setPen(Qt::color1);
@@ -108,10 +112,9 @@ LabelPixmap::update()
 		p.setFont( font_ );
 		p.setPen( Qt::SolidLine );
 		p.setPen( GL2Qt(color.r, color.g, color.b) );
-		
+
 		p.drawText(0,r.height() - fm.descent() -1 , text_);
-	p.end();			
-	
+	p.end();
 	buf_ = pm_.convertToImage();
 	tex_ = QGLWidget::convertToGLFormat( buf_ );	  // flipped 32bit RGBA ?		
 }
@@ -120,9 +123,8 @@ LabelPixmap::update()
 void 
 LabelPixmap::draw()
 {
-//	if (buf_.isNull())
-//		return;
-
+	if (buf_.isNull())
+		return;
 
 	GLboolean b;
 	GLint func;

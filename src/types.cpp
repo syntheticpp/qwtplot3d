@@ -2,12 +2,17 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include "float.h"
 #include "types.h"
 
 Data::Data()
 {
-	max_ = 0;
-	min_ = 0;
+	setSize(0,0);
+}
+
+Data::Data(unsigned int columns, unsigned int rows)
+{
+	setSize(columns,rows);
 }
 
 Data::~Data()
@@ -18,9 +23,9 @@ Data::~Data()
 Data::Data(Data const& rhs)
 {
 	setSize(rhs.columns(), rhs.rows());
-	for (unsigned int i=0; i!=columns(); ++i)
+	for ( int i=0; i!=columns(); ++i)
 	{
-		for (unsigned int j=0; j!=rows(); ++j)
+		for ( int j=0; j!=rows(); ++j)
 		{
 			vertices[i][j][0] = rhs.vertices[i][j][0];
 			vertices[i][j][1] = rhs.vertices[i][j][1];
@@ -41,9 +46,9 @@ Data& Data::operator=(Data const& rhs)
 		return *this;
 
 	setSize(rhs.columns(), rhs.rows());
-	for (unsigned int i=0; i!=columns(); ++i)
+	for ( int i=0; i!=columns(); ++i)
 	{
-		for (unsigned int j=0; j!=rows(); ++j)
+		for ( int j=0; j!=rows(); ++j)
 		{
 			vertices[i][j][0] = rhs.vertices[i][j][0];
 			vertices[i][j][1] = rhs.vertices[i][j][1];
@@ -102,8 +107,8 @@ Data::clear()
 	
 	normals.clear();
 	
-	max_ = 0;
-	min_ = 0;
+	max_ = -DBL_MAX;
+	min_ = DBL_MAX;
 }
 
 
@@ -118,7 +123,7 @@ Data::setSize(unsigned int columns, unsigned int rows)
 			vertices[i] = DataRow(rows);
 			for (unsigned int j=0; j!=vertices[i].size(); ++j)
 			{
-				vertices[i][j] = new GLfloat[3];
+				vertices[i][j] = new GLdouble[3];
 			}
 		}
 	}
@@ -129,7 +134,7 @@ Data::setSize(unsigned int columns, unsigned int rows)
 			normals[i] = DataRow(rows);
 			for (unsigned int j=0; j!=normals[i].size(); ++j)
 			{
-				normals[i][j] = new GLfloat[3];
+				normals[i][j] = new GLdouble[3];
 			}
 		}
 	}

@@ -4,12 +4,18 @@
 #include <math.h>
 #include "../src/functiongenerator.h"
 
+class QwtPlot3D;
+
 class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock();
-	
+	Rosenbrock(QwtPlot3D* pw)
+	:Function(pw)
+	{
+		setMinZ(-100);
+	}
+
 	double operator()(double x, double y)
 	{
 		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
@@ -23,7 +29,11 @@ class Hat : public Function
 {
 public:
 
-	Hat();
+	Hat(QwtPlot3D* pw)
+	:Function(pw)
+	{
+	//	setMaxZ(0.8);     
+	}
 	
 	double operator()(double x, double y)
 	{
@@ -34,7 +44,7 @@ public:
 	QString formula() const { return QString("1 / (x*x+y*y+0.5)"); }
 };
 
-void CreateFunction(Data& res, QString const& name);
+void CreateFunction(QString const& name);
 
 
 #endif // __EXAMPLE_H__

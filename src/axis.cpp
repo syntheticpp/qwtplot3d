@@ -41,7 +41,7 @@ Axis::init()
 	drawTics_ = false;
 	autoscale_ = true;
 	markerLabel_.clear();
-	numberfont_ = QFont("Times",12);
+	numberfont_ = QFont("Courier",12);
 	numbercolor_ = RGBA(0,0,0,0);
 
 	setNumberAnchor(LabelPixmap::Center);
@@ -128,8 +128,8 @@ Axis::drawBase()
 {
 
 	glBegin( GL_LINES );
-	glVertex3f( beg_.x, beg_.y, beg_.z); 
-	glVertex3f( end_.x, end_.y, end_.z);
+	glVertex3d( beg_.x, beg_.y, beg_.z); 
+	glVertex3d( end_.x, end_.y, end_.z);
 	glEnd();
 //
 //	GLUquadricObj  *cone;
@@ -271,10 +271,10 @@ Axis::drawTic(Triple nadir, double length)
 	double ilength = (symtics_) ? -length : 0.0;
 
 	glBegin( GL_LINES );
-	glVertex3f( nadir.x  + ilength * orientation_.x,
+	glVertex3d( nadir.x  + ilength * orientation_.x,
 				      nadir.y  + ilength * orientation_.y,
 							nadir.z  + ilength * orientation_.z) ; 
-	glVertex3f( nadir.x  + length * orientation_.x,
+	glVertex3d( nadir.x  + length * orientation_.x,
 							nadir.y  + length * orientation_.y,
 							nadir.z  + length * orientation_.z);
 	glEnd();

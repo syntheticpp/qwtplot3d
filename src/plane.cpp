@@ -34,10 +34,10 @@ Quad::draw()
 	glEnable(GL_LINE_SMOOTH);
 	glColor4d(0, 0, 0, 1);
 	glBegin(GL_LINE_LOOP);
-		glVertex3f( one_.x, one_.y, one_.z );
-		glVertex3f( two_.x, two_.y, two_.z );
-		glVertex3f( three_.x, three_.y, three_.z );
-		glVertex3f( four_.x, four_.y, four_.z );
+		glVertex3d( one_.x, one_.y, one_.z );
+		glVertex3d( two_.x, two_.y, two_.z );
+		glVertex3d( three_.x, three_.y, three_.z );
+		glVertex3d( four_.x, four_.y, four_.z );
 	glEnd();
 */
 
@@ -48,10 +48,10 @@ Quad::draw()
 	
 	glColor4d(color.r,color.g,color.b,color.a);
 	glBegin( GL_POLYGON );
-		glVertex3f( one_.x, one_.y, one_.z );
-		glVertex3f( two_.x, two_.y, two_.z );
-		glVertex3f( three_.x, three_.y, three_.z );
-		glVertex3f( four_.x, four_.y, four_.z );
+		glVertex3d( one_.x, one_.y, one_.z );
+		glVertex3d( two_.x, two_.y, two_.z );
+		glVertex3d( three_.x, three_.y, three_.z );
+		glVertex3d( four_.x, four_.y, four_.z );
   glEnd();
 
 	restoreGLState();
@@ -82,10 +82,10 @@ ColorLegend::draw()
 	{
     glColor4d(colors[i-1].r,colors[i-1].g,colors[i-1].b,colors[i-1].a);
 	 	glBegin( GL_POLYGON );
-			glVertex3f( one_.x+(i-1)*dv2.x, one_.y+(i-1)*dv2.y, one_.z+(i-1)*dv2.z );
-			glVertex3f( one_.x+i*dv2.x, one_.y+i*dv2.y, one_.z+i*dv2.z );
-			glVertex3f( two_.x+i*dv3.x, two_.y+i*dv3.y, two_.z+i*dv3.z );
-			glVertex3f( two_.x+(i-1)*dv3.x, two_.y+(i-1)*dv3.y, two_.z+(i-1)*dv3.z );
+			glVertex3d( one_.x+(i-1)*dv2.x, one_.y+(i-1)*dv2.y, one_.z+(i-1)*dv2.z );
+			glVertex3d( one_.x+i*dv2.x, one_.y+i*dv2.y, one_.z+i*dv2.z );
+			glVertex3d( two_.x+i*dv3.x, two_.y+i*dv3.y, two_.z+i*dv3.z );
+			glVertex3d( two_.x+(i-1)*dv3.x, two_.y+(i-1)*dv3.y, two_.z+(i-1)*dv3.z );
 		glEnd();
   }
 

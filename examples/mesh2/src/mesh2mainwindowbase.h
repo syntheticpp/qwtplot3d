@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Di 8. Apr 01:23:17 2003
+** Created: So 13. Apr 18:54:13 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -1,4 +1,4 @@
-#include "Mesh2MainWindowBase.h"
+#include "mesh2mainwindowbase.h"
 #include "qwt_plot3d.h"
 
 

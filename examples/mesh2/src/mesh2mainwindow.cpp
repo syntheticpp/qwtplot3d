@@ -150,7 +150,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 void Mesh2MainWindow::open()
 {
-    QString s( QFileDialog::getOpenFileName( "../../data", "Data Files (*.mes *.XYZ)", this ) );
+    QString s( QFileDialog::getOpenFileName( "../../data", "Data Files (*.mes *.MES)", this ) );
  
 		if ( s.isEmpty() || !dataWidget)
         return;
@@ -159,33 +159,22 @@ void Mesh2MainWindow::open()
 		QFileInfo fi( s );
     QString ext = fi.extension( false );   // ext = "gz"
   
-		NativeReader r(s);
-		Data data;
-		if ((ext == "XYZ") || (ext == "xyz"))
+		NativeReader r(dataWidget,s);
+		if ((ext == "MES") || (ext == "mes")) 
 		{
-			r.setType(NativeReader::XYZFILE);
-			if (r.createData(data))
+			if (r.read())
 			{
-				dataWidget->assignData(data);
-				dataWidget->setResolution(5);
-			}
-		}
-		else if ((ext == "MES") || (ext == "mes")) 
-		{
-			r.setType(NativeReader::MESHFILE);
-			if (r.createData(data))
-			{
-				dataWidget->assignData(data);
-				dataWidget->setResolution(1);
+				dataWidget->setResolution(3);
 			}
 		}
  		
-		createColorLegend(StandardColor(data).colVector());
+		createColorLegend(StandardColor(dataWidget->data()).colVector());
 
 		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 		{
 			dataWidget->coordinates()->axes[i].setMajors(4);
 			dataWidget->coordinates()->axes[i].setMinors(5);
+			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
 		}
 		
 		setStandardView();
@@ -400,8 +389,8 @@ void Mesh2MainWindow::pickNumberFont()
 
 void Mesh2MainWindow::resetFonts()
 {
-	dataWidget->coordinates()->setNumberFont(QFont("Times", 12));
-	dataWidget->coordinates()->setLabelFont(QFont("Times", 14, QFont::Bold));
+	dataWidget->coordinates()->setNumberFont(QFont("Courier", 12));
+	dataWidget->coordinates()->setLabelFont(QFont("Courier", 14, QFont::Bold));
 	dataWidget->updateCoordinates();
 }
 
@@ -616,11 +605,28 @@ void Mesh2MainWindow::zScale(double val)
 
 void Mesh2MainWindow::createFunction(QString const& name)
 {
-	Data res;
-	CreateFunction(res, name);
-	
-	dataWidget->assignData(res);
-	createColorLegend(StandardColor(res).colVector());
+	if (name == QString("Rosenbrock")) 
+	{
+		Rosenbrock rosenbrock(dataWidget);
+		
+		rosenbrock.setMesh(71,71);
+		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
+		//rosenbrock.setDomain(-5,5.5,-1,2);
+		rosenbrock.setMinZ(-10);
+		
+		rosenbrock.create();
+	}
+	else if (name == QString("Hat")) 
+	{
+		Hat hat(dataWidget);
+		
+		hat.setMesh(51,72);
+		hat.setDomain(-1.5,1.5,-1.5,1.5);
+		
+		hat.create();		
+	}
+
+	createColorLegend(StandardColor(dataWidget->data()).colVector());
 	setStandardView();
 
 	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
