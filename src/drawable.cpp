@@ -86,19 +86,6 @@ Drawable::draw()
 	restoreGLState();
 }
 
-void 
-Drawable::postDraw()
-{
-	saveGLState();
-
-	for (std::list<Drawable*>::iterator it = dlist.begin(); it!=dlist.end(); ++it)
-	{
-		(*it)->postDraw();
-	}
-	
-	restoreGLState();
-}
-
 void
 Drawable::setColor(double r, double g, double b, double a)
 {

@@ -14,7 +14,6 @@ public:
 	virtual ~Drawable() = 0;
 	
 	virtual void draw();
-	virtual void postDraw();
 
 	virtual void saveGLState();
 	virtual void restoreGLState();
