@@ -3,6 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <float.h>
 #include "qwt3d_plot.h"
 
 using namespace Qwt3D;
@@ -98,9 +99,10 @@ Plot3D::setScale( double xVal, double yVal, double zVal )
   if (xScale_ == xVal && yScale_ == yVal && zScale_ == zVal)
 		return;
 	
-	xScale_ = xVal;
-	yScale_ = yVal;
-	zScale_ = zVal;
+	xScale_ = (xVal < DBL_EPSILON ) ? DBL_EPSILON : xVal;
+	yScale_ = (yVal < DBL_EPSILON ) ? DBL_EPSILON : yVal;
+	zScale_ = (zVal < DBL_EPSILON ) ? DBL_EPSILON : zVal;
+
 	updateGL();
 	emit scaleChanged(xVal, yVal, zVal);
 }
@@ -115,7 +117,7 @@ Plot3D::setZoom( double val )
   if (zoom_ == val)
 		return;
 
-  zoom_ = val;
+	zoom_ = (val < DBL_EPSILON ) ? DBL_EPSILON : val;
  	updateGL();
 	emit zoomChanged(val);
 }

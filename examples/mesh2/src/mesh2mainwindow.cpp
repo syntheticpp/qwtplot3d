@@ -101,6 +101,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 		connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 		connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
+		connect(shader, SIGNAL( toggled(bool) ), this, SLOT( toggleShader(bool)));
 		connect(mouseinput, SIGNAL( toggled(bool) ), dataWidget, SLOT( enableMouse(bool)));
 		connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
 		connect(normalsquality,  SIGNAL(valueChanged(int)), this, SLOT(setNormalQuality(int)) );
@@ -558,6 +559,15 @@ Mesh2MainWindow::toggleAutoScale(bool val)
 {
 	dataWidget->coordinates()->setAutoScale(val);
 	dataWidget->updateGL();
+}
+
+void
+Mesh2MainWindow::toggleShader(bool val)
+{
+	if (val)
+		dataWidget->setShading(GOURAUD);
+	else
+		dataWidget->setShading(FLAT);
 }
 
 void

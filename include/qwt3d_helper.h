@@ -14,6 +14,9 @@ namespace
 	}
 }
 
+namespace Qwt3D
+{
+
 inline double MAX(const std::vector<double>& data)
 {
 	return *std::max_element(data.begin(),data.end());
@@ -98,5 +101,7 @@ inline double round125( double x)
 	
 	return c;
 }
+
+} //ns
 
 #endif

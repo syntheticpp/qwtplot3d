@@ -20,6 +20,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	zoom_ = 8;
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
+	shading_ = GOURAUD;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
 
@@ -330,6 +331,31 @@ Plot3D::setPlotStyle( PLOTSTYLE val )
 	plotstyle_ = val;
 	
 	updateData();
+	updateGL();
+}
+
+/*!
+  Set shading style
+*/
+void
+Plot3D::setShading( SHADINGSTYLE val )
+{
+	if (val == shading_)
+		return;
+	
+	shading_ = val;
+	
+	switch (shading_)
+	{
+		case FLAT:
+			glShadeModel(GL_FLAT);
+			break;
+		case GOURAUD:
+			glShadeModel(GL_SMOOTH);
+			break;
+		default:
+			break;
+	}
 	updateGL();
 }
 

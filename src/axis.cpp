@@ -61,19 +61,22 @@ Axis::setPosition(const Triple& beg, const Triple& end)
 void 
 Axis::setMajors(int val)
 {
-	if (val == tmaj_)
+	if (val == majorintervals_)
 		return;
 	
-	tmaj_ = (val<=0) ? 1 : val; // always >= 1
+	majorintervals_ = (val<=0) ? 1 : val; // always >= 1
 
 	markerLabel_.clear();
-	markerLabel_ = std::vector<LabelPixmap>(tmaj_+1);
+	markerLabel_ = std::vector<LabelPixmap>(majorintervals_+1);
 }
 
 void 
 Axis::setMinors(int val)
 {
-	tmin_ = (val<=0) ? 1 : val; // always >= 1
+	if (val == minorintervals_)
+		return;
+
+	minorintervals_ = (val<=0) ? 1 : val; // always >= 1
 }
 
 void 
@@ -150,7 +153,8 @@ Axis::drawTics()
 	autostart_ = start_;
 	autostop_ = stop_;
 
-	buildAutoScale(autostart_, autostop_); // changes tmaj_
+ 	if (autoScale()) 
+    buildAutoScale(autostart_, autostop_); // changes majorintervals_
 
   if (isPracticallyZero(autostart_, autostop_))
 		return;
@@ -164,23 +168,23 @@ Axis::drawTics()
 
 	int mj;
 	
-	for (mj = 0; mj <= tmaj_; ++mj) 
+	for (mj = 0; mj <= majorintervals_; ++mj) 
 	{
 		glLineWidth(majLineWidth_);
-		double t = double(mj) / tmaj_;
+		double t = double(mj) / majorintervals_;
 		drawTic(beg + t * runningpoint, lmaj_);
 		drawNumber(beg + t * runningpoint + 1.2 * lmaj_ * orientation_, mj);
 		if (t==1.0)
 			break;
 		glLineWidth(minLineWidth_);
-		for (int mi=1; mi < tmin_; ++mi)
+		for (int mi=1; mi < minorintervals_; ++mi)
 		{
-			double tt = double(mi)  / (tmin_ * tmaj_);
+			double tt = double(mi)  / (minorintervals_ * majorintervals_);
 			drawTic(beg + (t+tt)*runningpoint, lmin_);		
 		}
 	}
 
-	if (tmin_ < 1)
+	if (minorintervals_ < 1)
 		return;
 
 	// remaining minor tics
@@ -188,7 +192,7 @@ Axis::drawTics()
 	// beg_          beg
 	//  |_____________|_____ _ _ _
 	
-	Triple step = (end-beg) / (tmaj_ * tmin_);
+	Triple step = (end-beg) / (majorintervals_ * minorintervals_);
 	int ii = 1;
 	Triple residuum = beg_ - beg;
 	runningpoint = step;
@@ -225,7 +229,7 @@ Axis::drawNumber(Triple pos, int mtic)
 	if (!drawNumbers_ || (mtic < 0) || (mtic >= int(markerLabel_.size())))
 		return;
 	
-	double t = double(mtic) / tmaj_;
+	double t = double(mtic) / majorintervals_;
 
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
@@ -309,17 +313,14 @@ Axis::setLabelColor(RGBA col)
 }
 
 /*!
-	changes tmaj_
+	changes majorintervals_
 */
 void 
 Axis::buildAutoScale (double& a, double& b)
 {
- 	if (!autoscale_) 
-      return;
-  
   double delta = stop_ - start_;
 
-  double y = round125(delta/tmaj_);
+  double y = round125(delta/majorintervals_);
 	a = y * ceil(start_/y);
 	b = y * floor(stop_/y);
 
