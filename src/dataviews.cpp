@@ -5,6 +5,7 @@
 
 #include "qwt_plot3d.h"
 
+using namespace std;
 using namespace Qwt3D;
 
 /*!
@@ -149,6 +150,7 @@ QwtPlot3D::calcFloorListAsData()
 	glEnd();
 }
 
+
 void 
 QwtPlot3D::calcFloorListAsIsolines()
 {
@@ -161,189 +163,87 @@ QwtPlot3D::calcFloorListAsIsolines()
 	int cstep = resolution_;
 	int rstep = resolution_;
 
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	unsigned i,j;
 	double zshift = actualData_->minimum();
+	
 	int cols = actualData_->columns();
 	int rows = actualData_->rows();
 	
-	for (int k = isolines_; k > 0; --k) 
+	Triple t[4];
+	vector<Triple> intersection;
+	
+	int hit = -1;
+	double lambda = 0;
+	
+	for (int k = 0; k != isolines_; ++k) 
 	{
-		double hi = actualData_->minimum() + k * step;
-		double lo = hi - step;
-		
-
-		for (i = 0; i <= cols-cstep; i += cstep) 
-		{
-			for (j = 0; j <= rows-rstep; j += rstep) 
-			{
-				col = (*dataColor_)(
-					actualData_->vertices[i][j][0],
-					actualData_->vertices[i][j][1],
-					actualData_->vertices[i][j][2]);
-
-				glColor4d(col.r, col.g, col.b, col.a);
+		double val = zshift + k * step;		
 				
-				Triple thi = Triple(	actualData_->vertices[i][j][0],
-															actualData_->vertices[i][j][1],
-															actualData_->vertices[i][j][2]);
-				if ( lo<thi.z && thi.z<hi)
-				{
-					Triple tlo[8];
-					
-					if (i<cols-cstep)
-					{
-						tlo[0] = Triple(actualData_->vertices[i+cstep][j][0],
-							actualData_->vertices[i+cstep][j][1],
-							actualData_->vertices[i+cstep][j][2]);
-					}
-					if (i<cols-cstep && j<rows-rstep)
-					{
-						tlo[1] = Triple(actualData_->vertices[i+cstep][j+rstep][0],
-							actualData_->vertices[i+cstep][j+rstep][1],
-							actualData_->vertices[i+cstep][j+rstep][2]);
-					}
-					if (j<rows-rstep)
-					{
-						tlo[2] = Triple(actualData_->vertices[i][j+rstep][0],
-														actualData_->vertices[i][j+rstep][1],
-														actualData_->vertices[i][j+rstep][2]);
-					}
-					if (i>0 && j<rows-rstep)
-					{
-						tlo[3] = Triple(actualData_->vertices[i-cstep][j+rstep][0],
-														actualData_->vertices[i-cstep][j+rstep][1],
-														actualData_->vertices[i-cstep][j+rstep][2]);
-					}
-					if (i>0)
-					{
-						tlo[4] = Triple(actualData_->vertices[i-cstep][j][0],
-														actualData_->vertices[i-cstep][j][1],
-														actualData_->vertices[i-cstep][j][2]);
-					}
-					if (i>0 && j>0)
-					{
-						tlo[5] = Triple(actualData_->vertices[i-cstep][j-rstep][0],
-							actualData_->vertices[i-cstep][j-rstep][1],
-							actualData_->vertices[i-cstep][j-rstep][2]);
-					}
-					if (j>0)
-					{
-						tlo[6] = Triple(actualData_->vertices[i][j-rstep][0],
-							actualData_->vertices[i][j-rstep][1],
-							actualData_->vertices[i][j-rstep][2]);
-					}
-					if (i<cols-cstep && j>0)
-					{
-						tlo[7] = Triple(actualData_->vertices[i+cstep][j-rstep][0],
-														actualData_->vertices[i+cstep][j-rstep][1],
-														actualData_->vertices[i+cstep][j-rstep][2]);
-					}										
-					
-					unsigned k1,k2;
-					
-					if (i>0 && i<cols-cstep && j>0 && j<rows-rstep)
-					{
-						k1 = 0;
-						k2 = 7;
-					}
-					else if (i==0 && j>0 && j<rows-rstep)
-					{
-						tlo[0] = Triple(actualData_->vertices[i][j-rstep][0],
-							actualData_->vertices[i][j-rstep][1],
-							actualData_->vertices[i][j-rstep][2]);
-						tlo[1] = Triple(actualData_->vertices[i+cstep][j-rstep][0],
-							actualData_->vertices[i+cstep][j-rstep][1],
-							actualData_->vertices[i+cstep][j-rstep][2]);
-						tlo[2] = Triple(actualData_->vertices[i+cstep][j][0],
-							actualData_->vertices[i+cstep][j][1],
-							actualData_->vertices[i+cstep][j][2]);
-						tlo[3] = Triple(actualData_->vertices[i+cstep][j+rstep][0],
-							actualData_->vertices[i+cstep][j+rstep][1],
-							actualData_->vertices[i+cstep][j+rstep][2]);
-						tlo[4] = Triple(actualData_->vertices[i][j+rstep][0],
-							actualData_->vertices[i][j+rstep][1],
-							actualData_->vertices[i][j+rstep][2]);
-						k1 = 0;
-						k2 = 3;
-					}
-					else if (i>0 && i<cols-cstep && j==rows-rstep)
-					{
-						k1 = 4;
-						k2 = 7;
-					}
-					else if (i==cols-cstep && j>0 && j<rows-rstep)
-					{
-						k1 = 2;
-						k2 = 5;
-					}
-					else if (i>0 && i<cols-cstep && j==0)
-					{
-						k1 = 0;
-						k2 = 3;
-					}
-					else if (i==0 && j==0)
-					{
-						k1 = 0;
-						k2 = 1;
-					}
-					else if (i==0 && j==rows-rstep)
-					{
-						k1 = 6;
-						k2 = 7;
-					}
-					else if (i==cols-cstep && j==rows-rstep)
-					{
-						k1 = 4;
-						k2 = 5;
-					}
-					else if (i==cols-cstep && j==0)
-					{
-						k1 = 2;
-						k2 = 3;
-					}
-					else
-					{
-						k1 = 0;
-						k2 = 7;
-					}
-					Triple tlo0 = tlo[0]; // remember for last step in while
+		for (int i = 0; i < cols-cstep; i += cstep) 
+		{
+			for (int j = 0; j < rows-rstep; j += rstep) 
+			{
+				t[0] =  Triple(	actualData_->vertices[i][j][0],
+												actualData_->vertices[i][j][1],
+												actualData_->vertices[i][j][2]);
 
-					int k = k1;
-					while (k1<=k && k<=k2)
+				col = (*dataColor_)(t[0].x,t[0].y,t[0].z);
+  			glColor4d(col.r, col.g, col.b, col.a);
+				
+				t[1] =  Triple(	actualData_->vertices[i+cstep][j][0],
+												actualData_->vertices[i+cstep][j][1],
+												actualData_->vertices[i+cstep][j][2]);
+				t[2] =  Triple(	actualData_->vertices[i+cstep][j+rstep][0],
+												actualData_->vertices[i+cstep][j+rstep][1],
+												actualData_->vertices[i+cstep][j+rstep][2]);
+				t[3] =  Triple(	actualData_->vertices[i][j+rstep][0],
+												actualData_->vertices[i][j+rstep][1],
+												actualData_->vertices[i][j+rstep][2]);
+
+				double diff = 0;
+				for (int m = 0; m!=4; ++m)
+				{
+					int mm = (m+1)%4;
+					if ((val>=t[m].z && val<=t[mm].z) || (val>=t[mm].z && val<=t[m].z))
 					{
-						tlo[0] = tlo[k];
-						tlo[1] = (k<7) ? tlo[k+1] : tlo0;
+						diff = t[mm].z - t[m].z;
 						
-						Triple rp1, rp2;
-						if (tlo[0].z <= lo)
+						if (isPracticallyZero(diff)) // degenerated
 						{
-							rp1 = tlo[0] + ((lo - tlo[0].z) / (thi.z - tlo[0].z)) * (thi-tlo[0]);
-							if (tlo[1].z <= lo)
-								rp2 = tlo[1] + ((lo - tlo[1].z) / (thi.z - tlo[1].z)) * (thi-tlo[1]);
-							else
-								rp2 = tlo[0] + ((lo - tlo[0].z) / (tlo[1].z - tlo[0].z)) * (tlo[1]-tlo[0]);
-							glBegin(GL_LINES);
-								glVertex3d(rp1.x,rp1.y,zshift);
-								glVertex3d(rp2.x,rp2.y,zshift);
-//								glVertex3d(rp1.x,rp1.y,rp1.z);
-//								glVertex3d(rp2.x,rp2.y,rp2.z);
-							glEnd();
+							intersection.push_back(t[m]);
+							intersection.push_back(t[mm]);
+							continue;
 						}
-						else if (tlo[1].z <= lo)
-						{
-							rp1 = tlo[1] + ((lo - tlo[1].z) / (thi.z - tlo[1].z)) * (thi-tlo[1]);
-							rp2 = tlo[1] + ((lo - tlo[1].z) / (tlo[0].z - tlo[1].z)) * (tlo[0]-tlo[1]);
-							glBegin(GL_LINES);
-								glVertex3d(rp1.x,rp1.y,zshift);
-								glVertex3d(rp2.x,rp2.y,zshift);
-//								glVertex3d(rp1.x,rp1.y,rp1.z);
-//								glVertex3d(rp2.x,rp2.y,rp2.z);
-							glEnd();
-						}
-						++k;
+						
+						lambda =  (val - t[m].z) / diff;
+						intersection.push_back(Triple(lambda * t[mm].x + (1-lambda) * t[m].x, lambda * t[mm].y + (1-lambda) * t[m].y, val));
 					}
+				}
+				
+				if (!intersection.empty())
+				{
+					if (intersection.size()>2)
+					{
+						glBegin(GL_LINE_STRIP);
+						for (unsigned dd = 0; dd!=intersection.size(); ++dd)
+						{
+							glVertex3d(intersection[dd].x, intersection[dd].y, zshift);
+						}
+						glEnd();
+					}
+					else if (intersection.size() == 2)
+					{
+						glBegin(GL_LINES);
+							glVertex3d(intersection[0].x,intersection[0].y,zshift);
+							glVertex3d(intersection[1].x,intersection[1].y,zshift);
+						glEnd();
+					}
+					else if (intersection.size() == 1)
+					{
+						glBegin(GL_POINTS);
+							glVertex3d(intersection[0].x,intersection[0].y,zshift);
+						glEnd();
+					}
+					intersection.clear();
 				}
 			}
 		}
