@@ -16,7 +16,7 @@ class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(SurfacePlot* pw)
+	Rosenbrock(SurfacePlot& pw)
 	:Function(pw)
 	{
 	}
@@ -32,7 +32,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(SurfacePlot* pw)
+	Hat(SurfacePlot& pw)
 	:Function(pw)
 	{
 	//	setMaxZ(0.8);     
@@ -80,7 +80,7 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	plot[1]->setRotation(30,0,15);
 
 
-	rosenbrock = new Rosenbrock(plot[0]);
+	rosenbrock = new Rosenbrock(*plot[0]);
 	
 	rosenbrock->setMesh(31,33);
 	rosenbrock->setDomain(-1.73,1.8,-1.9,1.8);
@@ -88,7 +88,7 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	
 	rosenbrock->create();
 
-	hat = new Hat(plot[1]);
+	hat = new Hat(*plot[1]);
 	
 	hat->setMesh(30,27);
 	hat->setDomain(-1.8,1.7,-1.6,1.7);
@@ -237,6 +237,11 @@ void printMainWindow::dumpImage()
 		plot[1]->saveVector( "dump3b.pdf", "PDF",true,sortingtype_);
 		plot[0]->saveVector( "dump3a.eps", "EPS",true,sortingtype_);
 		plot[1]->saveVector( "dump3b.eps", "EPS",true,sortingtype_);
+	}
+	else if (filetype_ == QString("hsf"))
+	{
+		plot[0]->saveVector( "dump0a.hsf", "HSF",false,sortingtype_);
+		plot[1]->saveVector( "dump0b.hsf", "HSF",false);
 	}
 
 	plot[0]->setTitle("Rosenbrock");

@@ -59,8 +59,6 @@ public:
   Qwt3D::Enrichment* clone() const {return new Cone(*this);}
   
   void configure(double rad, unsigned quality);
-  void drawBegin();
-  void drawEnd();
   void draw(Qwt3D::Triple const&);
 
 private:
@@ -89,8 +87,6 @@ public:
 	void configure(int segs, double relconelength, double relconerad, double relstemrad);
   void setQuality(int val) {segments_ = val;} //!< Set the number of faces for the arrow
   void draw(Qwt3D::Triple const&);
-  void drawBegin();
-  void drawEnd();
 
   void setTop(Qwt3D::Triple t){top_ = t;}
   void setColor(Qwt3D::RGBA rgba) {rgba_ = rgba;}
@@ -113,9 +109,6 @@ private:
 
   Qwt3D::Triple top_;
   Qwt3D::RGBA rgba_;
-
-
-	static const double PI;
 };
 
 } // ns

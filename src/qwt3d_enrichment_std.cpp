@@ -202,20 +202,6 @@ void Cone::configure(double rad, unsigned quality)
 	gluQuadricOrientation(disk,GLU_OUTSIDE);
 }
 
-void Cone::drawBegin()
-{
-  oldstate_ = glIsEnabled(GL_LIGHTING);
-  glEnable(GL_LIGHTING);
-}
-
-void Cone::drawEnd()
-{
-  if (oldstate_)
-     glEnable(GL_LIGHTING);
-  else
-    glDisable(GL_LIGHTING);
-}
-
 void Cone::draw(Qwt3D::Triple const& pos)
 {  
 	RGBA rgba = (*plot->dataColor())(pos);
@@ -242,8 +228,6 @@ void Cone::draw(Qwt3D::Triple const& pos)
 //   Arrow
 //
 /////////////////////////////////////////////////////////////////
-
-const double Arrow::PI = 3.14159265358979323846264338328;
 
 Arrow::Arrow()
 {	
@@ -274,20 +258,6 @@ Arrow::~Arrow()
 	gluDeleteQuadric(disk);
 	gluDeleteQuadric(base);
 	gluDeleteQuadric(bottom);
-}
-
-void Arrow::drawBegin()
-{
-  oldstate_ = glIsEnabled(GL_LIGHTING);
-  glEnable(GL_LIGHTING);
-}
-
-void Arrow::drawEnd()
-{
-  if (oldstate_)
-     glEnable(GL_LIGHTING);
-  else
-    glDisable(GL_LIGHTING);
 }
 
 /**
@@ -371,5 +341,5 @@ double Arrow::calcRotation(Triple& axis, FreeVector const& vec)
 	axis = normalizedcross(first,second);
 	double cosphi = dotProduct(first,second);
 	
-	return 180 * acos(cosphi) / Arrow::PI;
+	return 180 * acos(cosphi) / Qwt3D::PI;
 }

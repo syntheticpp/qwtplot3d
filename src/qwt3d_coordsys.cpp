@@ -112,8 +112,10 @@ void CoordinateSystem::draw()
 	if( style_ == NOCOORD)
 		return;
 
-	if (majorgridlines_)
-		drawMajorGridLines();
+  if (majorgridlines_ || minorgridlines_)
+    recalculateAxesTics();
+  if (majorgridlines_)
+    drawMajorGridLines();
 	if (minorgridlines_)
 		drawMinorGridLines();
 	
@@ -196,7 +198,7 @@ void CoordinateSystem::chooseAxes()
 						double y = min(min(end[rem_x].y,end[i].y),min(beg[rem_x].y,beg[i].y));
 						choice_x = (y == beg[i].y || y == end[i].y) ? i : rem_x;
 												
-						other_x = (choice_x == i) ? rem_x : i;
+						other_x = (choice_x == (int)i) ? rem_x : (int)i;
 						left = (beg[choice_x].x < beg[other_x].x || end[choice_x].x < end[other_x].x) 
 							? true
 							: false;
@@ -218,7 +220,7 @@ void CoordinateSystem::chooseAxes()
 						double y = min(min(end[rem_y].y,end[i].y),min(beg[rem_y].y,beg[i].y));
 						choice_y = (y == beg[i].y || y == end[i].y) ? i : rem_y;
 						
-						other_y = (choice_y == i) ? rem_y : i;
+						other_y = (choice_y == (int)i) ? rem_y : (int)i;
 						left = (beg[choice_y].x < beg[other_y].x || end[choice_y].x < end[other_y].x) 
 							? true
 							: false;
@@ -239,7 +241,7 @@ void CoordinateSystem::chooseAxes()
 						double z = max(max(end[rem_z].z,end[i].z),max(beg[rem_z].z,beg[i].z));
 						choice_z = (z == beg[i].z || z == end[i].z) ? i : rem_z;
 
-						other_z = (choice_z == i) ? rem_z : i;
+						other_z = (choice_z == (int)i) ? rem_z : (int)i;
 												
 						rem_z = -1;
 
@@ -287,7 +289,7 @@ void CoordinateSystem::chooseAxes()
 	{
 		for (i=0; i!=axes.size(); ++i)
 		{
-			if (i!=choice_x && i!=choice_y && i!=choice_z)
+			if ((int)i!=choice_x && (int)i!=choice_y && (int)i!=choice_z)
 				detach(&axes[i]);
 		}
 	}
@@ -423,6 +425,12 @@ void CoordinateSystem::setAxesColor(RGBA val)
 		axes[i].setColor(val);
 }
 
+void CoordinateSystem::recalculateAxesTics()
+{
+	for (unsigned i=0; i!=axes.size(); ++i)
+		axes[i].recalculateTics();
+}
+
 void CoordinateSystem::setNumberFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	for (unsigned i=0; i!=axes.size(); ++i)
@@ -500,9 +508,10 @@ void CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS f
 	}
 }
 
-void CoordinateSystem::setGridLines(bool majors, bool minors) 
+void CoordinateSystem::setGridLines(bool majors, bool minors, int sides) 
 {
-	majorgridlines_ = majors; 
+	sides_ = sides;
+  majorgridlines_ = majors; 
 	minorgridlines_ = minors;
 } 
 
@@ -513,29 +522,38 @@ void CoordinateSystem::drawMajorGridLines()
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
 	setDeviceLineWidth(axes[X1].majLineWidth());
 
-	unsigned i=0;
-	
-	Axis axpair[2];
-
-	axpair[0] = axes[X1];
-	axpair[1] = axes[X4];
-	
-	glBegin( GL_LINES );
-		double length = axpair[1].begin().y-axpair[0].begin().y;
-		for (i=0; i!=axpair[0].majorPositions().size(); ++i)
-		{
-			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
-			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y + length, axpair[0].majorPositions()[i].z ); 
-		}
-		axpair[0] = axes[Y1];
-		axpair[1] = axes[Y2];
-		length = axpair[1].begin().x-axpair[0].begin().x;
-		for (i=0; i!=axpair[0].majorPositions().size(); ++i)
-		{
-			glVertex3d( axpair[0].majorPositions()[i].x, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
-			glVertex3d( axpair[0].majorPositions()[i].x + length, axpair[0].majorPositions()[i].y, axpair[0].majorPositions()[i].z ); 
-		}
-	glEnd();
+  glBegin( GL_LINES );
+  if (sides_ & Qwt3D::FLOOR)  
+  {
+		drawMajorGridLines(axes[X1],axes[X4]);
+		drawMajorGridLines(axes[Y1],axes[Y2]);
+  }
+  if (sides_ & Qwt3D::CEIL)  
+  {
+		drawMajorGridLines(axes[X2],axes[X3]);
+		drawMajorGridLines(axes[Y3],axes[Y4]);
+  }
+  if (sides_ & Qwt3D::LEFT)  
+  {
+		drawMajorGridLines(axes[Y1],axes[Y4]);
+		drawMajorGridLines(axes[Z1],axes[Z2]);
+  }
+  if (sides_ & Qwt3D::RIGHT)  
+  {
+		drawMajorGridLines(axes[Y2],axes[Y3]);
+		drawMajorGridLines(axes[Z3],axes[Z4]);
+  }
+  if (sides_ & Qwt3D::FRONT)  
+  {
+		drawMajorGridLines(axes[X1],axes[X2]);
+		drawMajorGridLines(axes[Z2],axes[Z3]);
+  }
+  if (sides_ & Qwt3D::BACK) 
+  {
+		drawMajorGridLines(axes[X3],axes[X4]);
+		drawMajorGridLines(axes[Z4],axes[Z1]);
+  }
+  glEnd();
 }
 
 void CoordinateSystem::drawMinorGridLines()
@@ -545,27 +563,58 @@ void CoordinateSystem::drawMinorGridLines()
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
 	setDeviceLineWidth(axes[X1].minLineWidth());
 
-	unsigned i=0;
-	
-	Axis axpair[2];
+  glBegin( GL_LINES );
+  if (sides_ & Qwt3D::FLOOR)  
+  {
+		drawMinorGridLines(axes[X1],axes[X4]);
+		drawMinorGridLines(axes[Y1],axes[Y2]);
+  }
+  if (sides_ & Qwt3D::CEIL)  
+  {
+		drawMinorGridLines(axes[X2],axes[X3]);
+		drawMinorGridLines(axes[Y3],axes[Y4]);
+  }
+  if (sides_ & Qwt3D::LEFT)  
+  {
+		drawMinorGridLines(axes[Y1],axes[Y4]);
+		drawMinorGridLines(axes[Z1],axes[Z2]);
+  }
+  if (sides_ & Qwt3D::RIGHT)  
+  {
+		drawMinorGridLines(axes[Y2],axes[Y3]);
+		drawMinorGridLines(axes[Z3],axes[Z4]);
+  }
+  if (sides_ & Qwt3D::FRONT)  
+  {
+		drawMinorGridLines(axes[X1],axes[X2]);
+		drawMinorGridLines(axes[Z2],axes[Z3]);
+  }
+  if (sides_ & Qwt3D::BACK)  
+  {
+		drawMinorGridLines(axes[X3],axes[X4]);
+		drawMinorGridLines(axes[Z4],axes[Z1]);
+  }
+  glEnd();
+}
 
-	axpair[0] = axes[X1];
-	axpair[1] = axes[X4];
-	
-	glBegin( GL_LINES );
-		double length = axpair[1].begin().y-axpair[0].begin().y;
-		for (i=0; i!=axpair[0].minorPositions().size(); ++i)
-		{
-			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
-			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y + length, axpair[0].minorPositions()[i].z ); 
-		}
-		axpair[0] = axes[Y1];
-		axpair[1] = axes[Y2];
-		length = axpair[1].begin().x-axpair[0].begin().x;
-		for (i=0; i!=axpair[0].minorPositions().size(); ++i)
-		{
-			glVertex3d( axpair[0].minorPositions()[i].x, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
-			glVertex3d( axpair[0].minorPositions()[i].x + length, axpair[0].minorPositions()[i].y, axpair[0].minorPositions()[i].z ); 
-		}
-	glEnd();
+void CoordinateSystem::drawMajorGridLines(Axis& a0, Axis& a1)
+{
+  Triple d = a1.begin()-a0.begin();
+
+  for (unsigned int i=0; i!=a0.majorPositions().size(); ++i)
+	{
+		glVertex3d( a0.majorPositions()[i].x, a0.majorPositions()[i].y, a0.majorPositions()[i].z ); 
+		glVertex3d( a0.majorPositions()[i].x + d.x, a0.majorPositions()[i].y + d.y, a0.majorPositions()[i].z +d.z); 
+	}
+}
+
+void CoordinateSystem::drawMinorGridLines(Axis& a0, Axis& a1)
+{
+  Triple d = a1.begin()-a0.begin();
+
+  for (unsigned int i=0; i!=a0.minorPositions().size(); ++i)
+	{
+		glVertex3d( a0.minorPositions()[i].x, a0.minorPositions()[i].y, a0.minorPositions()[i].z ); 
+		glVertex3d( a0.minorPositions()[i].x + d.x, a0.minorPositions()[i].y + d.y, a0.minorPositions()[i].z +d.z); 
+	}
 }

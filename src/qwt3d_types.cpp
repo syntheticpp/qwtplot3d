@@ -11,10 +11,10 @@ using namespace Qwt3D;
 namespace {
   // convex hull
   
-  typedef double coord;
+  typedef double coordinate_type;
 
-  int ccw(coord **P, int i, int j, int k) {
-    coord	a = P[i][0] - P[j][0],
+  int ccw(coordinate_type **P, int i, int j, int k) {
+    coordinate_type	a = P[i][0] - P[j][0],
       b = P[i][1] - P[j][1],
       c = P[k][0] - P[j][0],
       d = P[k][1] - P[j][1];
@@ -23,7 +23,7 @@ namespace {
 
 
 #define CMPM(c,A,B) \
-  v = (*(coord**)A)[c] - (*(coord**)B)[c];\
+  v = (*(coordinate_type**)A)[c] - (*(coordinate_type**)B)[c];\
   if (v>0) return 1;\
   if (v<0) return -1;
 
@@ -37,11 +37,11 @@ namespace {
   int cmph(const void *a, const void *b) {return cmpl(b,a);}
 
 
-  int make_chain(coord** V, int n, int (*cmp)(const void*, const void*)) {
+  int make_chain(coordinate_type** V, int n, int (*cmp)(const void*, const void*)) {
     int i, j, s = 1;
-    coord* t;
+    coordinate_type* t;
 
-    qsort(V, n, sizeof(coord*), cmp);
+    qsort(V, n, sizeof(coordinate_type*), cmp);
     for (i=2; i<n; i++) {
       for (j=s; j>=1 && ccw(V, i, j, j-1); j--){}
       s = j+1;
@@ -50,7 +50,7 @@ namespace {
     return s;
   }
 
-  int _ch2d(coord **P, int n)  {
+  int _ch2d(coordinate_type **P, int n)  {
     int u = make_chain(P, n, cmpl);		/* make lower hull */
     if (!n) return 0;
     P[n] = P[0];
@@ -63,17 +63,16 @@ namespace {
 
 GridData::GridData()
 {
-	setSize(0,0);
+  datatype = Qwt3D::GRID;
+  setSize(0,0);
+  setPeriodic(false,false);
 }
 
 GridData::GridData(unsigned int columns, unsigned int rows)
 {
+  datatype = Qwt3D::GRID;
 	setSize(columns,rows);
-}
-
-GridData::~GridData()
-{
-	clear();		
+  setPeriodic(false,false);
 }
 
 int GridData::columns() const 
@@ -88,6 +87,7 @@ int GridData::rows() const
 
 void GridData::clear()
 {
+	setHull(ParallelEpiped());
 	{
 		for (unsigned i=0; i!=vertices.size(); ++i)
 		{	
@@ -113,15 +113,12 @@ void GridData::clear()
 	}
 	
 	normals.clear();
-	
-//	max_ = -DBL_MAX;
-//	min_ = DBL_MAX;
 }
 
 
 void GridData::setSize(unsigned int columns, unsigned int rows)
 {
-	clear();
+	this->clear();
 	vertices = std::vector<DataRow>(columns);
 	{
 		for (unsigned int i=0; i!=vertices.size(); ++i)
@@ -146,14 +143,6 @@ void GridData::setSize(unsigned int columns, unsigned int rows)
 	}
 }
 
-ParallelEpiped GridData::hull() const
-{
-	if (empty())
-		return ParallelEpiped();
-
-	return hull_;
-}
-
 Triple const& CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
 {
 	return nodes[cells[cellnumber][vertexnumber]];
@@ -161,19 +150,11 @@ Triple const& CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
 
 void CellData::clear()
 {
-	cells.clear();
+	setHull(ParallelEpiped());
+  cells.clear();
 	nodes.clear();
 	normals.clear();
 }
-
-ParallelEpiped CellData::hull() const
-{
-	if (empty())
-		return ParallelEpiped();
-
-	return hull_;
-}
-
 
 QColor Qwt3D::GL2Qt(GLdouble r, GLdouble g, GLdouble b)
 {
@@ -192,8 +173,6 @@ RGBA Qwt3D::Qt2GL(QColor col)
 }
 
 
-
-
 void Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& src )
 {
     idx.clear();
@@ -204,8 +183,8 @@ void Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& 
         idx.push_back(0);
         return;
     }
-    coord** points = new coord*[src.size()+1] ;
-    coord* P = new coord[src.size()*2];
+    coordinate_type** points = new coordinate_type*[src.size()+1] ;
+    coordinate_type* P = new coordinate_type[src.size()*2];
 
     int i;
 		for (i=0; i<(int)src.size(); ++i)
@@ -215,7 +194,7 @@ void Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& 
         points[i][1] = src[i].y;
     }
 
-    coord* start = points[0];
+    coordinate_type* start = points[0];
     int m = _ch2d( points, src.size() );
     idx.resize(m);
     

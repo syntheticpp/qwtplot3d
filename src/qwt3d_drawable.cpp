@@ -79,7 +79,7 @@ void Drawable::detachAll()
 }
 
 
-//! simplified glut routine (glUnProject): windows coord --> object coord 
+//! simplified glut routine (glUnProject): windows coordinates_p --> object coordinates_p 
 /**
 	Don't rely on (use) this in display lists !
 */
@@ -95,7 +95,7 @@ Triple Drawable::ViewPort2World(Triple win, bool* err)
 	return obj;
 }
 
-//! simplified glut routine (glProject): object coord --> windows coord 
+//! simplified glut routine (glProject): object coordinates_p --> windows coordinates_p 
 /**
 	Don't rely on (use) this in display lists !
 */

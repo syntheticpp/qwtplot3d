@@ -1,49 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <meta content="text/html; charset=ISO-8859-1"
- http-equiv="content-type">
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
   <title>home</title>
-  <meta content="Michael Bieber" name="author">
-  <link href="general.css" type="text/css" rel="stylesheet">
+  <meta name="author" content="Michael Bieber">
+  <link rel="stylesheet" type="text/css" href="general.css">
 </head>
 <body>
 <div style="text-align: center;">
 <br>
 <br>
-<img style="border: 1px solid ; width: 662px; height: 409px;"
- alt="St. Helens" title="" src="plot3d.jpg"><br>
+<img src="plot3d.jpg" title="" alt="St. Helens"
+ style="border: 1px solid ; width: 662px; height: 409px;"><br>
 <br>
-<h4 style="font-weight: bold;">Version 0.2.0,&nbsp; 24 September 2003</h4>
+<h4 style="font-weight: bold;">Version 0.2.3,&nbsp; 10 March 2004</h4>
 <br>
-<div style="text-align: left;"><br>
-<b style="color: rgb(34, 139, 34);">&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; </b><span style="color: rgb(0, 0, 0);"></span><b
- style="color: rgb(34, 139, 34);">CVS</b>&nbsp; ...in CVS only,<span
- style="font-weight: normal;"> not yet released</span>
+<div style="text-align: left;"><b style="color: rgb(34, 139, 34);">&nbsp;
+</b><span style="color: rgb(0, 0, 0);"></span><span
+ style="font-weight: normal;"></span>
 <h2 style="text-align: left; margin-left: 40px;">Features</h2>
 <div style="margin-left: 40px;"> </div>
 <ol style="margin-left: 40px;">
 </ol>
 <div style="margin-left: 40px;"> </div>
-<ul style="margin-left: 40px;" compact="compact">
+<ul compact="compact" style="margin-left: 40px;">
+  <li><a href="manual.html#func">Parametric Surfaces</a>&nbsp; <span
+ style="font-weight: bold; color: rgb(204, 0, 0);">New</span><br>
+  </li>
+  <li>Lighting <span style="font-weight: bold; color: rgb(204, 0, 0);">New</span></li>
+  <li><a
+ href="file:///v:/cvs/qwtplot3d/doc/web/navigation/manual.html#enrich">User
+defined visual objects</a>&nbsp; <span style="color: rgb(34, 139, 34);"><span
+ style="color: rgb(204, 102, 0); font-weight: bold;"><span
+ style="color: rgb(204, 0, 0);">New</span> </span></span><b
+ style="color: rgb(34, 139, 34);">CVS <br>
+    </b></li>
   <li>Scaling, rotating, shifting, zooming of data sets and
-mathematical functions ( see <a
- href="../navigation/manual.html#datainput" class="el">Data Input Topics</a>
+mathematical functions ( see <a class="el"
+ href="../navigation/manual.html#datainput">Data Input Topics</a>
 )</li>
   <li>Interactive mouse handling</li>
   <li>Resolution changing on the fly</li>
   <li>Reading from MESH data files :See the 'examples/data' directory
 and NativeReader documentation for this . You will find example
-datasets <a target="_blank"
- href="http://sourceforge.net/projects/qwtplot3d">here</a></li>
+datasets <a href="http://sourceforge.net/projects/qwtplot3d"
+ target="_blank">here</a></li>
   <li>Data structures providing nodes and triangulation</li>
   <li>Reading from FEM files</li>
   <li>Flat (2D) labeling</li>
   <li>Wireframe, filled polygons, hidden line</li>
   <li>Floor projections (Isolines, Data)</li>
-  <li><a href="manual.html#enrich">User defined visual objects</a>&nbsp;
-    <b style="color: rgb(34, 139, 34);">CVS</b></li>
   <li>Autoscalable axes</li>
   <li>Free color model</li>
   <li>Flat/Gouraud shading&nbsp;</li>
@@ -51,11 +58,11 @@ datasets <a target="_blank"
   <li>Pixmap output (all Qt supported formats)<br>
   </li>
   <li>Vector output (PostScript,&nbsp; EPS and PDF)&nbsp; via <a
- target="_blank" href="http://www.geuz.org/gl2ps/">gl2ps</a>&nbsp;&nbsp;<b
+ href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>&nbsp;&nbsp;<b
  style="color: rgb(34, 139, 34);">&nbsp;&nbsp;&nbsp; </b><span
  style="font-style: italic; color: rgb(102, 102, 102);">// This
 feature&nbsp; is more thoroughly discussed&nbsp;</span><a
- style="font-style: italic;" href="pdf.html"> here</a> </li>
+ href="pdf.html" style="font-style: italic;"> here</a> </li>
 </ul>
 <div style="margin-left: 40px;"> </div>
 <h2 style="text-align: left; margin-left: 40px;"><a name="todo"></a>
@@ -69,6 +76,10 @@ Todo</h2>
   <li>New widget classes ( More general - not just function-like -
 surfaces;
 Voxels)</li>
+  <li><a target="_blank"
+ href="http://developer.hoops3d.com/documentation/noiebrowser.html">HSF</a>
+output<br>
+  </li>
   <li>Transparency<br>
   </li>
 </ul>
@@ -83,8 +94,8 @@ There are very sophisticated programs in use to prepare your data
 during a preliminary step.
 As an example, I'll likely
 provide a plugin for
-reading <a target="_blank"
- href="http://www-2.cs.cmu.edu/%7Equake/triangle.html">Triangle</a>
+reading <a href="http://www-2.cs.cmu.edu/%7Equake/triangle.html"
+ target="_blank">Triangle</a>
 output.</p>
 <h2><a name="examplesonmainpage"></a></h2>
 </div>

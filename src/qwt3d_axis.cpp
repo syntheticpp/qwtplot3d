@@ -178,6 +178,87 @@ void Axis::drawBase()
 	glEnd();
 }	
 
+void Axis::recalculateTics()
+{
+  if (isPracticallyZero(start_, stop_))
+		return;
+
+	autostart_ = start_;
+	autostop_ = stop_;
+
+ 	if (autoScale()) 
+  {  
+		as_.init(start_, stop_, majors());
+		setMajors(as_.execute(autostart_, autostop_));
+	}
+  if (isPracticallyZero(autostart_, autostop_))
+		return;
+
+	Triple normal = (end_ - beg_);
+	//normal.normalize();
+	Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
+	Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
+
+	Triple runningpoint = end - beg;
+
+	majorpos_.clear();
+	minorpos_.clear();
+		
+	int mj;
+	
+	for (mj = 0; mj <= majorintervals_; ++mj) 
+	{
+		double t = double(mj) / majorintervals_;
+		majorpos_.push_back(beg + t * runningpoint);
+		if (t==1.0)
+			break;
+		for (int mi=1; mi < minorintervals_; ++mi)
+		{
+			double tt = double(mi)  / (minorintervals_ * majorintervals_);
+			minorpos_.push_back(beg + (t+tt)*runningpoint);		
+		}
+	}
+
+	if (minorintervals_ < 1)
+		return;
+
+	// remaining minor tics
+	
+	// beg_          beg
+	//  |_____________|_____ _ _ _
+	
+	Triple step = (end-beg) / (majorintervals_ * minorintervals_);
+	int ii = 1;
+	Triple residuum = beg_ - beg;
+	runningpoint = step;
+	
+	if (runningpoint.length())
+	{
+		while (runningpoint.length() < residuum.length())
+		{
+			minorpos_.push_back(beg - runningpoint);								
+			runningpoint = (++ii) * step;
+		}
+	}
+	
+	//     end           end_
+	// _ _ _|_____________|
+
+	ii = 1;
+	residuum = end_ - end;
+	runningpoint = step;
+	
+	if (runningpoint.length())
+	{
+		while (runningpoint.length() < residuum.length()) 
+		{ 
+			minorpos_.push_back(end + runningpoint);								
+			runningpoint = (++ii) * step;
+		}
+	}	
+}
+
+
 void Axis::drawTics()
 {
 	if (!drawTics_)
