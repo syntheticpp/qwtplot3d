@@ -77,6 +77,11 @@ inline int round(double d)
 	return (d>0) ? int(d+0.5) : int(d-0.5);
 }
 
+inline bool isZero(double a, double b)
+{
+  return (fabs (a - b) <= min (fabs(a), fabs(b))*DBL_EPSILON);	
+}
+
 
 //! Triple <tt>[x,y,z]</tt>
 struct Triple
@@ -132,7 +137,7 @@ struct Triple
 
 	bool operator!=(Triple t) const
 	{
-		return fabs(x-t.x) > DBL_EPSILON || fabs(y-t.y) > DBL_EPSILON || fabs(z-t.z) > DBL_EPSILON;
+		return !isZero(x,t.x) || !isZero(y,t.y) || !isZero(z,t.z);
 	}
 	
 	bool operator==(Triple t) const
@@ -153,7 +158,6 @@ struct Triple
 			*this /= l;
 	}
 };
-
 
 inline const Triple operator+(const Triple& t, const Triple& t2)
 {
@@ -189,16 +193,16 @@ typedef std::vector<Vertex> DataRow;
 typedef std::vector<DataRow> DataMatrix;
 
 //! Implements a matrix of z-Values with limit access functions 
-class Data
+class GridData
 {
 public:
 	
-	Data();
-	Data(unsigned int columns, unsigned int rows);//!< see setSize()
-	~Data();
+	GridData();
+	GridData(unsigned int columns, unsigned int rows);//!< see setSize()
+	~GridData();
 
-	Data(Data const&); 
-	Data& operator=(Data const&); //!< deep copy
+	GridData(GridData const&); 
+	GridData& operator=(GridData const&); //!< deep copy
 
 	int columns() const;
 	int rows() const;
