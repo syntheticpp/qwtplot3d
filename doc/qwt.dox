@@ -11,6 +11,8 @@
 
 	\section news News
 	
+	- Apr 18 2003: CVS: Isoline contouring
+	- Apr 17 2003: CVS: Autoswitching implemented 
 	- Apr 15 2003: simpleplot packages to  
 	<a href="http://sourceforge.net/project/showfiles.php?group_id=78209&release_id=152653">release 0.1 alpha</a> added
 	- Apr 14 2003: CVS: added qwt independent example 
@@ -130,14 +132,15 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   You can read a special simple form of ASCII files containing z-values and domain information, organized in the following
   way (C++ comments only for this documentation):
   
-  \verbatim
-   jk:11051895-17021986                                              // magic string
-   MESH                                                              // MESH file (other keywords in future versions)
-   327 466                                                           // x,y grid
-   557726 567506                                                     // domain boundaries (x values)
-   5.10821e+006 5.12216e+006                                         // domain boundaries (y values)
-   682 682 682 682 912 924 928 928 932 ... element[327*466-1]        // the single z values 
-  \endverbatim 
+  \code
+	 jk:11051895-17021986												//	magic	string
+	 MESH																			 	//	MESH file	(other keywords	in future	versions)
+	 327 466																	 	//	x,y	grid
+	 557726	567506														 	//	domain boundaries	(x values)
+	 5.10821e+006	5.12216e+006								 	//	domain boundaries	(y values)
+	 682 682 682 682 912 924 928 928 932 ... 
+	 ... element[327*466-1]										 	//	the	single z values	
+  \endcode  
   
   See NativeReader for additional information.
   
