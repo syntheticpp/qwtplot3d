@@ -64,11 +64,11 @@ void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 	double new_zrot = zRotation();
 	
 	if ( bstate == xrot_mstate_ )
-		new_xrot = int(xRotation() + relyz) % 360; 
+		new_xrot = round(xRotation() + relyz) % 360; 
 	if ( bstate == yrot_mstate_ )
-		new_yrot = int(yRotation() + relx) % 360; 
+		new_yrot = round(yRotation() + relx) % 360; 
 	if ( bstate == zrot_mstate_ )
-		new_zrot = int(zRotation() + relx) % 360; 
+		new_zrot = round(zRotation() + relx) % 360; 
 		
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
@@ -341,7 +341,7 @@ void Plot3D::assignKeyboard(
 }
 
 /** 
-The function has no effect if you derive from Plot3D and overrides the keyboard Function too careless.
+The function has no effect if you derive from Plot3D and overrides the keyboard Functions too careless.
 In this case check first against keyboardEnabled() in your version of keyPressEvent()
 A more fine grained input control can be achieved by combining assignKeyboard() with enableKeyboard(). 
 */
