@@ -69,13 +69,13 @@ public:
     virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const&); //!< Add an Enrichment
     virtual bool degrade(Qwt3D::Enrichment*); //!< Remove an Enrichment
 
-		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< Returns rectangular hull \see calculateHull()    
+		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< Returns rectangular hull   
 
 		void showColorLegend(bool);
 		
-		void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system. See Qwt3D::COORDSTYLE
+		void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system.
 		void setPolygonOffset(double d);
-		double polygonOffset() const {return polygonOffset_;} //!< Returns relative value for polygon offset [0..1] \see setPolygonOffset()
+		double polygonOffset() const {return polygonOffset_;} //!< Returns relative value for polygon offset [0..1]
 		
 		void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
 		void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
@@ -131,7 +131,7 @@ public:
     double yLightShift(unsigned idx = 0) const {return (idx<8) ? lights_[idx].shift.y : 0;} 
     //! Returns shift of Light 'idx 'along Z axis (object coordinates)
     double zLightShift(unsigned idx = 0) const {return (idx<8) ? lights_[idx].shift.z : 0;}
-	  //! \return Valid data available (true) or not (false)
+	  //! Returns true if valid data available, false else
     bool hasData() const { return (actualData_p) ? !actualData_p->empty() : false;}
 
     
@@ -171,8 +171,9 @@ public slots:
     void	setLightRotation( double xVal, double yVal, double zVal, unsigned idx = 0 ); 																														
 		void	setLightShift( double xVal, double yVal, double zVal, unsigned idx = 0 );    																														
 
-    virtual bool savePixmap(QString fileName, QString format); //!<  Saves content to pixmap format
-		virtual bool saveVector(QString fileName, QString format, bool notext = false, int sorttype = -1); //!<  Saves content to vector format
+    virtual bool savePixmap(QString const& fileName, QString const& format); //!<  Saves content to pixmap format
+		virtual bool saveVector(QString const& fileName, QString const& format, bool notext = false, int sorttype = -1); //!<  Saves content to vector format
+		virtual bool save(QString const& fileName, QString const& format); //!<  Saves content
 
 protected:
     typedef std::list<Qwt3D::Enrichment*> EnrichmentList;

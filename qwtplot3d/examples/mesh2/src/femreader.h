@@ -1,5 +1,5 @@
-#ifndef qwt3d_femreader_h__2004_03_07_14_03_begin_guarded_code
-#define qwt3d_femreader_h__2004_03_07_14_03_begin_guarded_code
+#ifndef femreader_h__2004_03_07_14_03_begin_guarded_code
+#define femreader_h__2004_03_07_14_03_begin_guarded_code
 
 #include <math.h>
 #include <fstream>
@@ -18,9 +18,8 @@ class NodeFilter
 		{
 			for (unsigned i = 0; i!=values.size(); ++i)
 				str >> values[i];
-//			return Triple(values[1], values[2], atan2(values[3],values[4]) / 1000);
-//				return Triple(values[1], values[2], Triple(values[3],values[4],0).length() / 1000000000);
-				return Qwt3D::Triple(values[1], values[2], values[5] / 1000);
+
+      return Qwt3D::Triple(values[1], values[2], values[5] / 1000);
 		}
 	
 	private:				

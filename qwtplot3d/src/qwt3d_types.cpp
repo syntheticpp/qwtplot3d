@@ -8,6 +8,8 @@
 
 using namespace Qwt3D;
 
+#ifndef QWT3D_NOT_FOR_DOXYGEN
+
 namespace {
   // convex hull
   
@@ -215,3 +217,5 @@ unsigned Qwt3D::tesselationSize(CellField const& t)
 	
 	return ret;
 }
+
+#endif // QWT3D_NOT_FOR_DOXYGEN

@@ -316,7 +316,7 @@ struct QWT3D_EXPORT RGBA
 //! A Color field
 typedef std::vector<RGBA> ColorVector;
 
-#ifndef QWT3D_PRIVATE
+#ifndef QWT3D_NOT_FOR_DOXYGEN
 
 QWT3D_EXPORT QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
 QWT3D_EXPORT Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
@@ -416,7 +416,7 @@ inline double dotProduct(Triple const& u, Triple const& v)
 void convexhull2d( std::vector<unsigned>& idx, const std::vector<Qwt3D::Tuple>& src );
 
 
-#endif // QWT3D_PRIVATE 
+#endif // QWT3D_NOT_FOR_DOXYGEN 
 
 } // ns
 

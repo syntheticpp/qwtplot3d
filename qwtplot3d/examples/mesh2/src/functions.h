@@ -203,7 +203,7 @@ public:
     
     x=a*cos(u)*sin(v);
     y=a*sin(u)*sin(v); 
-    z=a*(cos(v)+log(tan((v/2))))+b*u;
+    z=a*(cos(v)+log(tan(v/2)))+b*u;
 
     return Triple(x,y,z);
   }

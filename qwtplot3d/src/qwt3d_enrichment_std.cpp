@@ -262,6 +262,9 @@ Arrow::~Arrow()
 
 /**
 \param segs number of faces for the fields arrows (see the gallery for examples)
+\param relconelength see picture
+\param relconerad see picture
+\param relstemrad see picture
 \image html arrowanatomy.png 
 */
 void Arrow::configure(int segs, double relconelength, double relconerad, double relstemrad)

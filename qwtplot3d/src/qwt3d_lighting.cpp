@@ -63,7 +63,7 @@ bool Plot3D::lightingEnabled() const
 }
 
 /** 
-  \param idx light number [0..7]
+  \param light light number [0..7]
   \see setLight 
 */
 void Plot3D::illuminate(unsigned light)
@@ -73,7 +73,7 @@ void Plot3D::illuminate(unsigned light)
   lights_[light].unlit = false;  
 }
 /**
-  \param idx light number [0..7]
+  \param light light number [0..7]
   \see setLight  
 */
 void Plot3D::blowout(unsigned light)
@@ -136,14 +136,15 @@ void Plot3D::setLightComponent(GLenum property, double intensity, unsigned light
 	\param xVal angle in \e degree to rotate around the X axis
 	\param yVal angle in \e degree to rotate around the Y axis
 	\param zVal angle in \e degree to rotate around the Z axis
+  \param light light number
 */
-void Plot3D::setLightRotation( double xVal, double yVal, double zVal, unsigned idx )
+void Plot3D::setLightRotation( double xVal, double yVal, double zVal, unsigned light )
 {
-	if (idx>7)
+	if (light>7)
     return; 
-  lights_[idx].rot.x = xVal;
-  lights_[idx].rot.y = yVal;
-  lights_[idx].rot.z = zVal;
+  lights_[light].rot.x = xVal;
+  lights_[light].rot.y = yVal;
+  lights_[light].rot.z = zVal;
 }
 
 /**
@@ -151,30 +152,31 @@ void Plot3D::setLightRotation( double xVal, double yVal, double zVal, unsigned i
 	\param xVal shift along (world) X axis
 	\param yVal shift along (world) Y axis
 	\param zVal shift along (world) Z axis
+  \param light light number
 	\see setViewportShift()
 */
-void Plot3D::setLightShift( double xVal, double yVal, double zVal, unsigned idx )
+void Plot3D::setLightShift( double xVal, double yVal, double zVal, unsigned light )
 {
-	if (idx>7)
+	if (light>7)
     return; 
-  lights_[idx].shift.x = xVal;
-  lights_[idx].shift.y = yVal;
-  lights_[idx].shift.z = zVal;
+  lights_[light].shift.x = xVal;
+  lights_[light].shift.y = yVal;
+  lights_[light].shift.z = zVal;
 }
 
-void Plot3D::applyLight(unsigned idx)
+void Plot3D::applyLight(unsigned light)
 {
-	if (lights_[idx].unlit)
+	if (lights_[light].unlit)
     return;
 
-  glEnable(lightEnum(idx));
+  glEnable(lightEnum(light));
   glLoadIdentity();
   
-  glRotatef( lights_[idx].rot.x-90, 1.0, 0.0, 0.0 ); 
-  glRotatef( lights_[idx].rot.y   , 0.0, 1.0, 0.0 ); 
-  glRotatef( lights_[idx].rot.z   , 0.0, 0.0, 1.0 );
-  GLfloat lightPos[4] = { lights_[idx].shift.x, lights_[idx].shift.y, lights_[idx].shift.z, 1.0};
-  GLenum le = lightEnum(idx);
+  glRotatef( lights_[light].rot.x-90, 1.0, 0.0, 0.0 ); 
+  glRotatef( lights_[light].rot.y   , 0.0, 1.0, 0.0 ); 
+  glRotatef( lights_[light].rot.z   , 0.0, 0.0, 1.0 );
+  GLfloat lightPos[4] = { lights_[light].shift.x, lights_[light].shift.y, lights_[light].shift.z, 1.0};
+  GLenum le = lightEnum(light);
   glLightfv(le, GL_POSITION, lightPos);  
 }
 

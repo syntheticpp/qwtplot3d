@@ -10,7 +10,7 @@ using namespace Qwt3D;
 
 
 /**
-	Standard mouse button handler. Prepares the call to mouseMoveEvent
+	Standard mouse button Function. Prepares the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
 void Plot3D::mousePressEvent( QMouseEvent *e )
@@ -20,7 +20,7 @@ void Plot3D::mousePressEvent( QMouseEvent *e )
 }
 
 /**
-	Standard mouse button handler. Completes the call to mouseMoveEvent
+	Standard mouse button Function. Completes the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
 void Plot3D::mouseReleaseEvent( QMouseEvent *e )
@@ -29,7 +29,7 @@ void Plot3D::mouseReleaseEvent( QMouseEvent *e )
 }
 
 /**
-	Standard mouse button handler
+	Standard mouse button Function
 	\see assignMouse()
 */
 void Plot3D::mouseMoveEvent( QMouseEvent *e )
@@ -120,7 +120,7 @@ void Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
 }
 
 /**
-	Standard wheel handler - zoom (wheel only) or z-scale (shift+wheel)
+	Standard wheel Function - zoom (wheel only) or z-scale (shift+wheel)
 */
 void Plot3D::wheelEvent( QWheelEvent *e )
 {
@@ -172,7 +172,7 @@ void Plot3D::assignMouse(int xrot, int yrot, int zrot,
 }
 
 /** 
-The function has no effect if you derive from Plot3D and overrides the mouse handler too careless.
+The function has no effect if you derive from Plot3D and overrides the mouse Function too careless.
 In this case check first against mouseEnabled() in your version of mouseMoveEvent() and wheelEvent().
 A more fine grained input control can be achieved by combining assignMouse() with enableMouse(). 
 */
@@ -341,7 +341,7 @@ void Plot3D::assignKeyboard(
 }
 
 /** 
-The function has no effect if you derive from Plot3D and overrides the keyboard handler too careless.
+The function has no effect if you derive from Plot3D and overrides the keyboard Function too careless.
 In this case check first against keyboardEnabled() in your version of keyPressEvent()
 A more fine grained input control can be achieved by combining assignKeyboard() with enableKeyboard(). 
 */

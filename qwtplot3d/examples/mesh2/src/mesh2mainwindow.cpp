@@ -1,3 +1,5 @@
+#include <qmetaobject.h>
+
 #include <qframe.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
@@ -26,7 +28,10 @@
 #include "functions.h"
 #include "colormapreader.h"
 #include "lightingdlg.h"
+#include "femreader.h"
 #include "../../../include/qwt3d_io.h"
+#include "../../../include/qwt3d_io_gl2ps.h"
+#include "../../../include/qwt3d_io_reader.h"
 
 using namespace Qwt3D;
 using namespace std;
@@ -148,12 +153,21 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
 		connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
 
-		filetype_ = "png";
-		filetypeCB->setCurrentText("png");
+    filetypeCB->clear();
+
+    QStringList list = IO::outputFormatList();
+    filetypeCB->insertStringList(list);
+ 
+
+		filetype_ = "PNG";
+		filetypeCB->setCurrentText("PNG");
 
     dataWidget->setTitleFont( "Arial", 10, QFont::Bold );
 
     grids->setEnabled(false);
+
+//    const char* c = dataWidget->className();
+//    c = filetypeCB->className();
 }
 
 void Mesh2MainWindow::open()
@@ -162,26 +176,22 @@ void Mesh2MainWindow::open()
  
 		if ( s.isEmpty() || !dataWidget)
         return;
-
-		QFileInfo fi( s );
+		
+    QFileInfo fi( s );
     QString ext = fi.extension( false );   // ext = "gz"
 
 		QToolTip::add(filenameWidget, s);
 		filenameWidget->setText(fi.fileName());
   
-		NativeReader r(dataWidget,s);
-		if ((ext == "MES") || (ext == "mes")) 
+    if (IO::load(dataWidget, s, ext.local8Bit()))
 		{
-			if (r.read())
-			{
-				double a = dataWidget->facets().first;
-				double b = dataWidget->facets().second;
+			double a = dataWidget->facets().first;
+			double b = dataWidget->facets().second;
 
-				dimWidget->setText(QString("Cells ") + QString::number(a*b) 
-					+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
-				
-				dataWidget->setResolution(3);
-			}
+			dimWidget->setText(QString("Cells ") + QString::number(a*b) 
+				+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
+			
+			dataWidget->setResolution(3);
 		}
  		
 		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
@@ -368,7 +378,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 	}
 	else if (action == None)
 	{
-	  dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel)");
+	  dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
 		dataWidget->setCoordinateStyle(NOCOORD);
 		grids->setEnabled(false);
 	}
@@ -649,27 +659,19 @@ void Mesh2MainWindow::dumpImage()
 	if (!dataWidget)
 		return;
 	QString name;
-		
-	if (filetype_ == QString("png"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".png";
-		dataWidget->savePixmap(name,"PNG");
-	}
-	else if (filetype_ == QString("bmp"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".bmp";
-		dataWidget->savePixmap(name,"BMP");
-	}
-	else if (filetype_ == QString("xpm"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".xpm";
-		dataWidget->savePixmap(name,"XPM");
-	}
-	else if (filetype_ == QString("ppm"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".ppm";
-		dataWidget->savePixmap(name,"PPM");
-	}
+	
+	name = QString("dump_") + QString::number(counter++) + ".";
+
+  if (filetype_ == "PS_GZ")
+    name += "ps.gz";
+  else if (filetype_ == "EPS_GZ")
+    name += "eps.gz";
+  else
+	  name += filetype_;
+  
+  Gl2psWriter* pdfhandler = (Gl2psWriter*)IO::outputHandler("PDF");
+  IO::save(dataWidget, name.lower(), filetype_);
+  //dataWidget->savePixmap(name.lower(), filetype_);
 }
 
 /*!
@@ -820,7 +822,7 @@ Mesh2MainWindow::setNormalQuality(int val)
 bool
 Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 {	
-	ifstream file(fname.latin1());
+	ifstream file(fname.local8Bit());
 
 	if (!file)
 		return false;
