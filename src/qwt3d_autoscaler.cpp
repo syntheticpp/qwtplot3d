@@ -3,45 +3,7 @@
 
 using namespace Qwt3D;
 
-//! Initialize with interval [0,1] and one requested interval
-AutoScaler::AutoScaler()
-{
-	init(0,1,1);
-}
-
-//! Initialize with interval [start,stop] and number of requested intervals. See also init().
-AutoScaler::AutoScaler(double start, double stop, int ivals)
-{
-	init(start,stop,ivals);
-}
-
-//! Initialize with interval [start,stop] and number of requested intervals
-/**
-	Switchs start and stop, if stop < start and sets intervals = 1 if ivals < 1
-*/
-void AutoScaler::init(double start, double stop, int ivals)
-{
-	start_ = start;
-	stop_ = stop;
-	intervals_ = ivals;
-
-	if (start_ > stop_)
-	{
-		double tmp = start_;
-		start_ = stop_;
-		stop_ = tmp;
-	}
-	if (intervals_ < 1)
-		intervals_ = 1;
-}
-
-/*!
-  \brief Find the largest value out of {1,2,5}*10^n with an integer number n
-  which is smaller than or equal to x
-  
-  \param x Input value
-*/
-double AutoScaler::floor125( int& exponent, double x)
+double AutoScaler::floorExt( int& exponent, double x, std::vector<double>& sortedmantissi)
 {
     if (x == 0.0) 
     {
@@ -59,16 +21,71 @@ double AutoScaler::floor125( int& exponent, double x)
 			fr = 1.0;
 			++exponent;
     }
-		else if (fr >= 5.0)
-       fr = 5.0;
-    else if (fr >= 2.0)
-       fr = 2.0;
-    else
-       fr = 1.0;
-
+		else
+    {
+      for (int i=(int)sortedmantissi.size()-1; i>=0;--i)
+      {
+        if (fr>=sortedmantissi[i])
+        {   
+          fr = sortedmantissi[i];
+          break;
+        }
+      }
+    }
     return sign * fr;
 } 
 
+/*!
+  \brief Find the largest value out of {1,2,5}*10^n with an integer number n
+  which is smaller than or equal to x
+  
+  \param x Input value
+*/
+double AutoScaler::floor125( int& exponent, double x)
+{
+  std::vector<double> m(2);
+  m[0] = 1;
+  m[1] = 2;
+  m[2] = 5;
+  return floorExt(exponent, x, m);
+}
+
+//! Initialize with interval [0,1] and one requested interval
+LinearAutoScaler::LinearAutoScaler()
+{
+	init(0,1,1);
+  mantissi_ = std::vector<double>(3);
+  mantissi_[0] = 1;
+  mantissi_[1] = 2;
+  mantissi_[2] = 5;
+}
+
+LinearAutoScaler::LinearAutoScaler(std::vector<double>& mantissi)
+{
+  init(0,1,1);
+  mantissi_ = mantissi;
+}
+
+
+//! Initialize with interval [start,stop] and number of requested intervals
+/**
+	Switchs start and stop, if stop < start and sets intervals = 1 if ivals < 1
+*/
+void LinearAutoScaler::init(double start, double stop, int ivals)
+{
+	start_ = start;
+	stop_ = stop;
+	intervals_ = ivals;
+
+	if (start_ > stop_)
+	{
+		double tmp = start_;
+		start_ = stop_;
+		stop_ = tmp;
+	}
+	if (intervals_ < 1)
+		intervals_ = 1;
+}
 
 /*!
 \return Anchor value
@@ -81,7 +98,7 @@ double AutoScaler::floor125( int& exponent, double x)
 c 'minimal' (anchor-start < m*10^n)
 \endverbatim
 */
-double AutoScaler::anchorvalue(double start, double m, int n)
+double LinearAutoScaler::anchorvalue(double start, double m, int n)
 {
 	double stepval = m * pow(10.0, n);
 	return  stepval * ceil(start / stepval);
@@ -102,7 +119,7 @@ double AutoScaler::anchorvalue(double start, double m, int n)
 c 'minimal' (anchor-start < m*10^n)
 \endverbatim
 */
-int AutoScaler::segments(int& l_intervals, int& r_intervals, double start, double stop, double anchor, double m, int n)
+int LinearAutoScaler::segments(int& l_intervals, int& r_intervals, double start, double stop, double anchor, double m, int n)
 {
 	double val =  m * pow(10.0, n);
 	double delta = (stop - anchor) / val;
@@ -127,8 +144,10 @@ int AutoScaler::segments(int& l_intervals, int& r_intervals, double start, doubl
 	If the given interval has zero length the function returns the current 
 	interval number and a and b remain unchanged.
 */
-int AutoScaler::execute(double& a, double& b)
+int LinearAutoScaler::execute(double& a, double& b, double start, double stop, int ivals)
 {
+  init(start,stop,ivals);
+  
   double delta = stop_ - start_;
 
 	if (isPracticallyZero(delta))
@@ -137,7 +156,7 @@ int AutoScaler::execute(double& a, double& b)
 	double c; 
 	int n;
 
-	c = floor125(n, delta);
+	c = floorExt(n, delta, mantissi_);
 	
 	int l_ival, r_ival;
 
@@ -166,17 +185,25 @@ int AutoScaler::execute(double& a, double& b)
 		prev_l_ival = l_ival;
 		prev_r_ival = r_ival;
 	
-		if (int(c) == 5)
-			c = 2;
-		else if (int(c) == 2)
-			c = 1;
-		else
+		
+    if (int(c) == 1)
 		{
-			c = 5; 
+			c = mantissi_.back();
 			--n;
 		}
+    else
+    {
+      for (unsigned int i=mantissi_.size()-1; i>0; --i)
+      {
+        if (int(c) == mantissi_[i])
+        {
+          c = mantissi_[i-1];
+          break;
+        }
+      }
+    }
 
-		anchor = anchorvalue(start_, c, n); 
+    anchor = anchorvalue(start_, c, n); 
 		ival = segments(l_ival, r_ival, start_, stop_, anchor, c, n); 		
 
 		int prev_diff = intervals_ - prev_ival;

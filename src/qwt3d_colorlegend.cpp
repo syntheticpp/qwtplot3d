@@ -14,7 +14,7 @@ and has no caption. Scale numbering is shown.
 ColorLegend::ColorLegend()
 {
 	axis_.setNumbers(true);
-	axis_.setScale(true);
+	axis_.setScaling(true);
 	axis_.setNumberColor(RGBA(0,0,0,1));
 	axis_.setNumberAnchor(CenterRight);
 	axis_.setNumberFont(QFont("Courier",8));
@@ -55,6 +55,16 @@ void ColorLegend::setMinors(int minors)
 void ColorLegend::setAutoScale(bool val)
 {
 	axis_.setAutoScale(val);
+}
+
+void ColorLegend::setScale(SCALETYPE val)
+{
+	axis_.setScale(val);
+}
+
+void ColorLegend::setScale(Scale* val)
+{
+	axis_.setScale(val);
 }
 
 

@@ -47,6 +47,8 @@ public:
 	void drawScale(bool val) { showaxis_ = val; } //!< Sets whether a scale will be drawn.
 	void drawNumbers(bool val) { axis_.setNumbers(val); } //!< Sets whether the scale will have scale numbers.
 	void setAutoScale(bool val); //!< Sets, whether the axis is autoscaled or not.
+  void setScale(Qwt3D::Scale *scale); //!< Sets another scale
+  void setScale(Qwt3D::SCALETYPE); //!< Sets one of the predefined scale types
 
 	void setTitleString(QString const& s); //!< Sets the legends caption string.
 	

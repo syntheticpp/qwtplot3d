@@ -97,7 +97,12 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 
 		connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 		
-		QLabel* info = new QLabel("qwtplot3d <by krischnamurti 2003-2004>", statusBar());       
+    QString qwtstr(" qwtplot3d ");
+    qwtstr += QString::number(QWT3D_MAJOR_VERSION) + ".";
+    qwtstr += QString::number(QWT3D_MINOR_VERSION) + ".";
+    qwtstr += QString::number(QWT3D_PATCH_VERSION) + " ";
+
+		QLabel* info = new QLabel(qwtstr, statusBar());       
 		info->setPaletteForegroundColor(Qt::darkBlue);
 		statusBar()->addWidget(info, 0, false);
 		filenameWidget = new QLabel("                                  ", statusBar());
@@ -222,15 +227,33 @@ void Mesh2MainWindow::open()
 void Mesh2MainWindow::createFunction(QString const& name)
 {
 	dataWidget->makeCurrent();
+  
+  dataWidget->legend()->setScale(LINEARSCALE);
+	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
+	{
+		dataWidget->coordinates()->axes[i].setMajors(7);
+		dataWidget->coordinates()->axes[i].setMinors(5);
+	}
+
   if (name == QString("Rosenbrock")) 
 	{
 		Rosenbrock rosenbrock(*dataWidget);
 		
 		rosenbrock.setMesh(70,71);
-		rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
+		rosenbrock.setDomain(-1.73,1.55,-1.5,1.95);
 		rosenbrock.setMinZ(-100);
 		
 		rosenbrock.create();
+	  
+    dataWidget->coordinates()->axes[Z1].setScale(LOG10SCALE);
+    dataWidget->coordinates()->axes[Z2].setScale(LOG10SCALE);
+    dataWidget->coordinates()->axes[Z3].setScale(LOG10SCALE);
+    dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
+		dataWidget->coordinates()->axes[Z1].setMinors(9);
+		dataWidget->coordinates()->axes[Z2].setMinors(9);
+		dataWidget->coordinates()->axes[Z3].setMinors(9);
+		dataWidget->coordinates()->axes[Z4].setMinors(9);
+    dataWidget->legend()->setScale(LOG10SCALE);
 	}
 	else if (name == QString("Hat")) 
 	{
@@ -264,12 +287,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		double dom = 15;
 		mex.setDomain(-dom, dom, -dom, dom);
 		mex.create(*dataWidget);
-	}
-
-	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-	{
-		dataWidget->coordinates()->axes[i].setMajors(7);
-		dataWidget->coordinates()->axes[i].setMinors(5);
 	}
 
 	double a = dataWidget->facets().first;

@@ -27,6 +27,7 @@ public slots:
   void complexItems();
   void letterItems();
   void timeItems();
+  void customScale();
 
 private:
 

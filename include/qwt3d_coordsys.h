@@ -30,7 +30,7 @@ public:
 	void setNumberFont(QFont const& font);
 	//! Set common color for all axis numberings
 	void setNumberColor(Qwt3D::RGBA val);
-  void setStandardNumbering(); //!< Sets Axis items to doubles
+  void setStandardScale(); //!< Sets an linear axis with real number items
 
  	void adjustNumbers(int val); //!< Fine tunes distance between axis numbering and axis body
 	void adjustLabels(int val); //!< Fine tunes distance between axis label and axis body
@@ -65,7 +65,7 @@ public:
 	void draw();
 	
 	//! Defines whether a grid between the major and/or minor tics should be drawn
-  void setGridLines(bool majors, bool minors, int = Qwt3D::NOSIDEGRID); 
+  void setGridLines(bool majors, bool minors, int sides = Qwt3D::NOSIDEGRID); 
   int grids() const {return sides_;} //!< Returns grids switched on
 	
 	//! The vector of all12 axes - use them to set axis properties individually.

@@ -6,5 +6,6 @@ FORMS =  src/axesmainwindowbase.ui
 SOURCES =  src/main.cpp \
 		       src/axesmainwindow.cpp 
 
-HEADERS =  src/axesmainwindow.h 
+HEADERS =  src/axesmainwindow.h \
+           src/axes.h
 

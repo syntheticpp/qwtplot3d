@@ -39,7 +39,7 @@ enum PLOTSTYLE
 	FILLED     , //!< Color filled polygons w/o edges 
 	FILLEDMESH , //!< Color filled polygons w/ separately colored edges
   POINTS     , //!< User defined style (used by Enrichments)
-  USER       , //!< User defined style (used by Enrichments)
+  USER         //!< User defined style (used by Enrichments)
 };
 
 //! Shading style
@@ -55,6 +55,14 @@ enum COORDSTYLE
 	NOCOORD, //!< Coordinate system is not visible 
 	BOX,     //!< Boxed
 	FRAME		 //!< Frame - 3 visible axes
+};
+
+//! Different types of axis scales
+enum SCALETYPE
+{
+	LINEARSCALE,//!< Linear scaling 
+	LOG10SCALE,	//!< Logarithmic scaling (base 10)
+  USERSCALE   //!< User-defined (for extensions)
 };
 
 //! Plotting style for floor data (projections)
