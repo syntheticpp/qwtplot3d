@@ -51,7 +51,7 @@ public:
 		void setBackgroundColor(RGBA rgba);
 		void setMeshColor(RGBA rgba);
 		RGBA meshColor() const {return meshcolor_;}
-		void assignDataColor(Color* col);
+		void setDataColor(Color* col);
 		void modifyStandardColorAlpha(double d);
 		bool hasData() const { return !actualData_.empty(); }
 

@@ -144,6 +144,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 				
 		setStandardView();
 
+		dataWidget->coordinates()->setLineSmooth(true);
+
 		// dataWidget->setCaptionPosition(0.7, 0.2);
 		
 		// dataWidget->setMouseTracking(true);

@@ -10,6 +10,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
   setStyle(st);
+	setLineSmooth(false);
 	init(first,second);
 
 	setLineWidth(1.5);
@@ -110,10 +111,16 @@ void
 CoordinateSystem::draw()
 {	
 //	saveGLState();
-//	glEnable(GL_LINE_SMOOTH);
+	
+	if (lineSmooth())
+		glEnable(GL_LINE_SMOOTH);
+	
 	Drawable::draw();
-//	glDisable(GL_LINE_SMOOTH);
-//	restoreGLState();
+	
+	if (lineSmooth())
+		glDisable(GL_LINE_SMOOTH);
+
+	//	restoreGLState();
 }
 
 void 

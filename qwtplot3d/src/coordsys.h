@@ -36,6 +36,9 @@ public:
 	void setAutoDecoration(bool val = true) {autodecoration_ = val;};
 	bool autoDecoration() const { return autodecoration_;}
 
+	void setLineSmooth(bool val = true) {smooth_ = val;};
+	bool lineSmooth() const {return smooth_;};
+
 	void draw();
 	void postDraw();
 
@@ -50,6 +53,8 @@ private:
 	
 	double ared_, agreen_, ablue_; 
 	double lineWidth_, majLineWidth_, minLineWidth_;
+
+	bool smooth_;
 
 	void positionateLabel(Axis& ax, LabelPixmap::ANCHOR an);
 	
