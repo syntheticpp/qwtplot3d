@@ -15,7 +15,7 @@ CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
 	setLineWidth(1.5);
 	setAxesColor(RGBA(0,0,0,1));
 	setNumberFont("Courier", 12);
-	setNumberColor(RGBA(0,0.0,0));
+	setNumberColor(RGBA(0,0,0));
 }
 
 CoordinateSystem::~CoordinateSystem()

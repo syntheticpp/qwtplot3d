@@ -49,15 +49,14 @@ public:
 	*/
 	void setString(QString const& s);	//!< set label string
 
-	virtual void setColor(double r, double g, double b, double a = 1); //!< set label color	
-	virtual void setColor(Qwt3D::RGBA rgba);	//!< overloaded member
 
+	void update();
 	void draw();
 
 	
 private:
 
-	Qwt3D::Triple beg_, end_;
+	Qwt3D::Triple beg_, end_, pos_;
 	QPixmap pm_;
 	QImage  buf_, tex_;
 	QFont font_;
@@ -67,7 +66,7 @@ private:
 	
 	void init();
   void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void update();
+	void convert2screen();
 
 	double width() const;
 	double height() const;

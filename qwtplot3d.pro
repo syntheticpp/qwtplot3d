@@ -37,12 +37,14 @@ SOURCES += src/axis.cpp \
            src/mapping.cpp \
            src/mousekeyboard.cpp \
            src/movements.cpp \
-           src/plane.cpp \
+           src/colorlegend.cpp \
            src/plot3d.cpp \
            src/reader.cpp \
            src/surfaceplot.cpp \
            src/types.cpp \
-           src/vectorfield.cpp
+           src/vectorfield.cpp \
+           src/autoscaler.cpp \
+           src/text.cpp
 
 HEADERS += include/qwt3d_color.h \
            include/qwt3d_function.h \
@@ -58,6 +60,8 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_helper.h \
            include/qwt3d_labelpixmap.h \
            include/qwt3d_openglhelper.h \
-           include/qwt3d_plane.h \
+           include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
-           include/qwt3d_reader.h 
+           include/qwt3d_reader.h \
+           include/qwt3d_autoscaler.h \
+           include/qwt3d_text.h 

@@ -22,6 +22,9 @@ Drawable::saveGLState()
 	glGetBooleanv(GL_TEXTURE_2D, &tex2d);
 	glGetIntegerv(GL_POLYGON_MODE, polmode);
 	glGetIntegerv(GL_MATRIX_MODE, &matrixmode);
+	glGetFloatv(GL_POLYGON_OFFSET_FACTOR, &poloffs[0]);
+	glGetFloatv(GL_POLYGON_OFFSET_UNITS, &poloffs[1]);
+	glGetBooleanv(GL_POLYGON_OFFSET_FILL, &poloffsfill);
 }
 
 void
@@ -39,6 +42,9 @@ Drawable::restoreGLState()
 	Enable(GL_TEXTURE_2D,tex2d);
 	glPolygonMode(polmode[0], polmode[1]);
 	glMatrixMode(matrixmode);
+	glPolygonOffset(poloffs[0], poloffs[1]);
+
+	Enable(GL_POLYGON_OFFSET_FILL, poloffsfill);
 }
 
 void 
@@ -74,6 +80,50 @@ void
 Drawable::detachAll()
 {
 	dlist.clear();
+}
+
+
+//! simplified glut routine (glUnProject): windows coord --> object coord 
+/**
+	Don't rely on (use) this in display lists !
+*/
+Triple 
+Drawable::ViewPort2World(Triple win, bool* err)
+{
+  Triple obj;
+	
+	getMatrices(modelMatrix, projMatrix, viewport);
+	int res = gluUnProject(win.x, win.y, win.z, modelMatrix, projMatrix, viewport, &obj.x, &obj.y, &obj.z);
+
+	if (err)
+		*err = (res) ? false : true;
+	return obj;
+}
+
+//! simplified glut routine (glProject): object coord --> windows coord 
+/**
+	Don't rely on (use) this in display lists !
+*/
+Triple 
+Drawable::World2ViewPort(Triple obj,	bool* err)
+{
+  Triple win;
+	
+	getMatrices(modelMatrix, projMatrix, viewport);
+	int res = gluProject(obj.x, obj.y, obj.z, modelMatrix, projMatrix, viewport, &win.x, &win.y, &win.z);
+
+	if (err)
+		*err = (res) ? false : true;
+	return win;
+}
+
+/**
+	Don't rely on (use) this in display lists !
+*/
+Triple 
+Drawable::relativePosition(Triple rel)
+{
+	return ViewPort2World(Triple((rel.x-viewport[0])*viewport[2],(rel.y-viewport[1])*viewport[3],rel.z));
 }
 
 void 

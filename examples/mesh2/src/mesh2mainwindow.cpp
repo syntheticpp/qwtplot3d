@@ -148,8 +148,6 @@ void Mesh2MainWindow::open()
 			}
 		}
  		
-		createColorLegend(StandardColor(dataWidget).colVector());
-
 		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 		{
 			dataWidget->coordinates()->axes[i].setMajors(4);
@@ -157,7 +155,8 @@ void Mesh2MainWindow::open()
 			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
 		}
 		
-		//setStandardView();
+		dataWidget->legend()->caption.setString("Elev.");
+		updateColorLegend(4,5);
 		pickCoordSystem(activeCoordSystem);
 		dataWidget->showColorLegend(legend_);
 }
@@ -212,14 +211,15 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		mex.create(dataWidget);
 	}
 
-	createColorLegend(StandardColor(dataWidget).colVector());
-
 	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
 	{
 		dataWidget->coordinates()->axes[i].setMajors(7);
 		dataWidget->coordinates()->axes[i].setMinors(5);
 	}
-	
+
+	updateColorLegend(7,5);
+
+
 	pickCoordSystem(activeCoordSystem);
 
 	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
@@ -253,7 +253,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
 
 
-	dataWidget->showColorLegend(legend_);
+	//dataWidget->showColorLegend(legend_);
 }
 
 void Mesh2MainWindow::pickCoordSystem( QAction* action)
@@ -263,7 +263,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 
 	activeCoordSystem = action;
 	
-	dataWidget->setTitle("");
+	dataWidget->setTitle("QwtPlot3D");
 
 	if (!dataWidget->hasData())
 	{
@@ -285,12 +285,9 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 	}
 	else if (action == None)
 	{
-		dataWidget->setTitle("");
+		dataWidget->setTitle("QwtPlot3D");
 		dataWidget->setCoordinateStyle(NOCOORD);
 	}
-
-	dataWidget->updateCoordinateSystem();
-	dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickPlotStyle( QAction* action )
@@ -364,7 +361,7 @@ void Mesh2MainWindow::resetColors()
 
 	col_ = new StandardColor(dataWidget);
 	dataWidget->setDataColor(col_);
-	
+	dataWidget->updateData();	
 	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
@@ -551,6 +548,7 @@ void
 Mesh2MainWindow::toggleColorLegend(bool val)
 {
 	legend_ = val;
+	dataWidget->updateColorLegend();
 	dataWidget->showColorLegend(val);
 }
 
@@ -574,26 +572,12 @@ void
 Mesh2MainWindow::setPolygonOffset(int val)
 {
 	dataWidget->setPolygonOffset(val / 10.0);
-//	dataWidget->updateData();
 	dataWidget->updateGL();
 }
 
 void
 Mesh2MainWindow::createColorLegend(ColorField const& col)
 {
-	Triple a = dataWidget->hull().minVertex;
-	Triple c = dataWidget->hull().maxVertex;
-
-	Triple b, d;
-
-	double diff = c.x - a.x;
-
-	a = Triple(a.x - diff / 5, c.y, a.z);
-	b = Triple(a.x + diff / 7, c.y, a.z);
-	c = Triple(a.x + diff / 7, c.y, c.z);
-	d = Triple(a.x, a.y, c.z);
-	
-	dataWidget->createColorLegend(col, a, b, c, d);
 }
 
 void
@@ -646,7 +630,8 @@ void Mesh2MainWindow::openMesh()
 			dataWidget->coordinates()->axes[i].setMinors(5);
 			dataWidget->coordinates()->axes[i].setLabelString(QString(""));
 		}
-		
+
+		updateColorLegend(4,5);
 		pickCoordSystem(activeCoordSystem);
 }
 
@@ -704,3 +689,12 @@ Mesh2MainWindow::openColorMap(ColorField& cv, QString fname)
 	return true;
 }
 
+void 
+Mesh2MainWindow::updateColorLegend(int majors, int minors)
+{
+	dataWidget->legend()->setMajors(majors);
+	dataWidget->legend()->setMinors(minors);
+	double start, stop;
+	dataWidget->coordinates()->axes[Z1].limits(start,stop);
+	dataWidget->legend()->setLimits(start, stop);
+}		

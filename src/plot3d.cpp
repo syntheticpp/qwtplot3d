@@ -17,12 +17,13 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
 	xScale_ = yScale_ = zScale_ = 1.0;
-	zoom_ = 8;
+	zoom_ = 1;
 	ortho_ = true;
 	plotstyle_ = FILLEDMESH;
 	shading_ = GOURAUD;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
+	displaylegend_ = false;
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
@@ -52,6 +53,15 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 							Qt::LeftButton | Qt::AltButton | Qt::ControlButton,
 							Qt::LeftButton | Qt::ControlButton, 
 							Qt::LeftButton | Qt::ControlButton);
+
+
+	legend_.setLimits(0, 100);
+	legend_.setMajors(10);
+	legend_.setMinors(2);
+	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+		
+	//legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+	//legend_.setGeometry(Tuple(0.1,0.05),Tuple(0.56,0.25));
 }
 
 /*!
@@ -110,17 +120,30 @@ Plot3D::paintGL()
 {
 	glClearColor(bgcolor_.r, bgcolor_.g, bgcolor_.b, bgcolor_.a);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode( GL_MODELVIEW );
-  glPushMatrix();
 	
-	glLoadIdentity();
+	
+	glMatrixMode( GL_MODELVIEW );
+	glPushMatrix();
+  glRotatef( -90, 1.0, 0.0, 0.0 ); 
+  glRotatef( 0.0, 0.0, 1.0, 0.0 ); 
+  glRotatef( 0.0, 0.0, 0.0, 1.0 );
+
+	if (displaylegend_)
+	{		
+		legend_.setGeometry(Tuple(0.94, 1-0.40),Tuple(0.97, 1-0.08));
+		legend_.draw();
+	}
+	title_.setPosition(title_.relativePosition(Triple(titlerel_.x, titlerel_.y, 1)),titleanchor_);
+	title_.draw();
+	
+	
   glColor3f(1.0, 1.0, 1.0);
 	
+	glLoadIdentity();
   glRotatef( xRot_-90, 1.0, 0.0, 0.0 ); 
   glRotatef( yRot_, 0.0, 1.0, 0.0 ); 
   glRotatef( zRot_, 0.0, 0.0, 1.0 );
 
-//	glTranslatef(xShift_, yShift_, zShift_);
 	glEnable(GL_NORMALIZE);
 	glScalef( zoom_ * xScale_, zoom_ * yScale_, zoom_ * zScale_ );
 	glDisable(GL_NORMALIZE);
@@ -153,23 +176,19 @@ Plot3D::paintGL()
 	}
   
 	glTranslatef( xVPShift_ * 2 * radius, yVPShift_ * 2 * radius, -7 * radius );
-
+	
 	for (unsigned i=0; i!= DisplayLists.size(); ++i)
 	{
-		if (i!=CoordObject)
+		if (i!=LegendObject && i!=CoordObject)
 			glCallList( DisplayLists[i] );
 	}
 
   coord.draw();
-		
-	glMatrixMode( GL_MODELVIEW );
-	glPopMatrix();  
 
-	int vp[4];
-	glGetIntegerv(GL_VIEWPORT, vp);
-	title_.setPosition(Triple(ViewPort2World(Triple((titlerelx_-vp[0])*vp[2],(titlerely_-vp[1])*vp[3],0))),titleanchor_);
-	title_.draw();
+	glMatrixMode( GL_MODELVIEW );
+	glPopMatrix();
 }
+
 
 /*!
   Set up the OpenGL view port
@@ -178,15 +197,16 @@ void
 Plot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
-
 	paintGL();
 }
 
 void 
 Plot3D::updateCoordinateSystem()
 {
+/*
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_LINE_SMOOTH);
+*/
 
 	SaveGlDeleteLists(DisplayLists[CoordObject], 1);
 			
@@ -215,7 +235,6 @@ void
 Plot3D::createCoordinateSystem()
 {
 	calculateHull();
-	
 	createCoordinateSystem(hull().minVertex, hull().maxVertex);
 }
 
@@ -223,20 +242,15 @@ Plot3D::createCoordinateSystem()
   Show a color legend <tt>(experimental)</tt>
 */
 void 
+Plot3D::updateColorLegend()
+{
+	dataColor->createField(legend_.colors);
+}
+
+void 
 Plot3D::showColorLegend( bool show )
 {
- 	SaveGlDeleteLists(DisplayLists[LegendObject], 1);
-	
-
-	if (show)
-	{
-		DisplayLists[LegendObject] = glGenLists(1);
-		glNewList(DisplayLists[LegendObject], GL_COMPILE);	
-
-		legend_.draw();
-
-		glEndList();
-	}
+ 	displaylegend_ = show;
 	updateGL();
 }
 
@@ -274,6 +288,7 @@ Plot3D::setDataColor( Color* col )
 
 	dataColor->destroy();
 	dataColor = col;
+	updateColorLegend();
 }
 
 /*!
@@ -297,16 +312,6 @@ Plot3D::setOrtho( bool val )
 	updateGL();
 	
 	emit projectionChanged(val);
-}
-
-/*!
-  <tt>(experimental)</tt>
-*/
-void 
-Plot3D::createColorLegend(ColorField const& col, Triple a, Triple b, Triple c, Triple d)
-{
-		legend_.setPosition(a,b,c,d);
-		legend_.colors = col;
 }
 
 /*!
@@ -408,8 +413,8 @@ Set relative caption position (0.5,0.5) means, the anchor point lies in the cent
 void 
 Plot3D::setCaptionPosition(double rely, double relx, LabelPixmap::ANCHOR anchor)
 {
-	titlerely_= (rely<0 || rely>1) ? 0.5 : rely;
-	titlerelx_= (relx<0 || relx>1) ? 0.5 : relx;
+	titlerel_.y = (rely<0 || rely>1) ? 0.5 : rely;
+	titlerel_.x = (relx<0 || relx>1) ? 0.5 : relx;
 
 	titleanchor_ = anchor;
 }

@@ -70,6 +70,20 @@ inline	void SaveGlDeleteLists(GLuint& list, GLsizei range)
 	list = 0;
 }
 
+//! get OpenGL transformation matrices
+/**
+	Don't rely on (use) this in display lists !
+	\param modelMatrix should be a GLdouble[16]
+	\param projMatrix should be a GLdouble[16]
+	\param viewport should be a GLint[4]
+*/
+inline void getMatrices(GLdouble* modelMatrix, GLdouble* projMatrix, GLint* viewport)
+{
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glGetDoublev(GL_MODELVIEW_MATRIX,	modelMatrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,	projMatrix);
+}
+
 #endif // QWT3D_PRIVATE
 
 } // ns
