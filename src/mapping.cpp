@@ -3,7 +3,6 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-
 #include "qwt_plot3d.h"
 
 /*! 
@@ -70,16 +69,16 @@ QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigne
 			actualGridData_->vertices[i+1][j][2] = data[i+1][j];
 
 			/*	get two vectors to cross */
-      u[0] = actualGridData_->vertices[i][j+1][0] - actualGridData_->vertices[i][j][0];
-      u[1] = actualGridData_->vertices[i][j+1][1] - actualGridData_->vertices[i][j][1];
-      u[2] = actualGridData_->vertices[i][j+1][2] - actualGridData_->vertices[i][j][2];
+      u[0] = actualGridData_->vertices[i+1][j][0] - actualGridData_->vertices[i][j][0];
+      u[1] = actualGridData_->vertices[i+1][j][1] - actualGridData_->vertices[i][j][1];
+      u[2] = actualGridData_->vertices[i+1][j][2] - actualGridData_->vertices[i][j][2];
 
-      v[0] = actualGridData_->vertices[i+1][j][0] - actualGridData_->vertices[i][j][0];
-      v[1] = actualGridData_->vertices[i+1][j][1] - actualGridData_->vertices[i][j][1];
-      v[2] = actualGridData_->vertices[i+1][j][2] - actualGridData_->vertices[i][j][2];
+      v[0] = actualGridData_->vertices[i][j+1][0] - actualGridData_->vertices[i][j][0];
+      v[1] = actualGridData_->vertices[i][j+1][1] - actualGridData_->vertices[i][j][1];
+      v[2] = actualGridData_->vertices[i][j+1][2] - actualGridData_->vertices[i][j][2];
 
       /* get the normalized cross product */ 
-      normalizedcross(u, v, n);
+      normalizedcross(u, v, n); // right hand system here !
       
      /*  put the facet normal in the i, j position for later averaging
          with other normals.*/ 
@@ -211,8 +210,7 @@ QwtPlot3D::createDataRepresentation(TripleVector const& data, Tesselation const&
 
 	unsigned i;
 
-// no normals for the moment
-/*
+//  normals for the moment
 	Triple n, u, v;
 	for ( i = 0; i < poly.size(); ++i) 
 	{
@@ -230,9 +228,9 @@ QwtPlot3D::createDataRepresentation(TripleVector const& data, Tesselation const&
 				actualCellData_->normals[poly[i][j]] += n;
 				actualCellData_->normals[poly[i][j]].normalize();
 			}
+
 		}
 	}
-*/
 	  
 	ParallelEpiped hull(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
 

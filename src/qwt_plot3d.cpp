@@ -27,6 +27,7 @@ QwtPlot3D::QwtPlot3D( QWidget* parent, const char* name, MESHTYPE mt )
 	plotstyle_ = FILLEDMESH;
 	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
+	datanormals_ = false;
 
 	lastMouseMovePosition_ = QPoint(0,0);
 	mpressed_ = false;
@@ -77,29 +78,35 @@ QwtPlot3D::~QwtPlot3D()
 void 
 QwtPlot3D::initializeGL()
 {
+  glEnable( GL_BLEND );
+  glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
+
 	// Set up the lights
 
 
-  GLfloat whiteDir[4] = {2.0, 2.0, 2.0, 1.0};
+  glDisable(GL_LIGHTING);
+
+	
+	GLfloat whiteDir[4] = {2.0, 2.0, 2.0, 1.0};
+  GLfloat reflection[4] = {0.0, 0.0, 0.0, 0.0};
   GLfloat whiteAmb[4] = {1.0, 1.0, 1.0, 1.0};
   GLfloat lightPos[4] = {300.0, 300.0, 300.0, 1.0};
 
-  glEnable( GL_BLEND );
-	glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_DEPTH_TEST);
 
 	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, whiteAmb);
 
   glMaterialfv(GL_FRONT, GL_DIFFUSE, whiteDir);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, whiteDir);
-  glMaterialf(GL_FRONT, GL_SHININESS, 20.0);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, reflection);
+  glMaterialf(GL_FRONT, GL_SHININESS, 100.0);
 
   glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDir);		// enable diffuse
-  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteDir);	// enable specular
+  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteDir);
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos); 
+	
 }
 
 /*!
@@ -115,7 +122,6 @@ QwtPlot3D::paintGL()
 	
 	glLoadIdentity();
   glColor3f(1.0, 1.0, 1.0);
-  
 	
   glRotatef( xRot_-90, 1.0, 0.0, 0.0 ); 
   glRotatef( yRot_, 0.0, 1.0, 0.0 ); 
@@ -398,6 +404,12 @@ QwtPlot3D::setIsolines(int steps)
 		return;
 
 	isolines_ = steps;
+}
+
+void 
+QwtPlot3D::showNormals(bool b)
+{
+	datanormals_ = b;
 }
 
 /*!

@@ -10,14 +10,14 @@
 
 
 	\section news News
-	- Mai 26 2003: <b> release 0.1.2 alpha </b>
-	 - Data structures providing nodes and triangulation - Interface to create them from user data (\ref datatopics)
-	 - Reading data from FEM files (\ref screenshots)
+	- Mai 26 2003: <b> release 0.1.2 alpha </b><a href="http://sourceforge.net/project/showfiles.php?group_id=78209">( Download )</a>
+	 - Data structures providing nodes and triangulation - Interface to create them from user data ( \ref datatopics )
+	 - Reading data from FEM files ( \ref screenshots )
 
 	- Apr 27 2003: 
 		release 0.1.1 alpha
 	
-	See also \ref changes	
+	See also \ref changes
 
 
   \section screenshotsonmainpage Screenshots
@@ -27,7 +27,7 @@
   
 	\section features Features 
 
-   -# Scaling, rotating, shifting, zooming of data sets and mathematical functions (see \ref datatopics)
+   -# Scaling, rotating, shifting, zooming of data sets and mathematical functions ( see \ref datatopics )
    -# Interactive mouse handling
    -# Resolution changing on the fly
    -# Reading from MESH data files :See the 'examples/data' directory and NativeReader documentation
@@ -45,8 +45,9 @@
  	\section todo Todo
  	<b style="color:#228B22;">CVS</b>: Changes in CVS yet
  	 
- 	 Next release:
+ 	 Next releases:
 	 	 
+ 	 -# Vector data	
  	 -# Configurable illumination model	
    -# Documentation improvement
 	 -# Maintainance: Refactoring, final form for the programming interface, first beta release
@@ -54,7 +55,7 @@
 
 	 Subsequent releases:
 
-	 -# voxel data 
+	 -# Voxel data 
  	  	 
  	 <b>  ...Proposals !	</b>
  	 
@@ -135,6 +136,21 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 
 	QwtPlot3D supports a general and some special forms of native data input:
 	
+	\n\par Generic:
+	
+	A general approach has been provided in form of the member 
+	
+	bool QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy).
+	
+	You can feed the function with a <tt>double**</tt> pointer to your data. 
+	
+	<br>A still more general solution is supported by means of
+	
+	bool QwtPlot3D::createDataRepresentation(TripleVector const& data, Tesselation const& poly, MESHTYPE mtype = POLYGON)
+	
+	The function transforms her input to mesh based data, found e.g. in FEM applications.
+	
+
   \n\par Mesh data files:
    
   You can read a special simple form of ASCII files containing z-values and domain information, organized in the following
@@ -212,22 +228,6 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   write your own version of Function::operator()(double x, double y)
   Set the domain and perhaps limitations for the range and call Function::create().
   Thats all.See also Function and the implementation of concrete functions in 'examples'
-
-	\n\par Generic:
-	
-	A general approach has been provided in form of the member 
-	
-	bool QwtPlot3D::createDataRepresentation(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy).
-	
-	You can feed the function with a <tt>double**</tt> pointer to your data. 
-	
-	A still more general solution has been supported by
-	
-	bool QwtPlot3D::createDataRepresentation(Qwt3D::TripleVector const& data, Qwt3D::Tesselation const& poly, MESHTYPE mtype = POLYGON)
-	
-	This function transforms her input to mesh based data found e.g. in FEM applications.
-	
-
 */
 
 /*!

@@ -47,6 +47,7 @@ public slots:
 	void showShift(double x, double y);
 	void showScale(double x, double y, double z);
 	void showZoom(double z);
+	void showNormals(bool val);
 
 private:
 	QLabel *filenameWidget,

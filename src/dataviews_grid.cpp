@@ -4,6 +4,7 @@
 #endif
 
 #include "qwt_plot3d.h"
+#include "vectorfield.h"
 
 using namespace std;
 using namespace Qwt3D;
@@ -57,19 +58,22 @@ QwtPlot3D::updateGridData()
 					}
 					glColor4d(col.r, col.g, col.b, col.a);
 					
-					glVertex3dv(actualGridData_->vertices[i][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
-					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
-					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
-
 					glNormal3dv(actualGridData_->normals[i][j]);
+					glVertex3dv(actualGridData_->vertices[i][j]);
 					glNormal3dv(actualGridData_->normals[i+cstep][j]);
+					glVertex3dv(actualGridData_->vertices[i+cstep][j]);
 					glNormal3dv(actualGridData_->normals[i+cstep][j+rstep]);
+					glVertex3dv(actualGridData_->vertices[i+cstep][j+rstep]);
 					glNormal3dv(actualGridData_->normals[i][j+rstep]);
+					glVertex3dv(actualGridData_->vertices[i][j+rstep]);
 				}
 			}
 		glEnd();
 		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+	if (normals())
+	{
+		GridNormals();
 	}
 }
 
@@ -236,4 +240,45 @@ QwtPlot3D::GridIsolines2Floor()
 			}
 		}
 	}
+}
+
+
+void 
+QwtPlot3D::GridNormals()
+{
+	if (!normals() || actualGridData_->empty())
+		return;
+
+	VectorField v(dataColor_);
+	v.bases = TripleVector(actualGridData_->columns()*actualGridData_->rows());
+	v.tops = TripleVector(v.bases.size());
+	
+	Triple basev;
+	Triple topv;	
+	
+	int cstep = resolution_;
+	int rstep = resolution_;
+
+	double diag = (actualGridData_->hull().maxVertex-actualGridData_->hull().minVertex).length() / 60;
+
+	for (int i = 0; i <= actualGridData_->columns() - cstep; i += cstep) 
+	{
+		for (int j = 0; j <= actualGridData_->rows() - rstep; j += rstep) 
+		{
+			basev = Triple(actualGridData_->vertices[i][j][0],actualGridData_->vertices[i][j][1],actualGridData_->vertices[i][j][2]);
+			topv = Triple(actualGridData_->vertices[i][j][0]+actualGridData_->normals[i][j][0],
+							 actualGridData_->vertices[i][j][1]+actualGridData_->normals[i][j][1],
+							 actualGridData_->vertices[i][j][2]+actualGridData_->normals[i][j][2]);	
+			
+			Triple norm = (topv-basev);
+			norm.normalize();
+			norm	*= diag;
+
+			v.bases[i * actualGridData_->rows() +j] 
+				= basev;		
+			v.tops[i * actualGridData_->rows() +j] 
+				= basev + norm;	
+		}
+	}
+	v.drawArrows();
 }

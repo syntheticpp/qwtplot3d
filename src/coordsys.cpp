@@ -1,6 +1,5 @@
 #include "coordsys.h"
 
-
 using namespace std;
 using namespace Qwt3D;
 
@@ -112,17 +111,16 @@ CoordinateSystem::draw()
 {	
 //	saveGLState();
 	
-	if (lineSmooth())
-		glEnable(GL_LINE_SMOOTH);
+	GLStateBewarer sb(GL_LINE_SMOOTH, true);
+	
+	if (!lineSmooth())
+		sb.turnOff();
 		
 
 	if (autoDecoration())
 		chooseAxes();
 	
 	Drawable::draw();
-
-	if (lineSmooth())
-		glDisable(GL_LINE_SMOOTH);
 
 	//	restoreGLState();
 }

@@ -20,21 +20,35 @@ QwtPlot3D::updateData()
 	glDisable(GL_LINE_SMOOTH);
 	glEnable(GL_DEPTH_TEST);
 
+	GLStateBewarer ls(GL_LINE_SMOOTH, false);
+	GLStateBewarer dt(GL_DEPTH_TEST, true);
+
 	SaveGlDeleteLists(objectList_[DataObject], 1); // nur Daten
 	
-	if (plotStyle() == NOPLOT)
+	if (plotStyle() == NOPLOT && !normals())
 		return;
 
 	objectList_[DataObject] = glGenLists(1);
 	glNewList(objectList_[DataObject], GL_COMPILE);
 
-		if (meshtype() == GRID)
-			updateGridData();
+		if (plotStyle() != NOPLOT)
+		{
+			if (meshtype() == GRID)
+				updateGridData();
+			else
+				updateCellData();
+		}
 		else
-			updateCellData();
-
+		{
+			if (meshtype() == GRID)
+				GridNormals();
+			else
+				CellNormals();
+		}
 	glEndList();
 }
+
+
 
 void 
 QwtPlot3D::updateFloorData()
