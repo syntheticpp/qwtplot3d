@@ -1,4 +1,9 @@
 lib
+obj
+moc
+Debug
+Release
+.qmake.internal*
 Makefile
 makefile
 *.mak
@@ -11,6 +16,10 @@ makefile
 *.vpw
 *.vtg
 *.opt
+*.obj
+*.pdb
+*.bsc
 *.kdevprj
 *.kdevses
+
 
