@@ -1,0 +1,16 @@
+lib
+Makefile
+makefile
+*.mak
+*.qmake*
+*.dsp
+*.dsw
+*.ncb
+*.plg
+*.vpj
+*.vpw
+*.vtg
+*.opt
+*.kdevprj
+*.kdevses
+
