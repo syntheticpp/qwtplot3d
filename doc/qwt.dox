@@ -4,18 +4,20 @@
 */
 
 /*!
-  \mainpage QwtPlot3D User's Guide
+  \mainpage %QwtPlot3D User's Guide
 
   \image html plot3d.jpg
 
 
 	\section news News
+	
 	- Apr 15 2003: simpleplot packages to  
 	<a href="http://sourceforge.net/project/showfiles.php?group_id=78209&release_id=152653">release 0.1 alpha</a> added
 	- Apr 14 2003: CVS: added qwt independent example 
 	<a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/qwtplot3d/qwtplot3d/examples/simpleplot">simpleplot</a> 
 
   \section screenshotsonmainpage Screenshots
+  
   Screenshots are on a separate page, \ref screenshots.
 
 	\section features Features 
@@ -32,8 +34,8 @@
 	 -# Save widget content to pixmap file
  		
  		
- 		\par todo
- 	 	 
+ 	\section todo Todo
+ 	 
  	 Next release:
  	 
  	 -# More topic specific examples
@@ -45,7 +47,6 @@
  	 -# Documentation improvement 
  	 -# Finish isoline contouring  
 
-	
 	
 	 Subsequent releases:
 
