@@ -92,8 +92,8 @@ LabelPixmap::update()
 	
 	pm_ = QPixmap(r.width(), r.bottom(), -1);
 
-	if (pm_.isNull())
-		return;
+//	if (pm_.isNull())
+//		return;
 
 	QBitmap bm(pm_.width(),pm_.height(),true);
 	p.begin( &bm );

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Mo 7. Apr 21:30:56 2003
+** Created: Di 8. Apr 01:23:17 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -1374,7 +1374,7 @@ Mesh2MainWindowBase::Mesh2MainWindowBase( QWidget* parent,  const char* name, WF
     Frame3->setFrameShadow( QFrame::Sunken );
     Frame3Layout = new QGridLayout( Frame3, 1, 1, 11, 6, "Frame3Layout"); 
 
-    dataWidget = new QwtPlot3d( Frame3, "dataWidget" );
+    dataWidget = new QwtPlot3D( Frame3, "dataWidget" );
 
     Frame3Layout->addWidget( dataWidget, 0, 0 );
 

@@ -10,12 +10,12 @@ class CoordinateSystem : public Drawable
 
 public:
 	
-	explicit CoordinateSystem(Triple blb = Triple(0,0,0), Triple ftr = Triple(0,0,0), COORDSTYLE = BOX);
+	explicit CoordinateSystem(Triple blb = Triple(0,0,0), Triple ftr = Triple(0,0,0), Qwt3d::COORDSTYLE = Qwt3d::BOX);
   ~CoordinateSystem();	
 	
 	void init(Triple beg = Triple(0,0,0), Triple end = Triple(0,0,0));
-	void setStyle(COORDSTYLE s);
-	COORDSTYLE style() const { return style_;}
+	void setStyle(Qwt3d::COORDSTYLE s);
+	Qwt3d::COORDSTYLE style() const { return style_;}
 	void setPosition(Triple first, Triple second); // first == front_left_bottom, second == back_right_top
 	
 	void setAxesColor(RGBA val);
@@ -44,12 +44,12 @@ private:
 	void destroy();
 	
 	Triple first_, second_;
-	COORDSTYLE style_;
+	Qwt3d::COORDSTYLE style_;
 	
 	double ared_, agreen_, ablue_; 
 	double lineWidth_, majLineWidth_, minLineWidth_;
 
-	void positionateLabel(AXIS num, LabelPixmap::ANCHOR an, QString name = QString());
+	void positionateLabel(Qwt3d::AXIS num, LabelPixmap::ANCHOR an, QString name = QString());
 	
 	static const double SQRT1_2;
 };

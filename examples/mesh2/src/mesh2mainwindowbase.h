@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file 'src\mesh2mainwindowbase.ui'
 **
-** Created: Mo 7. Apr 21:30:56 2003
+** Created: Di 8. Apr 01:23:17 2003
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -24,7 +24,7 @@ class QFrame;
 class QLCDNumber;
 class QLabel;
 class QPushButton;
-class QwtPlot3d;
+class QwtPlot3D;
 class QwtSlider;
 class QwtWheel;
 class alphadlg;
@@ -38,7 +38,7 @@ public:
     ~Mesh2MainWindowBase();
 
     QFrame* Frame3;
-    QwtPlot3d* dataWidget;
+    QwtPlot3D* dataWidget;
     QLabel* TextLabel1;
     QwtSlider* offsetSlider;
     QwtWheel* yS;

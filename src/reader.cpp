@@ -94,9 +94,6 @@ namespace
     xmax = atof (p);
     
 		if ((p = read_field (fp)) == 0)
-
-
-
       return false;
     ymin = atof (p);
 
