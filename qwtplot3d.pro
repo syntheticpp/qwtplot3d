@@ -40,9 +40,9 @@ HEADERS += src/qwt_plot3d.h \
 					 src/plane.h \
 					 src/functiongenerator.h \
 					 src/colorgenerator.h \
+					 src/helper.h
 
-SOURCES += src/compares.cpp \
-					 src/qwt_plot3d.cpp \
+SOURCES += src/qwt_plot3d.cpp \
 					 src/reader.cpp \
 					 src/labelpixmap.cpp \
 					 src/types.cpp \
@@ -55,4 +55,5 @@ SOURCES += src/compares.cpp \
 					 src/mapping.cpp \
 					 src/mousekeyboard.cpp \
 					 src/movements.cpp \
-					 src/dataviews.cpp
+					 src/dataviews.cpp \
+					 src/helper.cpp

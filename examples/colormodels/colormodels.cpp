@@ -97,7 +97,7 @@ void Plot::changeColor()
 		dir = -dir;
 
 	calculateHull();
-	col->setMinMax(hullFirst().z, hullSecond().z);
+	col->setMinMax(hull().minVertex.z, hull().maxVertex.z);
 
 	setDataColor(col);
 	updateData();

@@ -6,20 +6,18 @@
 #define __DATATYPES_H__
 
 #include <string>
-#include <vector>
-#include <algorithm>
 
 #ifdef _WIN32
 	#include <windows.h>
 #endif
 
-#include <qgl.h>
-#include <math.h>
-#include <float.h>
-
 #ifndef WHEEL_DELTA
 	#define WHEEL_DELTA 120
 #endif
+
+#include <qgl.h>
+#include "helper.h"
+
 
 namespace Qwt3D
 {
@@ -76,19 +74,13 @@ enum AXIS
 
 } // ns
 
-inline int round(double d)
+//! Tuple <tt>[x,y]</tt>
+struct Tuple
 {
-	return (d>0) ? int(d+0.5) : int(d-0.5);
-}
-
-inline bool isPracticallyZero(double a, double b = 0)
-{
-  if (!b)
-		return (fabs (a) <=  DBL_EPSILON);	
-
-	return (fabs (a - b) <= min (fabs(a), fabs(b))*DBL_EPSILON);	
-}
-
+	Tuple() : x(0), y(0) {}
+	Tuple(double X, double Y) : x(X), y(Y) {}
+	double x,y;
+};
 
 //! Triple <tt>[x,y,z]</tt>
 struct Triple
@@ -195,6 +187,22 @@ inline const Triple operator*(const Triple& t, const Triple& t2)
 	return Triple(t) *= t2;
 }
 
+struct ParallelEpiped
+{
+	ParallelEpiped()
+	{
+	}
+
+	ParallelEpiped(Triple minv, Triple maxv)
+	: minVertex(minv), maxVertex(maxv)
+	{
+	}
+	
+	Triple minVertex;
+	Triple maxVertex;
+};
+
+
 typedef double *Vertex;
 typedef std::vector<Vertex> DataRow;
 typedef std::vector<DataRow> DataMatrix;
@@ -219,10 +227,12 @@ public:
 	void setSize(unsigned int columns, unsigned int rows); //!< destroys content and set new size, elements are uninitialized
 	
 	double maximum() const; //!< \return minimal z value
-	double minimum() const; //!< \return maximal z value
-	
+	double minimum() const; //!< \return maximal z value 
+
 	void setMin(double minv); //!< set maximum for z, not immediately, but the different generators take care and will cut
 	void setMax(double maxv); //!< set minimum for z, not immediately, but the different generators take care and will cut 
+
+	ParallelEpiped hull() const;
 
 	DataMatrix vertices;		//!< mesh vertices
 	DataMatrix normals;		//!< mesh normals
@@ -320,18 +330,6 @@ inline void normalizedcross(GLdouble* u, GLdouble* v, GLdouble* n)
   n[1] /= l;
   n[2] /= l;
 }
-
-double ceil125( double x);
-double floor125( double x);
-double round125( double x);
-
-
-struct Tuple
-{
-	Tuple() : x(0), y(0) {}
-	Tuple(double X, double Y) : x(X), y(Y) {}
-	double x,y;
-};
 
 void convexhull2d( std::vector<int>& idx, const std::vector<Tuple>& src );
 

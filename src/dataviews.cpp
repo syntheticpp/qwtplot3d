@@ -35,15 +35,15 @@ QwtPlot3D::updateData()
 	{
 		glColor4d(meshcolor_.r, meshcolor_.g, meshcolor_.b, meshcolor_.a);
 
-		for (i = 0; i < actualData_.columns() - cstep; i += cstep) 
+		for (i = 0; i < actualData_->columns() - cstep; i += cstep) 
 		{
-			for (j = 0; j < actualData_.rows() - rstep; j += rstep) 
+			for (j = 0; j < actualData_->rows() - rstep; j += rstep) 
 			{
 				glBegin(GL_LINE_LOOP);
-					glVertex3dv(actualData_.vertices[i][j]);
-					glVertex3dv(actualData_.vertices[i+cstep][j]);
-					glVertex3dv(actualData_.vertices[i+cstep][j+rstep]);
-					glVertex3dv(actualData_.vertices[i][j+rstep]);
+					glVertex3dv(actualData_->vertices[i][j]);
+					glVertex3dv(actualData_->vertices[i+cstep][j]);
+					glVertex3dv(actualData_->vertices[i+cstep][j+rstep]);
+					glVertex3dv(actualData_->vertices[i][j+rstep]);
 				glEnd();
 			}
 		}
@@ -60,28 +60,28 @@ QwtPlot3D::updateData()
 		col = bgcolor_;
 
 		glBegin(GL_QUADS);
-			for (i = 0; i < actualData_.columns() - cstep; i += cstep) 
+			for (i = 0; i < actualData_->columns() - cstep; i += cstep) 
 			{
-				for (j = 0; j < actualData_.rows() - rstep; j += rstep) 
+				for (j = 0; j < actualData_->rows() - rstep; j += rstep) 
 				{
 					if(!hl)
 					{
 						col = (*dataColor_)(
-							actualData_.vertices[i][j][0],
-							actualData_.vertices[i][j][1],
-							actualData_.vertices[i][j][2]);
+							actualData_->vertices[i][j][0],
+							actualData_->vertices[i][j][1],
+							actualData_->vertices[i][j][2]);
 					}
 					glColor4d(col.r, col.g, col.b, col.a);
 					
-					glVertex3dv(actualData_.vertices[i][j]);
-					glVertex3dv(actualData_.vertices[i+cstep][j]);
-					glVertex3dv(actualData_.vertices[i+cstep][j+rstep]);
-					glVertex3dv(actualData_.vertices[i][j+rstep]);
+					glVertex3dv(actualData_->vertices[i][j]);
+					glVertex3dv(actualData_->vertices[i+cstep][j]);
+					glVertex3dv(actualData_->vertices[i+cstep][j+rstep]);
+					glVertex3dv(actualData_->vertices[i][j+rstep]);
 
-					glNormal3dv(actualData_.normals[i][j]);
-					glNormal3dv(actualData_.normals[i+cstep][j]);
-					glNormal3dv(actualData_.normals[i+cstep][j+rstep]);
-					glNormal3dv(actualData_.normals[i][j+rstep]);
+					glNormal3dv(actualData_->normals[i][j]);
+					glNormal3dv(actualData_->normals[i+cstep][j]);
+					glNormal3dv(actualData_->normals[i+cstep][j+rstep]);
+					glNormal3dv(actualData_->normals[i][j+rstep]);
 				}
 			}
 		glEnd();
@@ -117,7 +117,7 @@ QwtPlot3D::updateFloorData()
 void 
 QwtPlot3D::calcFloorListAsData()
 {
-	if (actualData_.empty())
+	if (actualData_->empty())
 		return;
 	
 	RGBA col;
@@ -128,22 +128,22 @@ QwtPlot3D::calcFloorListAsData()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
 	glBegin(GL_QUADS);
-		double zshift = actualData_.minimum();
-		for (unsigned int i = 0; i < actualData_.columns() - cstep; i += cstep) 
+		double zshift = actualData_->minimum();
+		for (unsigned int i = 0; i < actualData_->columns() - cstep; i += cstep) 
 		{
-			for (unsigned int j = 0; j < actualData_.rows() - rstep; j += rstep) 
+			for (unsigned int j = 0; j < actualData_->rows() - rstep; j += rstep) 
 			{
 				col = (*dataColor_)(
-					actualData_.vertices[i][j][0],
-					actualData_.vertices[i][j][1],
-					actualData_.vertices[i][j][2]);
+					actualData_->vertices[i][j][0],
+					actualData_->vertices[i][j][1],
+					actualData_->vertices[i][j][2]);
 
 				glColor4d(col.r, col.g, col.b, col.a);
 				
-				glVertex3d(actualData_.vertices[i][j][0], actualData_.vertices[i][j][1], zshift);
-				glVertex3d(actualData_.vertices[i+cstep][j][0],actualData_.vertices[i+cstep][j][1], zshift);
-				glVertex3d(actualData_.vertices[i+cstep][j+rstep][0],actualData_.vertices[i+cstep][j+rstep][1], zshift);
-				glVertex3d(actualData_.vertices[i][j+rstep][0],actualData_.vertices[i][j+rstep][1], zshift);
+				glVertex3d(actualData_->vertices[i][j][0], actualData_->vertices[i][j][1], zshift);
+				glVertex3d(actualData_->vertices[i+cstep][j][0],actualData_->vertices[i+cstep][j][1], zshift);
+				glVertex3d(actualData_->vertices[i+cstep][j+rstep][0],actualData_->vertices[i+cstep][j+rstep][1], zshift);
+				glVertex3d(actualData_->vertices[i][j+rstep][0],actualData_->vertices[i][j+rstep][1], zshift);
 			}
 		}
 	glEnd();
@@ -152,10 +152,10 @@ QwtPlot3D::calcFloorListAsData()
 void 
 QwtPlot3D::calcFloorListAsIsolines()
 {
-	if (isolines_ <= 0 || actualData_.empty())
+	if (isolines_ <= 0 || actualData_->empty())
 		return;
 
-	double step = (actualData_.maximum() - actualData_.minimum()) / isolines_;		
+	double step = (actualData_->maximum() - actualData_->minimum()) / isolines_;		
 
 	RGBA col;
 	int cstep = resolution_;
@@ -164,13 +164,13 @@ QwtPlot3D::calcFloorListAsIsolines()
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	unsigned i,j;
-	double zshift = actualData_.minimum();
-	int cols = actualData_.columns();
-	int rows = actualData_.rows();
+	double zshift = actualData_->minimum();
+	int cols = actualData_->columns();
+	int rows = actualData_->rows();
 	
 	for (int k = isolines_; k > 0; --k) 
 	{
-		double hi = actualData_.minimum() + k * step;
+		double hi = actualData_->minimum() + k * step;
 		double lo = hi - step;
 		
 
@@ -179,66 +179,66 @@ QwtPlot3D::calcFloorListAsIsolines()
 			for (j = 0; j <= rows-rstep; j += rstep) 
 			{
 				col = (*dataColor_)(
-					actualData_.vertices[i][j][0],
-					actualData_.vertices[i][j][1],
-					actualData_.vertices[i][j][2]);
+					actualData_->vertices[i][j][0],
+					actualData_->vertices[i][j][1],
+					actualData_->vertices[i][j][2]);
 
 				glColor4d(col.r, col.g, col.b, col.a);
 				
-				Triple thi = Triple(	actualData_.vertices[i][j][0],
-															actualData_.vertices[i][j][1],
-															actualData_.vertices[i][j][2]);
+				Triple thi = Triple(	actualData_->vertices[i][j][0],
+															actualData_->vertices[i][j][1],
+															actualData_->vertices[i][j][2]);
 				if ( lo<thi.z && thi.z<hi)
 				{
 					Triple tlo[8];
 					
 					if (i<cols-cstep)
 					{
-						tlo[0] = Triple(actualData_.vertices[i+cstep][j][0],
-							actualData_.vertices[i+cstep][j][1],
-							actualData_.vertices[i+cstep][j][2]);
+						tlo[0] = Triple(actualData_->vertices[i+cstep][j][0],
+							actualData_->vertices[i+cstep][j][1],
+							actualData_->vertices[i+cstep][j][2]);
 					}
 					if (i<cols-cstep && j<rows-rstep)
 					{
-						tlo[1] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
-							actualData_.vertices[i+cstep][j+rstep][1],
-							actualData_.vertices[i+cstep][j+rstep][2]);
+						tlo[1] = Triple(actualData_->vertices[i+cstep][j+rstep][0],
+							actualData_->vertices[i+cstep][j+rstep][1],
+							actualData_->vertices[i+cstep][j+rstep][2]);
 					}
 					if (j<rows-rstep)
 					{
-						tlo[2] = Triple(actualData_.vertices[i][j+rstep][0],
-														actualData_.vertices[i][j+rstep][1],
-														actualData_.vertices[i][j+rstep][2]);
+						tlo[2] = Triple(actualData_->vertices[i][j+rstep][0],
+														actualData_->vertices[i][j+rstep][1],
+														actualData_->vertices[i][j+rstep][2]);
 					}
 					if (i>0 && j<rows-rstep)
 					{
-						tlo[3] = Triple(actualData_.vertices[i-cstep][j+rstep][0],
-														actualData_.vertices[i-cstep][j+rstep][1],
-														actualData_.vertices[i-cstep][j+rstep][2]);
+						tlo[3] = Triple(actualData_->vertices[i-cstep][j+rstep][0],
+														actualData_->vertices[i-cstep][j+rstep][1],
+														actualData_->vertices[i-cstep][j+rstep][2]);
 					}
 					if (i>0)
 					{
-						tlo[4] = Triple(actualData_.vertices[i-cstep][j][0],
-														actualData_.vertices[i-cstep][j][1],
-														actualData_.vertices[i-cstep][j][2]);
+						tlo[4] = Triple(actualData_->vertices[i-cstep][j][0],
+														actualData_->vertices[i-cstep][j][1],
+														actualData_->vertices[i-cstep][j][2]);
 					}
 					if (i>0 && j>0)
 					{
-						tlo[5] = Triple(actualData_.vertices[i-cstep][j-rstep][0],
-							actualData_.vertices[i-cstep][j-rstep][1],
-							actualData_.vertices[i-cstep][j-rstep][2]);
+						tlo[5] = Triple(actualData_->vertices[i-cstep][j-rstep][0],
+							actualData_->vertices[i-cstep][j-rstep][1],
+							actualData_->vertices[i-cstep][j-rstep][2]);
 					}
 					if (j>0)
 					{
-						tlo[6] = Triple(actualData_.vertices[i][j-rstep][0],
-							actualData_.vertices[i][j-rstep][1],
-							actualData_.vertices[i][j-rstep][2]);
+						tlo[6] = Triple(actualData_->vertices[i][j-rstep][0],
+							actualData_->vertices[i][j-rstep][1],
+							actualData_->vertices[i][j-rstep][2]);
 					}
 					if (i<cols-cstep && j>0)
 					{
-						tlo[7] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
-														actualData_.vertices[i+cstep][j-rstep][1],
-														actualData_.vertices[i+cstep][j-rstep][2]);
+						tlo[7] = Triple(actualData_->vertices[i+cstep][j-rstep][0],
+														actualData_->vertices[i+cstep][j-rstep][1],
+														actualData_->vertices[i+cstep][j-rstep][2]);
 					}										
 					
 					unsigned k1,k2;
@@ -250,21 +250,21 @@ QwtPlot3D::calcFloorListAsIsolines()
 					}
 					else if (i==0 && j>0 && j<rows-rstep)
 					{
-						tlo[0] = Triple(actualData_.vertices[i][j-rstep][0],
-							actualData_.vertices[i][j-rstep][1],
-							actualData_.vertices[i][j-rstep][2]);
-						tlo[1] = Triple(actualData_.vertices[i+cstep][j-rstep][0],
-							actualData_.vertices[i+cstep][j-rstep][1],
-							actualData_.vertices[i+cstep][j-rstep][2]);
-						tlo[2] = Triple(actualData_.vertices[i+cstep][j][0],
-							actualData_.vertices[i+cstep][j][1],
-							actualData_.vertices[i+cstep][j][2]);
-						tlo[3] = Triple(actualData_.vertices[i+cstep][j+rstep][0],
-							actualData_.vertices[i+cstep][j+rstep][1],
-							actualData_.vertices[i+cstep][j+rstep][2]);
-						tlo[4] = Triple(actualData_.vertices[i][j+rstep][0],
-							actualData_.vertices[i][j+rstep][1],
-							actualData_.vertices[i][j+rstep][2]);
+						tlo[0] = Triple(actualData_->vertices[i][j-rstep][0],
+							actualData_->vertices[i][j-rstep][1],
+							actualData_->vertices[i][j-rstep][2]);
+						tlo[1] = Triple(actualData_->vertices[i+cstep][j-rstep][0],
+							actualData_->vertices[i+cstep][j-rstep][1],
+							actualData_->vertices[i+cstep][j-rstep][2]);
+						tlo[2] = Triple(actualData_->vertices[i+cstep][j][0],
+							actualData_->vertices[i+cstep][j][1],
+							actualData_->vertices[i+cstep][j][2]);
+						tlo[3] = Triple(actualData_->vertices[i+cstep][j+rstep][0],
+							actualData_->vertices[i+cstep][j+rstep][1],
+							actualData_->vertices[i+cstep][j+rstep][2]);
+						tlo[4] = Triple(actualData_->vertices[i][j+rstep][0],
+							actualData_->vertices[i][j+rstep][1],
+							actualData_->vertices[i][j+rstep][2]);
 						k1 = 0;
 						k2 = 3;
 					}

@@ -15,7 +15,7 @@
     <property name="minimumSize">
         <size>
             <width>336</width>
-            <height>195</height>
+            <height>198</height>
         </size>
     </property>
     <property name="caption">
@@ -75,6 +75,9 @@
                     <property name="text">
                         <string>Std</string>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Set standard view</string>
+                    </property>
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
@@ -125,6 +128,9 @@
                             </property>
                             <property name="tickInterval">
                                 <number>0</number>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Increase surface quality by setting polygon offset (OpenGL specific)</string>
                             </property>
                         </widget>
                     </vbox>
@@ -199,6 +205,9 @@
                             <property name="tickInterval">
                                 <number>5</number>
                             </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Set data resolution</string>
+                            </property>
                         </widget>
                     </vbox>
                 </widget>
@@ -271,6 +280,9 @@
                             <property name="name">
                                 <cstring>autoscale</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
                             <property name="sizePolicy">
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -286,10 +298,10 @@
                                 <bool>true</bool>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>autoscale axes</string>
+                                <string>Autoscale axes</string>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>autoscale axes</string>
+                                <string>Autoscale axes</string>
                             </property>
                         </widget>
                         <widget class="QCheckBox">
@@ -311,7 +323,7 @@
                                 <bool>true</bool>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>enable/disable mouse input</string>
+                                <string>Enable mouse input</string>
                             </property>
                         </widget>
                     </vbox>
@@ -345,22 +357,19 @@
             <property name="frameShadow">
                 <enum>Sunken</enum>
             </property>
-            <grid>
+            <widget class="QwtPlot3D">
                 <property name="name">
-                    <cstring>unnamed</cstring>
+                    <cstring>dataWidget</cstring>
                 </property>
-                <property name="margin">
-                    <number>11</number>
+                <property name="geometry">
+                    <rect>
+                        <x>11</x>
+                        <y>11</y>
+                        <width>782</width>
+                        <height>404</height>
+                    </rect>
                 </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QwtPlot3D" row="0" column="0">
-                    <property name="name">
-                        <cstring>dataWidget</cstring>
-                    </property>
-                </widget>
-            </grid>
+            </widget>
         </widget>
     </grid>
 </widget>
@@ -410,6 +419,9 @@
                     <width>150</width>
                     <height>0</height>
                 </size>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Display function</string>
             </property>
             <item>
                 <property name="text">

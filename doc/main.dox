@@ -180,7 +180,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 	  fclose(file);
 	
 		// NativeReader's ctor argument is the actual QwtPlot3D widget - feed them with data 
-		plotwidget_->createInternalRepresentation(data, xmesh, ymesh, minx, maxx, miny, maxy);
+		plotwidget_->createDataRepresentation(data, xmesh, ymesh, minx, maxx, miny, maxy);
 		
 		// clean up temporary data pool
 		deleteData(data,xmesh);
@@ -191,7 +191,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
   
   
   See NativeReader for additional information. Write your own SpecialReader classes in this spirit. Simply provide
-  appropriate data for QwtPlot3D::createInternalRepresentation.
+  appropriate data for QwtPlot3D::createDataRepresentation.
   
   \n\par Mathematical functions:
   
@@ -204,7 +204,7 @@ cvs -z3 -d:pserver:anonymous@cvs.qwtplot3d.sourceforge.net:/cvsroot/qwtplot3d co
 	
 	A general approach has been provided in form of the member 
 	
-	QwtPlot3D::createInternalRepresentation().
+	QwtPlot3D::createDataRepresentation().
 	
 	For the present, you can feed the function with a <tt>double**</tt> pointer to your data. I'll extend this in the future.
 

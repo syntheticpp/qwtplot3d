@@ -87,7 +87,7 @@ Function::create()
 		}
 	}
 
-	plotwidget_->createInternalRepresentation(data, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_);
+	plotwidget_->createDataRepresentation(data, xmesh_, ymesh_, minx_, maxx_, miny_, maxy_);
 
 	for ( i = 0; i < xmesh_; i++) 
 	{
