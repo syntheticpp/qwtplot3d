@@ -2,7 +2,7 @@
 #define __FEMREADER_H__
 
 #include <math.h>
-#include <fstream.h>
+#include <fstream>
 #include "qwt3d_global.h"
 #include "qwt3d_types.h"
 
@@ -14,7 +14,7 @@ class NodeFilter
 			values = std::vector<double>(6);
 		}
 		
-		Qwt3D::Triple readLine(istream& str)
+		Qwt3D::Triple readLine(std::ifstream& str)
 		{
 			for (unsigned i = 0; i!=values.size(); ++i)
 				str >> values[i];
@@ -31,7 +31,7 @@ class CellFilter
 {
 	public:
 		
-		Qwt3D::Cell readLine(istream& str)
+		Qwt3D::Cell readLine(std::ifstream& str)
 		{
 			Qwt3D::Cell cell(4);
 			str >> cell[0]; // dummy (cell number) - overridden in next step

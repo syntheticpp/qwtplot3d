@@ -4,14 +4,6 @@
 #include <qmodules.h>
 #include <qglobal.h>
 
-
-#if defined (QWT3D_GL2PS)
-	#include <gl2ps.h>
-	#if ((GL2PS_MAJOR_VERSION << 16) + (GL2PS_MINOR_VERSION  << 8) + GL2PS_PATCH_VERSION)  >= 0x0903	
-		#define QWT3D_GL2PDF 
-	#endif
-#endif
-
 //
 // Create Qwt3d DLL if QWT3D_DLL is defined (Windows only)
 //

@@ -28,7 +28,7 @@
 #include "../../../include/qwt3d_io.h"
 
 using namespace Qwt3D;
-
+using namespace std;
 
 Mesh2MainWindow::~Mesh2MainWindow()      
 {
@@ -126,18 +126,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent, const char* name, WFlags f )
 		connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
 		connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
 
-#ifdef QWT3D_GL2PS
-		filetypeCB->insertItem("eps");
-		filetypeCB->insertItem("ps");
-	#ifdef QWT3D_GL2PDF
-			filetypeCB->insertItem("pdf");
-			filetype_ = "pdf";
-			filetypeCB->setCurrentText("pdf");
-	#endif
-#else
 		filetype_ = "png";
 		filetypeCB->setCurrentText("png");
-#endif
 }
 
 void Mesh2MainWindow::open()
@@ -194,7 +184,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 		
 		//hat.setMaxZ(1.1);
 
-		hat.create();		
+		hat.create();	
 	}
 	else if (name == QString("Saddle")) 
 	{
@@ -232,21 +222,6 @@ void Mesh2MainWindow::createFunction(QString const& name)
 
 
 	pickCoordSystem(activeCoordSystem);
-
-	dataWidget->coordinates()->axes[X1].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X2].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X3].setLabelString(QChar (0x3b4) + QString("-axis"));
-	dataWidget->coordinates()->axes[X4].setLabelString(QChar (0x3b4) + QString("-axis"));
-
-	dataWidget->coordinates()->axes[Y1].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y2].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y3].setLabelString(QChar (0x3b6) + QString("-axis"));
-	dataWidget->coordinates()->axes[Y4].setLabelString(QChar (0x3b6) + QString("-axis"));
-
-	dataWidget->coordinates()->axes[Z1].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z2].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z3].setLabelString(QChar (0x3b8) + QString("-axis"));
-	dataWidget->coordinates()->axes[Z4].setLabelString(QChar (0x3b8) + QString("-axis"));
 
 	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
 	dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
@@ -323,6 +298,8 @@ void Mesh2MainWindow::pickPlotStyle( QAction* action )
 	{
 		dataWidget->setPlotStyle(NOPLOT);
 	}
+	dataWidget->updateData();
+	dataWidget->updateGL();
 }
 
 void
@@ -347,6 +324,9 @@ Mesh2MainWindow::pickFloorStyle( QAction* action )
 	{
 		dataWidget->setFloorStyle(NOFLOOR);
 	}
+	
+	dataWidget->updateData();
+	dataWidget->updateGL();
 }	
 
 void Mesh2MainWindow::resetColors()
@@ -514,41 +494,26 @@ void Mesh2MainWindow::dumpImage()
 	if (!dataWidget)
 		return;
 	QString name;
-	
+		
 	if (filetype_ == QString("png"))
 	{
 		name = QString("dump_") + QString::number(counter++) + ".png";
-		dataWidget->saveContent(name,"PNG");
+		dataWidget->savePixmap(name,"PNG");
 	}
 	else if (filetype_ == QString("bmp"))
 	{
 		name = QString("dump_") + QString::number(counter++) + ".bmp";
-		dataWidget->saveContent(name,"BMP");
+		dataWidget->savePixmap(name,"BMP");
 	}
 	else if (filetype_ == QString("xpm"))
 	{
 		name = QString("dump_") + QString::number(counter++) + ".xpm";
-		dataWidget->saveContent(name,"XPM");
+		dataWidget->savePixmap(name,"XPM");
 	}
 	else if (filetype_ == QString("ppm"))
 	{
 		name = QString("dump_") + QString::number(counter++) + ".ppm";
-		dataWidget->saveContent(name,"PPM");
-	}
-	else if (filetype_ == QString("eps"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".eps";
-		dataWidget->saveContent(name,"EPS");
-	}
-	else if (filetype_ == QString("ps"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".ps";
-		dataWidget->saveContent(name,"PS");
-	}
-	else if (filetype_ == QString("pdf"))
-	{
-		name = QString("dump_") + QString::number(counter++) + ".pdf";
-		dataWidget->saveContent(name,"PDF");
+		dataWidget->savePixmap(name,"PPM");
 	}
 }
 

@@ -21,6 +21,7 @@ public:
 	{
 		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
 	}
+//	QString name() const {return "Almost {\\it Rosenbrock}\\,:\\quad$\\frac{\\ln((1-x)^2 + 100(y-x^2)^2)}{8}$";}
 };
 
 class Hat : public Function
@@ -37,6 +38,7 @@ public:
 	{
 		return 1.0 / (x*x+y*y+0.5);
 	}
+//	QString name() const {return "$\\frac{1}{x^2+y^2+\\frac{1}{2}}$";}
 };
 
 class Saddle : public Function
@@ -53,6 +55,7 @@ public:
 	{
 		return x*x - y*y;
 	}
+//	QString name() const {return "$x^2-y^2$";}
 };
 
 class Mex : public Function
@@ -74,6 +77,7 @@ public:
 		
 		return 20 * sin(sqrt(x*x+y*y)) / n;
 	}
+//	QString name() const {return "$\\frac{20\\sin\\sqrt{x^2+y^2}}{\\sqrt{x^2+y^2}}$";}
 };
 
 #endif // __EXAMPLE_H__

@@ -8,7 +8,7 @@ namespace Qwt3D
 {
 
 //! Base class for all plotting widgets
-/**
+/*!
 	Plot3D handles all the common features for plotting widgets - coordinate system, transformations, mouse handling,
 	labeling etc.. It contains some pure virtual functions and is, in so far, an abstract base class.
 	The class provides interfaces for data handling and implements basic data controlled color allocation.
@@ -72,7 +72,7 @@ public:
 		void setPolygonOffset(double d);
 		double polygonOffset() const {return polygonOffset_;} //!< \return Relative value for polygon offset [0..1] \see setPolygonOffset()
 		
-		void setCaptionPosition(double rely, double relx = 0.5, LabelPixmap::ANCHOR = LabelPixmap::TopCenter);
+		void setCaptionPosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
 		void setCaptionFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 		void setCaptionColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
 		void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
@@ -107,8 +107,9 @@ public slots:
 		
 		void		enableMouse(bool val=true); //!< Enable mouse input
 		void		disableMouse(bool val =true); //!< Disable mouse input
-
-		bool    saveContent(QString fileName, QString format);
+		
+		bool    savePixmap(QString fileName, QString format); //!  Saves content to pixmap format
+		bool    saveVector(QString fileName, QString format, bool notext = false, int sorttype = -1); //!  Saves content to vector format
 
 protected:
 
@@ -163,7 +164,7 @@ private:
 
 		LabelPixmap title_;
 		Qwt3D::Tuple titlerel_;
-		LabelPixmap::ANCHOR titleanchor_;
+		Qwt3D::ANCHOR titleanchor_;
 
 		QPoint lastMouseMovePosition_;
 		bool mpressed_;

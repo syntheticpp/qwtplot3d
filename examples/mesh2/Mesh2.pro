@@ -1,11 +1,3 @@
-# This file will be straightened in the future, adapt to your needs
-# A recent qwt is needed (>=0.4.2 with installed Qwt designer plugin)
-# otherwise you have to include some qwt headers in the uic generated
-# files manually
-#
-
-DEFINES += QWT3D_GL2PS
-
 TARGET          = Mesh2
 TEMPLATE = app
 win32:TEMPLATE        = vcapp
