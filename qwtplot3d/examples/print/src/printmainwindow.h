@@ -18,7 +18,7 @@ public slots:
 	void dumpImage();
 	void setFileType(QString const& name);
 	void setSortingType(QString const& name);
-	void setPolygonOffset(int val);
+	void setSmoothMesh(bool val);
 	void setMeshLineWidth(int val);
 	void setCoordLineWidth(int val);
 

@@ -28,13 +28,13 @@ ColorLegend::ColorLegend()
 }
 
 void 
-ColorLegend::setCaptionString(QString const& s) 
+ColorLegend::setTitleString(QString const& s) 
 { 
 	caption_.setString(s); 
 }
 
 void 
-ColorLegend::setCaptionFont(QString const& family, int pointSize, int weight, bool italic) 
+ColorLegend::setTitleFont(QString const& family, int pointSize, int weight, bool italic) 
 { 
 	caption_.setFont(family, pointSize, weight, italic);
 }

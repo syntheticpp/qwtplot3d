@@ -14,6 +14,7 @@ void
 SurfacePlot::updateCellData()
 {		
 	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
+	GLStateBewarer sb2(GL_LINE_SMOOTH, smoothdatamesh_);
 	int idx = 0;
 	if (plotStyle() != WIREFRAME)
 	{
@@ -115,6 +116,8 @@ SurfacePlot::CellIsolines2Floor()
 	int hit = -1;
 	double lambda = 0;
 	
+	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
+
 	for (int k = 0; k != isolines(); ++k) 
 	{
 		double val = zshift + k * step;		

@@ -74,9 +74,9 @@ public:
 		void setPolygonOffset(double d);
 		double polygonOffset() const {return polygonOffset_;} //!< \return Relative value for polygon offset [0..1] \see setPolygonOffset()
 		
-		void setCaptionPosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
-		void setCaptionFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-		void setCaptionColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
+		void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
+		void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
+		void setTitleColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
 		void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
 
 		
@@ -131,17 +131,16 @@ protected:
 		virtual void createData() = 0;
 		virtual void createFloorData() = 0;
 	  
-		void updateFloorData();	
 		void createCoordinateSystem();
 		void setHull(Qwt3D::ParallelEpiped p) {hull_ = p;}
 
 		enum OBJECTS
 		{
-			DataObject				= 0,
-			LegendObject			= 1,
-			CoordObject				= 2,
-			FloorObject       = 3,
-			NormalObject			= 4
+			DataObject,
+			LegendObject,
+			CoordObject,
+			NormalObject,
+			DisplayListSize
 		};
 		std::vector<GLuint> DisplayLists;
 

@@ -474,26 +474,29 @@ void keyboard(unsigned char key, int x, int y){
     display();
     break;
   case 's':
-//    opt = GL2PS_DRAW_BACKGROUND;
-//    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimple.eps");
-//
-//    opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
-//    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled.eps");
-//    opt = GL2PS_NO_PS3_SHADING | GL2PS_DRAW_BACKGROUND;
-//    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading1.eps");
-//    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8.eps");
-//    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 16, "outSimpleShading16.eps");
-//    opt = GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
-//    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outBsp.eps");
+    opt = GL2PS_DRAW_BACKGROUND;
+    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimple.eps");
+
+    opt = GL2PS_OCCLUSION_CULL | GL2PS_DRAW_BACKGROUND;
+    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 0, "outSimpleCulled.eps");
+
+    opt = GL2PS_NO_PS3_SHADING | GL2PS_DRAW_BACKGROUND;
+    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 2, "outSimpleShading2.eps");
+    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 8, "outSimpleShading8.eps");
+    writeps(GL2PS_EPS, GL2PS_SIMPLE_SORT, opt, 16, "outSimpleShading16.eps");
+
+    opt = GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
+    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outBsp.eps");
 
     opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_DRAW_BACKGROUND;
     writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outBspCulled.eps");
     writeps(GL2PS_PDF, GL2PS_BSP_SORT, opt, 0, "outBspCulled.pdf");
 
-//    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_NO_TEXT;
-//    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outLatex.eps");
-//    opt = GL2PS_NONE;
-//    writeps(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex.tex");
+    opt = GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT | GL2PS_NO_TEXT;
+    writeps(GL2PS_EPS, GL2PS_BSP_SORT, opt, 0, "outLatex.eps");
+
+    opt = GL2PS_NONE;
+    writeps(GL2PS_TEX, GL2PS_BSP_SORT, opt, 0, "outLatex.tex");
 
     printf("GL2PS %d.%d.%d done with all images\n",
 	   GL2PS_MAJOR_VERSION, GL2PS_MINOR_VERSION, GL2PS_PATCH_VERSION);

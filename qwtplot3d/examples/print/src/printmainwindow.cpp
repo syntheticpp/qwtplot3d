@@ -3,6 +3,7 @@
 #include <qcombobox.h>
 #include <qaction.h>
 #include <qslider.h>
+#include <qcheckbox.h>
 
 #include "printmainwindow.h"
 #include "../../../include/qwt3d_function.h"
@@ -24,7 +25,7 @@ public:
 	{
 		return log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8;
 	}
-	QString name() const {return "Almost {\\it Rosenbrock}\\,:\\quad$\\frac{\\ln((1-x)^2 + 100(y-x^2)^2)}{8}$";}
+	QString name() const {return "Almost {\\it Rosenbrock}\\,:\\quad$f(\\zeta,\\xi)=\\frac{\\ln((1-\\zeta)^2 + 100(\\xi-\\zeta^2)^2)}{8}$";}
 };
 
 class Hat : public Function
@@ -62,7 +63,6 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
  
 	plot[0] = new SurfacePlot(spl);
 	plot[0]->setZoom(0.8);
-	plot[0]->setBackgroundColor(RGBA(1,1, 157./255));
 	plot[0]->setRotation(30,0,15);
 
 	plot[0]->coordinates()->setGridLines(true,true);
@@ -109,8 +109,12 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	plot[1]->setTitle("Hat");
 
 	plot[0]->setMeshLineWidth(1);
+	plot[0]->coordinates()->setGridLinesColor(RGBA(0,0,0.5));
 	plot[0]->coordinates()->setLineWidth(1);
 	plot[0]->coordinates()->setNumberColor(RGBA(0,0.5,0));
+	plot[0]->coordinates()->setNumberFont("Courier",8);
+	plot[0]->setTitleFont("Courier",11);
+	plot[0]->coordinates()->setLabelFont("Courier",10);
   plot[0]->makeCurrent();
 	plot[0]->updateData();
   plot[0]->updateGL();
@@ -126,9 +130,10 @@ printMainWindow::printMainWindow( QWidget* parent, const char* name, WFlags f )
 	connect(sortingtypeCB, SIGNAL(activated(const QString&)), this, SLOT(setSortingType(const QString&)));
   connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
 
-	connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
+//	connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
 	connect( meshlineSlider, SIGNAL(valueChanged(int)), this, SLOT(setMeshLineWidth(int)) );
 	connect( coordSlider, SIGNAL(valueChanged(int)), this, SLOT(setCoordLineWidth(int)) );
+	connect(meshsmooth, SIGNAL(toggled(bool)), this, SLOT(setSmoothMesh(bool)));
 
 	LabelPixmap::usePrinterFonts(true);
 }
@@ -148,6 +153,10 @@ void printMainWindow::dumpImage()
   if (filetype_.find("tex") >= 0)
 	{
 		plot[0]->setTitle(rosenbrock->name());
+		plot[0]->coordinates()->axes[X1].setLabelString("$\\zeta$");
+		plot[0]->coordinates()->axes[Y1].setLabelString("$\\xi$");
+		plot[0]->coordinates()->axes[Z1].setLabelString("$f(\\zeta,\\xi)$");
+		
 		plot[1]->setTitle(hat->name());
 	}
 
@@ -194,6 +203,11 @@ void printMainWindow::dumpImage()
 
 	plot[0]->setTitle("Rosenbrock");
  	plot[1]->setTitle("Hat");
+
+	plot[0]->coordinates()->axes[X1].setLabelString("");
+	plot[0]->coordinates()->axes[Y1].setLabelString("");
+	plot[0]->coordinates()->axes[Z1].setLabelString("");
+
 }
 
 void printMainWindow::setFileType(QString const& name)
@@ -217,17 +231,17 @@ void printMainWindow::setSortingType(QString const& name)
 	}
 }
 
-void printMainWindow::setPolygonOffset(int val)
-{
-	plot[0]->makeCurrent();
-	plot[0]->setPolygonOffset(val / 10.0);
-	plot[0]->updateData();
-	plot[0]->updateGL();
-  plot[1]->makeCurrent();
-	plot[1]->setPolygonOffset(val / 10.0);
-	plot[1]->updateData();
-	plot[1]->updateGL();
-}
+//void printMainWindow::setPolygonOffset(int val)
+//{
+//	plot[0]->makeCurrent();
+//	plot[0]->setPolygonOffset(val / 10.0);
+//	plot[0]->updateData();
+//	plot[0]->updateGL();
+//  plot[1]->makeCurrent();
+//	plot[1]->setPolygonOffset(val / 10.0);
+//	plot[1]->updateData();
+//	plot[1]->updateGL();
+//}
 
 void printMainWindow::setMeshLineWidth(int val)
 {
@@ -248,5 +262,17 @@ void printMainWindow::setCoordLineWidth(int val)
 	plot[0]->updateGL();
   plot[1]->makeCurrent();
 	plot[1]->coordinates()->setLineWidth(val / 10.0);
+	plot[1]->updateGL();
+}
+
+void printMainWindow::setSmoothMesh(bool val)
+{
+  plot[0]->makeCurrent();
+	plot[0]->setSmoothMesh(val);
+	plot[0]->updateData();
+	plot[0]->updateGL();
+  plot[1]->makeCurrent();
+	plot[1]->setSmoothMesh(val);
+	plot[1]->updateData();
 	plot[1]->updateGL();
 }

@@ -47,7 +47,8 @@ signals:
 
 public slots:
 
-		void	setResolution( int );
+		void setResolution( int );
+		void setSmoothMesh(bool val) {smoothdatamesh_ = val;} //!< Enables/disables smooth data mesh lines. Default is false
 
 protected:
 
@@ -81,6 +82,7 @@ private:
 		bool datanormals_;
 		double normalLength_;
 		int normalQuality_;
+		bool smoothdatamesh_;
 
 		int resolution_;
 };

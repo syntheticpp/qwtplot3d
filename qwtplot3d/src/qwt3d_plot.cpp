@@ -34,7 +34,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	setMeshLineWidth(1);
 	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 
-	DisplayLists = std::vector<GLuint>(5);
+	DisplayLists = std::vector<GLuint>(DisplayListSize);
 	for (unsigned k=0; k!=DisplayLists.size(); ++k)
 	{
 		DisplayLists[k] = 0;
@@ -44,7 +44,7 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
-	setCaptionPosition(0.95);
+	setTitlePosition(0.95);
 	
 	assignMouse(Qt::LeftButton, 
 							Qt::LeftButton | Qt::ShiftButton,
@@ -285,11 +285,11 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 
 	glGetIntegerv(GL_VIEWPORT, viewport);
 
-	GLint options = /*GL2PS_SIMPLE_LINE_OFFSET |*/ GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
+	GLint options = GL2PS_SIMPLE_LINE_OFFSET | GL2PS_SILENT | GL2PS_DRAW_BACKGROUND |
 										 GL2PS_OCCLUSION_CULL | GL2PS_BEST_ROOT;
 
-//	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
-//		options |= GL2PS_LANDSCAPE;
+	if (viewport[2] - viewport[0] > viewport[3] - viewport[0])
+		options |= GL2PS_LANDSCAPE;
 
 	if (notext)
 		options |= GL2PS_NO_PIXMAP | GL2PS_NO_TEXT;
@@ -305,7 +305,7 @@ Plot3D::saveVector(QString fileName, QString format, bool notext, int sorttype)
 		gl2psBeginPage ( "---", "qwtplot3d", viewport,
 										 gl2ps_format, sorttype,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-										 fp, NULL );
+										 fp, fileName.latin1() );
 		
 		updateData();
 		updateGL(); 
@@ -461,7 +461,7 @@ Plot3D::setMeshLineWidth( double val )
 Set relative caption position (0.5,0.5) means, the anchor point lies in the center of the screen
 */
 void 
-Plot3D::setCaptionPosition(double rely, double relx, Qwt3D::ANCHOR anchor)
+Plot3D::setTitlePosition(double rely, double relx, Qwt3D::ANCHOR anchor)
 {
 	titlerel_.y = (rely<0 || rely>1) ? 0.5 : rely;
 	titlerel_.x = (relx<0 || relx>1) ? 0.5 : relx;
@@ -473,7 +473,7 @@ Plot3D::setCaptionPosition(double rely, double relx, Qwt3D::ANCHOR anchor)
 Set caption font
 */
 void 
-Plot3D::setCaptionFont(const QString& family, int pointSize, int weight, bool italic)
+Plot3D::setTitleFont(const QString& family, int pointSize, int weight, bool italic)
 { 
 	title_.setFont(family, pointSize, weight, italic);
 }

@@ -48,10 +48,10 @@ public:
 	void drawNumbers(bool val) { axis_.setNumbers(val); } //!< Sets whether the scale will have scale numbers.
 	void setAutoScale(bool val); //!< Sets, whether the axis is autoscaled or not.
 
-	void setCaptionString(QString const& s); //!< Sets the legends caption string.
+	void setTitleString(QString const& s); //!< Sets the legends caption string.
 	
 	//! Sets the legends caption font.
-	void setCaptionFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false); 
+	void setTitleFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false); 
 
 	Qwt3D::ColorVector colors; //!< The color vector
 

@@ -15,13 +15,13 @@ SurfacePlot::updateGridData()
 {
 	int i, j;
 	RGBA col;
-	const int cstep = resolution();
-	const int rstep = resolution();
+	int cstep = resolution();
+	int rstep = resolution();
 	
 	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	setDevicePolygonOffset(polygonOffset(),1.0);
 
-	//glEnable(GL_LINE_SMOOTH);
+	GLStateBewarer sb2(GL_LINE_SMOOTH, smoothdatamesh_);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	if (plotStyle() != WIREFRAME)
@@ -64,17 +64,19 @@ SurfacePlot::updateGridData()
 	{
 		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);		
 
-		// utmost frame
-		glBegin(GL_LINE_LOOP);
-			for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
-				glVertex3dv(actualGridData_->vertices[i][0]);		
-			for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
-				glVertex3dv(actualGridData_->vertices[i][j]);			
-			for (; i > 0; i -= cstep) 
-				glVertex3dv(actualGridData_->vertices[i][j]);			
-			for (; j > 0; j -= rstep) 
-				glVertex3dv(actualGridData_->vertices[0][j]);			
-		glEnd();
+		if (cstep < actualGridData_->columns() && rstep < actualGridData_->rows())
+		{
+			glBegin(GL_LINE_LOOP);
+				for (i = 0; i < actualGridData_->columns() - cstep; i += cstep) 
+					glVertex3dv(actualGridData_->vertices[i][0]);		
+				for (j = 0; j < actualGridData_->rows() - rstep; j += rstep) 
+					glVertex3dv(actualGridData_->vertices[i][j]);						
+				for (; i >= 0; i -= cstep) 
+					glVertex3dv(actualGridData_->vertices[i][j]);			
+				for (; j >= 0; j -= rstep) 
+					glVertex3dv(actualGridData_->vertices[0][j]);			
+			glEnd();
+		}
 
 		// weaving
 		for (i = cstep; i < actualGridData_->columns() - cstep; i += cstep) 
@@ -115,8 +117,8 @@ SurfacePlot::GridData2Floor()
 		return;
 	
 	RGBA col;
-	unsigned int cstep = resolution();
-	unsigned int rstep = resolution();
+	int cstep = resolution();
+	int rstep = resolution();
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
@@ -165,6 +167,8 @@ SurfacePlot::GridIsolines2Floor()
 	int hit = -1;
 	double lambda = 0;
 	
+	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
+
 	for (int k = 0; k != isolines(); ++k) 
 	{
 		double val = zshift + k * step;		
