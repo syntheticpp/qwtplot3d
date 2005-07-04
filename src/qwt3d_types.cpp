@@ -2,6 +2,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <stdlib.h> // qsort
 #include <algorithm>
 #include "float.h"
 #include "qwt3d_types.h"

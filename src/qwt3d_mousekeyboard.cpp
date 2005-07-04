@@ -40,7 +40,12 @@ void Plot3D::mouseMoveEvent( QMouseEvent *e )
 		return;
   }
 	
-	ButtonState bstate = e->state();
+#if QT_VERSION < 0x040000
+	MouseState bstate = e->state();
+#else
+  MouseState bstate(e->buttons(),e->modifiers());
+#endif
+
 	QPoint diff = e->pos() - lastMouseMovePosition_;
 
 	setRotationMouse(bstate, 3, diff);	
@@ -50,7 +55,7 @@ void Plot3D::mouseMoveEvent( QMouseEvent *e )
 	lastMouseMovePosition_ = e->pos();
 }
 
-void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setRotationMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Rotation
 	double w = max(1,width());
@@ -73,7 +78,7 @@ void Plot3D::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setScaleMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Scale
 		double w = max(1,width());
@@ -99,7 +104,7 @@ void Plot3D::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 			setZoom(max(0.0,zoom() - relyz));
 }
 
-void Plot3D::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
+void Plot3D::setShiftMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Shift
 	double w = max(1,width());
@@ -132,7 +137,11 @@ void Plot3D::wheelEvent( QWheelEvent *e )
 	double step =  accel * e->delta() / WHEEL_DELTA ;
 	step = exp(step)-1;
 
+#if QT_VERSION < 0x040000
 	if ( e->state() & Qt::ShiftButton )
+#else
+	if ( e->modifiers() & Qt::ShiftModifier )
+#endif
 		setScale(xScale(),yScale(), max(0.0,zScale() + step));
 	else
 		setZoom(max(0.0,zoom() + step ));
@@ -156,9 +165,9 @@ void Plot3D::wheelEvent( QWheelEvent *e )
 
 	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
-void Plot3D::assignMouse(int xrot, int yrot, int zrot,
-											 int xscale, int yscale, int zscale,
-											 int zoom, int xshift, int yshift)
+void Plot3D::assignMouse(MouseState xrot, MouseState yrot, MouseState zrot,
+											 MouseState xscale, MouseState yscale, MouseState zscale,
+											 MouseState zoom, MouseState xshift, MouseState yshift)
 {
 	xrot_mstate_   = 	xrot;  
   yrot_mstate_   =  yrot;  
@@ -195,15 +204,19 @@ void Plot3D::keyPressEvent( QKeyEvent *e )
     return;
   }	
 
+#if QT_VERSION < 0x040000
   int bstate = e->state() & Qt::KeyButtonMask; // filter kbd modifier only
-  int keyseq = bstate + e->key();
+  KeyboardState keyseq = bstate + e->key();
+#else
+  KeyboardState keyseq(e->key(), e->modifiers());
+#endif
 
 	setRotationKeyboard(keyseq, kbd_rot_speed_);	
 	setScaleKeyboard(keyseq, kbd_scale_speed_);	
 	setShiftKeyboard(keyseq, kbd_shift_speed_);	
 }
 
-void Plot3D::setRotationKeyboard(int kseq, double speed)
+void Plot3D::setRotationKeyboard(KeyboardState kseq, double speed)
 {
 	// Rotation
 	double w = max(1,width());
@@ -232,7 +245,7 @@ void Plot3D::setRotationKeyboard(int kseq, double speed)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void Plot3D::setScaleKeyboard(int kseq, double speed)
+void Plot3D::setScaleKeyboard(KeyboardState kseq, double speed)
 {
 	// Scale
 		double w = max(1,width());
@@ -266,7 +279,7 @@ void Plot3D::setScaleKeyboard(int kseq, double speed)
 			setZoom(max(0.0,zoom() + relyz));
 }
 
-void Plot3D::setShiftKeyboard(int kseq, double speed)
+void Plot3D::setShiftKeyboard(KeyboardState kseq, double speed)
 {
 	// Shift
 	double w = max(1,width());
@@ -307,15 +320,15 @@ void Plot3D::setShiftKeyboard(int kseq, double speed)
 	\endverbatim
 */
 void Plot3D::assignKeyboard(
-       int xrot_n, int xrot_p
-      ,int yrot_n, int yrot_p
-      ,int zrot_n, int zrot_p
-			,int xscale_n, int xscale_p 
-      ,int yscale_n, int yscale_p
-      ,int zscale_n, int zscale_p
-			,int zoom_n, int zoom_p
-      ,int xshift_n, int xshift_p
-      ,int yshift_n, int yshift_p
+       KeyboardState xrot_n, KeyboardState xrot_p
+      ,KeyboardState yrot_n, KeyboardState yrot_p
+      ,KeyboardState zrot_n, KeyboardState zrot_p
+			,KeyboardState xscale_n, KeyboardState xscale_p 
+      ,KeyboardState yscale_n, KeyboardState yscale_p
+      ,KeyboardState zscale_n, KeyboardState zscale_p
+			,KeyboardState zoom_n, KeyboardState zoom_p
+      ,KeyboardState xshift_n, KeyboardState xshift_p
+      ,KeyboardState yshift_n, KeyboardState yshift_p
       )
 {
 	xrot_kstate_[0]   =  xrot_n;  

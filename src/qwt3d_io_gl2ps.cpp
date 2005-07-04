@@ -180,7 +180,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 
   producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
 
-	FILE *fp = fopen((const char*)fname.local8Bit(), "wb");	
+	FILE *fp = fopen(QWT3DLOCAL8BIT(fname), "wb");	
 	if (!fp)
   {
     Label::useDeviceFonts(false);
@@ -189,10 +189,10 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
   while( state == GL2PS_OVERFLOW )
 	{ 
 		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", producer, viewport,
+		gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
 										 gl2ps_format_, sortmode,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-										 fp, (const char*)fname.local8Bit() );
+										 fp, QWT3DLOCAL8BIT(fname) );
 		
 	  plot->updateData();
 	  plot->updateGL(); 
@@ -207,7 +207,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
       ? fname + ".tex"
       : texfname_;
 
-    fp = fopen((const char*)fn.local8Bit(), "wb");	
+    fp = fopen(QWT3DLOCAL8BIT(fn), "wb");	
     if (!fp)
     {
       Label::useDeviceFonts(false);
@@ -219,10 +219,10 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
     while( state == GL2PS_OVERFLOW )
     { 
       bufsize += 2*1024*1024;
-      gl2psBeginPage ( "---", producer, viewport,
+      gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
         GL2PS_TEX, sortmode,
         options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-        fp, (const char*)fn.local8Bit() );
+        fp, QWT3DLOCAL8BIT(fn) );
       
       plot->updateData();
       plot->updateGL(); 
