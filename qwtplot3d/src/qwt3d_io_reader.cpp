@@ -18,10 +18,10 @@ namespace
 {
 	FILE* open(QString fname)
 	{
-		FILE* file = fopen((const char*)fname.local8Bit(), "r");
+		FILE* file = fopen(QWT3DLOCAL8BIT(fname), "r");
 		if (!file) 
 		{
-			fprintf(stderr, "NativeReader::read: cannot open data file \"%s\"\n", (const char*)fname.local8Bit());
+			fprintf(stderr, "NativeReader::read: cannot open data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
 		}
 		return file;
 	}
@@ -204,7 +204,7 @@ bool NativeReader::operator()(Plot3D* plot, QString const& fname)
 		{
       if (fscanf(file, "%lf", &data[i][j]) != 1) 
 			{
-				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", (const char*)fname.local8Bit());
+				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
 				return false;
       }
 

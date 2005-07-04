@@ -12,8 +12,13 @@ using namespace Qwt3D;
 /*!
   This should be the first call in your derived classes constructors.  
 */
+#if QT_VERSION < 0x040000
 Plot3D::Plot3D( QWidget* parent, const char* name )
     : QGLWidget( parent, name )
+#else
+Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
+    : QGLWidget( parent, shareWidget) 
+#endif
 {  
   initializedGL_ = false;
   xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
@@ -52,7 +57,11 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 	setTitlePosition(0.95);
 	
-	assignMouse(Qt::LeftButton, 
+  kbd_input_enabled_ = true;
+
+#if QT_VERSION < 0x040000
+  setFocusPolicy(QWidget::StrongFocus);
+  assignMouse(Qt::LeftButton, 
 							Qt::LeftButton | Qt::ShiftButton,
 							Qt::LeftButton, 
 							Qt::LeftButton | Qt::AltButton, 
@@ -63,8 +72,6 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 							Qt::LeftButton | Qt::ControlButton);
 
 
-  kbd_input_enabled_ = true;
-  setFocusPolicy(QWidget::StrongFocus);
   assignKeyboard(Qt::Key_Down, Qt::Key_Up,
     Qt::ShiftButton + Qt::Key_Right, Qt::ShiftButton + Qt::Key_Left,
     Qt::Key_Right, Qt::Key_Left,
@@ -75,8 +82,32 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
     Qt::ControlButton + Qt::Key_Right, Qt::ControlButton + Qt::Key_Left,
     Qt::ControlButton + Qt::Key_Down, Qt::ControlButton + Qt::Key_Up
    );
-   setKeySpeed(3,5,5);
+#else
+  setFocusPolicy(Qt::StrongFocus);
+  assignMouse(Qt::LeftButton, 
+							MouseState(Qt::LeftButton, Qt::ShiftModifier),
+							Qt::LeftButton, 
+							MouseState(Qt::LeftButton, Qt::AltModifier), 
+							MouseState(Qt::LeftButton, Qt::AltModifier), 
+							MouseState(Qt::LeftButton, Qt::AltModifier | Qt::ShiftModifier),
+							MouseState(Qt::LeftButton, Qt::AltModifier | Qt::ControlModifier),
+							MouseState(Qt::LeftButton, Qt::ControlModifier), 
+							MouseState(Qt::LeftButton, Qt::ControlModifier)
+              );
 
+
+  assignKeyboard(Qt::Key_Down, Qt::Key_Up,
+    KeyboardState(Qt::Key_Right, Qt::ShiftModifier), KeyboardState(Qt::Key_Left, Qt::ShiftModifier),
+    Qt::Key_Right, Qt::Key_Left,
+    KeyboardState(Qt::Key_Right, Qt::AltModifier), KeyboardState(Qt::Key_Left, Qt::AltModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier|Qt::ShiftModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier|Qt::ShiftModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier|Qt::ControlModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier|Qt::ControlModifier),
+    KeyboardState(Qt::Key_Right, Qt::ControlModifier), KeyboardState(Qt::Key_Left, Qt::ControlModifier),
+    KeyboardState(Qt::Key_Down, Qt::ControlModifier), KeyboardState(Qt::Key_Up, Qt::ControlModifier)
+   );
+#endif
+  setKeySpeed(3,5,5);
 
 	legend_.setLimits(0, 100);
 	legend_.setMajors(10);
