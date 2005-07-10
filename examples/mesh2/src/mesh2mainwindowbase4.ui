@@ -16,190 +16,14 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget" >
-   <layout class="QVBoxLayout" >
+   <layout class="QGridLayout" >
     <property name="margin" >
      <number>8</number>
     </property>
     <property name="spacing" >
      <number>6</number>
     </property>
-    <item>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QFrame" name="frame" >
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Sunken</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QCheckBox" name="projection" >
-            <property name="text" >
-             <string>Ortho</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="colorlegend" >
-            <property name="text" >
-             <string>Legend</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="autoscale" >
-            <property name="text" >
-             <string>Autoscale</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="mouseinput" >
-            <property name="text" >
-             <string>Mouse</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="shader" >
-            <property name="text" >
-             <string>Shading</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="label" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>0</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Normals&lt;/p>&lt;/body>&lt;/html></string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QSlider" name="normalsquality" >
-              <property name="sizePolicy" >
-               <sizepolicy>
-                <hsizetype>5</hsizetype>
-                <vsizetype>3</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimum" >
-               <number>3</number>
-              </property>
-              <property name="maximum" >
-               <number>32</number>
-              </property>
-              <property name="pageStep" >
-               <number>4</number>
-              </property>
-              <property name="value" >
-               <number>3</number>
-              </property>
-              <property name="orientation" >
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="invertedAppearance" >
-               <bool>true</bool>
-              </property>
-              <property name="tickPosition" >
-               <enum>QSlider::TicksAbove</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSlider" name="normalslength" >
-              <property name="sizePolicy" >
-               <sizepolicy>
-                <hsizetype>5</hsizetype>
-                <vsizetype>7</vsizetype>
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimum" >
-               <number>1</number>
-              </property>
-              <property name="maximum" >
-               <number>100</number>
-              </property>
-              <property name="pageStep" >
-               <number>5</number>
-              </property>
-              <property name="value" >
-               <number>8</number>
-              </property>
-              <property name="orientation" >
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="invertedAppearance" >
-               <bool>true</bool>
-              </property>
-              <property name="tickPosition" >
-               <enum>QSlider::TicksAbove</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </item>
-    <item>
+    <item row="1" column="0" >
      <layout class="QHBoxLayout" >
       <property name="margin" >
        <number>0</number>
@@ -350,6 +174,194 @@
       </item>
      </layout>
     </item>
+    <item row="0" column="0" >
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QFrame" name="frame" >
+        <property name="frameShape" >
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QCheckBox" name="projection" >
+            <property name="text" >
+             <string>Ortho</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="colorlegend" >
+            <property name="text" >
+             <string>Legend</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="autoscale" >
+            <property name="text" >
+             <string>Autoscale</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mouseinput" >
+            <property name="text" >
+             <string>Mouse</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="shader" >
+            <property name="text" >
+             <string>Shading</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>&lt;html>&lt;head>&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; />&lt;/head>&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg; font-weight:400; font-style:normal; text-decoration:none;&quot;>&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;>Normals&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QSlider" name="normalsquality" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>5</hsizetype>
+                <vsizetype>3</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimum" >
+               <number>3</number>
+              </property>
+              <property name="maximum" >
+               <number>32</number>
+              </property>
+              <property name="pageStep" >
+               <number>4</number>
+              </property>
+              <property name="value" >
+               <number>3</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="invertedAppearance" >
+               <bool>true</bool>
+              </property>
+              <property name="tickPosition" >
+               <enum>QSlider::TicksAbove</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="normalslength" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>5</hsizetype>
+                <vsizetype>7</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimum" >
+               <number>1</number>
+              </property>
+              <property name="maximum" >
+               <number>100</number>
+              </property>
+              <property name="pageStep" >
+               <number>5</number>
+              </property>
+              <property name="value" >
+               <number>8</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="invertedAppearance" >
+               <bool>true</bool>
+              </property>
+              <property name="tickPosition" >
+               <enum>QSlider::TicksAbove</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -357,5 +369,22 @@
  <resources>
   <include location="..\..\..\..\..\porting24\qwtplot3d\examples\images.qrc" />
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>lightingswitch</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lighting</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>181</x>
+     <y>568</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>144</x>
+     <y>568</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

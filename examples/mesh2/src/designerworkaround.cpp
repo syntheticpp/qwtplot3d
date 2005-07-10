@@ -5,12 +5,21 @@ namespace{
   {
     return QObject::tr(val);
   }
+
+  void setCheckable(QActionGroup* ag) 
+  {
+    QList<QAction*> tmplist = ag->actions();
+    for (QList<QAction*>::iterator it=tmplist.begin(); it!=tmplist.end(); ++it)
+      (*it)->setCheckable(true);
+  }
+
 }
 
 
 void DesignerWorkaround::setupWorkaround(QMainWindow* mw)
 {
     // actions
+
   openFile = new QAction(QIcon(":/images/fileopen.png"), tr("&Open File"), mw);
   openFile->setShortcut( QKeySequence(tr("CTRL+O")));
   openMeshFile = new QAction(QIcon(":/images/filecell.png"), tr("Open FEM File"), mw);
@@ -18,86 +27,62 @@ void DesignerWorkaround::setupWorkaround(QMainWindow* mw)
   Exit = new QAction(tr("&Exit"), mw);
   Exit->setShortcut( QKeySequence(tr("CTRL+Q")));
 
-  animation = new QAction(QIcon(":/images/movie.png"), "", mw);
+  animation = new QAction(QIcon(":/images/movie.png"), tr("Animation"), mw);
+  animation->setCheckable(true);
   dump = new QAction(QIcon(":/images/savecontent.png"), "", mw);
 
   coord = new QActionGroup(mw);
-    Box = new QAction(QIcon(":/images/box.png"), "", mw);
-    Frame = new QAction(QIcon(":/images/frame.png"), "", mw);
-    None = new QAction(QIcon(":/images/grid.png"), "", mw);
-    coord->addAction(Box);
-    coord->addAction(Frame);
-    coord->addAction(None);
+    Box = new QAction(QIcon(":/images/box.png"), "", coord);
+    Frame = new QAction(QIcon(":/images/frame.png"), "", coord);
+    None = new QAction(QIcon(":/images/grid.png"), "", coord);
+  setCheckable(coord);
 
   grids = new QActionGroup(mw);
-    front = new QAction(QIcon(":/images/gridfr.png"), "", mw);
-    back = new QAction(QIcon(":/images/gridb.png"), "", mw);
-    right = new QAction(QIcon(":/images/gridr.png"), "", mw);
-    left = new QAction(QIcon(":/images/gridl.png"), "", mw);
-    ceil = new QAction(QIcon(":/images/gridc.png"), "", mw);
-    floor = new QAction(QIcon(":/images/gridf.png"), "", mw);
-    grids->addAction(front);
-    grids->addAction(back);
-    grids->addAction(right);
-    grids->addAction(left);
-    grids->addAction(ceil);
-    grids->addAction(floor);
+    front = new QAction(QIcon(":/images/gridfr.png"), "", grids);
+    back = new QAction(QIcon(":/images/gridb.png"), "", grids);
+    right = new QAction(QIcon(":/images/gridr.png"), "", grids);
+    left = new QAction(QIcon(":/images/gridl.png"), "", grids);
+    ceil = new QAction(QIcon(":/images/gridc.png"), "", grids);
+    floor = new QAction(QIcon(":/images/gridf.png"), "", grids);
+  grids->setExclusive(false);
+  setCheckable(grids);
 
   plotstyle = new QActionGroup(mw);
-    pointstyle = new QAction(QIcon(":/images/scattered.png"), "", mw);
-    wireframe = new QAction(QIcon(":/images/wireframe.png"), "", mw);
-    hiddenline = new QAction(QIcon(":/images/hiddenline.png"), "", mw);
-    polygon = new QAction(QIcon(":/images/polygon.png"), "", mw);
-    filledmesh = new QAction(QIcon(":/images/filledmesh.png"), "", mw);
-    nodata = new QAction(QIcon(":/images/nodata.png"), "", mw);
-    plotstyle->addAction(pointstyle);
-    plotstyle->addAction(wireframe);
-    plotstyle->addAction(hiddenline);
-    plotstyle->addAction(polygon);
-    plotstyle->addAction(filledmesh);
-    plotstyle->addAction(nodata);
-
+    pointstyle = new QAction(QIcon(":/images/scattered.png"), "", plotstyle);
+    wireframe = new QAction(QIcon(":/images/wireframe.png"), "", plotstyle);
+    hiddenline = new QAction(QIcon(":/images/hiddenline.png"), "", plotstyle);
+    polygon = new QAction(QIcon(":/images/polygon.png"), "", plotstyle);
+    filledmesh = new QAction(QIcon(":/images/filledmesh.png"), "", plotstyle);
+    nodata = new QAction(QIcon(":/images/nodata.png"), "", plotstyle);
+  setCheckable(plotstyle);
+  
   floorstyle = new QActionGroup(mw);
-    floordata = new QAction(QIcon(":/images/floordata.png"), "", mw);
-    flooriso = new QAction(QIcon(":/images/flooriso.png"), "", mw);
-    floornone = new QAction(QIcon(":/images/floorempty.png"), "", mw);
-    floorstyle->addAction(floordata);
-    floorstyle->addAction(flooriso);
-    floorstyle->addAction(floornone);
+    floordata = new QAction(QIcon(":/images/floordata.png"), "", floorstyle);
+    flooriso = new QAction(QIcon(":/images/flooriso.png"), "", floorstyle);
+    floornone = new QAction(QIcon(":/images/floorempty.png"), "", floorstyle);
+  setCheckable(floorstyle);  
 
   normals = new QAction(QIcon(":/images/normals.png"), "", mw);
+  normals->setCheckable(true);
 
   color = new QActionGroup(mw);
-    axescolor = new QAction(tr("&Axes"), mw);
-    backgroundcolor = new QAction(tr("&Background"), mw);
-    meshcolor = new QAction(tr("&Mesh"), mw);
-    numbercolor = new QAction(tr("&Numbers"), mw);
-    labelcolor = new QAction(tr("&Label"), mw);
-    titlecolor = new QAction(tr("Caption"), mw);
-    datacolor = new QAction(tr("Data color"), mw);
-    resetcolor = new QAction(tr("&Reset"), mw);
-    color->addAction(axescolor);
-    color->addAction(backgroundcolor);
-    color->addAction(meshcolor);
-    color->addAction(numbercolor);
-    color->addAction(labelcolor);
-    color->addAction(titlecolor);
-    color->addAction(datacolor);
-    color->addAction(resetcolor);
+    axescolor = new QAction(tr("&Axes"), color);
+    backgroundcolor = new QAction(tr("&Background"), color);
+    meshcolor = new QAction(tr("&Mesh"), color);
+    numbercolor = new QAction(tr("&Numbers"), color);
+    labelcolor = new QAction(tr("&Label"), color);
+    titlecolor = new QAction(tr("Caption"), color);
+    datacolor = new QAction(tr("Data color"), color);
+    resetcolor = new QAction(tr("&Reset"), color);
 
   font = new QActionGroup(mw);
-    numberfont = new QAction(tr("&Scale numbering"), mw);
-    labelfont = new QAction(tr("&Axes label"), mw);
-    titlefont = new QAction(tr("&Caption"), mw);
-    resetfont = new QAction(tr("&Reset"), mw);
-    font->addAction(numberfont);
-    font->addAction(labelfont);
-    font->addAction(titlefont);
-    font->addAction(resetfont);
-  
+    numberfont = new QAction(tr("&Scale numbering"), font);
+    labelfont = new QAction(tr("&Axes label"), font);
+    titlefont = new QAction(tr("&Caption"), font);
+    resetfont = new QAction(tr("&Reset"), font);
 
 
-//    // toolbars
+  // toolbars
   mainToolbar = new QToolBar( QString(""), mw ); 
   mainToolbar->setMovable( false );
   
@@ -125,16 +110,16 @@ void DesignerWorkaround::setupWorkaround(QMainWindow* mw)
   csToolbar->addAction(normals);
   
   // menubar
-  QMenuBar* menuBar = mw->menuBar();
-    QMenu* fileMenu = new QMenu(mw);
-//      filemenu->addAction(openFile);
-////        filemenu->addAction(openMeshFile);
-////        filemenu->addAction(animation);
-////        filemenu->addAction(Exit);
-//    QMenu* colormenu = menuBar->addMenu(tr("&Color"));    
-//      colormenu->addActions(color->actions());
-//    QMenu* fontmenu = menuBar->addMenu(tr("&Fonts"));    
-//      colormenu->addActions(font->actions());
+  menubar = mw->menuBar();//new QMenuBar();
+    filemenu = menubar->addMenu("&File");
+      filemenu->addAction(openFile);
+      filemenu->addAction(openMeshFile);
+      filemenu->addAction(animation);
+      filemenu->addAction(Exit);
+    colormenu = menubar->addMenu(tr("&Color"));    
+      colormenu->addActions(color->actions());
+    fontmenu = menubar->addMenu(tr("&Fonts"));    
+      fontmenu->addActions(font->actions());
   
   mw->addToolBar(mainToolbar);
   mw->addToolBar(csToolbar);
