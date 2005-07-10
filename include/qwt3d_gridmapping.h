@@ -13,7 +13,7 @@ class SurfacePlot;
 /**
 
 */
-class QWT3D_EXPORT GridMapping : public Qwt3D::Mapping
+class QWT3D_EXPORT GridMapping : public Mapping
 {
 public:
   GridMapping(); //!< Constructs GridMapping object w/o assigned SurfacePlot.

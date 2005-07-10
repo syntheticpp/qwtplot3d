@@ -11,7 +11,6 @@
 using namespace Qwt3D;
 
 
-
 class Hat : public Function
 {
 public:
@@ -31,11 +30,16 @@ public:
 
 Hat* hat;
 
-enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, WFlags f )
-	: enrichmentMainWindowBase( parent, name, f )
+EnrichmentMainWindow::EnrichmentMainWindow( QWidget* parent )
+	: DummyBase( parent )
 {
+#if QT_VERSION < 0x040000
 	setCaption("enrichment");
   QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+#else
+  setupUi(this);
+  QGridLayout *grid = new QGridLayout( frame);
+#endif
 
   plot = new SurfacePlot(frame);
   grid->addWidget( plot, 0, 0 );
@@ -79,20 +83,17 @@ enrichmentMainWindow::enrichmentMainWindow( QWidget* parent, const char* name, W
   width_ = 0.007;
   connect( levelSlider, SIGNAL(valueChanged(int)), this, SLOT(setLevel(int)) );
 
-  connect( barBtn, SIGNAL(clicked()), this, SLOT(barSlot()) );
-  //connect( sliceBtn, SIGNAL(clicked()), this, SLOT(sliceSlot()) );
-
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glDisable(GL_LINE_SMOOTH);
 }
 
-enrichmentMainWindow::~enrichmentMainWindow()
+EnrichmentMainWindow::~EnrichmentMainWindow()
 {
 	delete hat;
 }
 
 
-void enrichmentMainWindow::setColor()
+void EnrichmentMainWindow::setColor()
 {	
   Qwt3D::ColorVector cv;
 	
@@ -118,7 +119,7 @@ void enrichmentMainWindow::setColor()
 }
 
 
-void enrichmentMainWindow::setLevel(int i)
+void EnrichmentMainWindow::setLevel(int i)
 {
   level_ = 1 - i / 100.;
   bar->configure(width_,level_);
@@ -126,7 +127,7 @@ void enrichmentMainWindow::setLevel(int i)
   plot->updateGL();
 }
 
-void enrichmentMainWindow::setWidth(int i)
+void EnrichmentMainWindow::setWidth(int i)
 {
   width_ = i / 20000.;
   bar->configure(width_,level_);
@@ -134,7 +135,7 @@ void enrichmentMainWindow::setWidth(int i)
   plot->updateGL();
 }
 
-void enrichmentMainWindow::barSlot()
+void EnrichmentMainWindow::barSlot()
 {  
   Bar b(width_,level_); 
   bar = (Bar*)plot->setPlotStyle(b);

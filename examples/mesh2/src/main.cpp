@@ -22,7 +22,10 @@ int main( int argc, char **argv )
   }
     
   Mesh2MainWindow mainwindow;
-	app.setMainWidget(&mainwindow);
+
+#if QT_VERSION < 0x040000
+  app.setMainWidget(&mainwindow);
+#endif
 
 	mainwindow.show();
 

@@ -10,18 +10,19 @@ OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
 DEPENDPATH        = include src
 DESTDIR      			= lib
+#DESTDIR      			= ../../../lib
 QT += opengl
 
 win32:TEMPLATE    = vclib
 win32:CONFIG     += dll exceptions
-win32:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
+win32:dll:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
 win32:QMAKE_CXXFLAGS     += $$QMAKE_CFLAGS_STL
 
 # Comment the next line, if you have zlib on your windows system
 win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
-unix:VERSION = 0.2.4
+unix:VERSION = 0.2.5
 
 # Input
 SOURCES += src/qwt3d_axis.cpp \

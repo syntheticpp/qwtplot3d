@@ -13,7 +13,7 @@ class SurfacePlot;
 /**
 
 */
-class QWT3D_EXPORT ParametricSurface : public Qwt3D::GridMapping
+class QWT3D_EXPORT ParametricSurface : public GridMapping
 {
 
 public:

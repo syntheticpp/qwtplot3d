@@ -9,3 +9,4 @@ cd ../enrichments
 qmake enrichments.pro -o enrichments.dsp
 cd ../axes
 qmake axes.pro -o axes.dsp
+cd ..

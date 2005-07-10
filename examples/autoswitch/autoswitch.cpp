@@ -65,8 +65,11 @@ using namespace Qwt3D;
 int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
+#if QT_VERSION < 0x040000
 		QSplitter* spl = new QSplitter(QSplitter::Horizontal);
-
+#else
+    QSplitter* spl = new QSplitter(Qt::Horizontal);
+#endif
 		Plot* plot1 = new Plot(spl,30);
 		plot1->setFloorStyle(FLOORISO);
 		plot1->setCoordinateStyle(BOX);
@@ -92,7 +95,9 @@ int main(int argc, char **argv)
 		plot2->updateGL();
 
 
-		a.setMainWidget(spl);
+#if QT_VERSION < 0x040000
+    a.setMainWidget(spl);
+#endif
 		spl->resize(800,400);
     spl->show();
     return a.exec(); 

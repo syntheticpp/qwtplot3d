@@ -21,6 +21,7 @@
 	#define WHEEL_DELTA 120
 #endif
 
+#include "qwt3d_portability.h"
 #include "qwt3d_helper.h"
 #include "qwt3d_openglhelper.h"
 
@@ -352,7 +353,7 @@ protected:
 
 
 //! Implements a matrix of z-Values with limit access functions 
-class GridData : public Qwt3D::Data
+class GridData : public Data
 {
 public:
   GridData();
@@ -378,7 +379,7 @@ private:
 
 
 //! Implements a graph-like cell structure with limit access functions 
-class CellData : public Qwt3D::Data
+class CellData : public Data
 {
 public:
   CellData() {datatype=Qwt3D::POLYGON;}
