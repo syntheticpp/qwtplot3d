@@ -45,7 +45,7 @@ VertexEnrichments introduce a specialized draw routine for vertex dependent data
 draw() is called, when the Plot realizes its internal OpenGL data representation 
 for every Vertex associated to his argument.
 */
-class QWT3D_EXPORT VertexEnrichment : public Qwt3D::Enrichment
+class QWT3D_EXPORT VertexEnrichment : public Enrichment
 {
 public:
   

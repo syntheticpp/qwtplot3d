@@ -7,7 +7,7 @@ namespace Qwt3D
 {
 
 //! TODO
-class QWT3D_EXPORT VolumePlot : public Qwt3D::Plot3D
+class QWT3D_EXPORT VolumePlot : public Plot3D
 {
 //    Q_OBJECT
 

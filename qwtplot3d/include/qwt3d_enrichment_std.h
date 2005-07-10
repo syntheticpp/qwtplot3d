@@ -9,7 +9,7 @@ namespace Qwt3D
 class Plot3D;
 
 //! The Cross Hair Style
-class QWT3D_EXPORT CrossHair : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT CrossHair : public VertexEnrichment
 {
 public:
   CrossHair();
@@ -29,7 +29,7 @@ private:
 };
 
 //! The Point Style
-class QWT3D_EXPORT Dot : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT Dot : public VertexEnrichment
 {
 public: 
   Dot();
@@ -49,7 +49,7 @@ private:
 };
 
 //! The Cone Style
-class QWT3D_EXPORT Cone : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT Cone : public VertexEnrichment
 {
 public:
   Cone();

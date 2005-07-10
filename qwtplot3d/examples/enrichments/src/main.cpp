@@ -20,9 +20,11 @@ int main( int argc, char** argv )
 		return -1;
   }
 
-	enrichmentMainWindow mainwindow;
+	EnrichmentMainWindow mainwindow;
 	
-	app.setMainWidget(&mainwindow);
+#if QT_VERSION < 0x040000
+  app.setMainWidget(&mainwindow);
+#endif
 
 	mainwindow.show();
 

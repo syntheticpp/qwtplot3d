@@ -1,8 +1,8 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
-<class>enrichmentMainWindowBase</class>
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>EnrichmentMainWindowBase</class>
 <widget class="QMainWindow">
     <property name="name">
-        <cstring>enrichmentMainWindowBase</cstring>
+        <cstring>EnrichmentMainWindowBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -25,9 +25,9 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget" row="0" column="0">
+        <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">
-                <cstring>Layout7</cstring>
+                <cstring>Layout11</cstring>
             </property>
             <grid>
                 <property name="name">
@@ -39,9 +39,9 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLayoutWidget" row="2" column="0">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>Layout11</cstring>
+                        <cstring>Layout10</cstring>
                     </property>
                     <grid>
                         <property name="name">
@@ -53,224 +53,154 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="QLayoutWidget" row="0" column="0">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>Layout10</cstring>
-                            </property>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="QLabel" row="0" column="0">
-                                    <property name="name">
-                                        <cstring>TextLabel1_2</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="text">
-                                        <string>Width</string>
-                                    </property>
-                                </widget>
-                                <widget class="QSlider" row="0" column="1">
-                                    <property name="name">
-                                        <cstring>widthSlider</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>7</hsizetype>
-                                            <vsizetype>0</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>0</width>
-                                            <height>40</height>
-                                        </size>
-                                    </property>
-                                    <property name="minValue">
-                                        <number>10</number>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>200</number>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="tickmarks">
-                                        <enum>Right</enum>
-                                    </property>
-                                    <property name="tickInterval">
-                                        <number>10</number>
-                                    </property>
-                                    <property name="toolTip" stdset="0">
-                                        <string>Relative psition of slicing plane</string>
-                                    </property>
-                                </widget>
-                            </grid>
-                        </widget>
-                        <widget class="QLayoutWidget" row="0" column="1">
-                            <property name="name">
-                                <cstring>Layout9</cstring>
-                            </property>
-                            <grid>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                            </grid>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget" row="1" column="1" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>Layout8</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QSlider" row="1" column="0">
-                            <property name="name">
-                                <cstring>levelSlider</cstring>
+                                <cstring>TextLabel1_2</cstring>
                             </property>
                             <property name="enabled">
-                                <bool>true</bool>
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="text">
+                                <string>Width</string>
+                            </property>
+                        </widget>
+                        <widget class="QSlider" row="0" column="1">
+                            <property name="name">
+                                <cstring>widthSlider</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>7</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
                             </property>
                             <property name="minimumSize">
                                 <size>
-                                    <width>40</width>
-                                    <height>0</height>
+                                    <width>0</width>
+                                    <height>40</height>
                                 </size>
                             </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="value">
+                            <property name="minValue">
                                 <number>10</number>
                             </property>
+                            <property name="maxValue">
+                                <number>200</number>
+                            </property>
                             <property name="orientation">
-                                <enum>Vertical</enum>
+                                <enum>Horizontal</enum>
                             </property>
                             <property name="tickmarks">
-                                <enum>Right</enum>
+                                <enum>Below</enum>
                             </property>
                             <property name="tickInterval">
                                 <number>10</number>
                             </property>
                             <property name="toolTip" stdset="0">
-                                <string>Changes the level, where marker are shown</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Level</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
+                                <string>Relative psition of slicing plane</string>
                             </property>
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QFrame" row="1" column="0">
+                <widget class="QLayoutWidget" row="0" column="1">
                     <property name="name">
-                        <cstring>frame</cstring>
+                        <cstring>Layout9</cstring>
                     </property>
-                    <property name="frameShape">
-                        <enum>StyledPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                </widget>
-                <widget class="QButtonGroup" row="0" column="0">
-                    <property name="name">
-                        <cstring>examples</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="title">
-                        <string>Examples</string>
-                    </property>
-                    <widget class="QRadioButton">
+                    <grid>
                         <property name="name">
-                            <cstring>barBtn</cstring>
+                            <cstring>unnamed</cstring>
                         </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>10</x>
-                                <y>20</y>
-                                <width>54</width>
-                                <height>21</height>
-                            </rect>
+                        <property name="margin">
+                            <number>0</number>
                         </property>
-                        <property name="text">
-                            <string>Bars</string>
+                        <property name="spacing">
+                            <number>6</number>
                         </property>
-                        <property name="checked">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                    <widget class="QRadioButton">
-                        <property name="name">
-                            <cstring>sliceBtn</cstring>
-                        </property>
-                        <property name="enabled">
-                            <bool>false</bool>
-                        </property>
-                        <property name="geometry">
-                            <rect>
-                                <x>70</x>
-                                <y>20</y>
-                                <width>52</width>
-                                <height>21</height>
-                            </rect>
-                        </property>
-                        <property name="text">
-                            <string>Slice</string>
-                        </property>
-                    </widget>
+                    </grid>
                 </widget>
             </grid>
+        </widget>
+        <widget class="QLayoutWidget" row="0" column="1" rowspan="2" colspan="1">
+            <property name="name">
+                <cstring>Layout8</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QSlider" row="1" column="0">
+                    <property name="name">
+                        <cstring>levelSlider</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>40</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="value">
+                        <number>10</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="tickmarks">
+                        <enum>Below</enum>
+                    </property>
+                    <property name="tickInterval">
+                        <number>10</number>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Changes the level, where marker are shown</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Level</string>
+                    </property>
+                    <property name="alignment">
+                        <set>AlignCenter</set>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QFrame" row="0" column="0">
+            <property name="name">
+                <cstring>frame</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
         </widget>
     </grid>
 </widget>
@@ -281,31 +211,5 @@
 </menubar>
 <toolbars>
 </toolbars>
-<connections>
-    <connection>
-        <sender>barBtn</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>TextLabel1</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>barBtn</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>levelSlider</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>sliceBtn</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>TextLabel1_2</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>sliceBtn</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>widthSlider</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

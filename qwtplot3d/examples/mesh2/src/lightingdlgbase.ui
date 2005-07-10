@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.0" stdsetdef="1">
-<class>lightingdlgbaseBase</class>
+<class>LightingDlgBase</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>lightingdlgbaseBase</cstring>
+        <cstring>LightingDlgBase</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -353,7 +353,7 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>lightingdlgbaseBase</receiver>
+        <receiver>LightingDlgBase</receiver>
         <slot>accept()</slot>
     </connection>
 </connections>

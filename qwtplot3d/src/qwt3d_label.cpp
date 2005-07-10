@@ -1,5 +1,4 @@
 #include <qbitmap.h>
-#include "qwt3d_portability.h"
 #include "qwt3d_label.h"
 
 using namespace Qwt3D;

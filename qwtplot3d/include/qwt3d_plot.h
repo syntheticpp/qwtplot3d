@@ -19,7 +19,11 @@ class QWT3D_EXPORT Plot3D : public QGLWidget
 
 public:
 	
+#if QT_VERSION < 0x040000
     Plot3D( QWidget* parent = 0, const char* name = 0 );
+#else
+    Plot3D ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
+#endif
     virtual ~Plot3D();
 
 	  void updateData(); //!< Recalculate data
@@ -83,21 +87,21 @@ public:
 		void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
 
 		
-		void assignMouse(int xrot, int yrot, int zrot,
-										 int xscale, int yscale, int zscale,
-										 int zoom, int xshift, int yshift);
+		void assignMouse(MouseState xrot, MouseState yrot, MouseState zrot,
+										 MouseState xscale, MouseState yscale, MouseState zscale,
+										 MouseState zoom, MouseState xshift, MouseState yshift);
 		
 		bool mouseEnabled() const; //!< Returns true, if the widget accept mouse input from the user
 		void assignKeyboard(
-       int xrot_n, int xrot_p
-      ,int yrot_n, int yrot_p
-      ,int zrot_n, int zrot_p
-			,int xscale_n, int xscale_p 
-      ,int yscale_n, int yscale_p
-      ,int zscale_n, int zscale_p
-			,int zoom_n, int zoom_p
-      ,int xshift_n, int xshift_p
-      ,int yshift_n, int yshift_p
+       KeyboardState xrot_n, KeyboardState xrot_p
+      ,KeyboardState yrot_n, KeyboardState yrot_p
+      ,KeyboardState zrot_n, KeyboardState zrot_p
+			,KeyboardState xscale_n, KeyboardState xscale_p 
+      ,KeyboardState yscale_n, KeyboardState yscale_p
+      ,KeyboardState zscale_n, KeyboardState zscale_p
+			,KeyboardState zoom_n, KeyboardState zoom_p
+      ,KeyboardState xshift_n, KeyboardState xshift_p
+      ,KeyboardState yshift_n, KeyboardState yshift_p
       );
 		
 		bool keyboardEnabled() const; //!< Returns true, if the widget accept keyboard input from the user
@@ -168,8 +172,8 @@ public slots:
     void enableLighting(bool val = true); //!< Turn Lighting on or off
     void disableLighting(bool val = true); //!< Turn Lighting on or off
 
-    void	setLightRotation( double xVal, double yVal, double zVal, unsigned idx = 0 ); 																														
-		void	setLightShift( double xVal, double yVal, double zVal, unsigned idx = 0 );    																														
+    void	setLightRotation( double xVal, double yVal, double zVal, unsigned int idx = 0 ); 																														
+		void	setLightShift( double xVal, double yVal, double zVal, unsigned int idx = 0 );    																														
 
     virtual bool savePixmap(QString const& fileName, QString const& format); //!<  Saves content to pixmap format
 		//!  Saves content to vector format
@@ -256,7 +260,7 @@ private:
     QPoint lastMouseMovePosition_;
 		bool mpressed_;
 
-		int xrot_mstate_, 
+		MouseState xrot_mstate_, 
 				yrot_mstate_, 
 				zrot_mstate_, 
 				xscale_mstate_, 
@@ -268,15 +272,15 @@ private:
 
 		bool mouse_input_enabled_;
 
-		void setRotationMouse(ButtonState bstate, double accel, QPoint diff);
-		void setScaleMouse(ButtonState bstate, double accel, QPoint diff);
-		void setShiftMouse(ButtonState bstate, double accel, QPoint diff);
+		void setRotationMouse(MouseState bstate, double accel, QPoint diff);
+		void setScaleMouse(MouseState bstate, double accel, QPoint diff);
+		void setShiftMouse(MouseState bstate, double accel, QPoint diff);
 
     // keyboard
 
 		bool kpressed_;
 
-		int xrot_kstate_[2], 
+		KeyboardState xrot_kstate_[2], 
 				yrot_kstate_[2], 
 				zrot_kstate_[2], 
 				xscale_kstate_[2], 
@@ -289,9 +293,9 @@ private:
 		bool kbd_input_enabled_;
     double kbd_rot_speed_, kbd_scale_speed_, kbd_shift_speed_;
 
-		void setRotationKeyboard(int kseq, double speed);
-		void setScaleKeyboard(int kseq, double speed);
-		void setShiftKeyboard(int kseq, double speed);
+		void setRotationKeyboard(KeyboardState kseq, double speed);
+		void setScaleKeyboard(KeyboardState kseq, double speed);
+		void setShiftKeyboard(KeyboardState kseq, double speed);
 
     
 

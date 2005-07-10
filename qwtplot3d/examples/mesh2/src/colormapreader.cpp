@@ -10,6 +10,8 @@
 using namespace Qwt3D;
 using namespace std;
 
+#if QT_VERSION < 0x040000
+
 ColorMapPreview::ColorMapPreview( QWidget *parent ) 
 : QFrame( parent ) 
 {
@@ -36,7 +38,7 @@ void ColorMapPreview::previewUrl( const QUrl &u )
 
 bool ColorMapPreview::open(QString fname)
 {	
-	ifstream file((const char*)fname.local8Bit());
+	ifstream file(QWT3DLOCAL8BIT(fname));
 	
 	RGBA rgb;
 	cv.clear();
@@ -71,3 +73,6 @@ bool ColorMapPreview::open(QString fname)
 
 	return true;
 }
+
+#else
+#endif
