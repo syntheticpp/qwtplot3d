@@ -60,8 +60,6 @@ void Plot::rotate()
 }
 
 
-using namespace Qwt3D;
-
 int main(int argc, char **argv)
 {
     QApplication a(argc, argv);

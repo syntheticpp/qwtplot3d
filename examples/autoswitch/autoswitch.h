@@ -5,12 +5,12 @@
 #include "qwt3d_surfaceplot.h"
 #include "qwt3d_function.h"
 
-using namespace Qwt3D;
+typedef Qwt3D::SurfacePlot SurfacePlot; // VC6/moc issue
+typedef Qwt3D::Function Function; // VC6/moc issue
 
 class Saddle : public Function
 {
 public:
-
 	Saddle(SurfacePlot& pw)
 	:Function(pw)
 	{
@@ -42,7 +42,6 @@ public:
 		return 1.0 / (x*x+y*y+0.3);
 	}
 };
-
 
 class Plot : public SurfacePlot
 {

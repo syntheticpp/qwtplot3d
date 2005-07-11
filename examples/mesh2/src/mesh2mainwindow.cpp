@@ -152,26 +152,23 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 	dataWidget->enableMouse(true);
   dataWidget->setKeySpeed(15,20,20);
 
-	datacolordlg_ = new QFileDialog( this );
   lightingdlg_ = new LightingDlg( this );
   lightingdlg_->assign( dataWidget);
 	
-	QDir dir("../../data/colormaps");
-	if (dir.exists("../../data/colormaps"))
-#if QT_VERSION < 0x040000
-		datacolordlg_->setDir("../../data/colormaps");
-#else
-		datacolordlg_->setDirectory("../../data/colormaps");
-#endif
-	datacolordlg_->setFilter("Colormap files (*.map;*.MAP)");
-
-#if QT_VERSION < 0x040000  //todo - restore, when Qt4 re-implements preview functionality
+#if QT_VERSION < 0x040000 //todo - restore, when Qt4 re-implements preview functionality
+	datacolordlg_ = new QFileDialog( this );
+	QDir dir("./../../data/colormaps");
+	if (dir.exists("./../../data/colormaps"))
+		datacolordlg_->setDir("./../../data/colormaps");
+	datacolordlg_->setFilter("Colormap files (*.map *.MAP)");
 	colormappv_ = new ColorMapPreview;
   datacolordlg_->setContentsPreviewEnabled( TRUE );
 	datacolordlg_->setContentsPreview( colormappv_, colormappv_ );
 	datacolordlg_->setPreviewMode( QFileDialog::Contents );
-#endif  
 	connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
+#else
+	//connect(datacolordlg_, SIGNAL(filesSelected(const QStringList&)), this, SLOT(adaptDataColors4(const QStringList&)));
+#endif  
 	connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
 
   filetypeCB->clear();
@@ -205,9 +202,9 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 void Mesh2MainWindow::open()
 {
 #if QT_VERSION < 0x040000
-  QString s( QFileDialog::getOpenFileName( "../../data", "GridData Files (*.mes *.MES)", this ) );
+  QString s = QFileDialog::getOpenFileName( "../../data", "GridData Files (*.mes *.MES)", this );
 #else
-  QString s( QFileDialog::getOpenFileName( this, "", "../../data", "GridData Files (*.mes *.MES)") );
+  QString s = QFileDialog::getOpenFileName( this, "", "../../data", "GridData Files (*.mes *.MES)");
 #endif
 
 	if ( s.isEmpty() || !dataWidget)
@@ -626,19 +623,24 @@ void Mesh2MainWindow::pickTitleColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickDataColor()
-{
-	datacolordlg_->show();
-}
-
 void Mesh2MainWindow::pickLighting()
 {
 	lightingdlg_->show();
 }
 
+void Mesh2MainWindow::pickDataColor()
+{
+#if QT_VERSION < 0x040000
+	datacolordlg_->show();
+#else
+  QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
+  adaptDataColors(s);
+#endif
+}
+
 void Mesh2MainWindow::adaptDataColors(const QString& fileName)
 {
-	ColorVector cv;
+  ColorVector cv;
 	
 	if (!openColorMap(cv, fileName))
 		return;
@@ -877,7 +879,10 @@ Mesh2MainWindow::setNormalQuality(int val)
 bool
 Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 {	
-	ifstream file(QWT3DLOCAL8BIT(fname));
+  if (fname.isEmpty())
+    return false;
+  
+  ifstream file(QWT3DLOCAL8BIT(fname));
 
 	if (!file)
 		return false;
