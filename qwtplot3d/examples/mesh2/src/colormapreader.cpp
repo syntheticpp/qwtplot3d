@@ -38,7 +38,10 @@ void ColorMapPreview::previewUrl( const QUrl &u )
 
 bool ColorMapPreview::open(QString fname)
 {	
-	ifstream file(QWT3DLOCAL8BIT(fname));
+  if (fname.isEmpty())
+    return false;
+
+  ifstream file(QWT3DLOCAL8BIT(fname));
 	
 	RGBA rgb;
 	cv.clear();
