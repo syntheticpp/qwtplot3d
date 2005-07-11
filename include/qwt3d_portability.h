@@ -1,6 +1,8 @@
 #ifndef qwt3d_portability_h__2005_07_02_11_55_begin_guarded_code
 #define qwt3d_portability_h__2005_07_02_11_55_begin_guarded_code
 
+//! Portability classes providing transparent Qt3/4 support
+
 #include <qnamespace.h>
 #include "qwt3d_global.h"
 
@@ -29,6 +31,7 @@ namespace Qwt3D
 
   const Qt::TextFlag SingleLine = Qt::TextSingleLine;
   
+  //! This class creates a (mouse-button,modifier) pair (ordinary typedef for int if Qt3 is used)
   class MouseState
   {
   public:
@@ -57,6 +60,7 @@ namespace Qwt3D
     Qt::KeyboardModifiers km_;
   };
   
+  //! This class creates a (key-button,modifier) pair (ordinary typedef for int if Qt3 is used)
   class KeyboardState
   {
   public:
