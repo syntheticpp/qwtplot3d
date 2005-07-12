@@ -220,6 +220,7 @@ void Mesh2MainWindow::open()
   QString ext = fi.suffix();
 #endif
 	filenameWidget->setText(fi.fileName());
+    qApp->processEvents(); // enforces repaint;  
 
   if (IO::load(dataWidget, s, ext))
 	{
@@ -744,14 +745,14 @@ void Mesh2MainWindow::toggleAnimation(bool val)
 
 void Mesh2MainWindow::rotate()
 {
-	if (dataWidget)
-	{
-		dataWidget->setRotation(
-			int(dataWidget->xRotation() + 1) % 360,
-			int(dataWidget->yRotation() + 1) % 360,
-			int(dataWidget->zRotation() + 1) % 360
-			);
-	}	
+	if (!dataWidget)
+		return;
+
+	dataWidget->setRotation(
+		int(dataWidget->xRotation() + 1) % 360,
+		int(dataWidget->yRotation() + 1) % 360,
+		int(dataWidget->zRotation() + 1) % 360
+		);
 }
 
 void

@@ -6,7 +6,6 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include <qgl.h>
 #include "axesmainwindow.h"
 
 

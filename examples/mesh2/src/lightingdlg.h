@@ -49,7 +49,6 @@ public:
   void reset();
 };
 
-
 //MOC_SKIP_BEGIN
 #if QT_VERSION < 0x040000
   class LightingBase : public LightingDlgBase

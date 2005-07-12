@@ -60,7 +60,7 @@ public:
           h=0;
         else
           h+=1;
-        m %= 60; 
+        m = (m+idx) % 60; 
       }
       else
         m += idx;
