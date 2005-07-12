@@ -6,9 +6,7 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include <qgl.h>
 #include "enrichmentmainwindow.h"
-
 
 int main( int argc, char** argv )
 {

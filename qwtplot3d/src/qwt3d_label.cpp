@@ -3,8 +3,6 @@
 
 using namespace Qwt3D;
 
-
-
 bool Label::devicefonts_ = false;
 
 Label::Label()

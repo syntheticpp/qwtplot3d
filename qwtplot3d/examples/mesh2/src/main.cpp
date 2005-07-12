@@ -6,8 +6,6 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include <qgl.h>
-
 #include "mesh2mainwindow.h"
 
 int main( int argc, char **argv )
