@@ -17,11 +17,6 @@ namespace
 namespace Qwt3D
 {
 
-inline double MAX(const std::vector<double>& data)
-{
-	return *std::max_element(data.begin(),data.end());
-}
-
 inline bool isPracticallyZero(double a, double b = 0)
 {
   if (!b)

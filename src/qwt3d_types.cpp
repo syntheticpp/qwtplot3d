@@ -4,7 +4,7 @@
 
 #include <stdlib.h> // qsort
 #include <algorithm>
-#include "float.h"
+#include <float.h>
 #include "qwt3d_types.h"
 
 using namespace Qwt3D;
