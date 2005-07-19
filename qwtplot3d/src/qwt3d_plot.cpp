@@ -267,7 +267,9 @@ void Plot3D::createCoordinateSystem( Triple beg, Triple end )
 void Plot3D::createCoordinateSystem()
 {
 	calculateHull();
-	createCoordinateSystem(hull().minVertex, hull().maxVertex);
+  Triple beg = hull().minVertex; // Irix 6.5 compiler bug
+  Triple end = hull().maxVertex;
+  createCoordinateSystem(beg, end);
 }
 
 /*!

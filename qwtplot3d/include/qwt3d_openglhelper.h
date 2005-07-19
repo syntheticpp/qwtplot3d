@@ -69,11 +69,11 @@ inline const GLubyte* gl_error()
 	return err;
 }
 
-inline	void SaveGlDeleteLists(GLuint& list, GLsizei range)
+inline	void SaveGlDeleteLists(GLuint& lstidx, GLsizei range)
 {
-	if (glIsList(list))
-		glDeleteLists(list, range);
-	list = 0;
+	if (glIsList(lstidx))
+		glDeleteLists(lstidx, range);
+	lstidx = 0;
 }
 
 //! get OpenGL transformation matrices

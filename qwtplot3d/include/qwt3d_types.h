@@ -71,7 +71,7 @@ enum FLOORSTYLE
 {
 	NOFLOOR,   //!< Empty floor
 	FLOORISO,  //!< Isoline projections visible
-	FLOORDATA, //!< Projected polygons visible
+	FLOORDATA //!< Projected polygons visible
 };
 
 //! Mesh type
@@ -149,7 +149,29 @@ struct QWT3D_EXPORT Triple
 	{
 	}
 	
-	//! Triple coordinates
+#ifndef QWT3D_NOT_FOR_DOXYGEN
+#ifdef Q_OS_IRIX
+  Triple(const Triple& val)
+  {
+    if (&val == this)
+       return;
+    x = val.x;
+    y = val.y;
+    z = val.z;
+  }
+  const Triple& operator=(const Triple& val)
+  {
+    if (&val == this)
+      return *this;
+    x = val.x;
+    y = val.y;
+    z = val.z;
+    return *this;
+  }
+#endif 
+#endif // QWT3D_NOT_FOR_DOXYGEN
+
+  //! Triple coordinates
 	double x,y,z; 
 
 	Triple& operator+=(Triple t)
