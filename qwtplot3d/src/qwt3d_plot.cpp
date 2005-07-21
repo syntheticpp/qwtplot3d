@@ -21,6 +21,7 @@ Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
 #endif
 {  
   initializedGL_ = false;
+  renderpixmaprequest_ = false;
   xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
   
 	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
@@ -164,6 +165,11 @@ void Plot3D::initializeGL()
   setLightComponent(GL_SPECULAR, 1.0);
 
   initializedGL_ = true;	
+  if (renderpixmaprequest_)
+  {
+    updateData();
+    renderpixmaprequest_ = false;
+  }
 }
 
 /*!
@@ -250,6 +256,12 @@ void Plot3D::resizeGL( int w, int h )
 {
 	glViewport( 0, 0, w, h );
 	paintGL();
+}
+
+QPixmap Plot3D::renderPixmap(int w/* =0 */, int h/* =0 */, bool useContext/* =false */)
+{
+  renderpixmaprequest_ = true;
+  return QGLWidget::renderPixmap(w,h,useContext);
 }
 
 /*!

@@ -26,7 +26,8 @@ public:
 #endif
     virtual ~Plot3D();
 
-	  void updateData(); //!< Recalculate data
+    QPixmap renderPixmap (int w=0, int h=0, bool useContext=false);	  
+    void updateData(); //!< Recalculate data
 		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
 		Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
@@ -304,6 +305,7 @@ private:
     void applyLights();
 
     bool initializedGL_;
+    bool renderpixmaprequest_;
 };
 
 
