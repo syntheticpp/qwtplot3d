@@ -129,13 +129,17 @@ void Label::update()
 	p.end();
 
 	pm_.setMask(bm);
-	pm_.fill();
-	p.begin( &pm_ );
-		p.setFont( font_ );
-		p.setPen( Qt::SolidLine );
-		p.setPen( GL2Qt(color.r, color.g, color.b) );
 
-		p.drawText(0,r.height() - fm.descent() -1 , text_);
+  // avoids uninitialized areas in some cases
+#if QT_VERSION < 0x040000
+	pm_.fill();
+#endif
+	p.begin( &pm_ );
+	  p.setFont( font_ );
+	  p.setPen( Qt::SolidLine );
+	  p.setPen( GL2Qt(color.r, color.g, color.b) );
+
+	  p.drawText(0,r.height() - fm.descent() -1 , text_);
 	p.end();
 #if QT_VERSION < 0x040000
   buf_ = pm_.convertToImage();
