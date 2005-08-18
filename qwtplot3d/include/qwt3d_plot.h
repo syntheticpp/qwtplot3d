@@ -203,7 +203,7 @@ protected:
 
 		virtual void calculateHull() = 0;
 		virtual void createData() = 0;
-    virtual void createEnrichment(Qwt3D::Enrichment& e){}
+    virtual void createEnrichment(Qwt3D::Enrichment&){}
     virtual void createEnrichments();
 
 		void createCoordinateSystem();

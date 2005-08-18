@@ -1,12 +1,12 @@
 REM set QMAKESPEC=win32-msvc.net
 cd mesh2
-qmake mesh2.pro -o mesh2.dsp
+qmake mesh2.pro
 cd ../simpleplot
-qmake simpleplot.pro -o simpleplot.dsp
+qmake simpleplot.pro
 cd ../autoswitch
-qmake autoswitch.pro -o autoswitch.dsp
+qmake autoswitch.pro
 cd ../enrichments
-qmake enrichments.pro -o enrichments.dsp
+qmake enrichments.pro
 cd ../axes
-qmake axes.pro -o axes.dsp
+qmake axes.pro
 cd ..
