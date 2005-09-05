@@ -217,8 +217,17 @@ void Plot3D::paintGL()
 	if (beg != end)
 	{		
 		if (ortho_)
-			glOrtho( -radius, +radius, -radius, +radius, 0, 40 * radius);
-		else
+    {	
+//      glOrtho( -radius, +radius, -radius, +radius, 0, 40 * radius);
+
+  glOrtho( -(1+xVPShift_*2) * radius, 
+    (1-xVPShift_*2) * radius, 
+    -(1+yVPShift_*2) * radius, 
+    (1-yVPShift_*2) * radius, 
+    -20*radius, 20*radius);
+
+    }
+    else
 			glFrustum( -radius, +radius, -radius, +radius, 5 * radius, 400 * radius );
 	}
 	else
@@ -229,7 +238,8 @@ void Plot3D::paintGL()
 			glFrustum( -1.0, 1.0, -1.0, 1.0, 10.0, 100.0 );
 	}
 
-  glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
+//  glTranslatef( xVPShift_ * 2 * radius , yVPShift_ * 2 * radius , -7 * radius );
+  glTranslated(0,0,-5*radius);
   
   if (lighting_enabled_)
     glEnable(GL_NORMALIZE);

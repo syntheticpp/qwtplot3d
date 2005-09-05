@@ -41,7 +41,7 @@
 
 /* To generate a Windows dll, define GL2PSDLL at compile time */
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #  include <windows.h>
 #  ifdef GL2PSDLL
 #    ifdef GL2PSDLL_EXPORTS

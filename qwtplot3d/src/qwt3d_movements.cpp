@@ -49,8 +49,9 @@ void Plot3D::setShift( double xVal, double yVal, double zVal )
 }
 
 /**
-  Performs shifting along screen axes. The values are limited to the interval [-1..1]
-	The shift moves points inside a sphere, which encloses the unscaled and unzoomed data
+  Performs shifting along screen axes. 
+  The shift moves points inside a sphere, 
+  which encloses the unscaled and unzoomed data
 	by multiples of the spheres diameter
 	
 	\param xVal shift along (view) X axis
@@ -62,21 +63,8 @@ void Plot3D::setViewportShift( double xVal, double yVal )
   if (xVPShift_ == xVal && yVPShift_ == yVal)
 		return;
 	
-	double limit = 1;
-
-	if (xVal < -limit)
-		xVPShift_ = -limit;
-	else if (xVal > limit)
-		xVPShift_ = limit;
-	else
-		xVPShift_ = xVal;
-
-	if (yVal < -limit)
-		yVPShift_ = -limit;
-	else if (yVal > limit)
-		yVPShift_ = limit;
-	else
-		yVPShift_ = yVal;
+  xVPShift_ = xVal;
+	yVPShift_ = yVal;
 		
 	updateGL();
 	emit vieportShiftChanged(xVPShift_, yVPShift_);

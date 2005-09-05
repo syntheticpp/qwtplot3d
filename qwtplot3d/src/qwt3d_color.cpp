@@ -51,7 +51,7 @@ void StandardColor::setAlpha(double a)
 	}	
 }	
 
-RGBA StandardColor::operator()(double x, double y, double z) const
+RGBA StandardColor::operator()(double, double, double z) const
 {
 	Q_ASSERT(data_);
 	int index = (int)((colors_.size()-1) * (z - data_->hull().minVertex.z) / (data_->hull().maxVertex.z-data_->hull().minVertex.z));

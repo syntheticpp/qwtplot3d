@@ -28,7 +28,7 @@ namespace Qwt3D
 
   #define QWT3DLOCAL8BIT(qstring) \
   ((const char*)(qstring.toLocal8Bit()))
-
+  
   const Qt::TextFlag SingleLine = Qt::TextSingleLine;
   
   //! This class creates a (mouse-button,modifier) pair (ordinary typedef for int if Qt3 is used)
