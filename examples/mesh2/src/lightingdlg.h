@@ -34,10 +34,10 @@ private:
 
 struct SColor : public Qwt3D::Color
 {
-  Qwt3D::RGBA operator()(double x, double y, double z) const {return Qwt3D::RGBA(0.8,0,0,0.5);}
+  Qwt3D::RGBA operator()(double, double, double) const {return Qwt3D::RGBA(0.8,0,0,0.5);}
 };
 
-typedef Qwt3D::SurfacePlot SPlot; // moc/VC6 issue in Qt4
+typedef Qwt3D::SurfacePlot SPlot; // moc/VC6 issue in Qt 4.0.0
 
 class Plot : public SPlot
 {
