@@ -10,8 +10,113 @@
 
 using namespace Qwt3D;
 
-static Qwt3D::IO qwt3diodummy; // Don't delete !
+IO::Entry::Entry() : iofunc(0) 
+{
+}
 
+IO::Entry::~Entry() 
+{
+  delete iofunc;
+}
+
+IO::Entry::Entry(IO::Entry const& e)
+{
+  if (this==&e)
+    return;
+
+  fmt = e.fmt;
+  iofunc = e.iofunc->clone();
+}
+
+void IO::Entry::operator=(IO::Entry const& e)
+{
+  if (this==&e)
+    return;
+
+  delete iofunc;
+  fmt = e.fmt;
+  iofunc = e.iofunc->clone();
+}
+
+IO::Entry::Entry(QString const& s, Functor const& f)
+  : fmt(s) 
+{ 
+  iofunc = f.clone();
+}
+
+IO::Entry::Entry(QString const& s, Function f)
+  : fmt(s) 
+{ 
+  Wrapper  w(f);
+  iofunc = w.clone();
+}
+
+
+IO::FormatCompare::FormatCompare(IO::Entry const& e) 
+{
+  e_ = e;
+}
+
+bool IO::FormatCompare::operator() (IO::Entry const& e)
+{
+  return ( e.fmt == e_.fmt);
+}
+
+IO::FormatCompare2::FormatCompare2(QString s) 
+{
+  s_ = s;
+}
+
+bool IO::FormatCompare2::operator() (IO::Entry const& e)
+{
+  return( e.fmt == s_);
+}
+
+
+
+
+bool IO::add_unique(Container& l, Entry const& e)
+{
+  FormatCompare comp(e);
+  l.erase(std::remove_if(l.begin(), l.end(), comp), l.end());
+  l.push_back(e);
+
+  return true;
+}
+
+IO::IT IO::find(Container& l, QString const& fmt)
+{
+  FormatCompare2 comp(fmt);
+  return std::find_if(l.begin(), l.end(), comp); 
+}
+
+IO::Container& IO::rlist()
+{
+  static Container rl = Container();
+  static bool rfirst = true;
+  bool f = false;
+  f = rfirst;
+  if (rfirst)
+  {
+    rfirst = false;
+    setupHandler();
+  }
+  return rl;
+}
+
+IO::Container& IO::wlist()
+{
+  static Container wl = Container();
+  static bool wfirst = true;
+  bool f = false;
+  f = wfirst;
+  if (wfirst)
+  {
+    wfirst = false;
+    setupHandler();
+  }
+  return wl;
+}
 
 /*! 
   Registers a new IO::Function for data input.\n

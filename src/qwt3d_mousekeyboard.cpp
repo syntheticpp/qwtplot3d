@@ -23,7 +23,7 @@ void Plot3D::mousePressEvent( QMouseEvent *e )
 	Standard mouse button Function. Completes the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void Plot3D::mouseReleaseEvent( QMouseEvent *e )
+void Plot3D::mouseReleaseEvent( QMouseEvent* )
 {
 	mpressed_ = false;
 }

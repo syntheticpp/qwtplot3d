@@ -50,7 +50,6 @@ public:
     virtual bool operator()(Plot3D* plot, QString const& fname) = 0;
   };
   
-  IO() {setupHandler();}
   static bool defineInputHandler( QString const& format, Function func);
   static bool defineOutputHandler( QString const& format, Function func);
   static bool defineInputHandler( QString const& format, Functor const& func);
@@ -63,6 +62,8 @@ public:
   static Functor* inputHandler(QString const& format);
   
 private:  
+  IO(){}
+  
   //! Lightweight Functor encapsulating an IO::Function
   class Wrapper : public Functor
   {
@@ -74,9 +75,7 @@ private:
     //! Returns a pointer to the wrapped function
     bool operator()(Plot3D* plot, QString const& fname)
     {
-      return (hdl) 
-        ?(*hdl)(plot, fname)
-        :false;
+      return (hdl) ? (*hdl)(plot, fname) : false;
     }
   private: 
     Function hdl;
@@ -84,46 +83,14 @@ private:
   
   struct Entry
   {
-    Entry() : iofunc(0) 
-    {
-    }
-    
-    ~Entry() 
-    {
-      delete iofunc;
-    }
-    
-    Entry(Entry const& e)
-    {
-      if (this==&e)
-        return;
+    Entry();    
+    ~Entry();
 
-      fmt = e.fmt;
-      iofunc = e.iofunc->clone();
-    }
+    Entry(Entry const& e);
+    void operator=(Entry const& e);
     
-    void operator=(Entry const& e)
-    {
-      if (this==&e)
-        return;
-
-      delete iofunc;
-      fmt = e.fmt;
-      iofunc = e.iofunc->clone();
-    }
-
-    Entry(QString const& s, Functor const& f)
-      : fmt(s) 
-    { 
-      iofunc = f.clone();
-    }
-    
-    Entry(QString const& s, Function f)
-      : fmt(s) 
-    { 
-      Wrapper  w(f);
-      iofunc = w.clone();
-    }
+    Entry(QString const& s, Functor const& f);
+    Entry(QString const& s, Function f);
     
     QString fmt;
     Functor* iofunc;
@@ -131,22 +98,16 @@ private:
 
   struct FormatCompare
   {
-    explicit FormatCompare(Entry const& e) {e_ = e;}
-    bool operator() (Entry const& e)
-    {
-      return ( e.fmt == e_.fmt);
-    }
+    explicit FormatCompare(Entry const& e);
+    bool operator() (Entry const& e);
 
     Entry e_;
   };
  
   struct FormatCompare2
   {
-    explicit FormatCompare2(QString s) {s_ = s;}
-    bool operator() (Entry const& e)
-    {
-      return( e.fmt == s_);
-    }
+    explicit FormatCompare2(QString s);
+    bool operator() (Entry const& e);
 
     QString s_;
   };
@@ -154,34 +115,11 @@ private:
   typedef std::vector<Entry> Container;
   typedef Container::iterator IT;
 
-  static bool add_unique(Container& l, Entry const& e)
-  {
-    FormatCompare comp(e);
-    l.erase(std::remove_if(l.begin(), l.end(), comp), l.end());
-    l.push_back(e);
-
-    return true;
-  }
-  
-  static IT find(Container& l, QString const& fmt)
-  {
-    FormatCompare2 comp(fmt);
-    return std::find_if(l.begin(), l.end(), comp); 
-  }
-  
-  static Container& rlist()
-  {
-    static Container rl = Container();
-    return rl;
-  }
-
-  static Container& wlist()
-  {
-    static Container rl = Container();
-    return rl;
-  }
-
-  void setupHandler();
+  static bool add_unique(Container& l, Entry const& e);
+  static IT find(Container& l, QString const& fmt);
+  static Container& rlist();
+  static Container& wlist();
+  static void setupHandler();
 };
 
 //! Provides Qt's Pixmap output facilities

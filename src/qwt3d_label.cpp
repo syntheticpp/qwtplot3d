@@ -129,7 +129,7 @@ void Label::update()
 	p.end();
 
 	pm_.setMask(bm);
-
+  
   // avoids uninitialized areas in some cases
 #if QT_VERSION < 0x040000
 	pm_.fill();

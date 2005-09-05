@@ -13,7 +13,7 @@
 
 #include "qwt3d_global.h"
 
-#ifdef _WIN32
+#if defined(Q_WS_WIN)
 	#include <windows.h>
 #endif
 
