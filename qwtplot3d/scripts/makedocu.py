@@ -8,8 +8,8 @@ from time import gmtime, strftime
 refuseddirs = ['CVS','images']
 refuseddirsextra = ['CVS','small']
 
-source = 'V:\\\\cvs\\qwtplot3d\\doc\\'
-sourceim = 'V:\\\\cvs\\qwtplot3d\\doc\\images\\'
+source = 'V:\\\\cvs\\porting24\\qwtplot3d\\doc\\'
+sourceim = 'V:\\\\cvs\\porting24\\qwtplot3d\\doc\\images\\'
 zipname = 'V:\\\\cvs\\uploads\\qwtplot3d-doc.zip'
 zipextraname = 'V:\\\\cvs\\uploads\\qwtplot3d-doc-extra.zip'
 

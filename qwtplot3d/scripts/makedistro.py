@@ -13,13 +13,13 @@ srcfiletypes = ['cpp','c','h']
 
 source = 'V:\\\\cvs\\porting24\\qwtplot3d\\'
 
-tstr = strftime("%y%m%d", gmtime())
-tarname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.tgz'
-zipname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.zip'
+#tstr = strftime("%y%m%d", gmtime())
+#tarname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.tgz'
+#zipname = 'V:\\\\cvs\\uploads\\' + tstr + 'plot3d.zip'
 
 refuseddirs.append('scripts')
-#tarname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.5.tgz'
-#zipname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.5.zip'
+tarname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.6.tgz'
+zipname = 'V:\\\\cvs\\uploads\\qwtplot3d-0.2.6.zip'
 
 
 
