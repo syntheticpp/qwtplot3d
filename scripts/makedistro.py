@@ -7,7 +7,7 @@ from time import gmtime, strftime
 
 refuseddirs = ['CVS','Debug','Release','moc','obj','tmp','data','hannes','doc','lib','bin']
 refusedfiles = ['Makefile','.cvsignore','gl2psTest.c','gl2ps.bat','gl2ps.pro']
-requiredfiles = ['qwtplot3d.dsw','examples.dsw','thesis.tex','valgr.sh','qwtplot3d.supp','install.nsi']
+requiredfiles = ['qwtplot3d.dsw','examples.dsw','qwtplot3d.sln','examples.sln','thesis.tex','valgr.sh','qwtplot3d.supp','install.nsi']
 requiredfiletypes = ['pro','bat','cpp','c','h','ui','ts','png','rc','ico','py','qrc']
 srcfiletypes = ['cpp','c','h']
 
