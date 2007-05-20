@@ -1,10 +1,9 @@
 # pro file for building the makefile for qwtplot3d
 #
 
-
 TARGET            = qwtplot3d
 TEMPLATE          = lib
-CONFIG           += qt warn_on opengl thread zlib
+CONFIG           += qt warn_on opengl thread zlib debug
 MOC_DIR           = tmp
 OBJECTS_DIR       = tmp
 INCLUDEPATH       = include

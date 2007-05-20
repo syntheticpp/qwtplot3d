@@ -366,15 +366,8 @@ GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize,
 	ViewPort2World(vp[0], vp[1], vp[2], start.x, start.y, start.z);
 	Triple adjpos(vp[0],vp[1],vp[2]);
 	
-	GL2PSrgba rgba2;
-		
-	rgba2[0] = rgba.r;
-	rgba2[1] = rgba.g;
-	rgba2[2] = rgba.b;
-	rgba2[3] = rgba.a;
-
 	glRasterPos3d(adjpos.x, adjpos.y, adjpos.z);
-	ret = gl2psTextOpt(str, fontname, (int)fontsize, a, rgba2);
+	ret = gl2psTextOpt(str, fontname, (int)fontsize, a, 0);
 	glColor4dv(fcol);
 	glClearColor(bcol[0], bcol[1], bcol[2], bcol[3]);
   return ret;

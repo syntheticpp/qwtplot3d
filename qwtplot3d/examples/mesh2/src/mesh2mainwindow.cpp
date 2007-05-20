@@ -727,6 +727,9 @@ void Mesh2MainWindow::dumpImage()
 #if QT_VERSION < 0x040000
   IO::save(dataWidget, name.lower(), filetype_);
 #else
+  VectorWriter* vw = (VectorWriter*)IO::outputHandler("PDF");
+  if (vw)
+    vw->setSortMode(VectorWriter::BSPSORT);
   IO::save(dataWidget, name.toLower(), filetype_);
 #endif
 }

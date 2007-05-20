@@ -25,6 +25,7 @@ int main( int argc, char **argv )
   app.setMainWidget(&mainwindow);
 #endif
 
+  mainwindow.resize(1024,768);
 	mainwindow.show();
 
 	return app.exec();
