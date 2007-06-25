@@ -119,8 +119,12 @@ private:
 	Qwt3D::StandardColor* col_;
 
 	QFileDialog* datacolordlg_;
-  LightingDlg* lightingdlg_;
+    LightingDlg* lightingdlg_;
 	QString filetype_;
+
+    // convenience compatib. code
+    bool connectA (const QObject* sender, const char * slot);
+    bool connectAG (const QObject* sender, const char * slot);
 
 #if QT_VERSION < 0x040000
 	ColorMapPreview* colormappv_;

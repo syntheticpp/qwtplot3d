@@ -41,6 +41,24 @@ using namespace Qwt3D;
 using namespace std;
 
 
+bool Mesh2MainWindow::connectA (const QObject* sender, const char * slot)
+{
+#if QT_VERSION < 0x040000
+    return connect( sender, SIGNAL( activated() ), this, slot );
+#else
+    return connect( sender, SIGNAL( triggered() ), this, slot );
+#endif
+}
+
+bool Mesh2MainWindow::connectAG (const QObject* sender, const char * slot)
+{
+#if QT_VERSION < 0x040000
+    return connect( sender, SIGNAL( selected( QAction* ) ), this, slot ) ;
+#else
+    return connect( sender, SIGNAL( triggered( QAction* ) ), this, slot ) ;
+#endif
+}
+
 Mesh2MainWindow::~Mesh2MainWindow()      
 {
 	delete dataWidget;
@@ -66,27 +84,27 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
   dataWidget = new SurfacePlot(frame);
   grid->addWidget( dataWidget, 0, 0 );
 
-
-	connect( coord, SIGNAL( selected( QAction* ) ), this, SLOT( pickCoordSystem( QAction* ) ) );
-	connect( plotstyle, SIGNAL( selected( QAction* ) ), this, SLOT( pickPlotStyle( QAction* ) ) );
-	connect( axescolor, SIGNAL( activated() ), this, SLOT( pickAxesColor() ) );
-	connect( backgroundcolor, SIGNAL( activated() ), this, SLOT( pickBgColor() ) );
-	connect( floorstyle, SIGNAL( selected( QAction* ) ), this, SLOT( pickFloorStyle( QAction* ) ) );
-	connect( meshcolor, SIGNAL( activated() ), this, SLOT( pickMeshColor() ) );
-	connect( numbercolor, SIGNAL( activated() ), this, SLOT( pickNumberColor() ) );
-	connect( labelcolor, SIGNAL( activated() ), this, SLOT( pickLabelColor() ) );
-	connect( titlecolor, SIGNAL( activated() ), this, SLOT( pickTitleColor() ) );
-	connect( datacolor, SIGNAL( activated() ), this, SLOT( pickDataColor() ) );
+	connectAG( coord, SLOT( pickCoordSystem( QAction* ) ) );
+	connectAG( plotstyle, SLOT( pickPlotStyle( QAction* ) ) );
+	connectA( axescolor, SLOT( pickAxesColor() ) );
+	connectA( backgroundcolor, SLOT( pickBgColor() ) );
+	connectAG( floorstyle, SLOT( pickFloorStyle( QAction* ) ) );
+	connectA( meshcolor, SLOT( pickMeshColor() ) );
+	connectA( numbercolor, SLOT( pickNumberColor() ) );
+	connectA( labelcolor, SLOT( pickLabelColor() ) );
+	connectA( titlecolor, SLOT( pickTitleColor() ) );
+	connectA( datacolor, SLOT( pickDataColor() ) );
 	connect( lighting, SIGNAL( clicked() ), this, SLOT( pickLighting() ) );
-	connect( resetcolor, SIGNAL( activated() ), this, SLOT( resetColors() ) );
- 	connect( numberfont, SIGNAL( activated() ), this, SLOT( pickNumberFont() ) );
-	connect( labelfont, SIGNAL( activated() ), this, SLOT( pickLabelFont() ) );
-	connect( titlefont, SIGNAL( activated() ), this, SLOT( pickTitleFont() ) );
-	connect( resetfont, SIGNAL( activated() ), this, SLOT( resetFonts() ) );
+	connectA( resetcolor, SLOT( resetColors() ) );
+ 	connectA( numberfont, SLOT( pickNumberFont() ) );
+	connectA( labelfont, SLOT( pickLabelFont() ) );
+	connectA( titlefont, SLOT( pickTitleFont() ) );
+	connectA( resetfont, SLOT( resetFonts() ) );
 	connect( animation, SIGNAL( toggled(bool) ) , this, SLOT( toggleAnimation(bool) ) );
-  connect( dump, SIGNAL( activated() ) , this, SLOT( dumpImage() ) );
-	connect( openFile, SIGNAL( activated() ) , this, SLOT( open() ) );
-	connect( openMeshFile, SIGNAL( activated() ) , this, SLOT( openMesh() ) );
+    connectA( dump, SLOT( dumpImage() ) );
+	connectA( openFile, SLOT( open() ) );
+    //connect(openFile, SIGNAL(triggered()), this, SLOT(open()));
+	connectA( openMeshFile, SLOT( openMesh() ) );
 	
   // only EXCLUSIVE groups emit selected :-/
   connect( left, SIGNAL( toggled( bool ) ), this, SLOT( setLeftGrid( bool ) ) );
@@ -565,7 +583,6 @@ void Mesh2MainWindow::resetColors()
 
 void Mesh2MainWindow::pickAxesColor()
 {
-  
   QColor c = QColorDialog::getColor( Qt::white, this );
   if ( !c.isValid() )
 		return;

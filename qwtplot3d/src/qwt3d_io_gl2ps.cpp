@@ -51,15 +51,21 @@ void VectorWriter::setTextMode(TEXTMODE val, QString fname)
   texfname_ = (fname.isEmpty()) ? QString("") : fname;
 }
 
-  //! Turns compressed output on or off (no effect if zlib support has not been set)
+
+#ifdef GL2PS_HAVE_ZLIB
+//! Turns compressed output on or off (no effect if zlib support has not been set)
 void VectorWriter::setCompressed(bool val)
 {
-#ifdef GL2PS_HAVE_ZLIB
   compressed_ = val;
-#else
-  compressed_ = false;
-#endif
 }
+#else
+//! Turns compressed output on or off (no effect if zlib support has not been set)
+void VectorWriter::setCompressed(bool)
+{
+  compressed_ = false;
+}
+#endif
+
 
 /*! 
 Set output format, must be one of "EPS_GZ", "PS_GZ", "EPS", 
@@ -304,7 +310,7 @@ GLint Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
 	return ret;
 }
 
-GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, double gap)
+GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA /*rgba*/, ANCHOR align, double gap)
 {
 	double vp[3];
 
