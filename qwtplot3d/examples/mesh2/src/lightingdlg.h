@@ -4,11 +4,11 @@
 #include <math.h>
 #include <qapplication.h>
 #include "../../../include/qwt3d_parametricsurface.h"
-#include "../../../include/qwt3d_surfaceplot.h"
+#include "../../../include/qwt3d_gridplot.h"
 #include "../../../include/qwt3d_enrichment.h"
 #include "../../../include/qwt3d_color.h"
 
-#include "lightingdlgbase.h"
+#include "ui_lightingdlgbase.h"
 
 class Pointer : public Qwt3D::UserEnrichment
 {
@@ -28,10 +28,12 @@ private:
 
 struct SColor : public Qwt3D::Color
 {
-  Qwt3D::RGBA operator()(double x, double y, double z) const {return Qwt3D::RGBA(0.8,0,0,0.5);}
+  Qwt3D::RGBA operator()(double, double, double) const {return Qwt3D::RGBA(0.8,0,0,0.5);}
 };
 
-class Plot : public Qwt3D::SurfacePlot
+typedef Qwt3D::GridPlot SPlot; // moc/VC6 issue in Qt4
+
+class Plot : public SPlot
 {
   Q_OBJECT
     
@@ -41,7 +43,20 @@ public:
   void reset();
 };
 
-class LightingDlg : public lightingdlgbaseBase
+//MOC_SKIP_BEGIN
+  class LightingBase : public QDialog, protected Ui::Dialog
+  {
+  public:
+    LightingBase(QWidget* parent = 0) 
+      : QDialog(parent) 
+    {
+    } 
+  };
+//MOC_SKIP_END
+
+
+
+class LightingDlg : public LightingBase
 {
 	Q_OBJECT
     

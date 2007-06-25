@@ -28,7 +28,7 @@ void Label::init()
 	end_ = beg_;
 	pos_ = beg_;
 	setColor(0,0,0);
-	pm_ = QPixmap(0, 0, -1);
+	pm_ = QPixmap(0, 0);
 	font_ = QFont();
 	anchor_ = BottomLeft;
 	gap_ = 0;
@@ -99,20 +99,21 @@ void Label::update()
 
   QFontInfo info(font_);
 
-  QRect r = 	QRect(QPoint(0,0),fm.size(Qt::SingleLine, text_));//fm.boundingRect(text_)  misbehaviour under linux;
+  QRect r = 	QRect(QPoint(0,0),fm.size(Qwt3D::SingleLine, text_));//fm.boundingRect(text_)  misbehaviour under linux;
   
-  r.moveBy(0, -r.top());
+	r.translate(0, -r.top());
 	
-	pm_ = QPixmap(r.width(), r.bottom(), -1);
+	pm_ = QPixmap(r.width(), r.bottom());
 
 	if (pm_.isNull()) // else crash under linux
 	{
-		r = 	QRect(QPoint(0,0),fm.size(Qt::SingleLine, QString(" "))); // draw empty space else //todo
- 		r.moveBy(0, -r.top());
-		pm_ = QPixmap(r.width(), r.bottom(), -1);		
+		r = 	QRect(QPoint(0,0),fm.size(Qwt3D::SingleLine, QString(" "))); // draw empty space else //todo
+ 		r.translate(0, -r.top());
+		pm_ = QPixmap(r.width(), r.bottom());		
 	}
 	
-	QBitmap bm(pm_.width(),pm_.height(),true);
+	QBitmap bm(pm_.width(),pm_.height());
+  bm.fill(Qt::color0);
 	p.begin( &bm );
 		p.setPen(Qt::color1);
 		p.setFont(font_);
@@ -120,7 +121,6 @@ void Label::update()
 	p.end();
 
 	pm_.setMask(bm);
-	pm_.fill();
 	p.begin( &pm_ );
 		p.setFont( font_ );
 		p.setPen( Qt::SolidLine );
@@ -128,7 +128,7 @@ void Label::update()
 
 		p.drawText(0,r.height() - fm.descent() -1 , text_);
 	p.end();
-	buf_ = pm_.convertToImage();
+  buf_ = pm_.toImage();
 	tex_ = QGLWidget::convertToGLFormat( buf_ );	  // flipped 32bit RGBA ?		
 }
 
@@ -220,7 +220,7 @@ void Label::draw()
  
 	if (devicefonts_)
 	{		
-		drawDeviceText((const char*)text_.local8Bit(), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
+		drawDeviceText(QWT3DLOCAL8BIT(text_), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
 	}
 	else
 	{

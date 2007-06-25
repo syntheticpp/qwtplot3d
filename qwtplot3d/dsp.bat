@@ -1,2 +1,2 @@
-REM set QMAKESPEC=win32-msvc.net
-qmake -o qwtplot3d.dsp qwtplot3d.pro 
+qmake -project -nopwd -o qwtplot3d.pri -r ./src ./include ./3rdparty/gl2ps
+qmake -o qwtplot3d.vcproj qwtplot3d.pro 

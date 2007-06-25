@@ -13,7 +13,7 @@ using namespace Qwt3D;
 //--------------------------------------------------------------------
 
 Plot::Plot(QWidget* pw, int updateinterval)
-:SurfacePlot(pw)
+:GridPlot(pw)
 {
 	setRotation(30,0,15);
 	setShift(0.1,0,0);
@@ -60,13 +60,10 @@ void Plot::rotate()
 }
 
 
-using namespace Qwt3D;
-
 int main(int argc, char **argv)
 {
     QApplication a(argc, argv);
-		QSplitter* spl = new QSplitter(QSplitter::Horizontal);
-
+    QSplitter* spl = new QSplitter(Qt::Horizontal);
 		Plot* plot1 = new Plot(spl,30);
 		plot1->setFloorStyle(FLOORISO);
 		plot1->setCoordinateStyle(BOX);
@@ -91,9 +88,7 @@ int main(int argc, char **argv)
 		plot2->updateData();
 		plot2->updateGL();
 
-
-		a.setMainWidget(spl);
-		spl->resize(800,400);
+    spl->resize(800,400);
     spl->show();
     return a.exec(); 
 }

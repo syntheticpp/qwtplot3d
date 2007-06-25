@@ -1,12 +1,12 @@
   //-----------------------------------------------------------------
   //              simpleplot.cpp
   //
-  //      A simple example which shows how to use SurfacePlot
+  //      A simple example which shows how to use GridPlot
   //-----------------------------------------------------------------
 
   #include <math.h>
   #include <qapplication.h>
-  #include <qwt3d_surfaceplot.h>
+  #include <qwt3d_gridplot.h>
   #include <qwt3d_function.h>
   
 
@@ -16,7 +16,7 @@
   {
   public:
 
-    Rosenbrock(SurfacePlot& pw)
+    Rosenbrock(GridPlot& pw)
     :Function(pw)
     {
     }
@@ -28,7 +28,7 @@
   };
 
 
-  class Plot : public SurfacePlot
+  class Plot : public GridPlot
   {
   public:
       Plot();
@@ -37,7 +37,7 @@
 
   Plot::Plot()
   {
-    setTitle("A Simple SurfacePlot Demonstration");
+    setTitle("A Simple GridPlot Demonstration");
     
     Rosenbrock rosenbrock(*this);
 
@@ -61,7 +61,7 @@
 
     coordinates()->axes[X1].setLabelString("x-axis");
     coordinates()->axes[Y1].setLabelString("y-axis");
-    coordinates()->axes[Z1].setLabelString(QChar(0x38f)); // Omega - see http://www.unicode.org/charts/
+    //coordinates()->axes[Z1].setLabelString(QChar(0x38f)); // Omega - see http://www.unicode.org/charts/
 
 
     setCoordinateStyle(BOX);
@@ -74,7 +74,6 @@
   {
       QApplication a(argc, argv);
       Plot plot;
-      a.setMainWidget(&plot);
       plot.resize(800,600);
       plot.show();
       return a.exec();

@@ -1,0 +1,74 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "autoswitch", "autoswitch\autoswitch.vcproj", "{E5D7EC02-8ED3-3251-A12B-5B35750D8C6F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "axes", "axes\axes.vcproj", "{EBFB8C56-81E3-33D7-9C39-D1AC8861B173}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "enrichments", "enrichments\enrichments.vcproj", "{862456C4-E2C7-3DF0-A6C8-BF43BF3B116A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mesh2", "mesh2\mesh2.vcproj", "{9F4E1C96-B4CA-3882-89B0-3F3EB3BBE1B9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qwtplot3d", "..\qwtplot3d.vcproj", "{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simpleplot", "simpleplot\simpleplot.vcproj", "{375907B1-CC0A-38C9-810F-6AB72581C41F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freemesh", "freemesh\freemesh.vcproj", "{420601D7-823B-3EFD-A110-0E35993673D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "graph", "graph\graph.vcproj", "{7F7B525B-22F5-33E7-BDC2-917823A1A28A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA} = {3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5D7EC02-8ED3-3251-A12B-5B35750D8C6F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E5D7EC02-8ED3-3251-A12B-5B35750D8C6F}.Debug|Win32.Build.0 = Debug|Win32
+		{E5D7EC02-8ED3-3251-A12B-5B35750D8C6F}.Release|Win32.ActiveCfg = Release|Win32
+		{EBFB8C56-81E3-33D7-9C39-D1AC8861B173}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EBFB8C56-81E3-33D7-9C39-D1AC8861B173}.Debug|Win32.Build.0 = Debug|Win32
+		{EBFB8C56-81E3-33D7-9C39-D1AC8861B173}.Release|Win32.ActiveCfg = Release|Win32
+		{862456C4-E2C7-3DF0-A6C8-BF43BF3B116A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{862456C4-E2C7-3DF0-A6C8-BF43BF3B116A}.Debug|Win32.Build.0 = Debug|Win32
+		{862456C4-E2C7-3DF0-A6C8-BF43BF3B116A}.Release|Win32.ActiveCfg = Release|Win32
+		{9F4E1C96-B4CA-3882-89B0-3F3EB3BBE1B9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9F4E1C96-B4CA-3882-89B0-3F3EB3BBE1B9}.Debug|Win32.Build.0 = Debug|Win32
+		{9F4E1C96-B4CA-3882-89B0-3F3EB3BBE1B9}.Release|Win32.ActiveCfg = Release|Win32
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}.Debug|Win32.Build.0 = Debug|Win32
+		{3A43A7E5-2FD9-31B5-A816-F42C7C6EABEA}.Release|Win32.ActiveCfg = Release|Win32
+		{375907B1-CC0A-38C9-810F-6AB72581C41F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{375907B1-CC0A-38C9-810F-6AB72581C41F}.Debug|Win32.Build.0 = Debug|Win32
+		{375907B1-CC0A-38C9-810F-6AB72581C41F}.Release|Win32.ActiveCfg = Release|Win32
+		{420601D7-823B-3EFD-A110-0E35993673D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{420601D7-823B-3EFD-A110-0E35993673D4}.Debug|Win32.Build.0 = Debug|Win32
+		{420601D7-823B-3EFD-A110-0E35993673D4}.Release|Win32.ActiveCfg = Release|Win32
+		{7F7B525B-22F5-33E7-BDC2-917823A1A28A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7F7B525B-22F5-33E7-BDC2-917823A1A28A}.Debug|Win32.Build.0 = Debug|Win32
+		{7F7B525B-22F5-33E7-BDC2-917823A1A28A}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

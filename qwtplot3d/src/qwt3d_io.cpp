@@ -1,14 +1,119 @@
 #include <time.h>
+#include <QImageWriter>
 
 #include "qwt3d_plot.h"
 #include "qwt3d_io_gl2ps.h"
 #include "qwt3d_io_reader.h"
 
-
 using namespace Qwt3D;
 
-static Qwt3D::IO qwt3diodummy; // Don't delete !
+IO::Entry::Entry() : iofunc(0) 
+{
+}
 
+IO::Entry::~Entry() 
+{
+  delete iofunc;
+}
+
+IO::Entry::Entry(IO::Entry const& e)
+{
+  if (this==&e)
+    return;
+
+  fmt = e.fmt;
+  iofunc = e.iofunc->clone();
+}
+
+void IO::Entry::operator=(IO::Entry const& e)
+{
+  if (this==&e)
+    return;
+
+  delete iofunc;
+  fmt = e.fmt;
+  iofunc = e.iofunc->clone();
+}
+
+IO::Entry::Entry(QString const& s, Functor const& f)
+  : fmt(s) 
+{ 
+  iofunc = f.clone();
+}
+
+IO::Entry::Entry(QString const& s, Function f)
+  : fmt(s) 
+{ 
+  Wrapper  w(f);
+  iofunc = w.clone();
+}
+
+
+IO::FormatCompare::FormatCompare(IO::Entry const& e) 
+{
+  e_ = e;
+}
+
+bool IO::FormatCompare::operator() (IO::Entry const& e)
+{
+  return ( e.fmt == e_.fmt);
+}
+
+IO::FormatCompare2::FormatCompare2(QString s) 
+{
+  s_ = s;
+}
+
+bool IO::FormatCompare2::operator() (IO::Entry const& e)
+{
+  return( e.fmt == s_);
+}
+
+
+
+
+bool IO::add_unique(Container& l, Entry const& e)
+{
+  FormatCompare comp(e);
+  l.erase(std::remove_if(l.begin(), l.end(), comp), l.end());
+  l.push_back(e);
+
+  return true;
+}
+
+IO::IT IO::find(Container& l, QString const& fmt)
+{
+  FormatCompare2 comp(fmt);
+  return std::find_if(l.begin(), l.end(), comp); 
+}
+
+IO::Container& IO::rlist()
+{
+  static Container rl = Container();
+  static bool rfirst = true;
+  bool f = false;
+  f = rfirst;
+  if (rfirst)
+  {
+    rfirst = false;
+    setupHandler();
+  }
+  return rl;
+}
+
+IO::Container& IO::wlist()
+{
+  static Container wl = Container();
+  static bool wfirst = true;
+  bool f = false;
+  f = wfirst;
+  if (wfirst)
+  {
+    wfirst = false;
+    setupHandler();
+  }
+  return wl;
+}
 
 /*! 
   Registers a new IO::Function for data input.\n
@@ -138,17 +243,18 @@ IO::Functor* IO::outputHandler(QString const& format)
 
 bool PixmapWriter::operator()(Plot3D* plot, QString const& fname)
 {
-  QImage im = plot->grabFrameBuffer(true);
+//  QImage im = plot->grabFrameBuffer(true);
   
-  QImageIO iio;
-  iio.setImage(im);
-  iio.setFormat((const char*)fmt_.local8Bit());
+  QImage im = plot->renderPixmap().toImage();
+  QImageWriter iio;
+  iio.setFormat(QWT3DLOCAL8BIT(fmt_));
   iio.setQuality(quality_);
   iio.setFileName(fname);
-  return iio.write();
+
+  return iio.write(im);
 }
 
-//! Calls Qt's QImageIO::setQuality() function.
+//! Sets quality (the way QImage::save() uses it).
 void PixmapWriter::setQuality(int val)
 {
   quality_ = val;  
@@ -156,8 +262,8 @@ void PixmapWriter::setQuality(int val)
 
 void IO::setupHandler()
 {
-  QStringList list = QImage::outputFormatList();
-  QStringList::Iterator it = list.begin();
+  QList<QByteArray> list = QImageWriter::supportedImageFormats();
+  QList<QByteArray>::Iterator it = list.begin();
   PixmapWriter qtw;
   while( it != list.end() ) 
   {
@@ -184,43 +290,6 @@ void IO::setupHandler()
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());
-}
-
-/*!
-	\deprecated  Use Plot3D::save or IO::save instead.
-	
-  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS"or "PDF".
-  If zlib has been configured this will be extended by "EPS_GZ" and "PS_GZ". 
-	\b Beware: BSPSORT turns out to behave very slowly and memory consuming, especially in cases where
-	many polygons appear. It is still more exact than SIMPLESORT.
-*/
-bool Plot3D::saveVector(QString const& fileName, QString const& format, VectorWriter::TEXTMODE text, VectorWriter::SORTMODE sortmode)
-{
-  if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF")
-  {  
-    VectorWriter* gl2ps = (VectorWriter*)IO::outputHandler(format);
-    if (gl2ps)
-    {
-      gl2ps->setSortMode(sortmode);
-      gl2ps->setTextMode(text);
-    }
-    return IO::save(this, fileName, format);
-  }
-  return false;
-}	
-/*!
-	\deprecated  Use Plot3D::save or IO::save instead.
-  
-  Saves the framebuffer to the file fileName using one of the image file formats supported by Qt.
-*/
-bool Plot3D::savePixmap(QString const& fileName, QString const& format)
-{
-  if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF")
-    return false;
-  
-  return IO::save(this, fileName, format);
 }
 
 /*! 

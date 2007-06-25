@@ -2,8 +2,9 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include <stdlib.h> // qsort
 #include <algorithm>
-#include "float.h"
+#include <float.h>
 #include "qwt3d_data.h"
 
 using namespace Qwt3D;
@@ -63,101 +64,6 @@ namespace {
 } // ns anon
 
 
-GridData::GridData()
-{
-  datatype = Qwt3D::GRID;
-  setSize(0,0);
-  setPeriodic(false,false);
-}
-
-GridData::GridData(unsigned int columns, unsigned int rows)
-{
-  datatype = Qwt3D::GRID;
-	setSize(columns,rows);
-  setPeriodic(false,false);
-}
-
-int GridData::columns() const 
-{ 
-	return (int)vertices.size();
-}
-
-int GridData::rows() const 
-{ 
-	return (empty()) ? 0 : (int)vertices[0].size();	
-}
-
-void GridData::clear()
-{
-	setHull(ParallelEpiped());
-	{
-		for (unsigned i=0; i!=vertices.size(); ++i)
-		{	
-			for (unsigned j=0; j!=vertices[i].size(); ++j)
-			{	
-				delete [] vertices[i][j];	
-			}
-			vertices[i].clear();
-		}
-	}
-
-	vertices.clear();
-
-	{
-		for (unsigned i=0; i!=normals.size(); ++i)
-		{	
-			for (unsigned j=0; j!=normals[i].size(); ++j)
-			{	
-				delete [] normals[i][j];	
-			}
-			normals[i].clear();
-		}
-	}
-	
-	normals.clear();
-}
-
-
-void GridData::setSize(unsigned int columns, unsigned int rows)
-{
-	this->clear();
-	vertices = std::vector<DataColumn>(columns);
-	{
-		for (unsigned int i=0; i!=vertices.size(); ++i)
-		{
-			vertices[i] = DataColumn(rows);
-			for (unsigned int j=0; j!=vertices[i].size(); ++j)
-			{
-				vertices[i][j] = new GLdouble[3];
-			}
-		}
-	}
-	normals = std::vector<DataColumn>(columns);
-	{
-		for (unsigned int i=0; i!=normals.size(); ++i)
-		{
-			normals[i] = DataColumn(rows);
-			for (unsigned int j=0; j!=normals[i].size(); ++j)
-			{
-				normals[i][j] = new GLdouble[3];
-			}
-		}
-	}
-}
-
-Triple const& CellData::operator()(unsigned cellnumber, unsigned vertexnumber)
-{
-	return nodes[cells[cellnumber][vertexnumber]];
-}
-
-void CellData::clear()
-{
-	setHull(ParallelEpiped());
-  cells.clear();
-	nodes.clear();
-	normals.clear();
-}
-
 QColor Qwt3D::GL2Qt(GLdouble r, GLdouble g, GLdouble b)
 {
 	return QColor(round(r * 255), round(g * 255), round(b * 255));	
@@ -216,6 +122,28 @@ unsigned Qwt3D::tesselationSize(CellField const& t)
 		ret += t[i].size();
 	
 	return ret;
+}
+
+Qwt3D::ParallelEpiped Qwt3D::hull(TripleField const& data)
+{
+  ParallelEpiped hull(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
+  for (unsigned i = 0; i!=data.size(); ++i)
+	{
+		if (data[i].x < hull.minVertex.x)
+			hull.minVertex.x = data[i].x;
+		if (data[i].y < hull.minVertex.y)
+			hull.minVertex.y = data[i].y;
+		if (data[i].z < hull.minVertex.z)
+			hull.minVertex.z = data[i].z;
+		
+		if (data[i].x > hull.maxVertex.x)
+			hull.maxVertex.x = data[i].x;
+		if (data[i].y > hull.maxVertex.y)
+			hull.maxVertex.y = data[i].y;
+		if (data[i].z > hull.maxVertex.z)
+			hull.maxVertex.z = data[i].z;
+	}
+  return hull;
 }
 
 #endif // QWT3D_NOT_FOR_DOXYGEN

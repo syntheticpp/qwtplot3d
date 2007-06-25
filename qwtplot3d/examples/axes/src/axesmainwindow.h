@@ -1,17 +1,31 @@
-#include "qwt3d_surfaceplot.h"
+#include <qmainwindow.h>
+
+#include "qwt3d_gridplot.h"
 #include "qwt3d_function.h"
 #include "qwt3d_plot.h"
-#include "axesmainwindowbase.h"
+
+#include "ui_axesmainwindowbase.h"
+
+//MOC_SKIP_BEGIN
+  class DummyBase : public QMainWindow, protected Ui::MainWindow
+  {
+  public:
+    DummyBase(QWidget* parent = 0) 
+      : QMainWindow(parent) 
+    {
+    } 
+  };
+//MOC_SKIP_END
 
 
-class AxesMainWindow : public AxesMainWindowBase
+class AxesMainWindow : public DummyBase
 {
 	Q_OBJECT
 
 public:
-	AxesMainWindow( QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel );
+	AxesMainWindow( QWidget* parent = 0);
 	~AxesMainWindow();
-	Qwt3D::SurfacePlot* plot;
+	Qwt3D::GridPlot* plot;
 	Qwt3D::Function *rosenbrock;
   void resetTics();
 

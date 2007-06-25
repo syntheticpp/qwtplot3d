@@ -6,14 +6,14 @@
 namespace Qwt3D
 {
 
-class SurfacePlot;
+class GridPlot;
 
 
 //! Abstract base class for mappings acting on rectangular grids
 /**
 
 */
-class QWT3D_EXPORT GridMapping : public Qwt3D::Mapping
+class QWT3D_EXPORT GridMapping : public Mapping
 {
 public:
   GridMapping(); //!< Constructs GridMapping object w/o assigned SurfacePlot.
@@ -24,7 +24,7 @@ public:
 
 protected:
   Qwt3D::ParallelEpiped range_p;
-  Qwt3D::SurfacePlot* plotwidget_p;
+  Qwt3D::GridPlot* plotwidget_p;
 	unsigned int umesh_p, vmesh_p;
 	double minu_p, maxu_p, minv_p, maxv_p;
 };

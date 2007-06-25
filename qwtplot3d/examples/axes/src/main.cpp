@@ -6,7 +6,6 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include <qgl.h>
 #include "axesmainwindow.h"
 
 
@@ -21,9 +20,6 @@ int main( int argc, char** argv )
   }
 
 	AxesMainWindow mainwindow;
-	
-	app.setMainWidget(&mainwindow);
-
 	mainwindow.show();
 
 	return app.exec();

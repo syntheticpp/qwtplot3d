@@ -6,34 +6,34 @@
 namespace Qwt3D
 {
 
-class SurfacePlot;
+class GridPlot;
 
 //! Abstract base class for mathematical functions
 /**
 	A Function encapsulates a mathematical function with rectangular domain. The user has to adapt the pure virtual operator() 
 	to get a working object. Also, the client code should call setDomain, setMesh and create for reasonable operating conditions.
 */
-class QWT3D_EXPORT Function : public Qwt3D::GridMapping
+class QWT3D_EXPORT Function : public GridMapping
 {
 
 public:
 	
-  Function(); //!< Constructs Function object w/o assigned SurfacePlot.
-  explicit Function(Qwt3D::SurfacePlot& plotWidget); //!< Constructs Function object and assigns a SurfacePlot
-  explicit Function(Qwt3D::SurfacePlot* plotWidget); //!< Constructs Function object and assigns a SurfacePlot
+  Function(); //!< Constructs Function object w/o assigned GridPlot.
+  explicit Function(Qwt3D::GridPlot& plotWidget); //!< Constructs Function object and assigns a GridPlot
+  explicit Function(Qwt3D::GridPlot* plotWidget); //!< Constructs Function object and assigns a GridPlot
 	virtual double operator()(double x, double y) = 0; //!< Overwrite this.
 		
 	void setMinZ(double val); //!< Sets minimal z value.
 	void setMaxZ(double val); //!< Sets maximal z value.
 
-	//! Assigns a new SurfacePlot and creates a data representation for it.
-	virtual bool create(Qwt3D::SurfacePlot& plotWidget);
-	//! Creates data representation for the actual assigned SurfacePlot.
+	//! Assigns a new GridPlot and creates a data representation for it.
+	virtual bool create(Qwt3D::GridPlot& plotWidget);
+	//! Creates data representation for the actual assigned GridPlot.
 	virtual bool create();
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
-  void assign(Qwt3D::SurfacePlot& plotWidget); 
+  void assign(Qwt3D::GridPlot& plotWidget); 
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
-  void assign(Qwt3D::SurfacePlot* plotWidget); 
+  void assign(Qwt3D::GridPlot* plotWidget); 
 };
 
 } // ns

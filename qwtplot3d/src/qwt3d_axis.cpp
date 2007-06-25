@@ -359,7 +359,7 @@ Triple Axis::biggestNumberString()
   Use with a heap based initialized pointer only.
   The axis adopts ownership. 
 */
-void Axis::setScale(Scale* val)
+void Axis::setScale(Qwt3D::Scale* val)
 {
   scale_ = qwt3d_ptr<Scale>(val); 
 }

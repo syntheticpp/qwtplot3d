@@ -17,9 +17,10 @@ using namespace Qwt3D;
 /*!
   This should be the first call in your derived classes constructors.  
 */
-ExtGLWidget::ExtGLWidget( QWidget* parent, const char* name )
-    : QGLWidget( parent, name )
+ExtGLWidget::ExtGLWidget( QWidget * parent, const QGLWidget * shareWidget)
+    : QGLWidget( parent, shareWidget) 
 {  
+  initializedGL_ = false;	
   xRot_ = yRot_ = zRot_ = 0.0;		// default object rotation
   
 	xShift_ = yShift_ = zShift_ = xVPShift_ = yVPShift_ = 0.0;
@@ -30,29 +31,36 @@ ExtGLWidget::ExtGLWidget( QWidget* parent, const char* name )
 	mpressed_ = false;
 	mouse_input_enabled_ = true;
 	
-	assignMouse(Qt::LeftButton, 
-							Qt::LeftButton | Qt::ShiftButton,
-							Qt::LeftButton, 
-							Qt::LeftButton | Qt::AltButton, 
-							Qt::LeftButton | Qt::AltButton, 
-							Qt::LeftButton | Qt::AltButton | Qt::ShiftButton,
-							Qt::LeftButton | Qt::AltButton | Qt::ControlButton,
-							Qt::LeftButton | Qt::ControlButton, 
-							Qt::LeftButton | Qt::ControlButton);
-
-
   kbd_input_enabled_ = true;
+
+  setFocusPolicy(Qt::StrongFocus);
+  assignMouse(Qt::LeftButton, 
+							MouseState(Qt::LeftButton, Qt::ShiftModifier),
+							Qt::LeftButton, 
+							MouseState(Qt::LeftButton, Qt::AltModifier), 
+							MouseState(Qt::LeftButton, Qt::AltModifier), 
+							MouseState(Qt::LeftButton, Qt::AltModifier | Qt::ShiftModifier),
+							MouseState(Qt::LeftButton, Qt::AltModifier | Qt::ControlModifier),
+							MouseState(Qt::LeftButton, Qt::ControlModifier), 
+							MouseState(Qt::LeftButton, Qt::ControlModifier)
+              );
+
+
   assignKeyboard(Qt::Key_Down, Qt::Key_Up,
-    Qt::ShiftButton + Qt::Key_Right, Qt::ShiftButton + Qt::Key_Left,
+    KeyboardState(Qt::Key_Right, Qt::ShiftModifier), KeyboardState(Qt::Key_Left, Qt::ShiftModifier),
     Qt::Key_Right, Qt::Key_Left,
-    Qt::AltButton + Qt::Key_Right, Qt::AltButton + Qt::Key_Left,
-    Qt::AltButton + Qt::Key_Down, Qt::AltButton + Qt::Key_Up,
-    Qt::AltButton + Qt::ShiftButton + Qt::Key_Down, Qt::AltButton + Qt::ShiftButton + Qt::Key_Up,
-    Qt::AltButton + Qt::ControlButton + Qt::Key_Down, Qt::AltButton + Qt::ControlButton + Qt::Key_Up,
-    Qt::ControlButton + Qt::Key_Right, Qt::ControlButton + Qt::Key_Left,
-    Qt::ControlButton + Qt::Key_Down, Qt::ControlButton + Qt::Key_Up
+    KeyboardState(Qt::Key_Right, Qt::AltModifier), KeyboardState(Qt::Key_Left, Qt::AltModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier|Qt::ShiftModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier|Qt::ShiftModifier),
+    KeyboardState(Qt::Key_Down, Qt::AltModifier|Qt::ControlModifier), KeyboardState(Qt::Key_Up, Qt::AltModifier|Qt::ControlModifier),
+    KeyboardState(Qt::Key_Right, Qt::ControlModifier), KeyboardState(Qt::Key_Left, Qt::ControlModifier),
+    KeyboardState(Qt::Key_Down, Qt::ControlModifier), KeyboardState(Qt::Key_Up, Qt::ControlModifier)
    );
    setKeySpeed(3,5,5);
+
+  lighting_enabled_ = false;
+  disableLighting();
+  lights_ = std::vector<Light>(8);
 }
 
 /**
@@ -69,7 +77,7 @@ void ExtGLWidget::mousePressEvent( QMouseEvent *e )
 	Standard mouse button Function. Completes the call to mouseMoveEvent
 	\see mouseMoveEvent()
 */
-void ExtGLWidget::mouseReleaseEvent( QMouseEvent *e )
+void ExtGLWidget::mouseReleaseEvent( QMouseEvent* )
 {
 	mpressed_ = false;
 }
@@ -86,7 +94,7 @@ void ExtGLWidget::mouseMoveEvent( QMouseEvent *e )
 		return;
   }
 	
-	ButtonState bstate = e->state();
+  MouseState bstate(e->buttons(),e->modifiers());
 	QPoint diff = e->pos() - lastMouseMovePosition_;
 
 	setRotationMouse(bstate, 3, diff);	
@@ -96,7 +104,7 @@ void ExtGLWidget::mouseMoveEvent( QMouseEvent *e )
 	lastMouseMovePosition_ = e->pos();
 }
 
-void ExtGLWidget::setRotationMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setRotationMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Rotation
 	double w = max(1,width());
@@ -119,7 +127,7 @@ void ExtGLWidget::setRotationMouse(ButtonState bstate, double accel, QPoint diff
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void ExtGLWidget::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setScaleMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Scale
 		double w = max(1,width());
@@ -145,7 +153,7 @@ void ExtGLWidget::setScaleMouse(ButtonState bstate, double accel, QPoint diff)
 			setZoom(max(0.0,zoom() - relyz));
 }
 
-void ExtGLWidget::setShiftMouse(ButtonState bstate, double accel, QPoint diff)
+void ExtGLWidget::setShiftMouse(MouseState bstate, double accel, QPoint diff)
 {
 	// Shift
 	double w = max(1,width());
@@ -178,7 +186,7 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 	double step =  accel * e->delta() / WHEEL_DELTA ;
 	step = exp(step)-1;
 
-	if ( e->state() & Qt::ShiftButton )
+	if ( e->modifiers() & Qt::ShiftModifier )
 		setScale(xScale(),yScale(), max(0.0,zScale() + step));
 	else
 		setZoom(max(0.0,zoom() + step ));
@@ -186,7 +194,7 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 
 /**
 	Sets the key/mousebutton combination for data/coordinatesystem moves inside the widget\n\n
-	default behaviour:\n
+	default behaviour (Qt3 variant):\n
 
 	\verbatim
 	rotate around x axis: Qt::LeftButton 
@@ -202,9 +210,9 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 
 	mouseMoveEvent() evaluates this function - if overridden, their usefulness becomes somehow limited
 */
-void ExtGLWidget::assignMouse(int xrot, int yrot, int zrot,
-											 int xscale, int yscale, int zscale,
-											 int zoom, int xshift, int yshift)
+void ExtGLWidget::assignMouse(MouseState xrot, MouseState yrot, MouseState zrot,
+											 MouseState xscale, MouseState yscale, MouseState zscale,
+											 MouseState zoom, MouseState xshift, MouseState yshift)
 {
 	xrot_mstate_   = 	xrot;  
   yrot_mstate_   =  yrot;  
@@ -243,15 +251,13 @@ void ExtGLWidget::keyPressEvent( QKeyEvent *e )
     return;
   }	
 
-  int bstate = e->state() & Qt::KeyButtonMask; // filter kbd modifier only
-  int keyseq = bstate + e->key();
-
+  KeyboardState keyseq(e->key(), e->modifiers());
 	setRotationKeyboard(keyseq, kbd_rot_speed_);	
 	setScaleKeyboard(keyseq, kbd_scale_speed_);	
 	setShiftKeyboard(keyseq, kbd_shift_speed_);	
 }
 
-void ExtGLWidget::setRotationKeyboard(int kseq, double speed)
+void ExtGLWidget::setRotationKeyboard(KeyboardState kseq, double speed)
 {
 	// Rotation
 	double w = max(1,width());
@@ -280,7 +286,7 @@ void ExtGLWidget::setRotationKeyboard(int kseq, double speed)
 	setRotation(new_xrot, new_yrot, new_zrot); 
 }
 
-void ExtGLWidget::setScaleKeyboard(int kseq, double speed)
+void ExtGLWidget::setScaleKeyboard(KeyboardState kseq, double speed)
 {
 	// Scale
 		double w = max(1,width());
@@ -314,7 +320,7 @@ void ExtGLWidget::setScaleKeyboard(int kseq, double speed)
 			setZoom(max(0.0,zoom() + relyz));
 }
 
-void ExtGLWidget::setShiftKeyboard(int kseq, double speed)
+void ExtGLWidget::setShiftKeyboard(KeyboardState kseq, double speed)
 {
 	// Shift
 	double w = max(1,width());
@@ -340,7 +346,7 @@ void ExtGLWidget::setShiftKeyboard(int kseq, double speed)
 
 /**
 	Sets the keybutton combination for data/coordinatesystem moves inside the widget\n\n
-	default behaviour:\n
+	default behaviour  (Qt3 variant):\n
 
 	\verbatim
 	rotate around x axis: [Key_Down, Key_Up] 
@@ -355,15 +361,15 @@ void ExtGLWidget::setShiftKeyboard(int kseq, double speed)
 	\endverbatim
 */
 void ExtGLWidget::assignKeyboard(
-       int xrot_n, int xrot_p
-      ,int yrot_n, int yrot_p
-      ,int zrot_n, int zrot_p
-			,int xscale_n, int xscale_p 
-      ,int yscale_n, int yscale_p
-      ,int zscale_n, int zscale_p
-			,int zoom_n, int zoom_p
-      ,int xshift_n, int xshift_p
-      ,int yshift_n, int yshift_p
+       KeyboardState xrot_n, KeyboardState xrot_p
+      ,KeyboardState yrot_n, KeyboardState yrot_p
+      ,KeyboardState zrot_n, KeyboardState zrot_p
+			,KeyboardState xscale_n, KeyboardState xscale_p 
+      ,KeyboardState yscale_n, KeyboardState yscale_p
+      ,KeyboardState zscale_n, KeyboardState zscale_p
+			,KeyboardState zoom_n, KeyboardState zoom_p
+      ,KeyboardState xshift_n, KeyboardState xshift_p
+      ,KeyboardState yshift_n, KeyboardState yshift_p
       )
 {
 	xrot_kstate_[0]   =  xrot_n;  
@@ -461,8 +467,9 @@ void ExtGLWidget::setShift( double xVal, double yVal, double zVal )
 }
 
 /**
-  Performs shifting along screen axes. The values are limited to the interval [-1..1]
-	The shift moves points inside a sphere, which encloses the unscaled and unzoomed data
+  Performs shifting along screen axes.
+	The shift moves points inside a sphere, 
+  which encloses the unscaled and unzoomed data
 	by multiples of the spheres diameter
 	
 	\param xVal shift along (view) X axis
@@ -474,21 +481,8 @@ void ExtGLWidget::setViewportShift( double xVal, double yVal )
   if (xVPShift_ == xVal && yVPShift_ == yVal)
 		return;
 	
-	double limit = 1;
-
-	if (xVal < -limit)
-		xVPShift_ = -limit;
-	else if (xVal > limit)
-		xVPShift_ = limit;
-	else
-		xVPShift_ = xVal;
-
-	if (yVal < -limit)
-		yVPShift_ = -limit;
-	else if (yVal > limit)
-		yVPShift_ = limit;
-	else
-		yVPShift_ = yVal;
+	xVPShift_ = xVal;
+	yVPShift_ = yVal;
 		
 	updateGL();
 	emit vieportShiftChanged(xVPShift_, yVPShift_);
@@ -540,4 +534,34 @@ void ExtGLWidget::setOrtho( bool val )
 	updateGL();
 	
 	emit projectionChanged(val);
+}
+
+/*!
+  Set up the OpenGL rendering state
+*/
+void ExtGLWidget::initializeGL()
+{
+  glEnable( GL_BLEND );
+  glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
+	
+  // Set up the lights
+
+  disableLighting();
+	
+  GLfloat whiteAmb[4] = {1.0, 1.0, 1.0, 1.0};
+    
+  setLightShift(0, 0, 3000);
+  glEnable(GL_COLOR_MATERIAL);
+
+	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, whiteAmb);
+
+  setMaterialComponent(GL_DIFFUSE, 1.0);
+  setMaterialComponent(GL_SPECULAR, 0.3);
+  setMaterialComponent(GL_SHININESS, 5.0);
+  setLightComponent(GL_DIFFUSE, 1.0);
+  setLightComponent(GL_SPECULAR, 1.0);
+
+  initializedGL_ = true;	
 }

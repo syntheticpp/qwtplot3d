@@ -4,7 +4,7 @@
 #include <qaction.h>
 #include <qslider.h>
 #include <qcheckbox.h>
-#include <qpopupmenu.h>
+#include <qmenubar.h>
 #include <qdatetime.h>
 
 #include "axes.h"
@@ -15,13 +15,12 @@ using namespace std;
 using namespace Qwt3D;
 
 
-
 // Example function
 class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(SurfacePlot& pw)
+	Rosenbrock(GridPlot& pw)
 	:Function(pw)
 	{
 	}
@@ -35,13 +34,12 @@ public:
 
 // Main widget
 
-AxesMainWindow::AxesMainWindow( QWidget* parent, const char* name, WFlags f )
-	: AxesMainWindowBase( parent, name, f )
+AxesMainWindow::AxesMainWindow( QWidget* parent)
+	: DummyBase(parent)
 {
-	setCaption("axes");
- 
-  QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
-  plot = new SurfacePlot(frame);
+  setupUi(this);
+  QGridLayout *grid = new QGridLayout( frame);
+  plot = new GridPlot(frame);
   grid->addWidget( plot, 0, 0 );
 
   plot->setZoom(0.8);
@@ -92,12 +90,14 @@ AxesMainWindow::AxesMainWindow( QWidget* parent, const char* name, WFlags f )
   
   plot->coordinates()->setLineSmooth(true);
   smoothBox->setDown(true);
-  Items->insertItem( "&Standard",  this, SLOT(standardItems()), ALT+Key_S );
-  Items->insertItem( "&Imaginary", this, SLOT(complexItems()),    ALT+Key_I );
-  Items->insertItem( "&Letter", this, SLOT(letterItems()),    ALT+Key_L );
-  Items->insertItem( "&Time", this, SLOT(timeItems()),    ALT+Key_T );
-  Items->insertItem( "&Log", this, SLOT(customScale()),    ALT+Key_C );
-        
+
+  QMenu* Items = menuBar()->addMenu("Item");
+  Items->addAction( "&Standard",  this, SLOT(standardItems()), QKeySequence("ALT+S") );
+  Items->addAction( "&Imaginary", this, SLOT(complexItems()), QKeySequence("ALT+I") );
+  Items->addAction( "&Letter", this, SLOT(letterItems()), QKeySequence("ALT+L") );
+  Items->addAction( "&Time", this, SLOT(timeItems()), QKeySequence("ALT+T") );
+  Items->addAction( "&Log", this, SLOT(customScale()), QKeySequence("ALT+C") );
+  
   plot->makeCurrent();
 	plot->updateData();
   plot->updateGL();

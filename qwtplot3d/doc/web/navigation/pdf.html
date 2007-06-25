@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>PDF</title>
+  <meta name="author" content="Michael Bieber">
+  <link rel="stylesheet" type="text/css" href="general.css">
+</head>
+<body>
+<h2 style="margin-left: 40px;"><br>
+</h2>
+<h2 style="margin-left: 40px; text-align: center;">Vector Output<br>
+<br>
+</h2>
+<div style="margin-left: 40px;">Beginning with version 0.2.0 qwtplot3d
+supports PostScript, Encapsulated PostScript and PDF output by
+using&nbsp; <a href="http://www.geuz.org/gl2ps/" target="_blank">gl2ps</a>.&nbsp;
+Pixmap
+output exists in generic form, seamless provided by Qt. The
+following comparison table shows (in some way arbitrary and
+oversimplified) the pros and cons for various approachs:<br>
+<br>
+<br>
+<table cellpadding="1" cellspacing="1" border="1"
+ style="text-align: left; height: 214px; width: 759px;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 20%;"><br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15%;">Vector
+Graphics<br>
+Text Scaling<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15%;">Text
+Positioning<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(255, 255, 255); width: 15%;">Text
+Content<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(255, 255, 255); width: 15%;">Creation
+Speed<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(255, 255, 255); width: 15%;">Shading<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(255, 255, 255); width: 15%;">Transparency<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(255, 255, 255);">EPS<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++</td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+++)<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15%;"><span
+ style="color: rgb(0, 153, 0);">+</span><br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0); width: 15%;">-<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15%;">?<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(255, 255, 255);">EPS
++ TeX </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++</td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0); width: 15%;">-<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+<br>
+      </td>
+      <td style="vertical-align: top; text-align: center; width: 15%;">?<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(255, 255, 255);">PDF<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++</td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;"><span
+ style="color: rgb(255, 0, 0);">-<span style="color: rgb(0, 153, 0);">(+)</span></span><br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0); width: 15%;">-<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">++(+)<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+)<br>
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(255, 255, 255);">PDF
++ TeX </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++</td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++</td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">+++<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(255, 0, 0); width: 15%;">-
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">++(+)<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); width: 15%;">(+)
+      </td>
+    </tr>
+    <tr>
+      <td
+ style="vertical-align: top; background-color: rgb(204, 255, 255);">Pixmap<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 255, 255); width: 15%;"><span
+ style="color: rgb(255, 0, 0);">---</span><br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 255, 255); width: 15%;"><span
+ style="color: rgb(0, 153, 0);">+++</span><br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); background-color: rgb(204, 255, 255); width: 15%;">+<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); background-color: rgb(204, 255, 255); width: 15%;">+++<br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; background-color: rgb(204, 255, 255); width: 15%;"><span
+ style="color: rgb(0, 153, 0);">++</span><br>
+      </td>
+      <td
+ style="vertical-align: top; text-align: center; color: rgb(0, 153, 0); background-color: rgb(204, 255, 255); width: 15%;">(++)<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+Legend: &nbsp; <span style="color: rgb(0, 153, 0);">&nbsp;&nbsp;
+&nbsp; </span><big><span style="color: rgb(0, 153, 0);">+++</span> </big>Optimal
+case&nbsp;&nbsp; <span style="color: rgb(255, 0, 0);">&nbsp;&nbsp;&nbsp;
+--- </span>Worst case &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span
+ style="color: rgb(0, 153, 0);">(...)</span> Possible but not
+implemented<br>
+<br>
+<h4>Example:</h4>
+<br>
+<div style="text-align: center;"><img src="../../images/pdf.png"
+ title="" alt="PDF example"
+ style="border: 1px solid ; width: 531px; height: 464px;"><br>
+<a href="../../images/pdf.pdf"><br>
+... link to PDF (387 kB)</a><br>
+<br>
+</div>
+<h4>Remarks:<br>
+</h4>
+<br>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 782px; height: 172px;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Vector
+Graphics<br>
+Text Scaling</td>
+      <td style="vertical-align: top;">Self-explanatory ...<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Text
+Positioning<br>
+      </td>
+      <td style="vertical-align: top;">AFAIK, PostScript can calculate
+glyph widths. Therefore,&nbsp; it should be possible to place
+arbitrarily aligned text boxes&nbsp; at every location precisely. PDF
+on the other hand, needs access to font metrics in order to use the
+related information. For the moment, I have no plans for&nbsp;
+inclusion of
+Adobes afm files for standard fonts. I'm also not sure, whether this
+affects&nbsp; licensing. Another option is perhaps the utilizing
+of&nbsp; free Nimbus fonts. No open questions remain,&nbsp; if you can
+use
+combined TeX - PDF or TeX - EPS output.<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Text
+Content</td>
+      <td style="vertical-align: top;">Again, TeX suits as the best
+method here. You can include mathematical formulas and other TeX
+constructs in
+your strings. The other formats - especially PDF - are limited to&nbsp;
+their (limited) semantic possibilities. <br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Creation
+Speed</td>
+      <td style="vertical-align: top;">Always poor compared to pixmap
+storing, mainly due to necessary emulations of OpenGL's processing
+pipeline (sorting etc.)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Shading</td>
+      <td style="vertical-align: top;">PostScript can emulate
+this,&nbsp; causing magnified and more complex files (slower
+rendering). PDF has inherent shading support. This could also be
+extended beyond common Gouraud shading (not implemented and the only
+reason for the plus sign to appear in parentheses)<br>
+      </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top; width: 20%; font-style: italic;">Transparency</td>
+      <td style="vertical-align: top;">PDF has a transparency concept
+with most important cases yet implemented in gl2ps. The utilizing by
+the widget is still a todo.<br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+<br>
+... to finish.<br>
+<br>
+</div>
+</body>
+</html>

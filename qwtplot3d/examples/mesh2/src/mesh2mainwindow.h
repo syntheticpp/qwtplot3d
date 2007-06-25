@@ -1,29 +1,41 @@
 #ifndef mesh2mainwindow_h__2004_03_07_13_38_begin_guarded_code
 #define mesh2mainwindow_h__2004_03_07_13_38_begin_guarded_code
 
-#include "mesh2mainwindowbase.h"
-#include "../../../include/qwt3d_surfaceplot.h"
+#include "../../../include/qwt3d_gridplot.h"
 
+#include "ui_mesh2mainwindowbase.h"
+#include "designerworkaround.h"
+
+
+//MOC_SKIP_BEGIN
+  class DummyBase : public QMainWindow, protected Ui::MainWindow, protected DesignerWorkaround
+  {
+  public:
+    DummyBase(QWidget* parent = 0) 
+      : QMainWindow(parent) 
+    {
+    } 
+  };
+//MOC_SKIP_END
 
 class QLabel;
 class QTimer;
 class QAction;
 class QFileDialog;
-class ColorMapPreview;
 class LightingDlg;
+class ColorMapPreview;
 
-class Mesh2MainWindow : public Mesh2MainWindowBase
+class Mesh2MainWindow : public DummyBase
 {
 	Q_OBJECT
 public:
-	Mesh2MainWindow( QWidget* parent = 0, const char* name = 0, WFlags f = WType_TopLevel );
+	Mesh2MainWindow( QWidget* parent = 0 );
 	~Mesh2MainWindow();
 
-  Qwt3D::SurfacePlot* dataWidget;
+  Qwt3D::GridPlot* dataWidget;
 	
 public slots:
 	void open();
-	void openMesh();
 
 	void createFunction(QString const& name);
 	void createPSurface(QString const& name);
@@ -89,9 +101,7 @@ private:
 	Qwt3D::StandardColor* col_;
 
 	QFileDialog* datacolordlg_;
-	ColorMapPreview* colormappv_; 
   LightingDlg* lightingdlg_;
-
 	QString filetype_;
 };
 

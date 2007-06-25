@@ -1,4 +1,4 @@
-#include "qwt3d_surfaceplot.h"
+#include "qwt3d_gridplot.h"
 #include "qwt3d_function.h"
 
 using namespace Qwt3D;
@@ -8,25 +8,25 @@ Function::Function()
 {
 }
 
-Function::Function(SurfacePlot& pw)
+Function::Function(GridPlot& pw)
 :GridMapping()
 {
   plotwidget_p = &pw;
 }
 
-Function::Function(SurfacePlot* pw)
+Function::Function(GridPlot* pw)
 :GridMapping()
 {
   plotwidget_p = pw;
 }
 
-void Function::assign(SurfacePlot& plotWidget)
+void Function::assign(GridPlot& plotWidget)
 {
 	if (&plotWidget != plotwidget_p)
 		plotwidget_p = &plotWidget;
 }
 
-void Function::assign(SurfacePlot* plotWidget)
+void Function::assign(GridPlot* plotWidget)
 {
 	if (plotWidget != plotwidget_p)
 		plotwidget_p = plotWidget;
@@ -81,7 +81,7 @@ bool Function::create()
 	}
 	else
 	{
-		((SurfacePlot*)plotwidget_p)->loadFromData(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
+		((GridPlot*)plotwidget_p)->appendDataSet(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
 	}
 
 	for ( i = 0; i < umesh_p; i++) 
@@ -94,7 +94,7 @@ bool Function::create()
 	return true;
 }
 
-bool Function::create(SurfacePlot& pl)
+bool Function::create(GridPlot& pl)
 {
   assign(pl);
   return create();

@@ -5,22 +5,17 @@
 #ifndef __DATATYPES_H__
 #define __DATATYPES_H__
 
-#ifdef _DEBUG
-	#include <fstream>
-#endif
-
 #include <string>
 
-#include "qwt3d_global.h"
-
-#ifdef _WIN32
+#if defined(Q_WS_WIN)
 	#include <windows.h>
 #endif
 
+#include "qwt3d_portability.h"
 #include "qwt3d_helper.h"
 #include "qwt3d_openglhelper.h"
 
-//! Common namespace for all QwtPlot3D classes
+// Common namespace for all QwtPlot3D classes
 namespace Qwt3D
 {
 
@@ -66,7 +61,7 @@ enum FLOORSTYLE
 {
 	NOFLOOR,   //!< Empty floor
 	FLOORISO,  //!< Isoline projections visible
-	FLOORDATA, //!< Projected polygons visible
+	FLOORDATA //!< Projected polygons visible
 };
 
 //! The 12 axes
@@ -137,6 +132,28 @@ struct QWT3D_EXPORT Triple
 	{
 	}
 	
+#ifndef QWT3D_NOT_FOR_DOXYGEN
+#ifdef Q_OS_IRIX
+  Triple(const Triple& val)
+  {
+    if (&val == this)
+       return;
+    x = val.x;
+    y = val.y;
+    z = val.z;
+  }
+  const Triple& operator=(const Triple& val)
+  {
+    if (&val == this)
+      return *this;
+    x = val.x;
+    y = val.y;
+    z = val.z;
+    return *this;
+  }
+#endif 
+#endif // QWT3D_NOT_FOR_DOXYGEN
+  
 	//! Triple coordinates
 	double x,y,z; 
 
@@ -292,12 +309,18 @@ typedef std::vector<FreeVector> FreeVectorField;
 
 //! A point field in R^3
 typedef std::vector<Triple> TripleField;
+//! Holds indices in a TripleField interpreted as an oriented (first->second) Edge
+typedef std::pair<unsigned,unsigned> Edge;
+//! Vector of Edges for a graph or cell complex. You need a TripleField as base for the node data
+typedef std::vector<Edge> EdgeField;
 //! Holds indices in a TripleField interpreted as counterclockwise node numbering for a convex polygon
 typedef std::vector<unsigned> Cell;
 //! Vector of convex polygons. You need a TripleField as base for the node data
 typedef std::vector<Cell> CellField;
 //! Returns the sum over the sizes of the single cells
 unsigned tesselationSize(Qwt3D::CellField const& t);
+//! Rectangular hull for point cloud
+QWT3D_EXPORT Qwt3D::ParallelEpiped hull(TripleField const& data);
 
 //! Red-Green-Blue-Alpha value
 struct QWT3D_EXPORT RGBA
@@ -318,7 +341,6 @@ typedef std::vector<RGBA> ColorVector;
 
 QWT3D_EXPORT QColor GL2Qt(GLdouble r, GLdouble g, GLdouble b); //!< RGB -> QColor
 QWT3D_EXPORT Qwt3D::RGBA Qt2GL(QColor col); //!< QColor -> RGBA
-
 
 inline Triple normalizedcross(Triple const& u, Triple const& v)
 {

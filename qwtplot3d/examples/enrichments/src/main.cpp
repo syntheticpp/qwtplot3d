@@ -6,7 +6,6 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include <qgl.h>
 #include "enrichmentmainwindow.h"
 
 
@@ -20,10 +19,8 @@ int main( int argc, char** argv )
 		return -1;
   }
 
-	enrichmentMainWindow mainwindow;
+	EnrichmentMainWindow mainwindow;
 	
-	app.setMainWidget(&mainwindow);
-
 	mainwindow.show();
 
 	return app.exec();

@@ -9,7 +9,7 @@ namespace Qwt3D
 class Plot3D;
 
 //! The Cross Hair Style
-class QWT3D_EXPORT CrossHair : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT CrossHair : public VertexEnrichment
 {
 public:
   CrossHair();
@@ -29,7 +29,7 @@ private:
 };
 
 //! The Point Style
-class QWT3D_EXPORT Dot : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT Dot : public VertexEnrichment
 {
 public: 
   Dot();
@@ -48,8 +48,30 @@ private:
   GLboolean oldstate_;
 };
 
+//! The Ball Style
+class QWT3D_EXPORT Ball : public VertexEnrichment
+{
+public:
+  Ball();
+  Ball(double rad, unsigned quality);
+  ~Ball();
+
+  Qwt3D::Enrichment* clone() const {return new Ball(*this);}
+
+  void configure(double rad, unsigned quality);
+  void setColor(RGBA const& rgba) {rgba_ = rgba;}
+  void draw(Qwt3D::Triple const&);
+
+private:
+  GLUquadricObj *sphere;
+  unsigned quality_;
+  double radius_;
+  GLboolean oldstate_;
+  Qwt3D::RGBA rgba_;
+};
+
 //! The Cone Style
-class QWT3D_EXPORT Cone : public Qwt3D::VertexEnrichment
+class QWT3D_EXPORT Cone : public VertexEnrichment
 {
 public:
   Cone();
@@ -57,57 +79,95 @@ public:
   ~Cone();
 
   Qwt3D::Enrichment* clone() const {return new Cone(*this);}
-  
+
   void configure(double rad, unsigned quality);
+  void setColor(RGBA const& rgba) {rgba_ = rgba;}
   void draw(Qwt3D::Triple const&);
 
 private:
-	GLUquadricObj *hat;
-	GLUquadricObj *disk;
+  GLUquadricObj *hat;
+  GLUquadricObj *disk;
   unsigned quality_;
   double radius_;
   GLboolean oldstate_;
+  Qwt3D::RGBA rgba_;
 };
 
 //! 3D vector field. 
 /**
-	The class encapsulates a vector field including his OpenGL representation as arrow field. 
-	The arrows can be configured in different aspects (color, shape, painting quality).
-	
+The class encapsulates a vector field including his OpenGL representation as arrow field. 
+The arrows can be configured in different aspects (color, shape, painting quality).
+
 */
 class QWT3D_EXPORT Arrow : public VertexEnrichment
 {
 public:
-	
-	Arrow();
-	~Arrow();
+
+  Arrow();
+  ~Arrow();
 
   Qwt3D::Enrichment* clone() const {return new Arrow(*this);}
 
-	void configure(int segs, double relconelength, double relconerad, double relstemrad);
+  void configure(int segs, double relconelength, double relconerad, double relstemrad);
   void setQuality(int val) {segments_ = val;} //!< Set the number of faces for the arrow
-  void draw(Qwt3D::Triple const&);
+  void draw(Qwt3D::Triple const& val);
 
   void setTop(Qwt3D::Triple t){top_ = t;}
-  void setColor(Qwt3D::RGBA rgba) {rgba_ = rgba;}
+  void setColor(Qwt3D::RGBA const& rgba) {rgba_ = rgba;}
 
 private:
 
-	GLUquadricObj *hat;
-	GLUquadricObj *disk;
-	GLUquadricObj *base;
-	GLUquadricObj *bottom;
+  GLUquadricObj *hat;
+  GLUquadricObj *disk;
+  GLUquadricObj *base;
+  GLUquadricObj *bottom;
   GLboolean oldstate_;
 
-	double calcRotation(Qwt3D::Triple& axis, Qwt3D::FreeVector const& vec);
+  double calcRotation(Qwt3D::Triple& axis, Qwt3D::FreeVector const& vec);
 
-	int segments_;
-	double rel_cone_length;
-	
-	double rel_cone_radius;
-	double rel_stem_radius;
+  int segments_;
+  double rel_cone_length;
+
+  double rel_cone_radius;
+  double rel_stem_radius;
 
   Qwt3D::Triple top_;
+  Qwt3D::RGBA rgba_;
+};
+
+//! Cylindres. 
+/**
+Defines a field of cylindrical edge 
+The edges can be configured in different aspects (color, painting quality, closed or open).
+
+*/
+class QWT3D_EXPORT Stick : public EdgeEnrichment
+{
+public:
+
+  Stick();
+  Stick(double rad, int segs, bool open = true);
+  ~Stick();
+
+  Qwt3D::Enrichment* clone() const {return new Stick(*this);}
+
+  void configure(double rad, int segs);
+  void setQuality(int val) {segments_ = val;} //!< Set the number of faces for the cylinder
+  void draw(Triple const& beg, Triple const& end);
+  void setColor(RGBA const& rgba) {rgba_ = rgba;}
+
+private:
+  GLUquadricObj *base;
+  GLUquadricObj *top, *bottom;
+  GLboolean oldstate_;
+
+  void init(double rad, int segs, bool open);
+  double calcRotation(Triple& axis, FreeVector const& vec);
+
+  int segments_;
+  double radius_;
+  bool open_;
+
   Qwt3D::RGBA rgba_;
 };
 

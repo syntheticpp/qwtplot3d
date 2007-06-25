@@ -4,7 +4,7 @@ using namespace std;
 using namespace Qwt3D;
 
 
-CoordinateSystem::CoordinateSystem(Triple first, Triple second, COORDSTYLE st)
+CoordinateSystem::CoordinateSystem(Qwt3D::Triple first, Qwt3D::Triple second, Qwt3D::COORDSTYLE st)
 {
 	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
@@ -33,7 +33,7 @@ void CoordinateSystem::destroy()
 	detachAll();
 }
 
-void CoordinateSystem::init(Triple first, Triple second)
+void CoordinateSystem::init(Qwt3D::Triple first, Qwt3D::Triple second)
 {
 	destroy();
 	
@@ -481,7 +481,8 @@ void CoordinateSystem::setLineWidth(double val, double majfac, double minfac)
 		axes[i].setLineWidth(val, majfac, minfac);
 }
 
-void CoordinateSystem::setStyle(COORDSTYLE s, AXIS frame_1, AXIS frame_2, AXIS frame_3) 
+void CoordinateSystem::setStyle(Qwt3D::COORDSTYLE s, Qwt3D::AXIS frame_1, 
+                                Qwt3D::AXIS frame_2, Qwt3D::AXIS frame_3) 
 { 
 	style_ = s;
 

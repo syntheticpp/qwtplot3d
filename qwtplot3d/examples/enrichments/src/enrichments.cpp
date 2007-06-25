@@ -25,14 +25,14 @@ Bar::Bar(double rad, double level)
 
 void Bar::configure(double rad, double level)
 {
-  plot = 0;
+  plot_p = 0;
   radius_ = rad;
   level_ = level;
 }
 
 void Bar::drawBegin()
 {  
-  diag_ = (plot->hull().maxVertex-plot->hull().minVertex).length() * radius_;
+  diag_ = (plot_p->hull().maxVertex-plot_p->hull().minVertex).length() * radius_;
   glLineWidth( 0 );
   glEnable(GL_POLYGON_OFFSET_FILL);
   glPolygonOffset(1,1);
@@ -48,8 +48,8 @@ void Bar::draw(Qwt3D::Triple const& pos)
 //	GLStateBewarer sb(GL_LINE_SMOOTH, true);
 //  sb.turnOn();
 
-  double interval = plot->hull().maxVertex.z-plot->hull().minVertex.z;
-  double numlevel = plot->hull().minVertex.z + level_ * interval;
+  double interval = plot_p->hull().maxVertex.z-plot_p->hull().minVertex.z;
+  double numlevel = plot_p->hull().minVertex.z + level_ * interval;
   interval /=100;
   if (pos.z > numlevel - interval && pos.z < numlevel + interval )
   {
@@ -57,10 +57,10 @@ void Bar::draw(Qwt3D::Triple const& pos)
     lb.draw(pos, diag_, diag_ * 2);
   }
   
-  GLdouble minz = plot->hull().minVertex.z;
+  GLdouble minz = plot_p->hull().minVertex.z;
 
-  RGBA rgbat = (*plot->dataColor())(pos);
-	RGBA rgbab = (*plot->dataColor())(pos.x, pos.y, minz);
+  RGBA rgbat = (*plot_p->dataColor())(pos);
+	RGBA rgbab = (*plot_p->dataColor())(pos.x, pos.y, minz);
 	
   glBegin(GL_QUADS);
     glColor4d(rgbab.r,rgbab.g,rgbab.b,rgbab.a);

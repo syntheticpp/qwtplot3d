@@ -180,7 +180,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 
   producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
 
-	FILE *fp = fopen((const char*)fname.local8Bit(), "wb");	
+	FILE *fp = fopen(QWT3DLOCAL8BIT(fname), "wb");	
 	if (!fp)
   {
     Label::useDeviceFonts(false);
@@ -189,10 +189,10 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
   while( state == GL2PS_OVERFLOW )
 	{ 
 		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", producer, viewport,
+		gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
 										 gl2ps_format_, sortmode,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-										 fp, (const char*)fname.local8Bit() );
+										 fp, QWT3DLOCAL8BIT(fname) );
 		
 	  plot->updateData();
 	  plot->updateGL(); 
@@ -207,7 +207,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
       ? fname + ".tex"
       : texfname_;
 
-    fp = fopen((const char*)fn.local8Bit(), "wb");	
+    fp = fopen(QWT3DLOCAL8BIT(fn), "wb");	
     if (!fp)
     {
       Label::useDeviceFonts(false);
@@ -219,10 +219,10 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
     while( state == GL2PS_OVERFLOW )
     { 
       bufsize += 2*1024*1024;
-      gl2psBeginPage ( "---", producer, viewport,
+      gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
         GL2PS_TEX, sortmode,
         options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
-        fp, (const char*)fn.local8Bit() );
+        fp, QWT3DLOCAL8BIT(fn) );
       
       plot->updateData();
       plot->updateGL(); 
@@ -365,16 +365,9 @@ GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize,
 	
 	ViewPort2World(vp[0], vp[1], vp[2], start.x, start.y, start.z);
 	Triple adjpos(vp[0],vp[1],vp[2]);
-	
-	GL2PSrgba rgba2;
-		
-	rgba2[0] = rgba.r;
-	rgba2[1] = rgba.g;
-	rgba2[2] = rgba.b;
-	rgba2[3] = rgba.a;
-
+			
 	glRasterPos3d(adjpos.x, adjpos.y, adjpos.z);
-	ret = gl2psTextOpt(str, fontname, (int)fontsize, a, rgba2);
+	ret = gl2psTextOpt(str, fontname, (int)fontsize, a, 0);
 	glColor4dv(fcol);
 	glClearColor(bcol[0], bcol[1], bcol[2], bcol[3]);
   return ret;

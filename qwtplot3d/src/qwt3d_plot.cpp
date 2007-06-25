@@ -12,14 +12,13 @@ using namespace Qwt3D;
 /*!
   This should be the first call in your derived classes constructors.  
 */
-Plot3D::Plot3D( QWidget* parent, const char* name )
-    : ExtGLWidget( parent, name )
+Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
+    : ExtGLWidget( parent, shareWidget) 
 {  
-  initializedGL_ = false;
+  renderpixmaprequest_ = false;
 	plotstyle_ = FILLEDMESH;
   userplotstyle_p = 0;
 	shading_ = GOURAUD;
-	floorstyle_ = NOFLOOR;
 	isolines_ = 10;
 	displaylegend_ = false;
 	smoothdatamesh_p = false;
@@ -42,16 +41,10 @@ Plot3D::Plot3D( QWidget* parent, const char* name )
 
 	setTitlePosition(0.95);
 	
-  setFocusPolicy(QWidget::StrongFocus);
-
 	legend_.setLimits(0, 100);
 	legend_.setMajors(10);
 	legend_.setMinors(2);
 	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
-
-  lighting_enabled_ = false;
-  disableLighting();
-  lights_ = std::vector<Light>(8);
 }
 
 /*!
@@ -70,35 +63,21 @@ Plot3D::~Plot3D()
   elist_p.clear();
 }
 
-
-/*!
-  Set up the OpenGL rendering state
-*/
 void Plot3D::initializeGL()
 {
-  glEnable( GL_BLEND );
-  glEnable(GL_DEPTH_TEST);
-	glShadeModel(GL_SMOOTH);
-	
-  // Set up the lights
+  ExtGLWidget::initializeGL();  
+  if (renderpixmaprequest_)
+  {
+    updateData();
+    renderpixmaprequest_ = false;
+  }
+}
 
-  disableLighting();
-	
-  GLfloat whiteAmb[4] = {1.0, 1.0, 1.0, 1.0};
-    
-  setLightShift(0, 0, 3000);
-  glEnable(GL_COLOR_MATERIAL);
-
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, whiteAmb);
-
-  setMaterialComponent(GL_DIFFUSE, 1.0);
-  setMaterialComponent(GL_SPECULAR, 0.3);
-  setMaterialComponent(GL_SHININESS, 5.0);
-  setLightComponent(GL_DIFFUSE, 1.0);
-  setLightComponent(GL_SPECULAR, 1.0);
-
-  initializedGL_ = true;	
+//! Reimplements QGLWidget::renderPixmap
+QPixmap Plot3D::renderPixmap(int w/* =0 */, int h/* =0 */, bool useContext/* =false */)
+{
+  renderpixmaprequest_ = true;
+  return QGLWidget::renderPixmap(w,h,useContext);
 }
 
 /*!
@@ -160,7 +139,7 @@ void Plot3D::paintGL()
 
   glTranslatef( xViewportShift() * 2 * radius , yViewportShift() * 2 * radius , -7 * radius );
   
-  if (lighting_enabled_)
+  if (lightingEnabled())
     glEnable(GL_NORMALIZE);
 
   for (unsigned i=0; i!= displaylists_p.size(); ++i)
@@ -170,7 +149,7 @@ void Plot3D::paintGL()
 	}
   coordinates_p.draw();
 	
-  if (lighting_enabled_)
+  if (lightingEnabled())
     glDisable(GL_NORMALIZE);
   
   glMatrixMode( GL_MODELVIEW );
@@ -188,6 +167,17 @@ void Plot3D::resizeGL( int w, int h )
 }
 
 /*!
+	Calculates the smallest x-y-z parallelepiped enclosing the data.
+	It can be accessed by hull();
+*/
+void Plot3D::calculateHull()
+{
+	if (!actualData_p || actualData_p->empty())
+		return;
+	setHull(actualData_p->hull());
+}
+
+/*!
 	Create a coordinate system with generating corners beg and end 
 */
 void Plot3D::createCoordinateSystem( Triple beg, Triple end )
@@ -202,7 +192,9 @@ void Plot3D::createCoordinateSystem( Triple beg, Triple end )
 void Plot3D::createCoordinateSystem()
 {
 	calculateHull();
-	createCoordinateSystem(hull().minVertex, hull().maxVertex);
+  Triple beg = hull().minVertex;
+  Triple end = hull().maxVertex;
+  createCoordinateSystem(beg, end);
 }
 
 /*!
@@ -370,11 +362,11 @@ bool Plot3D::degrade(Enrichment* e)
   return false;
 }
 
-void Plot3D::createEnrichments()
+void Plot3D::drawEnrichments()
 {
   for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
   {
-    this->createEnrichment(**it);
+    this->drawEnrichment(**it);
   } 
 }
 
@@ -394,8 +386,8 @@ void Plot3D::updateData()
 	displaylists_p[DataObject] = glGenLists(1);
 	glNewList(displaylists_p[DataObject], GL_COMPILE);
 	
-  this->createEnrichments();
-	this->createData();
+  this->drawEnrichments();
+	this->createOpenGlData();
 		
 	glEndList();
 }

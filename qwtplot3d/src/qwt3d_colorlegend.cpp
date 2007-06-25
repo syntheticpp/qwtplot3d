@@ -57,7 +57,7 @@ void ColorLegend::setAutoScale(bool val)
 	axis_.setAutoScale(val);
 }
 
-void ColorLegend::setScale(SCALETYPE val)
+void ColorLegend::setScale(Qwt3D::SCALETYPE val)
 {
 	axis_.setScale(val);
 }
@@ -68,19 +68,19 @@ void ColorLegend::setScale(Scale* val)
 }
 
 
-void ColorLegend::setOrientation(ORIENTATION ori, SCALEPOSITION pos)
+void ColorLegend::setOrientation(ORIENTATION orientation, SCALEPOSITION pos)
 {
-	orientation_ = ori;
+	orientation_ = orientation;
 	axisposition_ = pos;
 
-	if (ori==BottomTop)
+	if (orientation_==BottomTop)
 	{
-		if (pos == Bottom || pos == Top)
+		if (axisposition_ == Bottom || axisposition_ == Top)
 			axisposition_ = Left;
 	}
 	else
 	{
-		if (pos == Left || pos == Right)
+		if (axisposition_ == Left || axisposition_ == Right)
 			axisposition_ = Bottom;
 	}
 }

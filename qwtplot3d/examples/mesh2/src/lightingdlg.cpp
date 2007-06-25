@@ -12,7 +12,7 @@ class Sphere : public ParametricSurface
 {
 public:
 
-  Sphere(SurfacePlot& pw)
+  Sphere(GridPlot& pw)
   :ParametricSurface(pw)
   {
     setMesh(41,31);
@@ -40,9 +40,9 @@ public:
 /////////////////////////////////////////////////////////////////
 
 Plot::Plot(QWidget *parent)
-: SurfacePlot(parent)
+: GridPlot(parent)
 {
-  setTitle("A Simple SurfacePlot Demonstration");
+  setTitle("A Simple GridPlot Demonstration");
   
   Sphere sphere(*this);
   sphere.create();
@@ -94,7 +94,7 @@ Pointer::Pointer(double rad)
 
 void Pointer::configure(double rad)
 {
-  plot = 0;
+  plot_p = 0;
   radius_ = rad;
 }
 
@@ -117,9 +117,10 @@ void Pointer::draw()
 
 
 LightingDlg::LightingDlg(QWidget *parent)
-:lightingdlgbaseBase(parent)
+:LightingBase(parent)
 {
-  QGridLayout *grid = new QGridLayout( frame, 0, 0, 1 );
+  setupUi(this);
+  QGridLayout *grid = new QGridLayout( frame);
 
   dataPlot = 0;
   

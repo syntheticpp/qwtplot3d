@@ -5,7 +5,6 @@
 
 using namespace Qwt3D;
 
-
 /////////////////////////////////////////////////////////////////
 //
 //   CrossHair
@@ -24,7 +23,7 @@ CrossHair::CrossHair(double rad, double linewidth, bool smooth, bool boxed)
 
 void CrossHair::configure(double rad, double linewidth, bool smooth, bool boxed)
 {
-  plot = 0;
+  plot_p = 0;
   radius_ = rad;
   linewidth_ = linewidth;
   smooth_ = smooth;
@@ -54,10 +53,10 @@ void CrossHair::drawEnd()
 
 void CrossHair::draw(Qwt3D::Triple const& pos)
 {
-	RGBA rgba = (*plot->dataColor())(pos);
+	RGBA rgba = (*plot_p->dataColor())(pos);
 	glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
 
-  double diag = (plot->hull().maxVertex-plot->hull().minVertex).length() * radius_;
+  double diag = (plot_p->hull().maxVertex-plot_p->hull().minVertex).length() * radius_;
 
   glVertex3d( pos.x - diag, pos.y, pos.z); 
 	glVertex3d( pos.x + diag, pos.y, pos.z); 
@@ -122,7 +121,7 @@ Dot::Dot(double pointsize, bool smooth)
 
 void Dot::configure(double pointsize, bool smooth)
 {
-  plot = 0;
+  plot_p = 0;
   pointsize_ = pointsize;
   smooth_ = smooth;
 }
@@ -152,11 +151,62 @@ void Dot::drawEnd()
 
 void Dot::draw(Qwt3D::Triple const& pos)
 {
-	RGBA rgba = (*plot->dataColor())(pos);
+	const RGBA& rgba = (*plot_p->dataColor())(pos);
   glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
   glVertex3d( pos.x, pos.y, pos.z);   
 }
 
+/////////////////////////////////////////////////////////////////
+//
+//   Ball
+//
+/////////////////////////////////////////////////////////////////
+
+Ball::Ball()
+{
+  sphere = gluNewQuadric();
+  configure(1, 11);
+}
+
+Ball::Ball(double rad, unsigned quality)
+{
+  sphere   = gluNewQuadric();
+  configure(rad, quality);
+}
+
+Ball::~Ball()
+{
+  gluDeleteQuadric(sphere);
+}
+
+void Ball::configure(double rad, unsigned quality)
+{
+  plot_p = 0;
+  radius_ = rad;
+  quality_ = quality;
+  oldstate_ = GL_FALSE;
+
+  gluQuadricDrawStyle(sphere,GLU_FILL);
+  gluQuadricNormals(sphere,GLU_SMOOTH);
+  gluQuadricOrientation(sphere,GLU_OUTSIDE);
+}
+
+void Ball::draw(Qwt3D::Triple const& pos)
+{  
+  //RGBA rgba = (*plot_p->dataColor())(pos);
+  glColor4d(rgba_.r,rgba_.g,rgba_.b,rgba_.a);
+
+  GLint mode;
+  glGetIntegerv(GL_MATRIX_MODE, &mode);
+  glMatrixMode( GL_MODELVIEW );
+  glPushMatrix();
+
+  glTranslatef(pos.x, pos.y, pos.z);
+  gluSphere(sphere, radius_, quality_, quality_);
+
+  glPopMatrix();
+  glMatrixMode(mode);
+}
 
 /////////////////////////////////////////////////////////////////
 //
@@ -188,7 +238,7 @@ Cone::~Cone()
 
 void Cone::configure(double rad, unsigned quality)
 {
-  plot = 0;
+  plot_p = 0;
   radius_ = rad;
   quality_ = quality;
   oldstate_ = GL_FALSE;
@@ -203,8 +253,8 @@ void Cone::configure(double rad, unsigned quality)
 
 void Cone::draw(Qwt3D::Triple const& pos)
 {  
-	RGBA rgba = (*plot->dataColor())(pos);
-  glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
+	//RGBA rgba = (*plot_p->dataColor())(pos);
+  glColor4d(rgba_.r,rgba_.g,rgba_.b,rgba_.a);
 
   GLint mode;
 	glGetIntegerv(GL_MATRIX_MODE, &mode);
@@ -268,7 +318,7 @@ Arrow::~Arrow()
 */
 void Arrow::configure(int segs, double relconelength, double relconerad, double relstemrad)
 {
-	plot = 0;
+	plot_p = 0;
   segments_ = segs;
   oldstate_ = GL_FALSE;
 	rel_cone_length = relconelength;
@@ -328,8 +378,8 @@ void Arrow::draw(Qwt3D::Triple const& pos)
 double Arrow::calcRotation(Triple& axis, FreeVector const& vec)
 {
 	
-	Triple end = vec.top;
-	Triple beg = vec.base;
+	const Triple& end = vec.top;
+	const Triple& beg = vec.base;
 
 	Triple firstbeg(0.0,0.0,0.0);
 	Triple firstend(0.0,0.0,(end-beg).length());
@@ -345,3 +395,120 @@ double Arrow::calcRotation(Triple& axis, FreeVector const& vec)
 	
 	return 180 * acos(cosphi) / Qwt3D::PI;
 }
+
+/////////////////////////////////////////////////////////////////
+//
+//   Stick
+//
+/////////////////////////////////////////////////////////////////
+
+Stick::Stick()
+{	
+  init(3,1,false);
+}
+
+Stick::Stick(double rad, int segs, bool open /*=true*/)
+{
+  init(rad,segs,open);  
+}
+
+void Stick::init(double rad, int segs, bool open)
+{
+  base    = gluNewQuadric();
+  gluQuadricDrawStyle(base,GLU_FILL);
+  gluQuadricNormals(base,GLU_SMOOTH);
+  gluQuadricOrientation(base,GLU_OUTSIDE);
+
+  open_ = open;
+  if (!open_)
+  {
+    top   = gluNewQuadric();
+    bottom   = gluNewQuadric();
+    gluQuadricDrawStyle(top,GLU_FILL);
+    gluQuadricNormals(top,GLU_SMOOTH);
+    gluQuadricOrientation(top,GLU_OUTSIDE);
+    gluQuadricDrawStyle(bottom,GLU_FILL);
+    gluQuadricNormals(bottom,GLU_SMOOTH);
+    gluQuadricOrientation(bottom,GLU_OUTSIDE);
+  }
+  configure(rad, segs);
+}
+
+
+Stick::~Stick()
+{
+  gluDeleteQuadric(base);
+  if (!open_)
+  {
+    gluDeleteQuadric(top);
+    gluDeleteQuadric(bottom);
+  }
+}
+
+/**
+\param segs number of faces for the fields arrows (see the gallery for examples)
+\param rad cylinder radius
+*/
+void Stick::configure(double rad, int segs)
+{
+  plot_p = 0;
+  segments_ = segs;
+  radius_ = rad;	
+}
+
+void Stick::draw(Triple const& beg, Triple const& end)
+{	
+  Triple vdiff = end-beg;
+  double length = vdiff.length();
+  glColor4d(rgba_.r,rgba_.g,rgba_.b,rgba_.a);
+
+  GLint mode;
+  glGetIntegerv(GL_MATRIX_MODE, &mode);
+
+  glMatrixMode( GL_MODELVIEW );
+  glPushMatrix();
+
+  Triple axis;
+  double phi = calcRotation(axis, FreeVector(beg,end));
+
+  glTranslatef(beg.x, beg.y, beg.z);
+  glRotatef(phi, axis.x, axis.y, axis.z);
+
+  gluCylinder(base, radius_, radius_, length, segments_, 1);
+  gluDisk(bottom, 0, radius_, segments_, 1);
+  glTranslatef(0, 0, length);
+  gluDisk(top, 0, radius_, segments_, 1);
+
+  glPopMatrix();
+  glMatrixMode(mode);
+}
+
+
+//! transform a vector on the z axis with length |beg-end|, to get them in coincidence with the vector(beg,end)
+/**
+\return Angle in degree to rotate
+\param axis   The axis to rotate around
+\param beg    result vector base point
+\param end    result vector top point
+*/ 
+double Stick::calcRotation(Triple& axis, FreeVector const& vec)
+{
+
+  const Triple& end = vec.top;
+  const Triple& beg = vec.base;
+
+  Triple firstbeg(0.0,0.0,0.0);
+  Triple firstend(0.0,0.0,(end-beg).length());
+
+  Triple first = firstend - firstbeg;
+  first.normalize();
+
+  Triple second = end-beg;
+  second.normalize();
+
+  axis = normalizedcross(first,second);
+  double cosphi = dotProduct(first,second);
+
+  return 180 * acos(cosphi) / Qwt3D::PI;
+}
+

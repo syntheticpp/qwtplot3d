@@ -6,32 +6,32 @@
 namespace Qwt3D
 {
 
-class SurfacePlot;
+class GridPlot;
 
 
 //! Abstract base class for parametric surfaces
 /**
 
 */
-class QWT3D_EXPORT ParametricSurface : public Qwt3D::GridMapping
+class QWT3D_EXPORT ParametricSurface : public GridMapping
 {
 
 public:
-  ParametricSurface(); //!< Constructs ParametricSurface object w/o assigned SurfacePlot.
-  //! Constructs ParametricSurface object and assigns a SurfacePlot
-  explicit ParametricSurface(Qwt3D::SurfacePlot& plotWidget); 
-  //! Constructs ParametricSurface object and assigns a SurfacePlot
-  explicit ParametricSurface(Qwt3D::SurfacePlot* plotWidget); 
+  ParametricSurface(); //!< Constructs ParametricSurface object w/o assigned GridPlot.
+  //! Constructs ParametricSurface object and assigns a GridPlot
+  explicit ParametricSurface(Qwt3D::GridPlot& plotWidget); 
+  //! Constructs ParametricSurface object and assigns a GridPlot
+  explicit ParametricSurface(Qwt3D::GridPlot* plotWidget); 
   //! Overwrite this
   virtual Qwt3D::Triple operator()(double u, double v) = 0; 
-	//! Assigns a new SurfacePlot and creates a data representation for it.
-	virtual bool create(Qwt3D::SurfacePlot& plotWidget);
-	//! Creates data representation for the actual assigned SurfacePlot.
+	//! Assigns a new GridPlot and creates a data representation for it.
+	virtual bool create(Qwt3D::GridPlot& plotWidget);
+	//! Creates data representation for the actual assigned GridPlot.
 	virtual bool create();
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
-  void assign(Qwt3D::SurfacePlot& plotWidget);
+  void assign(Qwt3D::GridPlot& plotWidget);
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
-  void assign(Qwt3D::SurfacePlot* plotWidget);
+  void assign(Qwt3D::GridPlot* plotWidget);
   //! Provide information about periodicity of the 'u' resp. 'v' domains.
   void setPeriodic(bool u, bool v); 
 

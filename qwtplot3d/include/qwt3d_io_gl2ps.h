@@ -2,7 +2,8 @@
 #define qwt3d_io_gl2ps_h__2004_05_07_01_16_begin_guarded_code
 
 #include <time.h>
-#include <qgl.h>
+#include <QtOpenGL/qgl.h>
+
 #include "qwt3d_types.h"
 #include "qwt3d_io.h"
 
