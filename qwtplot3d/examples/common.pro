@@ -17,8 +17,11 @@ win32{
   RC_FILE = ../icon.rc
   contains (CONFIG, debug)  {
     QMAKE_LFLAGS += /NODEFAULTLIB:msvcrt
+    DESTDIR = ../bin/debug
   }
-
+  !contains (CONFIG, release)  {
+    DESTDIR = ../bin/release
+  }
 }
 
 MYVERSION = $$[QMAKE_VERSION] 
