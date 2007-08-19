@@ -8,6 +8,16 @@ INCLUDEPATH    += ../../include
 DEPENDPATH	= $$INCLUDEPATH
 DESTDIR = ../bin
 
+win32{
+contains (CONFIG, debug)  {
+	  QMAKE_LFLAGS += /NODEFAULTLIB:msvcrt
+	  DESTDIR = ../bin/debug
+	}
+	!contains (CONFIG, release)  {
+	  DESTDIR = ../bin/release
+	}
+}
+
 unix:LIBS += -lqwtplot3d -L../../lib
 win32:LIBS += ../../lib/qwtplot3d.lib
 
