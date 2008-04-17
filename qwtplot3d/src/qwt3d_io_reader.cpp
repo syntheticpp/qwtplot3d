@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <qtextstream.h>
 
-#include "qwt3d_surfaceplot.h"
+#include "qwt3d_curve.h"
 #include "qwt3d_io_reader.h"
 
 using namespace std;
@@ -218,7 +218,9 @@ bool NativeReader::operator()(Plot3D* plot, QString const& fname)
   /* close the file */
   fclose(file);
 
-	((SurfacePlot*)plot)->loadFromData(data, xmesh, ymesh, minx, maxx, miny, maxy);
+        Curve* curve = new Curve;
+	curve->loadFromData(data, xmesh, ymesh, minx, maxx, miny, maxy);
+        plot->addCurve(curve);
 	deleteData(data,xmesh);
 
 	return true;

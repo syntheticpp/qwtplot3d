@@ -6,6 +6,7 @@
 
 namespace Qwt3D
 {
+    class Curve;
   
 //! Base class for all plotting widgets
 /*!
@@ -27,7 +28,8 @@ public:
     virtual ~Plot3D();
 
     QPixmap renderPixmap (int w=0, int h=0, bool useContext=false);	  
-    void updateData(); //!< Recalculate data
+    // TODO: this doesn't actually need to be virtual, only for THAAD hack right now!
+    virtual void updateData(); //!< Recalculate data
 		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
 		Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
@@ -50,30 +52,11 @@ public:
 		double zoom() const { return zoom_;} //!< Returns zoom (0..inf)
 
 		bool ortho() const { return ortho_; } //!< Returns orthogonal (true) or perspective (false) projection
-		void setPlotStyle( Qwt3D::PLOTSTYLE val);
-		Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val);
-		Qwt3D::PLOTSTYLE plotStyle() const { return plotstyle_; }//!< Returns plotting style
-    //! Returns current Enrichment object used for plotting styles (if set, zero else)
-    Qwt3D::Enrichment* userStyle() const { return userplotstyle_p; }
-    void		setShading( Qwt3D::SHADINGSTYLE val );
-		Qwt3D::SHADINGSTYLE shading() const { return shading_; }//!< Returns shading style
-		void setIsolines(int isolines);
-		int isolines() const { return isolines_;} //!< Returns number of isolines
 	
-  	void setSmoothMesh(bool val) {smoothdatamesh_p = val;} //!< Enables/disables smooth data mesh lines. Default is false
-    bool smoothDataMesh() const {return smoothdatamesh_p;} //!< True if mesh antialiasing is on
 		void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
 		Qwt3D::RGBA backgroundRGBAColor() const {return bgcolor_;} //!< Returns the widgets background color
-		void setMeshColor(Qwt3D::RGBA rgba); //!< Sets color for data mesh
-		Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< Returns color for data mesh
-		void setMeshLineWidth(double lw); //!< Sets line width for data mesh
-		double meshLineWidth() const {return meshLineWidth_;} //!< Returns line width for data mesh
-		void setDataColor(Color* col); //!< Sets new data color object
-    const Color* dataColor() const {return datacolor_p;} //!< Returns data color object
 
-    virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const&); //!< Add an Enrichment
-    virtual bool degrade(Qwt3D::Enrichment*); //!< Remove an Enrichment
-
+        void calculateHull();
 		Qwt3D::ParallelEpiped hull() const { return hull_;} //!< Returns rectangular hull   
 
 		void showColorLegend(bool);
@@ -136,10 +119,27 @@ public:
     double yLightShift(unsigned idx = 0) const {return (idx<8) ? lights_[idx].shift.y : 0;} 
     //! Returns shift of Light 'idx 'along Z axis (object coordinates)
     double zLightShift(unsigned idx = 0) const {return (idx<8) ? lights_[idx].shift.z : 0;}
-	  //! Returns true if valid data available, false else
-    bool hasData() const { return (actualData_p) ? !actualData_p->empty() : false;}
 
+    void addCurve(Qwt3D::Curve* c);
+    void addDrawable(Qwt3D::Drawable* c);
+
+    void createCoordinateSystem();
+
+    //! set the plot style for all attached curves
+    // TODO? perhaps we should be a template that accepts a functor to call any function for a curve
+    void setPlotStyle( Qwt3D::PLOTSTYLE val);
+    //! same as above
+    Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val);
     
+    void    setFloorStyle( Qwt3D::FLOORSTYLE val );
+
+    void setDataColor(Color* col); //!< Sets new data color object for all curves
+
+    typedef std::vector<Qwt3D::Curve*> CurveList;
+    const CurveList& curveList() const { return curvelist_p; }
+    
+    typedef std::vector<Qwt3D::Drawable*> DrawableList;
+    const DrawableList& drawableList() const { return drawablelist_p; }
 signals:
 		
 		//! Emitted, if the rotation is changed
@@ -157,6 +157,7 @@ signals:
 
 public slots:
 
+    void setResolution( int );
 		void	setRotation( double xVal, double yVal, double zVal ); 																														
 		void	setShift( double xVal, double yVal, double zVal );    																														
 		void	setViewportShift( double xVal, double yVal );         																														
@@ -182,12 +183,11 @@ public slots:
 		virtual bool save(QString const& fileName, QString const& format); //!<  Saves content
 
 protected:
-    typedef std::list<Qwt3D::Enrichment*> EnrichmentList;
-    typedef EnrichmentList::iterator ELIT;
-    
 		void	initializeGL();
     void	paintGL();
     void	resizeGL( int w, int h );
+
+    void applyModelViewAndProjection();
 
 		void mousePressEvent( QMouseEvent *e );
 		void mouseReleaseEvent( QMouseEvent *e );
@@ -197,32 +197,24 @@ protected:
     void keyPressEvent( QKeyEvent *e );
 
     Qwt3D::CoordinateSystem coordinates_p;
-		Qwt3D::Color* datacolor_p;
-    Qwt3D::Enrichment* userplotstyle_p;
-    EnrichmentList elist_p;
 
-		virtual void calculateHull() = 0;
-		virtual void createData() = 0;
-    virtual void createEnrichment(Qwt3D::Enrichment&){}
-    virtual void createEnrichments();
-
-		void createCoordinateSystem();
 		void setHull(Qwt3D::ParallelEpiped p) {hull_ = p;}
 
     bool initializedGL() const {return initializedGL_;}
 
 		enum OBJECTS
 		{
-			DataObject,
 			LegendObject,
 			NormalObject,
 			DisplayListSize // only to have a vector length ...
 		};
 		std::vector<GLuint> displaylists_p;
-    Qwt3D::Data* actualData_p;
 
 
 private:
+    CurveList curvelist_p;
+    DrawableList drawablelist_p;
+
     struct Light
     {  
       Light() : unlit(true){}
@@ -232,18 +224,15 @@ private:
     };
     std::vector<Light> lights_;
 
+    bool update_coordinate_sys_;
     GLdouble xRot_, yRot_, zRot_, xShift_, yShift_, zShift_, zoom_
              , xScale_, yScale_, zScale_, xVPShift_, yVPShift_;
 		
 		Qwt3D::RGBA meshcolor_;
 		double meshLineWidth_;
 		Qwt3D::RGBA bgcolor_;
-		Qwt3D::PLOTSTYLE plotstyle_;
-		Qwt3D::SHADINGSTYLE shading_;
-		Qwt3D::FLOORSTYLE floorstyle_;
 		bool ortho_;
 		double polygonOffset_;
-		int isolines_;
 		bool displaylegend_;
     bool smoothdatamesh_p;
 

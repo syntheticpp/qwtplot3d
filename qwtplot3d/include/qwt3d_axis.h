@@ -31,6 +31,9 @@ public:
   Qwt3D::Triple end() const { return end_; } //!< Returns axis' ending position 
   double length() const { return (end_-beg_).length(); } //!< Returns axis' length
 
+  bool decorate() const { return decorate_; } //! whether or not labels/tics will be drawn (overrides individual flags)
+  void setDecorate(bool on) { decorate_ = on; } //! toggle whether or not labels/tics will be drawn (overrides individual flags)
+
 	void setTicLength(double majorl, double minorl); //!< Sets tics lengths in world coordinates
 	//! Returns tics lengths
   void ticLength(double& majorl, double& minorl) const {majorl = lmaj_; minorl = lmin_;}
@@ -45,9 +48,11 @@ public:
   QFont const& labelFont() const {return labelfont_;} //!< Returns current label font 
   
   void setLabelString(QString const& name);   //!< Sets label content
+  const QString& labelString() const;   //!< Gets label content
 	void setLabelPosition(const Qwt3D::Triple& pos, Qwt3D::ANCHOR);
 	void setLabelColor(Qwt3D::RGBA col);
   void setLabel(bool d) {drawLabel_ = d;} //!< Turns label drawing on or off
+  bool label() const { return drawLabel_;} //!< Whether label drawing is on or off
 	void adjustLabel(int val) {labelgap_ = val;} //!< Shifts label in device coordinates dependent on anchor;
 
 	void setScaling(bool d) {drawTics_ = d;} //!< Turns scale drawing on or off
@@ -124,6 +129,8 @@ private:
 	int numbergap_, labelgap_; 
 
   Qwt3D::qwt3d_ptr<Qwt3D::Scale> scale_;
+
+  bool decorate_;
 };
 
 } // ns 

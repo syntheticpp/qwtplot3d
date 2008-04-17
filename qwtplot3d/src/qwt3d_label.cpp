@@ -32,6 +32,7 @@ void Label::init()
 	font_ = QFont();
 	anchor_ = BottomLeft;
 	gap_ = 0;
+    use_relpos_ = false;
 	flagforupdate_ = true;
 }
 
@@ -40,16 +41,29 @@ void Label::useDeviceFonts(bool val)
 	devicefonts_ = val;
 }
 
+void Label::setFont(const QFont& f)
+{
+    if ( font_ == f ) {
+        return;
+    }
+    font_ = f;
+	flagforupdate_ = true;
+}
+
 void Label::setFont(const QString & family, int pointSize, int weight, bool italic)
 {
-	font_ = QFont(family, pointSize, weight, italic );
-	flagforupdate_ = true;
+    setFont( QFont(family, pointSize, weight, italic ) );
 }
 
 void Label::setString(QString const& s)
 {
   text_ = s;
 	flagforupdate_ = true;
+}
+
+const QString& Label::string() const
+{
+   return text_;
 }
 
 void Label::setColor(double r, double g, double b, double a)
@@ -79,6 +93,7 @@ example:
 */
 void Label::setPosition(Triple pos, ANCHOR a)
 {
+    use_relpos_ = false;
 	anchor_ = a;
 	pos_ = pos;
 }
@@ -86,10 +101,9 @@ void Label::setPosition(Triple pos, ANCHOR a)
 void Label::setRelPosition(Tuple rpos, ANCHOR a)
 {
 	double ot = 0.99;
-
-	getMatrices(modelMatrix, projMatrix, viewport);
-	beg_ = relativePosition(Triple(rpos.x, rpos.y, ot));
-	setPosition(beg_, a);	
+    relpos_ = Triple(rpos.x, rpos.y, ot);
+    anchor_ = a;
+    use_relpos_ = true;
 }
 
 void Label::update()
@@ -234,6 +248,13 @@ void Label::convert2screen()
 
 void Label::draw()
 {
+    if ( use_relpos_ ) {
+        getMatrices(modelMatrix, projMatrix, viewport);
+        beg_ = relativePosition(relpos_);
+        setPosition(beg_, anchor_);
+        use_relpos_ = true;// reset the flag
+    }
+
 	if (flagforupdate_)
 	{
 		update();

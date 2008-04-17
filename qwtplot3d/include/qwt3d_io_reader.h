@@ -22,7 +22,7 @@ private:
   //! Provides new NativeReader object. 
   IO::Functor* clone() const{return new NativeReader(*this);}
   //! Performs actual input
-  bool operator()(Plot3D* plot, QString const& fname);
+  bool operator()(Plot3D* curve, QString const& fname);
 	static const char* magicstring;
   double minz_, maxz_;
 	bool collectInfo(FILE*& file, QString const& fname, unsigned& xmesh, unsigned& ymesh, 

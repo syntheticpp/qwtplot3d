@@ -31,6 +31,7 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_mousekeyboard.cpp \
            src/qwt3d_movements.cpp \
            src/qwt3d_lighting.cpp \
+           src/qwt3d_curve.cpp \
            src/qwt3d_colorlegend.cpp \
            src/qwt3d_plot.cpp \
            src/qwt3d_label.cpp \
@@ -45,8 +46,7 @@ SOURCES += src/qwt3d_gridmapping.cpp \
 					 src/qwt3d_parametricsurface.cpp \
            src/qwt3d_function.cpp
 
-SOURCES += src/qwt3d_surfaceplot.cpp \
-           src/qwt3d_gridplot.cpp \
+SOURCES += src/qwt3d_gridplot.cpp \
            src/qwt3d_meshplot.cpp
           
 
@@ -59,6 +59,7 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_helper.h \
            include/qwt3d_label.h \
            include/qwt3d_openglhelper.h \
+           include/qwt3d_curve.h \
            include/qwt3d_colorlegend.h \
            include/qwt3d_plot.h \
            include/qwt3d_enrichment.h \
@@ -75,8 +76,7 @@ HEADERS += include/qwt3d_mapping.h \
            include/qwt3d_parametricsurface.h \
            include/qwt3d_function.h
 
-HEADERS += include/qwt3d_surfaceplot.h \
-           include/qwt3d_volumeplot.h \
+HEADERS += include/qwt3d_volumeplot.h \
            include/qwt3d_graphplot.h \
            include/qwt3d_multiplot.h
 

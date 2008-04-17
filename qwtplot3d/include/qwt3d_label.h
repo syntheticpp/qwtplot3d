@@ -23,6 +23,9 @@ public:
 	Label(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	
 	//! Sets the labels font
+        void setFont(const QFont&);
+
+	//! Sets the labels font
 	void setFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
 	void adjust(int gap); //!< Fine tunes label;
@@ -36,10 +39,12 @@ public:
 	virtual void setColor(Qwt3D::RGBA rgba);	
 
 	/*!
-	\brief Sets the labels string
+	\brief Sets the label's string
 	For unicode labeling (<tt> QChar(0x3c0) </tt> etc.) please look at <a href="http://www.unicode.org/charts/">www.unicode.org</a>.
 	*/
 	void setString(QString const& s);
+        //! the label's string
+        const QString& string() const;
 	void draw(); //!< Actual drawing
 
 	/**
@@ -52,6 +57,8 @@ public:
 
 private:
 
+        bool use_relpos_;
+	Qwt3D::Triple relpos_;
 	Qwt3D::Triple beg_, end_, pos_;
 	QPixmap pm_;
 	QImage  buf_, tex_;

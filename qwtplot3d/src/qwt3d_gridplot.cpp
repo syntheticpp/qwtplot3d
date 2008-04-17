@@ -3,7 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt3d_surfaceplot.h"
+#include "qwt3d_curve.h"
 #include "qwt3d_enrichment_std.h"
 
 using namespace std;
@@ -11,7 +11,7 @@ using namespace Qwt3D;
 
 
 
-void SurfacePlot::createDataG()
+void Curve::createDataG()
 {
   createFloorData();
   
@@ -33,6 +33,7 @@ void SurfacePlot::createDataG()
       createEnrichment(*userplotstyle_p);
     return;
   }
+    glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT);
 
 	setDeviceLineWidth(meshLineWidth());
   
@@ -48,12 +49,12 @@ void SurfacePlot::createDataG()
  
 	if (plotStyle() != WIREFRAME)
 	{
-		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
 		if (hl)
 		{
-			col = backgroundRGBAColor();
+            col = plot_p->backgroundRGBAColor();
 			glColor4d(col.r, col.g, col.b, col.a);
 		}
 
@@ -116,9 +117,10 @@ void SurfacePlot::createDataG()
 			glEnd();
 		}
 	}
+    glPopAttrib();
 }
 
-void SurfacePlot::setColorFromVertexG(int ix, int iy, bool skip)
+void Curve::setColorFromVertexG(int ix, int iy, bool skip)
 {
 	if (skip)
 		return;
@@ -132,7 +134,7 @@ void SurfacePlot::setColorFromVertexG(int ix, int iy, bool skip)
 }
 
 
-void SurfacePlot::createNormalsG()
+void Curve::createNormalsG()
 {
 	if (!normals() || actualDataG_->empty())
 		return;
@@ -169,7 +171,7 @@ void SurfacePlot::createNormalsG()
   arrow.drawEnd();
 }
 
-void SurfacePlot::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigned int rows)
+void Curve::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigned int rows)
 {
 	gdata.setSize(columns,rows);
 	
@@ -202,7 +204,7 @@ void SurfacePlot::readIn(GridData& gdata, Triple** data, unsigned int columns, u
 }
 
 
-void SurfacePlot::readIn(GridData& gdata, double** data, unsigned int columns, unsigned int rows
+void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigned int rows
             , double minx, double maxx, double miny, double maxy)
 {
   gdata.setPeriodic(false,false);
@@ -247,7 +249,7 @@ void SurfacePlot::readIn(GridData& gdata, double** data, unsigned int columns, u
 }
 
 
-void SurfacePlot::calcNormals(GridData& gdata)
+void Curve::calcNormals(GridData& gdata)
 {
 	
   unsigned int rows = gdata.rows();
@@ -338,7 +340,7 @@ void SurfacePlot::calcNormals(GridData& gdata)
 }
 
 
-void SurfacePlot::sewPeriodic(GridData& gdata)
+void Curve::sewPeriodic(GridData& gdata)
 {
   // sewing 
    
@@ -385,7 +387,7 @@ void SurfacePlot::sewPeriodic(GridData& gdata)
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool SurfacePlot::loadFromData(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
+bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
 {
   actualDataC_->clear();
   actualData_p = actualDataG_;
@@ -396,8 +398,6 @@ bool SurfacePlot::loadFromData(Triple** data, unsigned int columns, unsigned int
 	sewPeriodic(*actualDataG_);
 
  	updateData();
-	updateNormals();
-	createCoordinateSystem();
 
 	return true;
 }	
@@ -406,7 +406,7 @@ bool SurfacePlot::loadFromData(Triple** data, unsigned int columns, unsigned int
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool SurfacePlot::loadFromData(double** data, unsigned int columns, unsigned int rows
+bool Curve::loadFromData(double** data, unsigned int columns, unsigned int rows
 																				, double minx, double maxx, double miny, double maxy)
 {	
   actualDataC_->clear();
@@ -418,14 +418,11 @@ bool SurfacePlot::loadFromData(double** data, unsigned int columns, unsigned int
   calcNormals(*actualDataG_);  
 	
 	updateData();
-	updateNormals();
-	createCoordinateSystem();
-
 	return true;
 }	
 
 
-void SurfacePlot::createFloorDataG()
+void Curve::createFloorDataG()
 {
 	switch (floorStyle())
 	{
@@ -440,7 +437,7 @@ void SurfacePlot::createFloorDataG()
 	}
 }
 
-void SurfacePlot::Data2FloorG()
+void Curve::Data2FloorG()
 {
 	if (actualData_p->empty())
 		return;
@@ -471,7 +468,7 @@ void SurfacePlot::Data2FloorG()
 	}
 }
 
-void SurfacePlot::Isolines2FloorG()
+void Curve::Isolines2FloorG()
 {
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
@@ -576,7 +573,7 @@ void SurfacePlot::Isolines2FloorG()
 
 
 /*
-void SurfacePlot::calcLowResolution()
+void Curve::calcLowResolution()
 {
   if (!actualDataG_)
     return;

@@ -6,7 +6,9 @@
 
   #include <math.h>
   #include <qapplication.h>
-  #include <qwt3d_surfaceplot.h>
+  #include <qwt3d_plot.h>
+  #include <qwt3d_curve.h>
+  #include <qwt3d_color.h>
   #include <qwt3d_function.h>
   
 
@@ -16,7 +18,7 @@
   {
   public:
 
-    Rosenbrock(SurfacePlot& pw)
+    Rosenbrock(Curve& pw)
     :Function(pw)
     {
     }
@@ -27,11 +29,29 @@
     }
   };
 
+  class RosenbrockNegative : public Function
+  {
+  public:
 
-  class Plot : public SurfacePlot
+    RosenbrockNegative(Curve& pw)
+    :Function(pw)
+    {
+    }
+
+    double operator()(double x, double y)
+    {
+      return -1.0 * (log((1-x)*(1-x) + 100 * (y - x*x)*(y - x*x)) / 8);
+    }
+  };
+
+
+  class Plot : public Plot3D
   {
   public:
       Plot();
+   private:
+      Curve* curve_p;
+      Curve* curve_p2;
   };
 
 
@@ -39,13 +59,27 @@
   {
     setTitle("A Simple SurfacePlot Demonstration");
     
-    Rosenbrock rosenbrock(*this);
+    curve_p = new Curve;
+    curve_p->setPlot(this);
+    addCurve(curve_p);
+    Rosenbrock rosenbrock(*curve_p);
 
     rosenbrock.setMesh(41,31);
     rosenbrock.setDomain(-1.73,1.5,-1.5,1.5);
     rosenbrock.setMinZ(-10);
 
     rosenbrock.create();
+
+    curve_p2 = new Curve;
+    curve_p2->setPlot(this);
+    addCurve(curve_p2);
+    RosenbrockNegative rosenbrockNegative(*curve_p2);
+
+    rosenbrockNegative.setMesh(41,31);
+    rosenbrockNegative.setDomain(-1.73,1.5,-1.5,1.5);
+    rosenbrockNegative.setMinZ(-10);
+
+    rosenbrockNegative.create();
 
     setRotation(30,0,15);
     setScale(1,1,1);

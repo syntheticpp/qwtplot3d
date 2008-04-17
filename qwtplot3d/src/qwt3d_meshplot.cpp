@@ -3,7 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt3d_surfaceplot.h"
+#include "qwt3d_curve.h"
 #include "qwt3d_enrichment_std.h"
 
 using namespace std;
@@ -16,7 +16,7 @@ using namespace Qwt3D;
 //
 
 
-void SurfacePlot::createDataC()
+void Curve::createDataC()
 {		
 	createFloorDataC();
   
@@ -35,6 +35,7 @@ void SurfacePlot::createDataC()
     return;
   }
 
+    glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT|GL_COLOR_BUFFER_BIT);
 	setDeviceLineWidth(meshLineWidth());
   GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	setDevicePolygonOffset(polygonOffset(),1.0);
@@ -47,7 +48,7 @@ void SurfacePlot::createDataC()
 		bool hl = (plotStyle() == HIDDENLINE);
 		if (hl)
 		{
-			RGBA col = backgroundRGBAColor();
+            RGBA col = plot_p->backgroundRGBAColor();
 			glColor4d(col.r, col.g, col.b, col.a);
 		}
 		
@@ -81,11 +82,12 @@ void SurfacePlot::createDataC()
 			}
 		}
 	}
+    glPopAttrib();
 }
 
 // ci = cell index
 // cv = vertex index in cell ci
-void SurfacePlot::setColorFromVertexC(int node, bool skip)
+void Curve::setColorFromVertexC(int node, bool skip)
 {
 	if (skip)
 		return;
@@ -96,7 +98,7 @@ void SurfacePlot::setColorFromVertexC(int node, bool skip)
 	glColor4d(col.r, col.g, col.b, col.a);
 }
 
-void SurfacePlot::createFloorDataC()
+void Curve::createFloorDataC()
 {
 	switch (floorStyle())
 	{
@@ -111,7 +113,7 @@ void SurfacePlot::createFloorDataC()
 	}
 }
 
-void SurfacePlot::Data2FloorC()
+void Curve::Data2FloorC()
 {	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -132,7 +134,7 @@ void SurfacePlot::Data2FloorC()
 	}
 }
 
-void SurfacePlot::Isolines2FloorC()
+void Curve::Isolines2FloorC()
 {
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
@@ -217,7 +219,7 @@ void SurfacePlot::Isolines2FloorC()
 	}
 }
 
-void SurfacePlot::createNormalsC()
+void Curve::createNormalsC()
 {
 	if (!normals() || actualData_p->empty())
 		return;
@@ -231,7 +233,6 @@ void SurfacePlot::createNormalsC()
 		
 	double diag = (actualData_p->hull().maxVertex-actualData_p->hull().minVertex).length() * normalLength();
 
-  RGBA col;
   arrow.assign(*this);
   arrow.drawBegin();
 	for (unsigned i = 0; i != actualDataC_->normals.size(); ++i) 
@@ -254,7 +255,7 @@ void SurfacePlot::createNormalsC()
 	Convert user (non-rectangular) mesh based data to internal structure.
 	See also Qwt3D::TripleField and Qwt3D::CellField
 */
-bool SurfacePlot::loadFromData(TripleField const& data, CellField const& poly)
+bool Curve::loadFromData(TripleField const& data, CellField const& poly)
 {	
 	actualDataG_->clear();
   actualData_p = actualDataC_;
@@ -311,8 +312,6 @@ bool SurfacePlot::loadFromData(TripleField const& data, CellField const& poly)
 	actualDataC_->setHull(hull);
 
 	updateData();
-	updateNormals();
-	createCoordinateSystem();
 
 	return true;
 }	

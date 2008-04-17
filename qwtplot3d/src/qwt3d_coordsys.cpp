@@ -144,9 +144,7 @@ void CoordinateSystem::chooseAxes()
 		src[i] = Tuple(beg[i].x, beg[i].y);
 		src[axes.size()+i] = Tuple(end[i].x, end[i].y);
 
-		axes[i].setScaling(false);
-		axes[i].setNumbers(false);
-		axes[i].setLabel(false);
+		axes[i].setDecorate(false);
 	}
 
 	vector<unsigned> idx;
@@ -310,9 +308,7 @@ void CoordinateSystem::autoDecorateExposedAxis(Axis& ax, bool left)
 	if (!s)
 		return;
 
-	ax.setScaling(true);
-	ax.setNumbers(true);
-	ax.setLabel(true);
+	ax.setDecorate(true);
 
 	const double SQRT_2 = 0.7071067;
 	double sina = fabs(diff.y / s);

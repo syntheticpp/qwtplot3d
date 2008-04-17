@@ -52,6 +52,8 @@ void Axis::init()
 
 	numbergap_ = 0;
 	labelgap_ = 0;
+
+        decorate_ = true;
 }
 
 void Axis::setPosition(const Triple& beg, const Triple& end)
@@ -120,8 +122,11 @@ void Axis::draw()
 	glColor4d(color.r,color.g,color.b,color.a);		
 
 	drawBase();
+
+        if ( decorate_ ) {
 	drawTics();
 	drawLabel();	
+        }
 
 	restoreGLState();
 }
@@ -318,6 +323,11 @@ void Axis::setLabelFont(QFont const& font)
 void Axis::setLabelString(QString const& name)
 {
 	label_.setString(name);
+}
+
+const QString& Axis::labelString() const
+{
+   return label_.string();
 }
 
 /*!
