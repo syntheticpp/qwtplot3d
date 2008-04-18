@@ -28,8 +28,7 @@ public:
     virtual ~Plot3D();
 
     QPixmap renderPixmap (int w=0, int h=0, bool useContext=false);	  
-    // TODO: this doesn't actually need to be virtual, only for THAAD hack right now!
-    virtual void updateData(); //!< Recalculate data
+    void updateData(); //!< Recalculate data
 		void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 		Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
 		Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
