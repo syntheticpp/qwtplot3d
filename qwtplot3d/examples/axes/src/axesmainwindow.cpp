@@ -9,7 +9,7 @@
 
 #include "axes.h"
 #include "axesmainwindow.h"
-#include "../../../include/qwt3d_function.h"
+#include <qwt3d_function.h>
 
 using namespace std;
 using namespace Qwt3D;

@@ -5,7 +5,7 @@
 #include <qframe.h>
 #include <qpixmap.h>
 
-#include "../../../include/qwt3d_types.h"
+#include <qwt3d_types.h>
 
 #if QT_VERSION < 0x040000
 

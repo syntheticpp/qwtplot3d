@@ -3,10 +3,10 @@
 
 #include <math.h>
 #include <qapplication.h>
-#include "../../../include/qwt3d_parametricsurface.h"
-#include "../../../include/qwt3d_surfaceplot.h"
-#include "../../../include/qwt3d_enrichment.h"
-#include "../../../include/qwt3d_color.h"
+#include <qwt3d_parametricsurface.h>
+#include <qwt3d_surfaceplot.h>
+#include <qwt3d_enrichment.h>
+#include <qwt3d_color.h>
 
 #if QT_VERSION < 0x040000
 #include "lightingdlgbase.h"

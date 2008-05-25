@@ -6,7 +6,7 @@
 
 #include "enrichmentmainwindow.h"
 #include "enrichments.h"
-#include "../../../include/qwt3d_function.h"
+#include <qwt3d_function.h>
 
 using namespace Qwt3D;
 

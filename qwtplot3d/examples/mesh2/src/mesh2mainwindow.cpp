@@ -33,9 +33,9 @@
 #include "colormapreader.h"
 #include "lightingdlg.h"
 #include "femreader.h"
-#include "../../../include/qwt3d_io.h"
-#include "../../../include/qwt3d_io_gl2ps.h"
-#include "../../../include/qwt3d_io_reader.h"
+#include <qwt3d_io.h>
+#include <qwt3d_io_gl2ps.h>
+#include <qwt3d_io_reader.h>
 
 using namespace Qwt3D;
 using namespace std;
