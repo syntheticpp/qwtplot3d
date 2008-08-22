@@ -37,7 +37,7 @@ public:
 
 	ColorLegend(); //!< Standard constructor
 
-	void draw(); //!< Draws the object. You should not use this explicitely - the function is called by updateGL().
+	void draw(); //!< Draws the object. You should not use this explicitly - the function is called by updateGL().
 	
 	void setRelPosition(Qwt3D::Tuple relMin, Qwt3D::Tuple relMax); //!< Sets the relative position of the legend inside widget
 	void setOrientation(ORIENTATION, SCALEPOSITION); //!< Sets legend orientation and scale position

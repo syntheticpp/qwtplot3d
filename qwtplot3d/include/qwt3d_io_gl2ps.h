@@ -69,6 +69,10 @@ public:
 private:
   IO::Functor* clone() const;
   bool operator()(Plot3D* plot, QString const& fname);
+  bool operator()(QImage* image, QString const& fname)
+  {
+	Q_UNUSED(image); Q_UNUSED(fname); return false;		// Can't vectorise a bitmap image.
+  }
 
   GLint gl2ps_format_;
   bool formaterror_;
