@@ -1,4 +1,4 @@
-include( ../common.pro )
+include( ../common.pri )
 
 SOURCES = src/main.cpp \
 		src/mesh2mainwindow.cpp \

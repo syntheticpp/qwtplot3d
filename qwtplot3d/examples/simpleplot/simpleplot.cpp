@@ -56,11 +56,8 @@
 
 
   Plot::Plot()
-  {
-    setTitle("A Simple SurfacePlot Demonstration");
-    
-    curve_p = new Curve;
-    curve_p->setPlot(this);
+  {    
+    curve_p = new Curve(this);
     addCurve(curve_p);
     Rosenbrock rosenbrock(*curve_p);
 
@@ -70,8 +67,9 @@
 
     rosenbrock.create();
 
-    curve_p2 = new Curve;
-    curve_p2->setPlot(this);
+    setTitle("A Simple SurfacePlot Demonstration");
+
+    curve_p2 = new Curve(this);
     addCurve(curve_p2);
     RosenbrockNegative rosenbrockNegative(*curve_p2);
 

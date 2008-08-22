@@ -1,3 +1,3 @@
-include( ../common.pro )
+include( ../common.pri )
 
 SOURCES = simpleplot.cpp

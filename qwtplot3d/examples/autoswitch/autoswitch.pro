@@ -1,4 +1,4 @@
-include( ../common.pro )
+include( ../common.pri )
 
 SOURCES = autoswitch.cpp
 HEADERS = autoswitch.h
