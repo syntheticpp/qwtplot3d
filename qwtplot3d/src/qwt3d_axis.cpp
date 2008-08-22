@@ -21,10 +21,10 @@ void Axis::init()
 {
 	detachAll();
 
-  scale_ = qwt3d_ptr<Scale>(new LinearScale);
+	scale_ = qwt3d_ptr<Scale>(new LinearScale);
 
-  beg_ = Triple(0.0, 0.0, 0.0);  
-  end_ = beg_;
+	beg_ = Triple(0.0, 0.0, 0.0);  
+	end_ = beg_;
 	
 	majorintervals_ = 0;
 	minorintervals_ = 0;
@@ -46,14 +46,14 @@ void Axis::init()
 	numberfont_ = QFont("Courier",12);
 	setLabelFont(QFont("Courier",14));
 
-  numbercolor_ = RGBA(0,0,0,0);
+	numbercolor_ = RGBA(0,0,0,0);
 
 	setNumberAnchor(Center);
 
 	numbergap_ = 0;
 	labelgap_ = 0;
 
-        decorate_ = true;
+	decorate_ = true;
 }
 
 void Axis::setPosition(const Triple& beg, const Triple& end)
@@ -123,10 +123,10 @@ void Axis::draw()
 
 	drawBase();
 
-        if ( decorate_ ) {
-	drawTics();
-	drawLabel();	
-        }
+	if ( decorate_ ) {
+		drawTics();
+		drawLabel();	
+	}
 
 	restoreGLState();
 }
@@ -139,7 +139,7 @@ void Axis::drawLabel()
 	if (!drawLabel_)
 		return;
 
-  Triple diff = end() - begin();
+	Triple diff = end() - begin();
 	Triple center = begin() + diff/2;
 	
 	Triple bnumber = biggestNumberString(); 
@@ -187,53 +187,50 @@ void Axis::drawBase()
 
 bool Axis::prepTicCalculation(Triple& startpoint)
 {
-  if (isPracticallyZero(start_, stop_))
+	if (isPracticallyZero(start_, stop_))
 		return false;
 
 	autostart_ = start_;
 	autostop_ = stop_;
 
- 	if (autoScale()) 
-  {  
-    setMajors(scale_->autoscale(autostart_, autostop_, start_, stop_, majors()));
-    if (isPracticallyZero(autostart_, autostop_))
-		  return false;
-  }
-  
-  scale_->setLimits(start_,stop_);
-  scale_->setMajors(majors());
-  scale_->setMinors(minors());
-  scale_->setMajorLimits(autostart_,autostop_);
-  scale_->calculate();
+	if (autoScale()) {
+		setMajors(scale_->autoscale(autostart_, autostop_, start_, stop_, majors()));
+		if (isPracticallyZero(autostart_, autostop_))
+			return false;
+	}
+
+	scale_->setLimits(start_,stop_);
+	scale_->setMajors(majors());
+	scale_->setMinors(minors());
+	scale_->setMajorLimits(autostart_,autostop_);
+	scale_->calculate();
 
 	Triple normal = (end_ - beg_);
 	//normal.normalize();
-	Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
-	Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
+	//Triple beg = beg_ + ((autostart_ - start_) / (stop_ - start_)) * normal;
+	//Triple end = end_ - ((stop_ - autostop_) / (stop_ - start_))* normal;
 
 	startpoint = end_ - beg_;
 
 	majorpos_.clear();
 	minorpos_.clear();
 
-  return true;
+	return true;
 }
 
 void Axis::recalculateTics()
 {
-  Triple runningpoint;
-  if (false==prepTicCalculation(runningpoint))
-    return;
+	Triple runningpoint;
+	if (false==prepTicCalculation(runningpoint))
+		return;
 
 	unsigned int i;
-	
-	for (i = 0; i != scale_->majors_p.size(); ++i) 
-	{
+
+	for (i = 0; i != scale_->majors_p.size(); ++i) {
 		double t = (scale_->majors_p[i] - start_) / (stop_-start_);
 		majorpos_.push_back(beg_ + t * runningpoint);
 	}
-	for (i = 0; i != scale_->minors_p.size(); ++i) 
-	{
+	for (i = 0; i != scale_->minors_p.size(); ++i) {
 		double t = (scale_->minors_p[i] - start_) / (stop_-start_);
 		minorpos_.push_back(beg_ + t * runningpoint);
 	}
@@ -242,28 +239,27 @@ void Axis::recalculateTics()
 void Axis::drawTics()
 {
 	Triple runningpoint;
-  if (!drawTics_ || false==prepTicCalculation(runningpoint))
+	if (!drawTics_ || false==prepTicCalculation(runningpoint))
 		return;
   
 	unsigned int i;
-  Triple nadir;
+	Triple nadir;
 	
-  markerLabel_.resize(scale_->majors_p.size());
+	markerLabel_.resize(scale_->majors_p.size());
 	setDeviceLineWidth(majLineWidth_);
-	for (i = 0; i != scale_->majors_p.size(); ++i) 
-	{
+	for (i = 0; i != scale_->majors_p.size(); ++i) {
 		double t = (scale_->majors_p[i] - start_) / (stop_-start_);
-    nadir = beg_ + t * runningpoint;
-    majorpos_.push_back(drawTic(nadir, lmaj_));
+		nadir = beg_ + t * runningpoint;
+		majorpos_.push_back(drawTic(nadir, lmaj_));
 		drawTicLabel(nadir + 1.2 * lmaj_ * orientation_, i);
-  }
+	}
+
 	setDeviceLineWidth(minLineWidth_);
-	for (i = 0; i != scale_->minors_p.size(); ++i) 
-	{
+	for (i = 0; i != scale_->minors_p.size(); ++i) {
 		double t = (scale_->minors_p[i] - start_) / (stop_-start_);
 		nadir = beg_ + t * runningpoint;
-    minorpos_.push_back(drawTic(nadir, lmin_));
-  }
+		minorpos_.push_back(drawTic(nadir, lmin_));
+	}
 }
 
 void Axis::drawTicLabel(Triple pos, int mtic)
@@ -273,8 +269,8 @@ void Axis::drawTicLabel(Triple pos, int mtic)
 	
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
-  markerLabel_[mtic].setString(scale_->ticLabel(mtic));	  
-  markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
+	markerLabel_[mtic].setString(scale_->ticLabel(mtic));	  
+	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
 	markerLabel_[mtic].adjust(numbergap_);
 	markerLabel_[mtic].draw();
 }
@@ -285,11 +281,11 @@ Triple Axis::drawTic(Triple nadir, double length)
 
 	glBegin( GL_LINES );
 	glVertex3d( nadir.x  + ilength * orientation_.x,
-				      nadir.y  + ilength * orientation_.y,
-							nadir.z  + ilength * orientation_.z) ; 
+				nadir.y  + ilength * orientation_.y,
+				nadir.z  + ilength * orientation_.z) ; 
 	glVertex3d( nadir.x  + length * orientation_.x,
-							nadir.y  + length * orientation_.y,
-							nadir.z  + length * orientation_.z);
+				nadir.y  + length * orientation_.y,
+				nadir.z  + length * orientation_.z);
 	glEnd();
 	return nadir;
 }
@@ -312,7 +308,7 @@ void Axis::setNumberColor(RGBA col)
 void Axis::setLabelFont(QString const& family, int pointSize, int weight, bool italic)
 {
 	labelfont_ = QFont(family, pointSize, weight, italic );
-  label_.setFont(family, pointSize, weight, italic);
+	label_.setFont(family, pointSize, weight, italic);
 }
 
 void Axis::setLabelFont(QFont const& font)
@@ -323,11 +319,6 @@ void Axis::setLabelFont(QFont const& font)
 void Axis::setLabelString(QString const& name)
 {
 	label_.setString(name);
-}
-
-const QString& Axis::labelString() const
-{
-   return label_.string();
 }
 
 /*!
@@ -351,8 +342,7 @@ Triple Axis::biggestNumberString()
 
 	double width, height;
 
-	for (unsigned i=0; i!=size; ++i)
-	{
+	for (unsigned i=0; i!=size; ++i) {
 		width = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).x );
 		height = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).y );
 
@@ -371,7 +361,7 @@ Triple Axis::biggestNumberString()
 */
 void Axis::setScale(Scale* val)
 {
-  scale_ = qwt3d_ptr<Scale>(val); 
+	scale_ = qwt3d_ptr<Scale>(val); 
 }
 
 /*!
@@ -382,15 +372,15 @@ void Axis::setScale(Scale* val)
 */
 void Axis::setScale(Qwt3D::SCALETYPE val)
 {
-  switch(val) {
-  case Qwt3D::LINEARSCALE:
-    setScale(new LinearScale);
-  	break;
-  case Qwt3D::LOG10SCALE:
-    setScale(new LogScale);
-    setMinors(9);
-  	break;
-  default:
-    break;
-  }
+	switch(val) {
+	case Qwt3D::LINEARSCALE:
+		setScale(new LinearScale);
+		break;
+	case Qwt3D::LOG10SCALE:
+		setScale(new LogScale);
+		setMinors(9);
+		break;
+	default:
+		break;
+	}
 }

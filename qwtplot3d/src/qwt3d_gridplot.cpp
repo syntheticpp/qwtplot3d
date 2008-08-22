@@ -13,7 +13,9 @@ using namespace Qwt3D;
 
 void Curve::createDataG()
 {
-  createFloorData();
+  if (facemode_)	createFaceData();
+  if (sidemode_)	createSideData();
+  if (floormode_)	createFloorData();
   
   if (plotStyle() == NOPLOT)
 		return;
@@ -185,6 +187,7 @@ void Curve::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigne
 			gdata.vertices[i][j][0] = data[i][j].x; 
 			gdata.vertices[i][j][1] = data[i][j].y;
 			gdata.vertices[i][j][2] = data[i][j].z;
+//			qDebug() << "Curve: Data Values - " << data[i][j].x << data[i][j].y << data[i][j].z;
 
 			if (data[i][j].x > range.maxVertex.x)
 				range.maxVertex.x = data[i][j].x;
@@ -224,6 +227,7 @@ void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigne
 			gdata.vertices[i][j][0] = minx + i*dx;
 			gdata.vertices[i][j][1] = miny + j*dy;
 			gdata.vertices[i][j][2] = data[i][j];
+//			qDebug() << "Curve: Data Values - " << data[i][j];
 
 			if (data[i][j] > tmax)
 				tmax = data[i][j];
@@ -231,156 +235,121 @@ void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigne
 				tmin = data[i][j];
  		}
 	}
-	ParallelEpiped hull = 
-  ParallelEpiped(
-										Triple(	
-														gdata.vertices[0][0][0], 
-														gdata.vertices[0][0][1], 
-														tmin
-													), 
-										Triple(
-														gdata.vertices[gdata.columns()-1][gdata.rows()-1][0], 
-														gdata.vertices[gdata.columns()-1][gdata.rows()-1][1], 
-														tmax
-													)
-									);
+
+	ParallelEpiped hull = ParallelEpiped(
+			Triple(gdata.vertices[0][0][0], gdata.vertices[0][0][1], tmin), 
+			Triple(gdata.vertices[gdata.columns()-1][gdata.rows()-1][0], 
+				   gdata.vertices[gdata.columns()-1][gdata.rows()-1][1], 
+				   tmax)
+			);
 
 	gdata.setHull(hull);
 }
 
-
 void Curve::calcNormals(GridData& gdata)
 {
-	
-  unsigned int rows = gdata.rows();
-  unsigned int columns = gdata.columns();
+	unsigned int rows = gdata.rows();
+	unsigned int columns = gdata.columns();
   
-  // normals
-	  
+	// normals
 	Triple u, v, n;  // for cross product
 
-	for (unsigned i = 0; i != columns; ++i) 
-	{
-		for (unsigned j = 0; j != rows; ++j) 
-		{
+	for (unsigned i = 0; i != columns; ++i) {
+		for (unsigned j = 0; j != rows; ++j) {
 			n = Triple(0,0,0);
-      
-      
-      if (i<columns-1 && j<rows-1) 
-      {
-        /*	get two vectors to cross */      
-        u = Triple(
-									  gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
-								  );
 
-        v = Triple(
-									  gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
-								  );
-        /* get the normalized cross product */ 
-        n += normalizedcross(u,v); // right hand system here !
-      }
+			if (i<columns-1 && j<rows-1) {
+				/*	get two vectors to cross */
+				u = Triple(gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]);
 
-      if (i>0 && j<rows-1) 
-      {
-        u = Triple(
-									  gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
-								  );
-			  v = Triple(
-									  gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
-								  );
-        n += normalizedcross(u,v); 
-      }
+				v = Triple(
+				gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
+				gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
+				gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]);
 
-      if (i>0 && j>0) 
-      {
-        u = Triple(
-									  gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
-								  );
+				/* get the normalized cross product */ 
+				n += normalizedcross(u,v); // right hand system here !
+			}
 
-        v = Triple(
-									  gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
-								  );
-        n += normalizedcross(u,v); 
-      }
+			if (i>0 && j<rows-1) {
+				u = Triple(gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]);
+			  
+				v = Triple(gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]);
 
-      if (i<columns-1 && j>0) 
-      {
-        u = Triple(
-									  gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
-								  );
+				n += normalizedcross(u,v); 
+			}
 
-        v = Triple(
-									  gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
-								  );
-        n += normalizedcross(u,v);
-      }
-      n.normalize();
+			if (i>0 && j>0) {
+				u = Triple(gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]);
 
+				v = Triple(gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]);
+
+				n += normalizedcross(u,v);
+			}
+
+			if (i<columns-1 && j>0) {
+				u = Triple(gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]);
+
+				v = Triple(gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
+					gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
+					gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]);
+
+				n += normalizedcross(u,v);
+			}
+
+			n.normalize();
 			gdata.normals[i][j][0] = n.x;
 			gdata.normals[i][j][1] = n.y;
 			gdata.normals[i][j][2] = n.z;
-		}    
+		} 
 	} 
 }
 
-
 void Curve::sewPeriodic(GridData& gdata)
 {
-  // sewing 
-   
-  Triple n;
-  
-  unsigned int columns = gdata.columns();
-  unsigned int rows = gdata.rows();
-  
-  if (gdata.uperiodic())
-  {
-    for (unsigned i = 0; i != columns; ++i) 
-    {
-      n = Triple(
-									gdata.normals[i][0][0] + gdata.normals[i][rows-1][0],
-									gdata.normals[i][0][1] + gdata.normals[i][rows-1][1],
-									gdata.normals[i][0][2] + gdata.normals[i][rows-1][2]
-								);
+	// sewing
+	Triple n;
 
-      n.normalize();        
+	unsigned int columns = gdata.columns();
+	unsigned int rows = gdata.rows();
+
+	if (gdata.uperiodic()) {
+		for (unsigned i = 0; i != columns; ++i) {
+			n = Triple(gdata.normals[i][0][0] + gdata.normals[i][rows-1][0],
+				gdata.normals[i][0][1] + gdata.normals[i][rows-1][1],
+				gdata.normals[i][0][2] + gdata.normals[i][rows-1][2]);
+
+			n.normalize();        
 			gdata.normals[i][0][0] = gdata.normals[i][rows-1][0] = n.x;
 			gdata.normals[i][0][1] = gdata.normals[i][rows-1][1] = n.y;
 			gdata.normals[i][0][2] = gdata.normals[i][rows-1][2] = n.z;
-    }
-  }
-  if (gdata.vperiodic())
-  {
-    for (unsigned j = 0; j != rows; ++j) 
-    {
-      n = Triple(
-									gdata.normals[0][j][0] + gdata.normals[columns-1][j][0],
-									gdata.normals[0][j][1] + gdata.normals[columns-1][j][1],
-									gdata.normals[0][j][2] + gdata.normals[columns-1][j][2]
-								);
+		}
+	}
 
-      n.normalize();        
+	if (gdata.vperiodic()) {
+		for (unsigned j = 0; j != rows; ++j) {
+			n = Triple(gdata.normals[0][j][0] + gdata.normals[columns-1][j][0],
+				gdata.normals[0][j][1] + gdata.normals[columns-1][j][1],
+				gdata.normals[0][j][2] + gdata.normals[columns-1][j][2]);
+
+			n.normalize();        
 			gdata.normals[0][j][0] = gdata.normals[columns-1][j][0] = n.x;
 			gdata.normals[0][j][1] = gdata.normals[columns-1][j][1] = n.y;
 			gdata.normals[0][j][2] = gdata.normals[columns-1][j][2] = n.z;
-    }
-  }
+		}
+	}
 }
 
 /*!
@@ -389,16 +358,16 @@ void Curve::sewPeriodic(GridData& gdata)
 */
 bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
 {
-  actualDataC_->clear();
-  actualData_p = actualDataG_;
+	actualDataC_->clear();
+	actualData_p = actualDataG_;
 
-  readIn(*actualDataG_, data, columns, rows);
-  calcNormals(*actualDataG_);
-  actualDataG_->setPeriodic(uperiodic,vperiodic);
+	readIn(*actualDataG_, data, columns, rows);
+	calcNormals(*actualDataG_);
+	actualDataG_->datatype = Qwt3D::GRID;
+	actualDataG_->setPeriodic(uperiodic,vperiodic);
 	sewPeriodic(*actualDataG_);
 
- 	updateData();
-
+	updateData();
 	return true;
 }	
 
@@ -406,16 +375,15 @@ bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows,
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool Curve::loadFromData(double** data, unsigned int columns, unsigned int rows
-																				, double minx, double maxx, double miny, double maxy)
-{	
-  actualDataC_->clear();
-  actualData_p = actualDataG_;
-  
-  actualDataG_->setPeriodic(false,false);
+bool Curve::loadFromData(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy)
+{
+	actualDataC_->clear();
+	actualData_p = actualDataG_;
+
+	actualDataG_->setPeriodic(false,false);
 	actualDataG_->setSize(columns,rows);
 	readIn(*actualDataG_,data,columns,rows,minx,maxx,miny,maxy);
-  calcNormals(*actualDataG_);  
+	calcNormals(*actualDataG_);  
 	
 	updateData();
 	return true;
@@ -430,14 +398,53 @@ void Curve::createFloorDataG()
 		Data2FloorG();
 		break;
 	case FLOORISO:
-		Isolines2FloorG();
+		Isolines2FloorG(dataProjected());
+		if (dataProjected())	createPoints();
 		break;
 	default:
 		break;
 	}
 }
 
-void Curve::Data2FloorG()
+void Curve::createSideDataG()
+{
+	switch (floorStyle())
+	{
+	case FLOORDATA:
+		Data2SideG();
+		break;
+	case FLOORISO:
+		Isolines2SideG(dataProjected());
+		if (dataProjected()) {
+			DataPoints2SideG(dataProjected());
+			createPoints();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Curve::createFaceDataG()
+{
+	switch (floorStyle())
+	{
+	case FLOORDATA:
+		Data2FrontG();
+		break;
+	case FLOORISO:
+		Isolines2FrontG(dataProjected());
+		if (dataProjected()) {
+			DataPoints2BackG(dataProjected());
+			createPoints();			
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Curve::DatamapG(unsigned int comp)
 {
 	if (actualData_p->empty())
 		return;
@@ -447,40 +454,57 @@ void Curve::Data2FloorG()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
-	double zshift = actualData_p->hull().minVertex.z;
-	for (int i = 0; i < actualDataG_->columns() - step; i += step) 
-	{
+	Triple min = actualData_p->hull().minVertex;
+	double shift = min(comp);
+
+	for (int i = 0; i < actualDataG_->columns() - step; i += step) {
 		glBegin(GL_TRIANGLE_STRIP);
-  		setColorFromVertexG(i, 0);
-			glVertex3d(actualDataG_->vertices[i][0][0], actualDataG_->vertices[i][0][1], zshift);
-			
+			Triple curr(actualDataG_->vertices[i][0][0],
+						actualDataG_->vertices[i][0][1],
+						actualDataG_->vertices[i][0][2]); 
+			Triple next(actualDataG_->vertices[i+step][0][0],
+						actualDataG_->vertices[i+step][0][1],
+						actualDataG_->vertices[i+step][0][2]); 
+
+			setColorFromVertexG(i, 0);
+			drawVertex(curr, shift, comp);
+
 			setColorFromVertexG(i+step, 0);
-			glVertex3d(actualDataG_->vertices[i+step][0][0],actualDataG_->vertices[i+step][0][1], zshift);
-			for (int j = 0; j < actualDataG_->rows() - step; j += step) 
-			{
+			drawVertex(next, shift, comp);
+
+			for (int j = 0; j < actualDataG_->rows() - step; j += step) {
+				Triple curr(actualDataG_->vertices[i][j+step][0],
+							actualDataG_->vertices[i][j+step][1],
+							actualDataG_->vertices[i][j+step][2]); 
+				Triple next(actualDataG_->vertices[i+step][j+step][0],
+							actualDataG_->vertices[i+step][j+step][1],
+							actualDataG_->vertices[i+step][j+step][2]); 
+
 				setColorFromVertexG(i, j+step);
-				glVertex3d(actualDataG_->vertices[i][j+step][0],actualDataG_->vertices[i][j+step][1], zshift);
-				
+				drawVertex(curr, shift, comp);
+
 				setColorFromVertexG(i+step, j+step);
-				glVertex3d(actualDataG_->vertices[i+step][j+step][0],actualDataG_->vertices[i+step][j+step][1], zshift);				
+				drawVertex(next, shift, comp);
 			}
 		glEnd();
 	}
 }
 
-void Curve::Isolines2FloorG()
+void Curve::IsolinesG(unsigned int comp, bool projected)
 {
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
 
-	double count = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
+	Triple max = actualData_p->hull().maxVertex;
+	Triple min = actualData_p->hull().minVertex;
+	
+	double delta = max(comp) - min(comp);
+	double shift = min(comp);
+	double count = delta / isolines();
 
 	RGBA col;
 
-  int step = resolution();
-
-	double zshift = actualData_p->hull().minVertex.z;
-	
+	int step = resolution();
 	int cols = actualDataG_->columns();
 	int rows = actualDataG_->rows();
 	
@@ -491,103 +515,154 @@ void Curve::Isolines2FloorG()
 	
 	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
 
-	for (int k = 0; k != isolines(); ++k) 
-	{
-		double val = zshift + k * count;		
+	for (unsigned int k = 0; k != isolines(); ++k) {
+		double val = shift + k * count;		
 				
-		for (int i = 0; i < cols-step; i += step) 
-		{
-			for (int j = 0; j < rows-step; j += step) 
-			{
+		for (int i = 0; i < cols-step; i += step) {
+			for (int j = 0; j < rows-step; j += step) {
 				t[0] =  Triple(	actualDataG_->vertices[i][j][0],
-												actualDataG_->vertices[i][j][1],
-												actualDataG_->vertices[i][j][2]);
-
+								actualDataG_->vertices[i][j][1],
+								actualDataG_->vertices[i][j][2]);
+				
 				col = (*datacolor_p)(t[0].x,t[0].y,t[0].z);
-  			glColor4d(col.r, col.g, col.b, col.a);
-//  			glColor4d(0,0,0,1);
+				glColor4d(col.r, col.g, col.b, col.a);
 				
 				t[1] =  Triple(	actualDataG_->vertices[i+step][j][0],
-												actualDataG_->vertices[i+step][j][1],
-												actualDataG_->vertices[i+step][j][2]);
+								actualDataG_->vertices[i+step][j][1],
+								actualDataG_->vertices[i+step][j][2]);
 				t[2] =  Triple(	actualDataG_->vertices[i+step][j+step][0],
-												actualDataG_->vertices[i+step][j+step][1],
-												actualDataG_->vertices[i+step][j+step][2]);
+								actualDataG_->vertices[i+step][j+step][1],
+								actualDataG_->vertices[i+step][j+step][2]);
 				t[3] =  Triple(	actualDataG_->vertices[i][j+step][0],
-												actualDataG_->vertices[i][j+step][1],
-												actualDataG_->vertices[i][j+step][2]);
+								actualDataG_->vertices[i][j+step][1],
+								actualDataG_->vertices[i][j+step][2]);
 
 				double diff = 0;
-				for (int m = 0; m!=4; ++m)
-				{
+
+				for (int m = 0; m!=4; ++m) {
 					int mm = (m+1)%4;
-					if ((val>=t[m].z && val<=t[mm].z) || (val>=t[mm].z && val<=t[m].z))
-					{
-						diff = t[mm].z - t[m].z;
-						
-						if (isPracticallyZero(diff)) // degenerated
-						{
+
+					bool outer = (val >= t[mm](comp) && val <= t[m](comp));
+					bool inner = (val >= t[m](comp) && val <= t[mm](comp));
+
+					if (inner || outer) {
+						diff = t[mm](comp) - t[m](comp);
+
+						if (isPracticallyZero(diff)) { // degenerated
 							intersection.push_back(t[m]);
 							intersection.push_back(t[mm]);
 							continue;
 						}
-						
-						lambda =  (val - t[m].z) / diff;
-						intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), val));
-					}
-				}
-				
-				if (!intersection.empty())
-				{
-					if (intersection.size()>2)
-					{
-						glBegin(GL_LINE_STRIP);
-						for (unsigned dd = 0; dd!=intersection.size(); ++dd)
-						{
-							glVertex3d(intersection[dd].x, intersection[dd].y, zshift);
+
+						Triple intersect;
+						double component[3];
+
+						lambda = (val - t[m](comp)) / diff;
+						for (unsigned int c = 0; c!=3; ++c)
+							component[c] = (t[m](c) + lambda * (t[mm](c)-t[m](c)));
+
+						switch (comp) {
+						case 0:
+							intersect = Triple(val, component[1], component[2]);
+							break;
+						case 1:
+							intersect = Triple(component[0], val, component[2]);
+							break;
+						case 2:
+							intersect = Triple(component[0], component[1], val);
+							break;
 						}
-						glEnd();
-						glBegin(GL_POINTS);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-						glEnd();
+						intersection.push_back(intersect);
 					}
-					else if (intersection.size() == 2)
-					{
-						glBegin(GL_LINES);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-							glVertex3d(intersection[1].x,intersection[1].y,zshift);
-							
-							// small pixel gap problem (see OpenGL spec.)
-							glVertex3d(intersection[1].x,intersection[1].y,zshift);
-							glVertex3d(intersection[0].x,intersection[0].y,zshift);
-						glEnd();
-					}
-					
-					intersection.clear();
 				}
+				drawIntersections(intersection, shift, comp, projected);
 			}
 		}
 	}
 }
 
-
-
-/*
-void Curve::calcLowResolution()
+void Curve::DataPointsG(unsigned int comp, bool projected)
 {
-  if (!actualDataG_)
-    return;
+	if (actualData_p->empty() || actualDataG_->columns() <= 0)
+		return;
 
-  int res = resolution();
-  if (res == 1)
-  {
-    lowresData_p = *actualDataG_;
-    return;
-  }
-  
-  GridData const& src = *actualDataG_;
-  result.clear();
-  
-  
-}*/
+	int cols = 0, rows = 0, step = resolution();
 
+	switch (comp) {
+	case 0:		// iterate through each column
+		cols = actualDataG_->columns();
+		rows = actualDataG_->rows();
+		break;
+	case 1:		// iterate through each row
+		cols = actualDataG_->rows();
+		rows = actualDataG_->columns();
+		break;
+	}
+
+	Triple max = actualData_p->hull().maxVertex;
+	double shift = max(comp);
+
+	RGBA	col[rows/step];
+	Triple	t[rows/step];
+	vector<Triple>	projection;
+
+	GLStateBewarer sb(GL_LINE_SMOOTH, false);
+				
+	for (int outer = 0; outer < cols-step; outer += step) {
+		for (int inner = 0; inner < rows-step; inner += step) {
+			int i = comp ? inner : outer;
+			int j = comp ? outer : inner;
+
+			t[inner] =	Triple( actualDataG_->vertices[i][j][0],
+								actualDataG_->vertices[i][j][1],
+								actualDataG_->vertices[i][j][2] );
+			col[inner] = (*datacolor_p)(t[inner].x,t[inner].y,t[inner].z);
+
+			projection.push_back(t[inner]);
+		}
+
+		drawIntersections(projection, shift, comp, projected, col);
+	}
+}
+
+double** Curve::getData(int *columns, int *rows)
+{
+	if (!actualDataG_)	return 0;
+	
+	*columns = actualDataG_->columns();
+	*rows	 = actualDataG_->rows();
+
+	/* allocate some space for the mesh */
+	double** data = new double* [*columns];
+
+	for (int i = 0; i < *columns; ++i) {
+		data[i] = new double [*rows];
+		for (int j = 0; j != *rows; ++j) {
+			data[i][j] = actualDataG_->vertices[i][j][2];
+		}
+	}
+	return data;
+}
+
+void Curve::deleteData(double**data, int columns)
+{
+	for ( int i = 0; i < columns; i++) 
+	{
+		delete [] data[i];
+	}
+	delete [] data;
+}
+
+void Curve::animateData(double** data)
+{
+	if (!actualDataG_)	return;
+
+	int cols = actualDataG_->columns();
+	int rows = actualDataG_->rows();
+
+	for (int i = 0; i < cols; ++i)  {
+		for (int j = 0; j < rows; ++j) {
+			actualDataG_->vertices[i][j][2] = data[i][j];
+		}
+	}
+}

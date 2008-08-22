@@ -18,7 +18,9 @@ using namespace Qwt3D;
 
 void Curve::createDataC()
 {		
-	createFloorDataC();
+	if (facemode_)	createFaceData();
+	if (sidemode_)	createSideData();
+	if (floormode_)	createFloorData();
   
   if (plotStyle() == NOPLOT)
     return;
@@ -106,45 +108,80 @@ void Curve::createFloorDataC()
 		Data2FloorC();
 		break;
 	case FLOORISO:
-		Isolines2FloorC();
+		Isolines2FloorC(dataProjected());
 		break;
 	default:
 		break;
 	}
 }
 
-void Curve::Data2FloorC()
+void Curve::createSideDataC()
+{
+	switch (floorStyle())
+	{
+	case FLOORDATA:
+		Data2SideC();
+		break;
+	case FLOORISO:
+		Isolines2SideC(dataProjected());
+		if (dataProjected())	createPoints();
+		break;
+	default:
+		break;
+	}
+}
+
+void Curve::createFaceDataC()
+{
+	switch (floorStyle())
+	{
+	case FLOORDATA:
+		Data2FrontC();
+		break;
+	case FLOORISO:
+		Isolines2FrontC(dataProjected());
+		if (dataProjected())	createPoints();
+		break;
+	default:
+		break;
+	}
+}
+
+void Curve::DatamapC(unsigned int comp)
 {	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
-	double zshift = actualDataC_->hull().minVertex.z;
-	int idx;
+	Triple min = actualData_p->hull().minVertex;
+	double shift = min(comp);
 
-	for (unsigned i = 0; i!=actualDataC_->cells.size(); ++i)
-	{
+	for (unsigned i = 0; i!=actualDataC_->cells.size(); ++i) {
 		glBegin(GL_POLYGON);
-		for (unsigned j=0; j!=actualDataC_->cells[i].size(); ++j)
-		{
-			idx = actualDataC_->cells[i][j];
-			setColorFromVertexC(idx);
-			glVertex3d( actualDataC_->nodes[idx].x, actualDataC_->nodes[idx].y, zshift );
-		}
+			for (unsigned j=0; j!=actualDataC_->cells[i].size(); ++j) {
+				int	idx	= actualDataC_->cells[i][j];
+				Triple curr = actualDataC_->nodes[idx];
+				
+				setColorFromVertexC(idx);
+				drawVertex(curr, shift, comp);
+			}
 		glEnd();
 	}
 }
 
-void Curve::Isolines2FloorC()
+void Curve::IsolinesC(unsigned comp, bool projected)
 {
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
 
-	double step = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
-
+	Triple max = actualData_p->hull().maxVertex;
+	Triple min = actualData_p->hull().minVertex;
+		
+	double delta = max(comp) - min(comp);
+	double shift = min(comp);
+	double step  = delta / isolines();
+	
 	RGBA col;
 
-	double zshift = actualData_p->hull().minVertex.z;
-		
 	TripleField nodes;
 	TripleField intersection;
 	
@@ -152,69 +189,60 @@ void Curve::Isolines2FloorC()
 	
 	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
 
-	for (int k = 0; k != isolines(); ++k) 
-	{
-		double val = zshift + k * step;		
-				
-		for (unsigned i=0; i!=actualDataC_->cells.size(); ++i)
-		{
+	for (unsigned int k = 0; k != isolines(); ++k) {
+		double val = shift + k * step;		
+		
+		for (unsigned int i = 0; i != actualDataC_->cells.size(); ++i) {
 			nodes.clear();
-			unsigned cellnodes = actualDataC_->cells[i].size();
-			for (unsigned j=0; j!=cellnodes; ++j)
-			{
+			unsigned int cellnodes = actualDataC_->cells[i].size();
+			for (unsigned int j = 0; j != cellnodes; ++j) {
 				nodes.push_back(actualDataC_->nodes[actualDataC_->cells[i][j]]);
 			}
-			
+
 			double diff = 0;
-			for (unsigned m = 0; m!=cellnodes; ++m)
-			{
-				unsigned mm = (m+1)%cellnodes;
-				if ((val>=nodes[m].z && val<=nodes[mm].z) || (val>=nodes[mm].z && val<=nodes[m].z))
-				{
-					diff = nodes[mm].z - nodes[m].z;
-					
-					if (isPracticallyZero(diff)) // degenerated
-					{
+			for (unsigned int m = 0; m != cellnodes; ++m) {
+				unsigned int mm = (m+1) % cellnodes;
+
+				bool outer = (val >= nodes[mm](comp) && val <= nodes[m](comp));
+				bool inner = (val >= nodes[m](comp) && val <= nodes[mm](comp));
+
+				if (inner || outer) {
+					diff = nodes[mm](comp) - nodes[m](comp);
+
+					if (isPracticallyZero(diff)) {			// degenerated
 						intersection.push_back(nodes[m]);
 						intersection.push_back(nodes[mm]);
 						continue;
 					}
-					
-					lambda =  (val - nodes[m].z) / diff;
-					intersection.push_back(Triple(nodes[m].x + lambda * (nodes[mm].x-nodes[m].x), nodes[m].y + lambda * (nodes[mm].y-nodes[m].y), val));
-				}
-			}
 
-			if (!intersection.empty())
-			{
-				col = (*datacolor_p)(nodes[0].x,nodes[0].y,nodes[0].z);
-  			glColor4d(col.r, col.g, col.b, col.a);
-				if (intersection.size()>2)
-				{
-					glBegin(GL_LINE_STRIP);
-					for (unsigned dd = 0; dd!=intersection.size(); ++dd)
-					{
-						glVertex3d(intersection[dd].x, intersection[dd].y, zshift);
+					Triple intersect;
+					double component[3];
+
+					lambda = (val - nodes[m](comp)) / diff;
+
+					for (unsigned int c = 0; c!=3; ++c) {
+						component[c] = (nodes[m](c) + lambda * (nodes[mm](c)-nodes[m](c)));
 					}
-					glEnd();
-					glBegin(GL_POINTS);
-						glVertex3d(intersection[0].x,intersection[0].y,zshift);
-					glEnd();
+
+					switch (comp) {
+					case 0:
+						intersect = Triple(val, component[1], component[2]);
+						break;
+					case 1:
+						intersect = Triple(component[0], val, component[2]);
+						break;
+					case 2:
+						intersect = Triple(component[0], component[1], val);
+						break;
+					}
+
+					intersection.push_back(intersect);
 				}
-				else if (intersection.size() == 2)
-				{
-					glBegin(GL_LINES);
-						glVertex3d(intersection[0].x,intersection[0].y,zshift);
-						glVertex3d(intersection[1].x,intersection[1].y,zshift);
-						
-						// small pixel gap problem (see OpenGL spec.)
-						glVertex3d(intersection[1].x,intersection[1].y,zshift);
-						glVertex3d(intersection[0].x,intersection[0].y,zshift);
-					glEnd();
-				}
-				
-				intersection.clear();
 			}
+			col = (*datacolor_p)(nodes[0].x,nodes[0].y,nodes[0].z);
+			glColor4d(col.r, col.g, col.b, col.a);
+
+			drawIntersections(intersection, shift, comp, projected);
 		}
 	}
 }
@@ -258,8 +286,9 @@ void Curve::createNormalsC()
 bool Curve::loadFromData(TripleField const& data, CellField const& poly)
 {	
 	actualDataG_->clear();
-  actualData_p = actualDataC_;
-		
+	actualData_p = actualDataC_;
+
+	actualDataC_->datatype = Qwt3D::POLYGON;
 	actualDataC_->nodes = data;
 	actualDataC_->cells = poly;
 	actualDataC_->normals = TripleField(actualDataC_->nodes.size());
@@ -312,8 +341,58 @@ bool Curve::loadFromData(TripleField const& data, CellField const& poly)
 	actualDataC_->setHull(hull);
 
 	updateData();
-
 	return true;
 }	
 
+TripleField* Curve::getNodeData(int *nodes)
+{
+	if (!actualDataC_)	return 0;
 
+	*nodes = actualDataC_->nodes.size();
+
+	/* allocate some space for the nodes */
+	TripleField* nodeData = new TripleField();
+
+	*nodeData = actualDataC_->nodes;
+
+	return nodeData;
+}
+
+CellField* Curve::getCellData(int *cells)
+{
+	if (!actualDataC_)	return 0;
+
+	*cells = actualDataC_->cells.size();
+
+	/* allocate some space for the cells */
+	CellField* cellData = new CellField();
+
+	*cellData = actualDataC_->cells;
+
+	return cellData;
+}
+
+void Curve::deleteData(TripleField* data)
+{
+	delete [] data;
+}
+
+void Curve::deleteData(CellField* poly)
+{
+	delete [] poly;
+}
+
+void Curve::animateData(TripleField* data)
+{
+	if (!actualDataC_)	return;
+
+	actualDataC_->nodes = *data;
+}
+
+void Curve::animateData(TripleField* data, CellField* poly)
+{
+	if (!actualDataC_)	return;
+
+	actualDataC_->nodes = *data;
+	actualDataC_->cells = *poly;
+}
