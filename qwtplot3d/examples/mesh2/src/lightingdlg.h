@@ -4,7 +4,7 @@
 #include <math.h>
 #include <qapplication.h>
 #include <qwt3d_parametricsurface.h>
-#include <qwt3d_surfaceplot.h>
+#include <qwt3d_plot.h>
 #include <qwt3d_enrichment.h>
 #include <qwt3d_color.h>
 
@@ -37,15 +37,12 @@ struct SColor : public Qwt3D::Color
   Qwt3D::RGBA operator()(double, double, double) const {return Qwt3D::RGBA(0.8,0,0,0.5);}
 };
 
-typedef Qwt3D::SurfacePlot SPlot; // moc/VC6 issue in Qt 4.0.0
-
-class Plot : public SPlot
+class Plot : public Qwt3D::Plot3D
 {
   Q_OBJECT
     
 public:
   Plot(QWidget* parent);
-  Pointer* stick;
   void reset();
 };
 
@@ -87,13 +84,13 @@ public:
   Qwt3D::Plot3D* dataPlot;
 
 public slots:
-	void setDistance(int);
-	void setEmission(int);
-	void setDiff(int);
-	void setSpec(int);
-	void setShin(int);
-  void reset();
-  void setRotation(double x, double y, double z);
+    void setDistance(int);
+    void setEmission(int);
+    void setDiff(int);
+    void setSpec(int);
+    void setShin(int);
+    void reset();
+    void setRotation(double x, double y, double z);
 };
 
     

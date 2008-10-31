@@ -1,11 +1,11 @@
 TEMPLATE     = app
 CONFIG      += qt warn_on thread debug
-UI_DIR = tmp
+UI_DIR       = tmp
 MOC_DIR      = tmp
 OBJECTS_DIR  = tmp
-INCLUDEPATH    += ../../include 
-DEPENDPATH	= $$INCLUDEPATH
-DESTDIR = ../bin
+INCLUDEPATH += ../../include 
+DEPENDPATH   = $$INCLUDEPATH
+DESTDIR      = ../bin
 
 unix:LIBS += -lqwtplot3d -L../../lib
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions

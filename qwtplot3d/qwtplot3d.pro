@@ -22,6 +22,7 @@ win32:CONFIG -= zlib
 
 linux-g++:TMAKE_CXXFLAGS += -fno-exceptions
 unix:VERSION = 0.2.7
+unix:CONFIG += staticlib
 
 # Input
 SOURCES += src/qwt3d_axis.cpp \
@@ -40,20 +41,19 @@ SOURCES += src/qwt3d_axis.cpp \
            src/qwt3d_autoscaler.cpp \
            src/qwt3d_io_reader.cpp \
            src/qwt3d_io.cpp \
-           src/qwt3d_scale.cpp
-
-SOURCES += src/qwt3d_gridmapping.cpp \
-					 src/qwt3d_parametricsurface.cpp \
-           src/qwt3d_function.cpp
-
-SOURCES += src/qwt3d_gridplot.cpp \
-           src/qwt3d_meshplot.cpp
-          
+           src/qwt3d_scale.cpp \
+		   src/qwt3d_gridmapping.cpp \
+		   src/qwt3d_parametricsurface.cpp \
+           src/qwt3d_function.cpp \
+		   src/qwt3d_gridplot.cpp \
+           src/qwt3d_meshplot.cpp \
+		   src/qwt3d_extglwidget.cpp
+       
 
 HEADERS += include/qwt3d_color.h \
            include/qwt3d_global.h \
            include/qwt3d_types.h \
-	         include/qwt3d_axis.h \
+	       include/qwt3d_axis.h \
            include/qwt3d_coordsys.h \
            include/qwt3d_drawable.h \
            include/qwt3d_helper.h \
@@ -69,16 +69,15 @@ HEADERS += include/qwt3d_color.h \
            include/qwt3d_io.h \
            include/qwt3d_io_reader.h \
            include/qwt3d_scale.h \
-           include/qwt3d_portability.h
-						
-HEADERS += include/qwt3d_mapping.h \
-					 include/qwt3d_gridmapping.h \
+           include/qwt3d_portability.h \
+		   include/qwt3d_mapping.h \
+		   include/qwt3d_gridmapping.h \
            include/qwt3d_parametricsurface.h \
-           include/qwt3d_function.h
-
-HEADERS += include/qwt3d_volumeplot.h \
+           include/qwt3d_function.h \
+		   include/qwt3d_volumeplot.h \
            include/qwt3d_graphplot.h \
-           include/qwt3d_multiplot.h
+           include/qwt3d_multiplot.h \
+		   include/qwt3d_extglwidget.h
 
 # gl2ps support
 HEADERS+=3rdparty/gl2ps/gl2ps.h \

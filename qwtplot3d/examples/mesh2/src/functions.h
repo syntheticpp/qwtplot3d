@@ -2,6 +2,7 @@
 #define __EXAMPLE_H__
 
 #include <math.h>
+#include <qwt3d_curve.h>
 #include <qwt3d_parametricsurface.h>
 #include <qwt3d_function.h>
 
@@ -12,7 +13,7 @@ class Rosenbrock : public Function
 {
 public:
 
-	Rosenbrock(SurfacePlot& pw)
+        Rosenbrock(Curve& pw)
 	:Function(pw)
 	{
 	}
@@ -28,7 +29,7 @@ class Hat : public Function
 {
 public:
 
-	Hat(SurfacePlot& pw)
+        Hat(Curve& pw)
 	:Function(pw)
 	{
 		//setMinZ(0.3);     
@@ -47,7 +48,7 @@ class Ripple : public Function
 {
 public:
 
-	Ripple(SurfacePlot& pw)
+        Ripple(Curve& pw)
 	:Function(pw)
 	{
 		double l = 12; 
@@ -104,7 +105,7 @@ class Torus : public ParametricSurface
 {
 public:
 
-  Torus(SurfacePlot& pw)
+  Torus(Curve& pw)
   :ParametricSurface(pw)
   {
     setMesh(41,31);
@@ -128,7 +129,7 @@ class Seashell : public ParametricSurface
 {
 public:
 
-  Seashell(SurfacePlot& pw)
+  Seashell(Curve& pw)
   :ParametricSurface(pw)
   {
     setMesh(41,131);
@@ -158,7 +159,7 @@ class Boy : public ParametricSurface
 {
 public:
 
-  Boy(SurfacePlot& pw)
+  Boy(Curve& pw)
   :ParametricSurface(pw)
   {
     setMesh(141,131);
@@ -185,7 +186,7 @@ class Dini : public ParametricSurface
 {
 public:
 
-  Dini(SurfacePlot& pw)
+  Dini(Curve& pw)
   :ParametricSurface(pw)
   {
     setMesh(141,35);

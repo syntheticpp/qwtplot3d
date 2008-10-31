@@ -4,10 +4,11 @@ UI_DIR       = tmp
 MOC_DIR      = tmp
 OBJECTS_DIR  = tmp
 INCLUDEPATH += ../../include 
-DEPENDPATH	 = $$INCLUDEPATH
+DEPENDPATH   = $$INCLUDEPATH
 DESTDIR      = ../bin
 
-unix:LIBS += -lqwtplot3d -L../../lib
+#unix:LIBS += -lqwtplot3d -L../../lib
+unix:LIBS += ../../lib/libqwtplot3d.a
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions
 
 CONFIG(debug, debug|release) {

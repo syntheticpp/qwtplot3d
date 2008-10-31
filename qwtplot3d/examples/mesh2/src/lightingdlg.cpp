@@ -5,6 +5,7 @@
 #include <qpushbutton.h>
 
 #include "lightingdlg.h"
+#include <qwt3d_curve.h>
 
 using namespace Qwt3D;
 
@@ -12,12 +13,12 @@ class Sphere : public ParametricSurface
 {
 public:
 
-  Sphere(SurfacePlot& pw)
+  Sphere(Curve& pw)
   :ParametricSurface(pw)
   {
-    setMesh(41,31);
-    setDomain(0,2*Qwt3D::PI,0,Qwt3D::PI);
-    setPeriodic(false,false);
+    setMesh(41, 31);
+    setDomain(0, 2*Qwt3D::PI, 0, Qwt3D::PI);
+    setPeriodic(false, false);
   }
 
 
@@ -40,27 +41,28 @@ public:
 /////////////////////////////////////////////////////////////////
 
 Plot::Plot(QWidget *parent)
-: SurfacePlot(parent)
+: Plot3D(parent)
 {
-  setTitle("A Simple SurfacePlot Demonstration");
-  
-  Sphere sphere(*this);
-  sphere.create();
+    Curve *curve = new Curve(this);
+    addCurve(curve);
 
-  reset();  
-  assignMouse(Qt::LeftButton,
-    Qt::RightButton,
-    Qt::LeftButton,
-    Qt::NoButton,
-    Qt::NoButton,
-    Qt::NoButton,
-    Qt::NoButton,
-    Qt::NoButton,
-    Qt::NoButton
-    );
+    Sphere sphere(*curve);
+    sphere.create();
 
-  stick = (Pointer*)addEnrichment(Pointer(0.05));
-  stick->setPos(0,0,1);
+    reset();
+    assignMouse(Qt::LeftButton,
+                Qt::RightButton,
+                Qt::LeftButton,
+                Qt::NoButton,
+                Qt::NoButton,
+                Qt::NoButton,
+                Qt::NoButton,
+                Qt::NoButton,
+                Qt::NoButton);
+
+    /*Pointer stick = Pointer(0.5);
+    stick.setPos(0, 0, 1);
+    curve->addEnrichment(stick);*/
 }
 
 void Plot::reset()
@@ -69,7 +71,7 @@ void Plot::reset()
   setRotation(0,0,0);
   setTitle("Use your mouse buttons and keyboard");
   setTitleFont("Arial", 8, QFont::Bold);
-  setTitleColor(RGBA(0.9,0.9,0.9));
+  setTitleColor(RGBA(0.9, 0.9, 0.9));
   setSmoothMesh(true);
   setZoom(0.9);
   setCoordinateStyle(NOCOORD);
@@ -105,19 +107,19 @@ void Pointer::configure(double rad)
 
 void Pointer::drawBegin()
 {
-  GLint mode;
-	glGetIntegerv(GL_MATRIX_MODE, &mode);
-	glMatrixMode( GL_MODELVIEW );
-  glPushMatrix();
-  
-  glColor3d(1,0,0);
-  glBegin(GL_LINES);
-    glVertex3d(pos_.x, pos_.y, pos_.z);
-    glVertex3d(0, 0, 0);
-  glEnd();
+    GLint mode;
+        glGetIntegerv(GL_MATRIX_MODE, &mode);
+        glMatrixMode( GL_MODELVIEW );
+    glPushMatrix();
 
-  glPopMatrix();
-	glMatrixMode(mode);
+    glColor3d(1,0,0);
+    glBegin(GL_LINES);
+        glVertex3d(pos_.x, pos_.y, pos_.z);
+        glVertex3d(0, 0, 0);
+    glEnd();
+
+    glPopMatrix();
+    glMatrixMode(mode);
 }
 
 
@@ -125,26 +127,26 @@ LightingDlg::LightingDlg(QWidget *parent)
 :LightingBase(parent)
 {
 #if QT_VERSION < 0x040000
-  QGridLayout *grid = new QGridLayout( frame, 0, 0 );
+    QGridLayout *grid = new QGridLayout( frame, 0, 0 );
 #else
-  setupUi(this);
-  QGridLayout *grid = new QGridLayout( frame);
+    setupUi(this);
+    QGridLayout *grid = new QGridLayout( frame);
 #endif
 
-  dataPlot = 0;
-  
-  plot = new Plot(frame);
-  plot->updateData();
+    dataPlot = 0;
 
-  grid->addWidget( plot, 0, 0 );
+    plot = new Plot(frame);
+    plot->updateData();
 
-	connect( stdlight, SIGNAL( clicked() ), this, SLOT( reset() ) );
-	connect( distSL, SIGNAL(valueChanged(int)), this, SLOT(setDistance(int)) );
-	connect( emissSL, SIGNAL(valueChanged(int)), this, SLOT(setEmission(int)) );
-	connect( ambdiffSL, SIGNAL(valueChanged(int)), this, SLOT(setDiff(int)) );
-	connect( specSL, SIGNAL(valueChanged(int)), this, SLOT(setSpec(int)) );
-	connect( shinSL, SIGNAL(valueChanged(int)), this, SLOT(setShin(int)) );
-  connect( plot, SIGNAL(rotationChanged(double, double, double)), this, SLOT(setRotation(double, double, double)) );
+    grid->addWidget( plot, 0, 0 );
+
+    connect( stdlight, SIGNAL( clicked() ), this, SLOT( reset() ) );
+    connect( distSL, SIGNAL(valueChanged(int)), this, SLOT(setDistance(int)) );
+    connect( emissSL, SIGNAL(valueChanged(int)), this, SLOT(setEmission(int)) );
+    connect( ambdiffSL, SIGNAL(valueChanged(int)), this, SLOT(setDiff(int)) );
+    connect( specSL, SIGNAL(valueChanged(int)), this, SLOT(setSpec(int)) );
+    connect( shinSL, SIGNAL(valueChanged(int)), this, SLOT(setShin(int)) );
+    connect( plot, SIGNAL(rotationChanged(double, double, double)), this, SLOT(setRotation(double, double, double)) );
 }
 
 LightingDlg::~LightingDlg()
@@ -191,7 +193,7 @@ void LightingDlg::reset()
 void LightingDlg::setDistance(int val)
 {
   
-  plot->stick->setPos(0,0,val/100.);
+  //plot->stick.setPos(0,0,val/100.);
   plot->updateData();
   plot->updateGL();
   
