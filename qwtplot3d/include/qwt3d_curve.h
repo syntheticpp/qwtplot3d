@@ -92,7 +92,7 @@ public slots:
 	void setPlotStyle(Qwt3D::PLOTSTYLE val);
 	void setPlotStyle(Qwt3D::Enrichment& val);
 	void setPolygonOffset(double d);
-	void setFloorStyle(Qwt3D::FLOORSTYLE val)	{ floorstyle_ = val; }		//!< Sets floor style
+        void setFloorStyle(Qwt3D::FLOORSTYLE val)	{ floorstyle_ = val; update_displaylists_ = true;}		//!< Sets floor style
 	void setShading(Qwt3D::SHADINGSTYLE val);
 	void setIsolines(unsigned int isolines);
 

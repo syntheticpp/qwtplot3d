@@ -140,6 +140,7 @@ void DesignerWorkaround::setupWorkaround(QMainWindow* mw)
   psurfaceCB->addItem( tr( "Boy" ) );
   psurfaceCB->addItem( tr( "Dini" ) );
   psurfaceCB->addItem( tr( "Cone" ) );
+  psurfaceCB->addItem( tr( "Sphere" ) );
   psurfaceCB->setToolTip(tr( "Display parametric surface. Turn Lighting on for better quality."));
     
   QObject::connect(Exit, SIGNAL(triggered()), mw, SLOT(close()));

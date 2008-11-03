@@ -105,13 +105,18 @@ public slots:
 
     void enableLighting(bool val);
 
+    void setActiveFunction( bool on);
+    void setActiveParametric( bool on);
+
 private:
-    Curve *curve;
     QLabel *filenameWidget, *dimWidget, *rotateLabel, *shiftLabel, *scaleLabel, *zoomLabel;
     QTimer* timer;
     int redrawWait;
 
+    Curve *d_function, *d_parametric_surface;
     QAction* activeCoordSystem;
+    QAction* activePlotStyle;
+    QAction* activeFloorStyle;
 
     bool legend_;
     Qwt3D::StandardColor* col_;

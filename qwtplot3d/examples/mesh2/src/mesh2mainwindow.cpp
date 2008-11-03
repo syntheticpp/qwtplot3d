@@ -79,10 +79,22 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     legend_ = false;
     redrawWait = 50;
     activeCoordSystem = None;
+    activeCoordSystem->setChecked(true);
+
+    activePlotStyle = filledmesh;
+    filledmesh->setChecked(true);
+
+    activeFloorStyle = floornone;
+    activeFloorStyle->setChecked(true);
 
     dataWidget = new Plot3D(frame);
-    curve = new Curve(dataWidget);
-    dataWidget->addCurve(curve);
+    d_function = 0;
+    d_parametric_surface = 0;
+    functionRadioButton->hide();
+    connect( functionRadioButton, SIGNAL( clicked ( bool ) ), this, SLOT( setActiveFunction( bool ) ) );
+    parametricRadioButton->hide();
+    connect( parametricRadioButton, SIGNAL( clicked ( bool ) ), this, SLOT( setActiveParametric( bool ) ) );
+
     grid->addWidget( dataWidget, 0, 0 );
 
     connectAG( coord, SLOT( pickCoordSystem( QAction* ) ) );
@@ -221,53 +233,79 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 
 void Mesh2MainWindow::open()
 {
-#if QT_VERSION < 0x040000
-  QString s = QFileDialog::getOpenFileName( "../../data", "GridData Files (*.mes *.MES)", this );
-#else
-  QString s = QFileDialog::getOpenFileName( this, "", "../../data", "GridData Files (*.mes *.MES)");
-#endif
+    #if QT_VERSION < 0x040000
+        QString s = QFileDialog::getOpenFileName( "../../data", "GridData Files (*.mes *.MES)", this );
+    #else
+        QString s = QFileDialog::getOpenFileName( this, "", "../../data", "GridData Files (*.mes *.MES)");
+    #endif
 
-	if ( s.isEmpty() || !dataWidget)
-      return;
-	
-  QFileInfo fi( s );
+    if ( s.isEmpty() || !dataWidget)
+        return;
 
-#if QT_VERSION < 0x040000
-  QString ext = fi.extension();   // ext = "gz"
-	QToolTip::add(filenameWidget, s);
-#else
-	filenameWidget->setToolTip(s);
-  QString ext = fi.suffix();
-#endif
-	filenameWidget->setText(fi.fileName());
-    qApp->processEvents(); // enforces repaint;  
+    QFileInfo fi( s );
 
-  if (IO::load(dataWidget, s, ext))
-	{
-                double a = curve->facets().first;
-                double b = curve->facets().second;
+    #if QT_VERSION < 0x040000
+        QString ext = fi.extension();   // ext = "gz"
+        QToolTip::add(filenameWidget, s);
+    #else
+        filenameWidget->setToolTip(s);
+        QString ext = fi.suffix();
+    #endif
+    filenameWidget->setText(fi.fileName());
+    qApp->processEvents(); // enforces repaint;
 
-		dimWidget->setText(QString("Cells ") + QString::number(a*b) 
-			+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
-		
-		dataWidget->setResolution(3);
-	}
- 	
-	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-	{
-		dataWidget->coordinates()->axes[i].setMajors(4);
-		dataWidget->coordinates()->axes[i].setMinors(5);
-		dataWidget->coordinates()->axes[i].setLabelString("");
-	}
-	
-	updateColorLegend(4,5);
-	pickCoordSystem(activeCoordSystem);
-	dataWidget->showColorLegend(legend_);
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    if (IO::load(dataWidget, s, ext)){
+        double a = curve->facets().first;
+        double b = curve->facets().second;
+
+        dimWidget->setText(QString("Cells ") + QString::number(a*b)
+                + " (" + QString::number(a) + "x" + QString::number(b) +")" );
+
+        dataWidget->setResolution(3);
+    }
+
+    for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i) {
+        dataWidget->coordinates()->axes[i].setMajors(4);
+        dataWidget->coordinates()->axes[i].setMinors(5);
+        dataWidget->coordinates()->axes[i].setLabelString("");
+    }
+
+    updateColorLegend(4,5);
+    pickCoordSystem(activeCoordSystem);
+    dataWidget->showColorLegend(legend_);
 }
 
 void Mesh2MainWindow::createFunction(QString const& name)
 {
+    if (d_function && name == tr( "---" )){
+        dataWidget->removeCurve(d_function);
+        dataWidget->updateData();
+        dataWidget->updateGL();
+        delete d_function;
+        d_function = 0;
+        functionRadioButton->hide();
+        return;
+    }
+
+    if (!d_function){
+        d_function = new Curve(dataWidget);
+        d_function->setDataProjection(false);
+        d_function->setProjection(BASE);
+        d_function->setProjection(FACE, false);
+        d_function->setProjection(SIDE, false);
+        dataWidget->addCurve(d_function);
+    }
+
+    functionRadioButton->show();
+    functionRadioButton->setChecked(true);
+    functionRadioButton->setText(name);
+
     dataWidget->makeCurrent();
+    dataWidget->setCurve(d_function);
     dataWidget->legend()->setScale(LINEARSCALE);
     for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i){
         dataWidget->coordinates()->axes[i].setMajors(7);
@@ -275,7 +313,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
     }
 
     if (name == QString("Rosenbrock")) {
-        Rosenbrock rosenbrock(*curve);
+        Rosenbrock rosenbrock(*d_function);
         rosenbrock.setMesh(50,51);
         rosenbrock.setDomain(-1.73,1.55,-1.5,1.95);
         rosenbrock.setMinZ(-100);
@@ -287,13 +325,13 @@ void Mesh2MainWindow::createFunction(QString const& name)
         dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
         dataWidget->legend()->setScale(LOG10SCALE);
     } else if (name == QString("Hat")) {
-        Hat hat(*curve);
+        Hat hat(*d_function);
 
         hat.setMesh(51,72);
         hat.setDomain(-1.5,1.5,-1.5,1.5);
         hat.create();
     } else if (name == QString("Ripple")) {
-        Ripple ripple(*curve);
+        Ripple ripple(*d_function);
         ripple.setMesh(120,120);
         ripple.create();
     } else if (name == QString("Saddle")) {
@@ -302,7 +340,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
         saddle.setMesh(71,71);
         double dom = 2.5;
         saddle.setDomain(-dom, dom, -dom, dom);
-        saddle.assign(*curve);
+        saddle.assign(*d_function);
         saddle.create();
     } else if (name == QString("Sombrero")) {
         Mex mex;
@@ -310,11 +348,112 @@ void Mesh2MainWindow::createFunction(QString const& name)
         mex.setMesh(91, 91);
         double dom = 15;
         mex.setDomain(-dom, dom, -dom, dom);
-        mex.create(*curve);
+        mex.create(*d_function);
     }
 
-    double a = curve->facets().first;
-    double b = curve->facets().second;
+    double a = d_function->facets().first;
+    double b = d_function->facets().second;
+
+    dimWidget->setText(QString("Cells ") + QString::number(a*b)
+            + " (" + QString::number(a) + "x" + QString::number(b) +")" );
+
+    updateColorLegend(7,5);
+
+    dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
+    dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
+    dataWidget->coordinates()->axes[X3].setLabelString(QString("X3"));
+    dataWidget->coordinates()->axes[X4].setLabelString(QString("X4"));
+
+    dataWidget->coordinates()->axes[Y1].setLabelString(QString("Y1"));
+    dataWidget->coordinates()->axes[Y2].setLabelString(QString("Y2"));
+    dataWidget->coordinates()->axes[Y3].setLabelString(QString("Y3"));
+    dataWidget->coordinates()->axes[Y4].setLabelString(QString("Y4"));
+
+    dataWidget->coordinates()->axes[Z1].setLabelString(QString("Z1"));
+    dataWidget->coordinates()->axes[Z2].setLabelString(QString("Z2"));
+    dataWidget->coordinates()->axes[Z3].setLabelString(QString("Z3"));
+    dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
+
+    Curve *curve = dataWidget->curve();
+    if (curve){
+        d_function->setFloorStyle(curve->floorStyle());
+        d_function->setPlotStyle(curve->plotStyle());
+    }
+       
+    pickCoordSystem(activeCoordSystem);
+    pickFloorStyle(activeFloorStyle);
+    pickPlotStyle(activePlotStyle);
+}
+
+void Mesh2MainWindow::createPSurface(QString const& name)
+{
+    if (d_parametric_surface && name == tr( "---" )){
+        dataWidget->removeCurve(d_parametric_surface);
+        dataWidget->updateData();
+        dataWidget->updateGL();
+        delete d_parametric_surface;
+        d_parametric_surface = 0;
+        parametricRadioButton->hide();
+        return;
+    }
+
+    if (!d_parametric_surface){
+        d_parametric_surface = new Curve(dataWidget);
+        d_parametric_surface->setDataProjection(false);
+        d_parametric_surface->setProjection(BASE);
+        d_parametric_surface->setProjection(FACE, false);
+        d_parametric_surface->setProjection(SIDE, false);
+
+        dataWidget->addCurve(d_parametric_surface);
+    }
+
+    parametricRadioButton->show();
+    parametricRadioButton->setChecked(true);
+    parametricRadioButton->setText(name);
+
+    dataWidget->makeCurrent();
+    dataWidget->setCurve(d_parametric_surface);
+    if (name == QString("Torus"))
+    {
+        Torus sf(*d_parametric_surface);
+        sf.create();
+    }
+    else if (name == QString("Seashell"))
+    {
+        Seashell ss(*d_parametric_surface);
+        ss.create();
+    }
+    else if (name == QString("Boy"))
+    {
+        Boy boy(*d_parametric_surface);
+        boy.create();
+    }
+    else if (name == QString("Dini"))
+    {
+        Dini dini(*d_parametric_surface);
+        dini.create();
+    }
+    else if (name == QString("Cone"))
+    {
+        TripleField conepos;
+        CellField conecell;
+        createCone(conepos,conecell);
+        d_parametric_surface->loadFromData(conepos, conecell);
+    }
+    else if (name == QString("Sphere"))
+    {
+        Sphere sphere(*d_parametric_surface);
+        sphere.create();
+    }
+
+    for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
+    {
+        dataWidget->coordinates()->axes[i].setMajors(7);
+        dataWidget->coordinates()->axes[i].setMinors(5);
+    }
+
+    double a = d_parametric_surface->facets().first;
+    double b = d_parametric_surface->facets().second;
 
     dimWidget->setText(QString("Cells ") + QString::number(a*b)
             + " (" + QString::number(a) + "x" + QString::number(b) +")" );
@@ -337,165 +476,94 @@ void Mesh2MainWindow::createFunction(QString const& name)
     dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
 
     pickCoordSystem(activeCoordSystem);
-}
-
-void Mesh2MainWindow::createPSurface(QString const& name)
-{
-	dataWidget->makeCurrent();
-	if (name == QString("Torus")) 
-	{
-            Torus sf(*curve);
-            sf.create();
-	}
-	else if (name == QString("Seashell")) 
-	{
-            Seashell ss(*curve);
-            ss.create();
-	}
-	else if (name == QString("Boy")) 
-	{
-            Boy boy(*curve);
-            boy.create();
-	}
-	else if (name == QString("Dini")) 
-	{
-            Dini dini(*curve);
-            dini.create();
-	}
-	else if (name == QString("Cone")) 
-	{
-            TripleField conepos;
-            CellField conecell;
-            createCone(conepos,conecell);
-            curve->loadFromData(conepos, conecell);
-	}
-	for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-	{
-            dataWidget->coordinates()->axes[i].setMajors(7);
-            dataWidget->coordinates()->axes[i].setMinors(5);
-	}
-
-        double a = curve->facets().first;
-        double b = curve->facets().second;
-
-	dimWidget->setText(QString("Cells ") + QString::number(a*b) 
-		+ " (" + QString::number(a) + "x" + QString::number(b) +")" );
-
-	updateColorLegend(7,5);
-
-	dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
-        dataWidget->coordinates()->axes[X2].setLabelString(QString("X2"));
-	dataWidget->coordinates()->axes[X3].setLabelString(QString("X3"));
-	dataWidget->coordinates()->axes[X4].setLabelString(QString("X4"));
-
-	dataWidget->coordinates()->axes[Y1].setLabelString(QString("Y1"));
-	dataWidget->coordinates()->axes[Y2].setLabelString(QString("Y2"));
-	dataWidget->coordinates()->axes[Y3].setLabelString(QString("Y3"));
-	dataWidget->coordinates()->axes[Y4].setLabelString(QString("Y4"));
-
-	dataWidget->coordinates()->axes[Z1].setLabelString(QString("Z1"));
-	dataWidget->coordinates()->axes[Z2].setLabelString(QString("Z2"));
-	dataWidget->coordinates()->axes[Z3].setLabelString(QString("Z3"));
-	dataWidget->coordinates()->axes[Z4].setLabelString(QString("Z4"));
-
-	pickCoordSystem(activeCoordSystem);
+    pickFloorStyle(activeFloorStyle);
+    pickPlotStyle(activePlotStyle);
 }
 
 
 void Mesh2MainWindow::pickCoordSystem( QAction* action)
 {
-	if (!action || !dataWidget)
-		return;
+    if (!action || !dataWidget)
+            return;
 
-	activeCoordSystem = action;
-	
-	dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
+    activeCoordSystem = action;
 
-	if (!dataWidget->hasData())
-	{
-		double l = 0.6;
-		dataWidget->createCoordinateSystem(Triple(-l,-l,-l), Triple(l,l,l));
-		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-		{
-			dataWidget->coordinates()->axes[i].setMajors(4);
-			dataWidget->coordinates()->axes[i].setMinors(5);
-		}
-	}			
+    dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
 
-	if (action == Box || action == Frame)
-	{
-		if (action == Box)
-			dataWidget->setCoordinateStyle(BOX);
-		if (action == Frame)
-			dataWidget->setCoordinateStyle(FRAME);
-		grids->setEnabled(true);
-	}
-	else if (action == None)
-	{
-	  dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
-		dataWidget->setCoordinateStyle(NOCOORD);
-		grids->setEnabled(false);
-	}
+    if (!dataWidget->hasData())
+    {
+            double l = 0.6;
+            dataWidget->createCoordinateSystem(Triple(-l,-l,-l), Triple(l,l,l));
+            for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
+            {
+                    dataWidget->coordinates()->axes[i].setMajors(4);
+                    dataWidget->coordinates()->axes[i].setMinors(5);
+            }
+    }
+
+    if (action == Box || action == Frame)
+    {
+            if (action == Box)
+                    dataWidget->setCoordinateStyle(BOX);
+            if (action == Frame)
+                    dataWidget->setCoordinateStyle(FRAME);
+            grids->setEnabled(true);
+    }
+    else if (action == None)
+    {
+      dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
+            dataWidget->setCoordinateStyle(NOCOORD);
+            grids->setEnabled(false);
+    }
 }
 
 void Mesh2MainWindow::pickPlotStyle( QAction* action )
 {
-	if (!action || !dataWidget)
-		return;
+    if (!action || !dataWidget)
+            return;
 
-	if (action == polygon)
-	{
-		dataWidget->setPlotStyle(FILLED);
-	}
-	else if (action == filledmesh)
-	{
-		dataWidget->setPlotStyle(FILLEDMESH);
-	}
-	else if (action == wireframe)
-	{
-		dataWidget->setPlotStyle(WIREFRAME);
-	}
-	else if (action == hiddenline)
-	{
-		dataWidget->setPlotStyle(HIDDENLINE);
-	}
-	else if (action == pointstyle)
-	{
+    activePlotStyle = action;
 
-    dataWidget->setPlotStyle(Qwt3D::POINTS);
-//    Cone d(len,32);
-//    CrossHair d(0.003,0,true,false);
-//    dataWidget->setPlotStyle(d);
-	}
-	else
-	{
-		dataWidget->setPlotStyle(NOPLOT);
-	}
-	dataWidget->updateData();
-	dataWidget->updateGL();
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    if (action == polygon)
+        curve->setPlotStyle(FILLED);
+    else if (action == filledmesh)
+        curve->setPlotStyle(FILLEDMESH);
+    else if (action == wireframe)
+        curve->setPlotStyle(WIREFRAME);
+    else if (action == hiddenline)
+        curve->setPlotStyle(HIDDENLINE);
+    else if (action == pointstyle)
+        curve->setPlotStyle(Qwt3D::POINTS);
+    else
+        curve->setPlotStyle(NOPLOT);
+
+    dataWidget->updateGL();
 }
 
 void
 Mesh2MainWindow::pickFloorStyle( QAction* action )
 {
-	if (!action || !dataWidget)
-		return;
+    if (!action || !dataWidget)
+        return;
 
-	if (action == floordata)
-	{
-		dataWidget->setFloorStyle(FLOORDATA);
-	}
-	else if (action == flooriso)
-	{
-		dataWidget->setFloorStyle(FLOORISO);
-	}
-	else
-	{
-		dataWidget->setFloorStyle(NOFLOOR);
-	}
-	
-	dataWidget->updateData();
-	dataWidget->updateGL();
+    activeFloorStyle = action;
+
+    FLOORSTYLE style = NOFLOOR;
+    if (action == floordata)
+        style = FLOORDATA;
+    else if (action == flooriso)
+        style = FLOORISO;
+
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    curve->setFloorStyle(style);
+    dataWidget->updateGL();
 }	
 
 void Mesh2MainWindow::setLeftGrid(bool b)
@@ -541,93 +609,93 @@ void Mesh2MainWindow::setGrid(int s, bool b)
 
 void Mesh2MainWindow::resetColors()
 {
-	if (!dataWidget)
-		return;
+    if (!dataWidget)
+        return;
 
-	const RGBA axc = RGBA(0,0,0,1);
-	const RGBA bgc = RGBA(1.0,1.0,1.0,1.0);
-	const RGBA msc = RGBA(0,0,0,1);
-	const RGBA nuc = RGBA(0,0,0,1);
-	const RGBA lbc = RGBA(0,0,0,1);
-	const RGBA tc = RGBA(0,0,0,1);
+    const RGBA axc = RGBA(0,0,0,1);
+    const RGBA bgc = RGBA(1.0,1.0,1.0,1.0);
+    const RGBA msc = RGBA(0,0,0,1);
+    const RGBA nuc = RGBA(0,0,0,1);
+    const RGBA lbc = RGBA(0,0,0,1);
+    const RGBA tc = RGBA(0,0,0,1);
 
-	dataWidget->coordinates()->setAxesColor(axc);
-	dataWidget->setBackgroundColor(bgc);
-	dataWidget->setMeshColor(msc);
-	dataWidget->updateData();
-	dataWidget->coordinates()->setNumberColor(nuc);
-	dataWidget->coordinates()->setLabelColor(lbc);
-        dataWidget->setTitleColor(tc);
+    dataWidget->coordinates()->setAxesColor(axc);
+    dataWidget->setBackgroundColor(bgc);
+    dataWidget->setMeshColor(msc);
+    dataWidget->updateData();
+    dataWidget->coordinates()->setNumberColor(nuc);
+    dataWidget->coordinates()->setLabelColor(lbc);
+    dataWidget->setTitleColor(tc);
 
+    Curve *curve = dataWidget->curve();
+    if (curve){
         col_ = new StandardColor(curve);
-	dataWidget->setDataColor(col_);
-	dataWidget->updateData();	
+        dataWidget->setDataColor(col_);
+        dataWidget->updateData();
         curve->updateNormals();
-	dataWidget->updateGL();
+    }
+    dataWidget->updateGL();
 }
 
 
 void Mesh2MainWindow::pickAxesColor()
 {
-  QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->coordinates()->setAxesColor(rgb);
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->coordinates()->setAxesColor(rgb);
+    dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickBgColor()
 {
-  
-	QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->setBackgroundColor(rgb);
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->setBackgroundColor(rgb);
+    dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickMeshColor()
 {
-  
-	QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->setMeshColor(rgb);
-	dataWidget->updateData();
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->setMeshColor(rgb);
+    dataWidget->updateData();
+    dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickNumberColor()
 {
-  
-	QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->coordinates()->setNumberColor(rgb);
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->coordinates()->setNumberColor(rgb);
+    dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickLabelColor()
 {
- 	QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->coordinates()->setLabelColor(rgb);
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->coordinates()->setLabelColor(rgb);
+    dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickTitleColor()
 {
- 	QColor c = QColorDialog::getColor( Qt::white, this );
-  if ( !c.isValid() )
-		return;
-	RGBA rgb = Qt2GL(c);
-	dataWidget->setTitleColor(rgb);
-	dataWidget->updateGL();
+    QColor c = QColorDialog::getColor( Qt::white, this );
+    if ( !c.isValid() )
+        return;
+    RGBA rgb = Qt2GL(c);
+    dataWidget->setTitleColor(rgb);
+    dataWidget->updateGL();
 }
 
 void Mesh2MainWindow::pickLighting()
@@ -638,10 +706,10 @@ void Mesh2MainWindow::pickLighting()
 void Mesh2MainWindow::pickDataColor()
 {
 #if QT_VERSION < 0x040000
-	datacolordlg_->show();
+    datacolordlg_->show();
 #else
-  QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
-  adaptDataColors(s);
+    QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
+    adaptDataColors(s);
 #endif
 }
 
@@ -652,12 +720,16 @@ void Mesh2MainWindow::adaptDataColors(const QString& fileName)
     if (!openColorMap(cv, fileName))
         return;
 
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
     col_ = new StandardColor(curve);
     col_->setColorVector(cv);
 
-    dataWidget->setDataColor(col_);
-    dataWidget->updateData();
+    curve->setDataColor(col_);
     curve->updateNormals();
+    dataWidget->updateData();
     dataWidget->showColorLegend(legend_);
     dataWidget->updateGL();
 }
@@ -722,12 +794,12 @@ void Mesh2MainWindow::dumpImage()
         name += filetype_;
 
     #if QT_VERSION < 0x040000
-    IO::save(dataWidget, name.lower(), filetype_);
+        IO::save(dataWidget, name.lower(), filetype_);
     #else
-    VectorWriter* vw = (VectorWriter*)IO::outputHandler("PDF");
-    if (vw)
-    vw->setSortMode(VectorWriter::BSPSORT);
-    IO::save(dataWidget, name.toLower(), filetype_);
+        VectorWriter* vw = (VectorWriter*)IO::outputHandler("PDF");
+        if (vw)
+            vw->setSortMode(VectorWriter::BSPSORT);
+        IO::save(dataWidget, name.toLower(), filetype_);
     #endif
 }
 
@@ -736,24 +808,20 @@ void Mesh2MainWindow::dumpImage()
 */
 void Mesh2MainWindow::toggleAnimation(bool val)
 {
-	if ( val )
-	{
-		timer->start( redrawWait ); // Wait this many msecs before redraw
-	}
-	else
-	{
-		timer->stop();
-	}
+    if ( val )
+        timer->start( redrawWait ); // Wait this many msecs before redraw
+    else
+        timer->stop();
 }
 
 void Mesh2MainWindow::rotate()
 {
-if (!dataWidget)
-    return;
+    if (!dataWidget)
+        return;
 
-dataWidget->setRotation(int(dataWidget->xRotation() + 1) % 360,
-        int(dataWidget->yRotation() + 1) % 360,
-        int(dataWidget->zRotation() + 1) % 360);
+    dataWidget->setRotation(int(dataWidget->xRotation() + 1) % 360,
+            int(dataWidget->yRotation() + 1) % 360,
+            int(dataWidget->zRotation() + 1) % 360);
 }
 
 void
@@ -783,6 +851,7 @@ Mesh2MainWindow::toggleShader(bool val)
         dataWidget->setShading(GOURAUD);
     else
         dataWidget->setShading(FLAT);
+    dataWidget->updateGL();
 }
 
 void
@@ -817,22 +886,25 @@ Mesh2MainWindow::showScale(double x, double y, double z)
 void
 Mesh2MainWindow::showZoom(double z)		
 {
-	zoomLabel->setText(" Zoom "  + QString::number(z,'g',3)); 
+    zoomLabel->setText(" Zoom "  + QString::number(z,'g',3));
 }
 
 void Mesh2MainWindow::openMesh()
 {
-#if QT_VERSION < 0x040000
-  QString data(QFileDialog::getOpenFileName( "../../data", "nodes (*.nod)", this ) );
-  QString edges( QFileDialog::getOpenFileName( "../../data", "connectivities (*.cel)", this ) );
-#else
-  QString data( QFileDialog::getOpenFileName( this, "", "../../data", "nodes (*.nod)") );
-  QString edges( QFileDialog::getOpenFileName( this, "", "../../data", "connectivities (*.cel)") );
-#endif
- 
+    #if QT_VERSION < 0x040000
+    QString data(QFileDialog::getOpenFileName( "../../data", "nodes (*.nod)", this ) );
+    QString edges( QFileDialog::getOpenFileName( "../../data", "connectivities (*.cel)", this ) );
+    #else
+    QString data( QFileDialog::getOpenFileName( this, "", "../../data", "nodes (*.nod)") );
+    QString edges( QFileDialog::getOpenFileName( this, "", "../../data", "connectivities (*.cel)") );
+    #endif
+
     if ( data.isEmpty() || edges.isEmpty() || !dataWidget)
         return;
 
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
 
     TripleField vdata;
     CellField vpoly;
@@ -856,25 +928,37 @@ void Mesh2MainWindow::openMesh()
 void
 Mesh2MainWindow::showNormals(bool val)
 {
-	dataWidget->showNormals(val);
-        curve->updateNormals();
-	dataWidget->updateGL();
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    curve->showNormals(val);
+    curve->updateNormals();
+    dataWidget->updateGL();
 }
 
 void
 Mesh2MainWindow::setNormalLength(int val)
 {
-	dataWidget->setNormalLength(val / 400.);
-        curve->updateNormals();
-	dataWidget->updateGL();
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    curve->setNormalLength(val / 400.);
+    curve->updateNormals();
+    dataWidget->updateGL();
 }
 
 void
 Mesh2MainWindow::setNormalQuality(int val)
 {
-	dataWidget->setNormalQuality(val);
-        curve->updateNormals();
-	dataWidget->updateGL();
+    Curve *curve = dataWidget->curve();
+    if (!curve)
+        return;
+
+    curve->setNormalQuality(val);
+    curve->updateNormals();
+    dataWidget->updateGL();
 }
 
 bool
@@ -913,21 +997,33 @@ Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 void 
 Mesh2MainWindow::updateColorLegend(int majors, int minors)
 {
-	dataWidget->legend()->setMajors(majors);
-	dataWidget->legend()->setMinors(minors);
-	double start, stop;
-	dataWidget->coordinates()->axes[Z1].limits(start,stop);
-	dataWidget->legend()->setLimits(start, stop);
+    dataWidget->legend()->setMajors(majors);
+    dataWidget->legend()->setMinors(minors);
+    double start, stop;
+    dataWidget->coordinates()->axes[Z1].limits(start,stop);
+    dataWidget->legend()->setLimits(start, stop);
 }		
 
 void Mesh2MainWindow::setFileType(QString const& name)
 {
-	filetype_ = name;	
+    filetype_ = name;
 }
 
 void Mesh2MainWindow::enableLighting(bool val)
 {
-  dataWidget->enableLighting(val);
-  dataWidget->illuminate(0);
-  dataWidget->updateGL();
+    dataWidget->enableLighting(val);
+    dataWidget->illuminate(0);
+    dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::setActiveFunction( bool on)
+{
+    if (dataWidget && d_function && on)
+        dataWidget->setCurve(d_function);
+}
+
+void Mesh2MainWindow::setActiveParametric( bool on)
+{
+    if (dataWidget && d_parametric_surface && on)
+        dataWidget->setCurve(d_parametric_surface);
 }

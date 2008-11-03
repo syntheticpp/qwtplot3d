@@ -5,34 +5,10 @@
 #include <qpushbutton.h>
 
 #include "lightingdlg.h"
+#include "functions.h"
 #include <qwt3d_curve.h>
 
 using namespace Qwt3D;
-
-class Sphere : public ParametricSurface
-{
-public:
-
-  Sphere(Curve& pw)
-  :ParametricSurface(pw)
-  {
-    setMesh(41, 31);
-    setDomain(0, 2*Qwt3D::PI, 0, Qwt3D::PI);
-    setPeriodic(false, false);
-  }
-
-
-  Triple operator()(double u, double v)
-  {
-    double x,y,z;
-    double r = 1;
-    x = r*cos(u)*sin(v);
-    y = r*sin(u)*sin(v);
-    z = r*cos(v);
-    return Triple(x,y,z);
-  }
-};
-
 
 /////////////////////////////////////////////////////////////////
 //
