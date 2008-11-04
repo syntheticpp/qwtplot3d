@@ -107,6 +107,8 @@ public slots:
 
     void setActiveFunction( bool on);
     void setActiveParametric( bool on);
+    void setSmoothLine( bool );
+    void setResolution( int );
 
 private:
     QLabel *filenameWidget, *dimWidget, *rotateLabel, *shiftLabel, *scaleLabel, *zoomLabel;

@@ -6,22 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>523</width>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Mesh2</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout">
-    <property name="margin">
-     <number>8</number>
-    </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>6</number>
     </property>
-    <item row="0" column="0">
+    <property name="margin">
+     <number>8</number>
+    </property>
+    <item>
      <layout class="QHBoxLayout">
       <property name="spacing">
        <number>6</number>
@@ -78,7 +78,7 @@
             <property name="title">
              <string>Active Curve:</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
               <widget class="QRadioButton" name="functionRadioButton">
                <property name="text">
@@ -140,6 +140,16 @@
             </property>
             <property name="text">
              <string>Shading</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="smoothLineCheckBox">
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Smooth line</string>
             </property>
            </widget>
           </item>
@@ -244,7 +254,7 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
+    <item>
      <layout class="QHBoxLayout">
       <property name="spacing">
        <number>6</number>

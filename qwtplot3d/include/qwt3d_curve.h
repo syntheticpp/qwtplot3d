@@ -63,8 +63,11 @@ public:
 	bool hasData() const						{ return (actualData_p) ? !actualData_p->empty() : false; }	//!< Returns true if valid data available, false else
 	bool dataProjected() const					{ return datapoints_; }		//!< Returns projected state of data points 
 
+        QList<Qwt3D::Enrichment*> enrichmentList(){return elist_p;}; //!< Returns the Enrichments list
 	virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const&);		//!< Add an Enrichment
-	virtual bool degrade(Qwt3D::Enrichment*);								//!< Remove an Enrichment
+        virtual bool degrade(Qwt3D::Enrichment*);								//!< Remove an Enrichment
+
+        void clearEnrichments();//!< Remove all Enrichments
 
 	double** getData(int *cols, int *rows);
 	CellField* getCellData(int *cells);
@@ -89,45 +92,45 @@ signals:
 
 public slots:
     void setResolution(int);
-	void setPlotStyle(Qwt3D::PLOTSTYLE val);
-	void setPlotStyle(Qwt3D::Enrichment& val);
-	void setPolygonOffset(double d);
-        void setFloorStyle(Qwt3D::FLOORSTYLE val)	{ floorstyle_ = val; update_displaylists_ = true;}		//!< Sets floor style
-	void setShading(Qwt3D::SHADINGSTYLE val);
-	void setIsolines(unsigned int isolines);
+    void setPlotStyle(Qwt3D::PLOTSTYLE val);
+    void setPlotStyle(Qwt3D::Enrichment& val);
+    void setPolygonOffset(double d);
+    void setFloorStyle(Qwt3D::FLOORSTYLE val) { floorstyle_ = val; update_displaylists_ = true;} //!< Sets floor style
+    void setShading(Qwt3D::SHADINGSTYLE val);
+    void setIsolines(unsigned int isolines);
 
-	void showNormals(bool); 												//!< Draw normals to every vertex
-	void setNormalLength(double val);										//!< Sets length of normals in percent per hull diagonale
-	void setNormalQuality(int val);											//!< Increases plotting quality of normal arrows
+    void showNormals(bool); 												//!< Draw normals to every vertex
+    void setNormalLength(double val);										//!< Sets length of normals in percent per hull diagonale
+    void setNormalQuality(int val);											//!< Increases plotting quality of normal arrows
 
-	void setSmoothMesh(bool val)				{ smoothdatamesh_p = val; } //!< Enables/disables smooth data mesh lines. Default is false
-	void setMeshColor(Qwt3D::RGBA rgba);									//!< Sets color for data mesh
-	void setMeshLineWidth(double lw);										//!< Sets line width for data mesh
+    void setSmoothMesh(bool val) { smoothdatamesh_p = val; update_displaylists_ = true;} //!< Enables/disables smooth data mesh lines. Default is false
+    void setMeshColor(Qwt3D::RGBA rgba);									//!< Sets color for data mesh
+    void setMeshLineWidth(double lw);										//!< Sets line width for data mesh
 
-	void setDataColor(Color* col);											//!< Sets new data color object
-	void setDataProjection(bool toggle = true)	{ datapoints_ = toggle; }	//!< Sets data point projection on & off
-	void setProjection(Qwt3D::PROJECTMODE val, bool toggle = true);			//!< Sets projection modes
+    void setDataColor(Color* col);											//!< Sets new data color object
+    void setDataProjection(bool toggle = true)	{ datapoints_ = toggle; }	//!< Sets data point projection on & off
+    void setProjection(Qwt3D::PROJECTMODE val, bool toggle = true);			//!< Sets projection modes
 
-	void setTitleColor(Qwt3D::RGBA col)			{ title_p->setColor(col); }	//!< Set caption color
-	void setTitle(const QString& title) {									//!< Set caption text (one row only)
-		if (title.isEmpty() || ((title == TITLE) && (plot_p->titleList().size() > 1)))
-			plot_p->removeTitle(title_p);
-		else
-			title_p->setString(title);
-	}
+    void setTitleColor(Qwt3D::RGBA col)			{ title_p->setColor(col); }	//!< Set caption color
+    void setTitle(const QString& title) {//!< Set caption text (one row only)
+        if (title.isEmpty() || ((title == TITLE) && (plot_p->titleList().size() > 1)))
+            plot_p->removeTitle(title_p);
+        else
+            title_p->setString(title);
+    }
 
-	void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR anchor = Qwt3D::TopCenter);
-	void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
+    void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR anchor = Qwt3D::TopCenter);
+    void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
-	void createData();
-	void createEnrichments();
+    void createData();
+    void createEnrichments();
 
 protected:
-	typedef QList<Qwt3D::Enrichment*> EnrichmentList;
-	typedef EnrichmentList::iterator ELIT;
+    typedef QList<Qwt3D::Enrichment*> EnrichmentList;
+    typedef EnrichmentList::iterator ELIT;
 
-	Plot3D*				plot_p;
-	Qwt3D::Label*		title_p;
+    Plot3D*				plot_p;
+    Qwt3D::Label*		title_p;
     Qwt3D::Data* 		actualData_p;
 
     bool				update_displaylists_;
@@ -143,45 +146,45 @@ protected:
     Qwt3D::FLOORSTYLE	floorstyle_;
     double				polygonOffset_;
 
-	unsigned int		isolines_;
-	unsigned int		point_size_;
+    unsigned int		isolines_;
+    unsigned int		point_size_;
 
-	bool	datapoints_;
-	bool	facemode_;
-	bool	sidemode_;
-	bool	floormode_;
-	bool	smoothdatamesh_p;
-	bool	datanormals_p;
-	double	normalLength_p;
-	int		normalQuality_p;
-	int		resolution_p;
+    bool	datapoints_;
+    bool	facemode_;
+    bool	sidemode_;
+    bool	floormode_;
+    bool	smoothdatamesh_p;
+    bool	datanormals_p;
+    double	normalLength_p;
+    int		normalQuality_p;
+    int		resolution_p;
 
-	void updateData();
-	virtual void drawImplementation();
+    void updateData();
+    virtual void drawImplementation();
 
-	void setHull(Qwt3D::ParallelEpiped p) {hull_ = p;}
-	virtual void calculateHull();
+    void setHull(Qwt3D::ParallelEpiped p) {hull_ = p;}
+    virtual void calculateHull();
 
-	virtual void createEnrichment(Qwt3D::Enrichment& p);
-	virtual void createFloorData();
-	virtual void createSideData();
-	virtual void createFaceData();
-	void createNormals();
-	void createPoints();    
+    virtual void createEnrichment(Qwt3D::Enrichment& p);
+    virtual void createFloorData();
+    virtual void createSideData();
+    virtual void createFaceData();
+    void createNormals();
+    void createPoints();
 
-	void drawVertex(Triple& vertex, double shift, unsigned int comp = 3);
-	virtual void drawIntersections(std::vector<Triple>& intersection, double shift, unsigned int comp,
-								   bool projected, RGBA colour[] = 0);
+    void drawVertex(Triple& vertex, double shift, unsigned int comp = 3);
+    virtual void drawIntersections(std::vector<Triple>& intersection, double shift, unsigned int comp,
+                                                               bool projected, RGBA colour[] = 0);
 
     void readIn(Qwt3D::GridData& gdata, Triple** data, unsigned int columns, unsigned int rows);
-    void readIn(Qwt3D::GridData& gdata, double** data, unsigned int columns, unsigned int rows, 
-                double minx, double maxx, double miny, double maxy);
+    void readIn(Qwt3D::GridData& gdata, double** data, unsigned int columns, unsigned int rows,
+            double minx, double maxx, double miny, double maxy);
     void calcNormals(GridData& gdata);
     void sewPeriodic(GridData& gdata);
 
-	void animateData(double** data);
-	void animateData(TripleField* data, CellField* poly);
-	void animateData(TripleField* data);
+    void animateData(double** data);
+    void animateData(TripleField* data, CellField* poly);
+    void animateData(TripleField* data);
 
 private:
 	enum OBJECTS {

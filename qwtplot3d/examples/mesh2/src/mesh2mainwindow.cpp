@@ -93,7 +93,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     functionRadioButton->hide();
     connect( functionRadioButton, SIGNAL( clicked ( bool ) ), this, SLOT( setActiveFunction( bool ) ) );
     parametricRadioButton->hide();
-    connect( parametricRadioButton, SIGNAL( clicked ( bool ) ), this, SLOT( setActiveParametric( bool ) ) );
+    connect( parametricRadioButton, SIGNAL( clicked ( bool ) ), this, SLOT( setActiveParametric( bool )));
+    connect( smoothLineCheckBox, SIGNAL( clicked ( bool ) ), this, SLOT( setSmoothLine( bool )));
 
     grid->addWidget( dataWidget, 0, 0 );
 
@@ -119,6 +120,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     //connect(openFile, SIGNAL(triggered()), this, SLOT(open()));
     connectA( openMeshFile, SLOT( openMesh() ) );
 
+
     // only EXCLUSIVE groups emit selected :-/
     connect( left, SIGNAL( toggled( bool ) ), this, SLOT( setLeftGrid( bool ) ) );
     connect( right, SIGNAL( toggled( bool ) ), this, SLOT( setRightGrid( bool ) ) );
@@ -131,8 +133,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     connect( timer, SIGNAL(timeout()), this, SLOT(rotate()) );
 
     resSlider->setRange(1,70);
-    connect( resSlider, SIGNAL(valueChanged(int)), dataWidget, SLOT(setResolution(int)) );
-    connect( dataWidget, SIGNAL(resolutionChanged(int)), resSlider, SLOT(setValue(int)) );
+    connect( resSlider, SIGNAL(valueChanged(int)), this, SLOT(setResolution(int)) );
     resSlider->setValue(1);
 
     connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
@@ -293,10 +294,12 @@ void Mesh2MainWindow::createFunction(QString const& name)
 
     if (!d_function){
         d_function = new Curve(dataWidget);
+        d_function->setSmoothMesh(true);
         d_function->setDataProjection(false);
         d_function->setProjection(BASE);
         d_function->setProjection(FACE, false);
         d_function->setProjection(SIDE, false);
+        d_function->setResolution(resSlider->value());
         dataWidget->addCurve(d_function);
     }
 
@@ -399,10 +402,12 @@ void Mesh2MainWindow::createPSurface(QString const& name)
 
     if (!d_parametric_surface){
         d_parametric_surface = new Curve(dataWidget);
+        d_parametric_surface->setSmoothMesh(true);
         d_parametric_surface->setDataProjection(false);
         d_parametric_surface->setProjection(BASE);
         d_parametric_surface->setProjection(FACE, false);
         d_parametric_surface->setProjection(SIDE, false);
+        d_parametric_surface->setResolution(resSlider->value());
 
         dataWidget->addCurve(d_parametric_surface);
     }
@@ -676,6 +681,7 @@ void Mesh2MainWindow::pickNumberColor()
         return;
     RGBA rgb = Qt2GL(c);
     dataWidget->coordinates()->setNumberColor(rgb);
+    dataWidget->legend()->axis()->setNumberColor(rgb);
     dataWidget->updateGL();
 }
 
@@ -740,7 +746,9 @@ void Mesh2MainWindow::pickNumberFont()
     QFont font = QFontDialog::getFont(&ok, this );
     if ( !ok )
         return;
+
     dataWidget->coordinates()->setNumberFont(font);
+    dataWidget->legend()->axis()->setNumberFont(font);
     dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickLabelFont()
@@ -1026,4 +1034,20 @@ void Mesh2MainWindow::setActiveParametric( bool on)
 {
     if (dataWidget && d_parametric_surface && on)
         dataWidget->setCurve(d_parametric_surface);
+}
+
+void Mesh2MainWindow::setSmoothLine(bool smooth)
+{
+    QVector<Qwt3D::Curve*> curves = dataWidget->curveList();
+    foreach(Qwt3D::Curve* curve, curves)
+        curve->setSmoothMesh(smooth);
+
+    dataWidget->coordinates()->setLineSmooth(smooth);
+    dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::setResolution(int resolution)
+{
+    dataWidget->setResolution(resolution);
+    dataWidget->updateData();
 }

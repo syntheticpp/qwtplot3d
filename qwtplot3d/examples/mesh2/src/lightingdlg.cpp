@@ -35,10 +35,6 @@ Plot::Plot(QWidget *parent)
                 Qt::NoButton,
                 Qt::NoButton,
                 Qt::NoButton);
-
-    /*Pointer stick = Pointer(0.5);
-    stick.setPos(0, 0, 1);
-    curve->addEnrichment(stick);*/
 }
 
 void Plot::reset()
@@ -168,16 +164,19 @@ void LightingDlg::reset()
 
 void LightingDlg::setDistance(int val)
 {
-  
-  //plot->stick.setPos(0,0,val/100.);
-  plot->updateData();
-  plot->updateGL();
-  
-  double drad = (dataPlot->hull().maxVertex-dataPlot->hull().minVertex).length();
-  drad *= val/20.;
+    plot->curve()->clearEnrichments();
 
-  dataPlot->setLightShift(drad,drad,drad);
-  dataPlot->updateGL();
+    Pointer stick = Pointer(0.5);
+    stick.setPos(0, 0,  val/100.);
+    plot->curve()->addEnrichment(stick);
+
+    plot->updateData();
+
+    double drad = (dataPlot->hull().maxVertex-dataPlot->hull().minVertex).length();
+    drad *= val/20.;
+
+    dataPlot->setLightShift(drad,drad,drad);
+    dataPlot->updateGL();
 }
 
 void LightingDlg::assign(Qwt3D::Plot3D* pl) 

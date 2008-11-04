@@ -320,6 +320,12 @@ bool Curve::degrade(Enrichment* e)
 	return false;
 }
 
+void Curve::clearEnrichments()
+{
+    for (ELIT it = elist_p.begin(); it != elist_p.end(); ++it)
+        this->degrade(*it);
+}
+
 void Curve::createEnrichments()
 {
 	for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
