@@ -47,6 +47,8 @@ public:
   QAction* labelcolor;
   QAction* titlecolor;
   QAction* datacolor;
+  QAction* mingridcolor;
+  QAction* majgridcolor;
   QAction* resetcolor;
   
   QActionGroup* font;

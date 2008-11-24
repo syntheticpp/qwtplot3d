@@ -108,6 +108,9 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     connectA( labelcolor, SLOT( pickLabelColor() ) );
     connectA( titlecolor, SLOT( pickTitleColor() ) );
     connectA( datacolor, SLOT( pickDataColor() ) );
+    connectA( mingridcolor, SLOT( pickMinGridColor() ) );
+    connectA( majgridcolor, SLOT( pickMajGridColor() ) );
+
     connect( lighting, SIGNAL( clicked() ), this, SLOT( pickLighting() ) );
     connectA( resetcolor, SLOT( resetColors() ) );
     connectA( numberfont, SLOT( pickNumberFont() ) );
@@ -176,6 +179,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
     connect(normalsquality,  SIGNAL(valueChanged(int)), this, SLOT(setNormalQuality(int)) );
     connect(normalslength,  SIGNAL(valueChanged(int)), this, SLOT(setNormalLength(int)) );
+
+    connect(gridLineStyleBox,  SIGNAL(activated(int)), this, SLOT(updateGridLineStyle(int)) );
 
     setStandardView();
 
@@ -513,12 +518,14 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
             if (action == Frame)
                     dataWidget->setCoordinateStyle(FRAME);
             grids->setEnabled(true);
+            gridLineStyleBox->setEnabled(true);
     }
     else if (action == None)
     {
       dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
             dataWidget->setCoordinateStyle(NOCOORD);
             grids->setEnabled(false);
+            gridLineStyleBox->setEnabled(false);
     }
 }
 
@@ -630,6 +637,8 @@ void Mesh2MainWindow::resetColors()
     dataWidget->updateData();
     dataWidget->coordinates()->setNumberColor(nuc);
     dataWidget->coordinates()->setLabelColor(lbc);
+    setMajGridColor(Qt::black);
+    setMinGridColor(Qt::black);
     dataWidget->setTitleColor(tc);
 
     Curve *curve = dataWidget->curve();
@@ -702,6 +711,62 @@ void Mesh2MainWindow::pickTitleColor()
     RGBA rgb = Qt2GL(c);
     dataWidget->setTitleColor(rgb);
     dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::pickMinGridColor()
+{
+    Qwt3D::GridLine minGrid = dataWidget->coordinates()->minorGridLines()[X1];
+
+    RGBA rgba = minGrid.color_;
+    QColor c = QColorDialog::getColor(GL2Qt(rgba.r, rgba.g, rgba.b), this );
+    if ( !c.isValid() )
+        return;
+
+    setMinGridColor(c);
+    dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::setMinGridColor(const QColor& c)
+{
+    Qwt3D::GridLine minGrid = dataWidget->coordinates()->minorGridLines()[X1];
+    minGrid.color_ = Qt2GL(c);
+    minGrid.visible_ = true;
+
+    static QVector<Qwt3D::AXIS> axes;
+    axes << Qwt3D::X1 << Qwt3D::X2 << Qwt3D::X3 << Qwt3D::X4;
+    axes << Qwt3D::Y1 << Qwt3D::Y2 << Qwt3D::Y3 << Qwt3D::Y4;
+    axes << Qwt3D::Z1 << Qwt3D::Z2 << Qwt3D::Z3 << Qwt3D::Z4;
+
+    foreach(Qwt3D::AXIS axis, axes)
+        dataWidget->coordinates()->setMinorGridLines(axis, minGrid);
+}
+
+void Mesh2MainWindow::pickMajGridColor()
+{
+    Qwt3D::GridLine majGrid = dataWidget->coordinates()->majorGridLines()[X1];
+
+    RGBA rgba = majGrid.color_;
+    QColor c = QColorDialog::getColor(GL2Qt(rgba.r, rgba.g, rgba.b), this);
+    if (!c.isValid())
+        return;
+
+    setMajGridColor(c);
+    dataWidget->updateGL();
+}
+
+void Mesh2MainWindow::setMajGridColor(const QColor& c)
+{
+    Qwt3D::GridLine majGrid = dataWidget->coordinates()->majorGridLines()[X1];
+    majGrid.color_ = Qt2GL(c);
+    majGrid.visible_ = true;
+
+    static QVector<Qwt3D::AXIS> axes;
+    axes << Qwt3D::X1 << Qwt3D::X2 << Qwt3D::X3 << Qwt3D::X4;
+    axes << Qwt3D::Y1 << Qwt3D::Y2 << Qwt3D::Y3 << Qwt3D::Y4;
+    axes << Qwt3D::Z1 << Qwt3D::Z2 << Qwt3D::Z3 << Qwt3D::Z4;
+
+    foreach(Qwt3D::AXIS axis, axes)
+        dataWidget->coordinates()->setMajorGridLines(axis, majGrid);
 }
 
 void Mesh2MainWindow::pickLighting()
@@ -1050,4 +1115,27 @@ void Mesh2MainWindow::setResolution(int resolution)
 {
     dataWidget->setResolution(resolution);
     dataWidget->updateData();
+}
+
+void Mesh2MainWindow::updateGridLineStyle(int style)
+{
+    Qwt3D::GridLine majGrid = dataWidget->coordinates()->majorGridLines()[X1];
+    majGrid.style_ = (Qwt3D::LINESTYLE)style;
+    majGrid.visible_ = true;
+    
+    Qwt3D::GridLine minGrid = dataWidget->coordinates()->minorGridLines()[X1];
+    minGrid.style_ = (Qwt3D::LINESTYLE)style;
+    minGrid.visible_ = true;
+    
+    static QVector<Qwt3D::AXIS> axes;
+    axes << Qwt3D::X1 << Qwt3D::X2 << Qwt3D::X3 << Qwt3D::X4;
+    axes << Qwt3D::Y1 << Qwt3D::Y2 << Qwt3D::Y3 << Qwt3D::Y4;
+    axes << Qwt3D::Z1 << Qwt3D::Z2 << Qwt3D::Z3 << Qwt3D::Z4;
+
+    foreach(Qwt3D::AXIS axis, axes){
+        dataWidget->coordinates()->setMajorGridLines(axis, majGrid);
+        dataWidget->coordinates()->setMinorGridLines(axis, minGrid);
+    }
+
+    dataWidget->updateGL();
 }

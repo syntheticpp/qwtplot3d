@@ -73,6 +73,8 @@ void DesignerWorkaround::setupWorkaround(QMainWindow* mw)
     labelcolor = new QAction(tr("&Label"), color);
     titlecolor = new QAction(tr("Caption"), color);
     datacolor = new QAction(tr("Data color"), color);
+    mingridcolor = new QAction(tr("Minor grid lines"), color);
+    majgridcolor = new QAction(tr("Major &grid lines"), color);
     resetcolor = new QAction(tr("&Reset"), color);
 
   font = new QActionGroup(mw);

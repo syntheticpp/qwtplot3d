@@ -68,6 +68,8 @@ public slots:
     void pickLabelColor();
     void pickTitleColor();
     void pickDataColor();
+    void pickMinGridColor();
+    void pickMajGridColor();
     void pickLighting();
     void resetColors();
     void pickNumberFont();
@@ -109,8 +111,12 @@ public slots:
     void setActiveParametric( bool on);
     void setSmoothLine( bool );
     void setResolution( int );
+    void updateGridLineStyle( int);
 
 private:
+    void setMajGridColor(const QColor& c);
+    void setMinGridColor(const QColor& c);
+
     QLabel *filenameWidget, *dimWidget, *rotateLabel, *shiftLabel, *scaleLabel, *zoomLabel;
     QTimer* timer;
     int redrawWait;

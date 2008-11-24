@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>523</width>
-    <height>472</height>
+    <width>671</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -402,6 +402,57 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Grid Style</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="gridLineStyleBox">
+        <item>
+         <property name="text">
+          <string>Solid</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dash</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dot</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DashDot</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DashDotDot</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ShortDash</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ShortDot</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ShortDashDot</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </item>
