@@ -11,7 +11,7 @@ unix:LIBS += -lqwtplot3d -L../../lib
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions
 
 win32{
-  LIBS += ../../lib/qwtplot3d.lib
+  LIBS += ../../lib/qwtplot3d.dll
   TEMPLATE  = vcapp
   DEFINES  += QT_DLL QWT3D_DLL
   RC_FILE = ../icon.rc

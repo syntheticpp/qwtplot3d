@@ -1,5 +1,5 @@
 TEMPLATE     = app
-CONFIG      += qt warn_on thread
+CONFIG      += qt warn_on thread release
 UI_DIR       = tmp
 MOC_DIR      = tmp
 OBJECTS_DIR  = tmp
@@ -19,7 +19,7 @@ CONFIG(debug, debug|release) {
 
 win32 {
   win32-g++ {
-    LIBS += ../../lib/libqwtplot3d.a
+    LIBS += ../../lib/qwtplot3d.dll
   } else {
     LIBS += ../../lib/qwtplot3d.lib
     TEMPLATE  = vcapp
