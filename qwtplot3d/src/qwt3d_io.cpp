@@ -287,6 +287,14 @@ void IO::setupHandler()
 #endif
   vecfunc.setFormat("PDF");
   defineOutputHandler("PDF", vecfunc);
+  vecfunc.setFormat("SVG");
+  defineOutputHandler("SVG", vecfunc);
+  vecfunc.setFormat("PGF");
+  defineOutputHandler("PGF", vecfunc);
+#ifdef GL2PS_HAVE_ZLIB
+  vecfunc.setFormat("SVG_GZ");
+  defineOutputHandler("SVG_GZ", vecfunc);
+#endif
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());

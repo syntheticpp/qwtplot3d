@@ -3,6 +3,7 @@
 #endif
 
 #include <time.h>
+#include <locale.h>
 #include "qwt3d_openglhelper.h"
 #include "../3rdparty/gl2ps/gl2ps.h"
 #include "qwt3d_io_gl2ps.h"
@@ -62,8 +63,8 @@ void VectorWriter::setCompressed(bool val)
 }
 
 /*! 
-Set output format, must be one of "EPS_GZ", "PS_GZ", "EPS", 
-"PS", "PDF" (case sensitive)
+Set output format, must be one of "EPS_GZ", "PS_GZ", "SVG_GZ", "EPS", 
+"PS", "PDF", "SVG", or "PGF" (case sensitive)
 */
 bool VectorWriter::setFormat(QString const& format)
 {
@@ -86,14 +87,28 @@ bool VectorWriter::setFormat(QString const& format)
 	}
 	else if (format == QString("PS_GZ"))
 	{
-		gl2ps_format_ = GL2PS_PS;
-	}
+      gl2ps_format_ = GL2PS_PS;
+    }
 #endif
-	else
-	{
+    else if (format == QString("SVG"))
+    {
+      gl2ps_format_ = GL2PS_SVG;
+    }
+  #ifdef GL2PS_HAVE_ZLIB
+    else if (format == QString("SVG_GZ"))
+    {
+      gl2ps_format_ = GL2PS_SVG;
+    }
+#endif
+  else if (format == QString("PGF"))
+  {
+    gl2ps_format_ = GL2PS_PGF;
+  }
+  else
+  {
     formaterror_ = true;
-		return false;
-	}
+    return false;
+  }
   formaterror_ = false;
   return true;
 }
@@ -103,6 +118,8 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 {
   if (formaterror_)
     return false;
+  
+  char* tmploc = setlocale(LC_ALL, "C");
 
   plot->makeCurrent();
  	
@@ -178,18 +195,20 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 	if (newtime && newtime->tm_year + 1900 > 2002)
 	  producer += "-" + QString::number(newtime->tm_year+1900); 
 
-  producer += " Micha Bieber <krischnamurti@users.sourceforge.net>";
+  // the SVG format does not like some of the characters in a mail address
+  producer += " Micha Bieber, mailto: krischnamurti at users.sourceforge.net";
 
 	FILE *fp = fopen(QWT3DLOCAL8BIT(fname), "wb");	
 	if (!fp)
   {
     Label::useDeviceFonts(false);
+    setlocale(LC_ALL, tmploc);
 		return false;
   }
   while( state == GL2PS_OVERFLOW )
 	{ 
 		bufsize += 2*1024*1024;
-		gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
+		gl2psBeginPage ( QWT3DLOCAL8BIT(fname), QWT3DLOCAL8BIT(producer), viewport,
 										 gl2ps_format_, sortmode,
 										 options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
 										 fp, QWT3DLOCAL8BIT(fname) );
@@ -211,6 +230,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
     if (!fp)
     {
       Label::useDeviceFonts(false);
+      setlocale(LC_ALL, tmploc);
       return false;
     }    
     Label::useDeviceFonts(true);
@@ -219,7 +239,7 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
     while( state == GL2PS_OVERFLOW )
     { 
       bufsize += 2*1024*1024;
-      gl2psBeginPage ( "---", QWT3DLOCAL8BIT(producer), viewport,
+      gl2psBeginPage ( QWT3DLOCAL8BIT(fname), QWT3DLOCAL8BIT(producer), viewport,
         GL2PS_TEX, sortmode,
         options, GL_RGBA, 0, NULL, 0, 0, 0, bufsize,
         fp, QWT3DLOCAL8BIT(fn) );
@@ -234,7 +254,8 @@ bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
 
   Label::useDeviceFonts(false);
 
-	return true;
+  setlocale(LC_ALL, tmploc);
+  return true;
 }	    
 
 
@@ -304,7 +325,7 @@ GLint Qwt3D::drawDevicePixels(GLsizei width, GLsizei height,
 	return ret;
 }
 
-GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA rgba, ANCHOR align, double gap)
+GLint Qwt3D::drawDeviceText(const char* str, const char* fontname, int fontsize, Triple pos, RGBA /*rgba*/, ANCHOR align, double gap)
 {
 	double vp[3];
 
