@@ -19,7 +19,7 @@ GridPlot::GridData::GridData()
 GridPlot::GridData::GridData(unsigned int columns, unsigned int rows)
 {
   datatype_p = Qwt3D::GRID;
-	setSize(columns,rows);
+  setSize(columns,rows);
   setPeriodic(false,false);
 }
 
@@ -30,32 +30,32 @@ GridPlot::GridData::~GridData()
 
 void GridPlot::GridData::clear()
 {
-	setHull(ParallelEpiped());
-	{
-		for (unsigned i=0; i!=vertices.size(); ++i)
-		{	
-			for (unsigned j=0; j!=vertices[i].size(); ++j)
-			{	
-				delete [] vertices[i][j];	
-			}
-			vertices[i].clear();
-		}
-	}
+  setHull(ParallelEpiped());
+  {
+    for (unsigned i=0; i!=vertices.size(); ++i)
+    {	
+      for (unsigned j=0; j!=vertices[i].size(); ++j)
+      {	
+        delete [] vertices[i][j];	
+      }
+      vertices[i].clear();
+    }
+  }
 
-	vertices.clear();
+  vertices.clear();
 
-	{
-		for (unsigned i=0; i!=normals.size(); ++i)
-		{	
-			for (unsigned j=0; j!=normals[i].size(); ++j)
-			{	
-				delete [] normals[i][j];	
-			}
-			normals[i].clear();
-		}
-	}
-	
-	normals.clear();
+  {
+    for (unsigned i=0; i!=normals.size(); ++i)
+    {	
+      for (unsigned j=0; j!=normals[i].size(); ++j)
+      {	
+        delete [] normals[i][j];	
+      }
+      normals[i].clear();
+    }
+  }
+  
+  normals.clear();
 }
 
 int GridPlot::GridData::columns() const 
@@ -70,29 +70,29 @@ int GridPlot::GridData::rows() const
 
 void GridPlot::GridData::setSize(unsigned int columns, unsigned int rows)
 {
-	clear();
-	vertices = std::vector<DataColumn>(columns);
-	{
-		for (unsigned int i=0; i!=vertices.size(); ++i)
-		{
-			vertices[i] = DataColumn(rows);
-			for (unsigned int j=0; j!=vertices[i].size(); ++j)
-			{
-				vertices[i][j] = new GLdouble[3];
-			}
-		}
-	}
-	normals = std::vector<DataColumn>(columns);
-	{
-		for (unsigned int i=0; i!=normals.size(); ++i)
-		{
-			normals[i] = DataColumn(rows);
-			for (unsigned int j=0; j!=normals[i].size(); ++j)
-			{
-				normals[i][j] = new GLdouble[3];
-			}
-		}
-	}
+  clear();
+  vertices = std::vector<DataColumn>(columns);
+  {
+    for (unsigned int i=0; i!=vertices.size(); ++i)
+    {
+      vertices[i] = DataColumn(rows);
+      for (unsigned int j=0; j!=vertices[i].size(); ++j)
+      {
+        vertices[i][j] = new GLdouble[3];
+      }
+    }
+  }
+  normals = std::vector<DataColumn>(columns);
+  {
+    for (unsigned int i=0; i!=normals.size(); ++i)
+    {
+      normals[i] = DataColumn(rows);
+      for (unsigned int j=0; j!=normals[i].size(); ++j)
+      {
+        normals[i][j] = new GLdouble[3];
+      }
+    }
+  }
 }
 
 /**
@@ -108,89 +108,89 @@ GridPlot::GridPlot( QWidget * parent, const QGLWidget * shareWidget)
 
 GridPlot::~GridPlot()
 {
-	delete data_;
+  delete data_;
 }
 
 void GridPlot::setColorFromVertex(int ix, int iy, bool skip)
 {
-	if (skip)
-		return;
+  if (skip)
+    return;
 
-	RGBA col = (*datacolor_p)(
-		data_->vertices[ix][iy][0],
-		data_->vertices[ix][iy][1],
-		data_->vertices[ix][iy][2]);
-		
-	glColor4d(col.r, col.g, col.b, col.a);
+  RGBA col = (*datacolor_p)(
+    data_->vertices[ix][iy][0],
+    data_->vertices[ix][iy][1],
+    data_->vertices[ix][iy][2]);
+    
+  glColor4d(col.r, col.g, col.b, col.a);
 }
 
 
 void GridPlot::createNormals()
 {
-	if (!normals() || data_->empty())
-		return;
+  if (!normals() || data_->empty())
+    return;
 
   Arrow arrow;
   arrow.setQuality(normalQuality());
 
-	Triple basev, topv, norm;	
-	
-	int step = resolution();
+  Triple basev, topv, norm;	
+  
+  int step = resolution();
 
-	double diag = (data_->hull().maxVertex-data_->hull().minVertex).length() * normalLength();
+  double diag = (data_->hull().maxVertex-data_->hull().minVertex).length() * normalLength();
 
   arrow.assign(*this);
   arrow.drawBegin();
-	for (int i = 0; i <= data_->columns() - step; i += step) 
-	{
-		for (int j = 0; j <= data_->rows() - step; j += step) 
-		{
-			basev = Triple(data_->vertices[i][j][0],data_->vertices[i][j][1],data_->vertices[i][j][2]);
-			topv = Triple(data_->vertices[i][j][0]+data_->normals[i][j][0],
-							 data_->vertices[i][j][1]+data_->normals[i][j][1],
-							 data_->vertices[i][j][2]+data_->normals[i][j][2]);	
-			
-			norm = topv-basev;
-			norm.normalize();
-			norm	*= diag;
+  for (int i = 0; i <= data_->columns() - step; i += step) 
+  {
+    for (int j = 0; j <= data_->rows() - step; j += step) 
+    {
+      basev = Triple(data_->vertices[i][j][0],data_->vertices[i][j][1],data_->vertices[i][j][2]);
+      topv = Triple(data_->vertices[i][j][0]+data_->normals[i][j][0],
+               data_->vertices[i][j][1]+data_->normals[i][j][1],
+               data_->vertices[i][j][2]+data_->normals[i][j][2]);	
+      
+      norm = topv-basev;
+      norm.normalize();
+      norm	*= diag;
 
       arrow.setTop(basev+norm);
       arrow.setColor((*datacolor_p)(basev.x,basev.y,basev.z));
       arrow.draw(basev);
-		}
-	}
+    }
+  }
   arrow.drawEnd();
 }
 
 void GridPlot::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigned int rows)
 {
-	gdata.setSize(columns,rows);
-	
+  gdata.setSize(columns,rows);
+  
   ParallelEpiped range(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
 
-	/* fill out the vertex array for the mesh. */
-	for (unsigned i = 0; i != columns; ++i) 
-	{
-		for (unsigned j = 0; j != rows; ++j) 
-		{
-			gdata.vertices[i][j][0] = data[i][j].x; 
-			gdata.vertices[i][j][1] = data[i][j].y;
-			gdata.vertices[i][j][2] = data[i][j].z;
+  /* fill out the vertex array for the mesh. */
+  for (unsigned i = 0; i != columns; ++i) 
+  {
+    for (unsigned j = 0; j != rows; ++j) 
+    {
+      gdata.vertices[i][j][0] = data[i][j].x; 
+      gdata.vertices[i][j][1] = data[i][j].y;
+      gdata.vertices[i][j][2] = data[i][j].z;
 
-			if (data[i][j].x > range.maxVertex.x)
-				range.maxVertex.x = data[i][j].x;
-			if (data[i][j].y > range.maxVertex.y)
-				range.maxVertex.y = data[i][j].y;
-			if (data[i][j].z > range.maxVertex.z)
-				range.maxVertex.z = data[i][j].z;
-			if (data[i][j].x < range.minVertex.x)
-				range.minVertex.x = data[i][j].x;
-			if (data[i][j].y < range.minVertex.y)
-				range.minVertex.y = data[i][j].y;
-			if (data[i][j].z < range.minVertex.z)
-				range.minVertex.z = data[i][j].z;
- 		}
-	}
+      if (data[i][j].x > range.maxVertex.x)
+        range.maxVertex.x = data[i][j].x;
+      if (data[i][j].y > range.maxVertex.y)
+        range.maxVertex.y = data[i][j].y;
+      if (data[i][j].z > range.maxVertex.z)
+        range.maxVertex.z = data[i][j].z;
+      if (data[i][j].x < range.minVertex.x)
+        range.minVertex.x = data[i][j].x;
+      if (data[i][j].y < range.minVertex.y)
+        range.minVertex.y = data[i][j].y;
+      if (data[i][j].z < range.minVertex.z)
+        range.minVertex.z = data[i][j].z;
+    }
+  }
   gdata.setHull(range);
 }
 
@@ -199,78 +199,78 @@ void GridPlot::readIn(GridData& gdata, double** data, unsigned int columns, unsi
             , double minx, double maxx, double miny, double maxy)
 {
   gdata.setPeriodic(false,false);
-	gdata.setSize(columns,rows);
-	
-	double dx = (maxx - minx) / (gdata.columns() - 1);
-	double dy = (maxy - miny) / (gdata.rows() - 1);
+  gdata.setSize(columns,rows);
+  
+  double dx = (maxx - minx) / (gdata.columns() - 1);
+  double dy = (maxy - miny) / (gdata.rows() - 1);
 
-	double tmin = DBL_MAX;
-	double tmax = -DBL_MAX;
+  double tmin = DBL_MAX;
+  double tmax = -DBL_MAX;
 
-	/* fill out the vertex array for the mesh. */
-	for (unsigned i = 0; i != columns; ++i) 
-	{
-		for (unsigned j = 0; j != rows; ++j) 
-		{
-			gdata.vertices[i][j][0] = minx + i*dx;
-			gdata.vertices[i][j][1] = miny + j*dy;
-			gdata.vertices[i][j][2] = data[i][j];
+  /* fill out the vertex array for the mesh. */
+  for (unsigned i = 0; i != columns; ++i) 
+  {
+    for (unsigned j = 0; j != rows; ++j) 
+    {
+      gdata.vertices[i][j][0] = minx + i*dx;
+      gdata.vertices[i][j][1] = miny + j*dy;
+      gdata.vertices[i][j][2] = data[i][j];
 
-			if (data[i][j] > tmax)
-				tmax = data[i][j];
-			if (data[i][j] < tmin)
-				tmin = data[i][j];
- 		}
-	}
-	ParallelEpiped hull = 
+      if (data[i][j] > tmax)
+        tmax = data[i][j];
+      if (data[i][j] < tmin)
+        tmin = data[i][j];
+    }
+  }
+  ParallelEpiped hull = 
   ParallelEpiped(
-										Triple(	
-														gdata.vertices[0][0][0], 
-														gdata.vertices[0][0][1], 
-														tmin
-													), 
-										Triple(
-														gdata.vertices[gdata.columns()-1][gdata.rows()-1][0], 
-														gdata.vertices[gdata.columns()-1][gdata.rows()-1][1], 
-														tmax
-													)
-									);
+                    Triple(	
+                            gdata.vertices[0][0][0], 
+                            gdata.vertices[0][0][1], 
+                            tmin
+                          ), 
+                    Triple(
+                            gdata.vertices[gdata.columns()-1][gdata.rows()-1][0], 
+                            gdata.vertices[gdata.columns()-1][gdata.rows()-1][1], 
+                            tmax
+                          )
+                  );
 
-	gdata.setHull(hull);
+  gdata.setHull(hull);
 }
 
 
 void GridPlot::calcNormals(GridData& gdata)
 {
-	
+  
   unsigned int rows = gdata.rows();
   unsigned int columns = gdata.columns();
   
   // normals
-	  
-	Triple u, v, n;  // for cross product
+    
+  Triple u, v, n;  // for cross product
 
-	for (unsigned i = 0; i != columns; ++i) 
-	{
-		for (unsigned j = 0; j != rows; ++j) 
-		{
-			n = Triple(0,0,0);
+  for (unsigned i = 0; i != columns; ++i) 
+  {
+    for (unsigned j = 0; j != rows; ++j) 
+    {
+      n = Triple(0,0,0);
       
       
       if (i<columns-1 && j<rows-1) 
       {
         /*	get two vectors to cross */      
         u = Triple(
-									  gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
+                  );
 
         v = Triple(
-									  gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
+                  );
         /* get the normalized cross product */ 
         n += normalizedcross(u,v); // right hand system here !
       }
@@ -278,56 +278,56 @@ void GridPlot::calcNormals(GridData& gdata)
       if (i>0 && j<rows-1) 
       {
         u = Triple(
-									  gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
-								  );
-			  v = Triple(
-									  gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i][j+1][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i][j+1][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i][j+1][2] - gdata.vertices[i][j][2]
+                  );
+        v = Triple(
+                    gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
+                  );
         n += normalizedcross(u,v); 
       }
 
       if (i>0 && j>0) 
       {
         u = Triple(
-									  gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i-1][j][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i-1][j][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i-1][j][2] - gdata.vertices[i][j][2]
+                  );
 
         v = Triple(
-									  gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
+                  );
         n += normalizedcross(u,v); 
       }
 
       if (i<columns-1 && j>0) 
       {
         u = Triple(
-									  gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i][j-1][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i][j-1][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i][j-1][2] - gdata.vertices[i][j][2]
+                  );
 
         v = Triple(
-									  gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
-									  gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
-									  gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
-								  );
+                    gdata.vertices[i+1][j][0] - gdata.vertices[i][j][0],
+                    gdata.vertices[i+1][j][1] - gdata.vertices[i][j][1],
+                    gdata.vertices[i+1][j][2] - gdata.vertices[i][j][2]
+                  );
         n += normalizedcross(u,v);
       }
       n.normalize();
 
-			gdata.normals[i][j][0] = n.x;
-			gdata.normals[i][j][1] = n.y;
-			gdata.normals[i][j][2] = n.z;
-		}    
-	} 
+      gdata.normals[i][j][0] = n.x;
+      gdata.normals[i][j][1] = n.y;
+      gdata.normals[i][j][2] = n.z;
+    }    
+  } 
 }
 
 
@@ -345,15 +345,15 @@ void GridPlot::sewPeriodic(GridData& gdata)
     for (unsigned i = 0; i != columns; ++i)
     {
       n = Triple(
-									gdata.normals[i][0][0] + gdata.normals[i][rows-1][0],
-									gdata.normals[i][0][1] + gdata.normals[i][rows-1][1],
-									gdata.normals[i][0][2] + gdata.normals[i][rows-1][2]
-								);
+                  gdata.normals[i][0][0] + gdata.normals[i][rows-1][0],
+                  gdata.normals[i][0][1] + gdata.normals[i][rows-1][1],
+                  gdata.normals[i][0][2] + gdata.normals[i][rows-1][2]
+                );
 
       n.normalize();        
-			gdata.normals[i][0][0] = gdata.normals[i][rows-1][0] = n.x;
-			gdata.normals[i][0][1] = gdata.normals[i][rows-1][1] = n.y;
-			gdata.normals[i][0][2] = gdata.normals[i][rows-1][2] = n.z;
+      gdata.normals[i][0][0] = gdata.normals[i][rows-1][0] = n.x;
+      gdata.normals[i][0][1] = gdata.normals[i][rows-1][1] = n.y;
+      gdata.normals[i][0][2] = gdata.normals[i][rows-1][2] = n.z;
     }
   }
   if (gdata.vperiodic())
@@ -361,24 +361,25 @@ void GridPlot::sewPeriodic(GridData& gdata)
     for (unsigned j = 0; j != rows; ++j) 
     {
       n = Triple(
-									gdata.normals[0][j][0] + gdata.normals[columns-1][j][0],
-									gdata.normals[0][j][1] + gdata.normals[columns-1][j][1],
-									gdata.normals[0][j][2] + gdata.normals[columns-1][j][2]
-								);
+                  gdata.normals[0][j][0] + gdata.normals[columns-1][j][0],
+                  gdata.normals[0][j][1] + gdata.normals[columns-1][j][1],
+                  gdata.normals[0][j][2] + gdata.normals[columns-1][j][2]
+                );
 
       n.normalize();        
-			gdata.normals[0][j][0] = gdata.normals[columns-1][j][0] = n.x;
-			gdata.normals[0][j][1] = gdata.normals[columns-1][j][1] = n.y;
-			gdata.normals[0][j][2] = gdata.normals[columns-1][j][2] = n.z;
+      gdata.normals[0][j][0] = gdata.normals[columns-1][j][0] = n.x;
+      gdata.normals[0][j][1] = gdata.normals[columns-1][j][1] = n.y;
+      gdata.normals[0][j][2] = gdata.normals[columns-1][j][2] = n.z;
     }
   }
 }
 
 /*!
-	Convert user grid data to internal vertex structure.
-	See also NativeReader::read() and Function::create()
+  Convert user grid data to internal vertex structure.
+  See also NativeReader::read() and Function::create()
 */
-bool GridPlot::appendDataSet(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
+bool GridPlot::appendDataSet(Triple** data, unsigned int columns, unsigned int rows, 
+                             bool uperiodic /*=false*/, bool vperiodic /*=false*/)
 {
   delete data_;
   data_ = new GridData;
@@ -387,159 +388,159 @@ bool GridPlot::appendDataSet(Triple** data, unsigned int columns, unsigned int r
   readIn(*data_, data, columns, rows);
   calcNormals(*data_);
   data_->setPeriodic(uperiodic,vperiodic);
-	sewPeriodic(*data_);
+  sewPeriodic(*data_);
 
- 	updateData();
-	updateNormals();
-	createCoordinateSystem();
+  updateData();
+  updateNormals();
+  createCoordinateSystem();
 
-	return true;
+  return true;
 }	
 
 /*! 
-	Convert user grid data to internal vertex structure.
-	See also NativeReader::read() and Function::create()
+  Convert user grid data to internal vertex structure.
+  See also NativeReader::read() and Function::create()
 */
-bool GridPlot::appendDataSet(double** data, unsigned int columns, unsigned int rows
-																				, double minx, double maxx, double miny, double maxy)
+bool GridPlot::appendDataSet(double** data, unsigned int columns, unsigned int rows,
+                             double minx, double maxx, double miny, double maxy)
 {	
   delete data_;
   data_ = new GridData;
   actualData_p = data_;
   
   data_->setPeriodic(false,false);
-	data_->setSize(columns,rows);
-	readIn(*data_,data,columns,rows,minx,maxx,miny,maxy);
+  data_->setSize(columns,rows);
+  readIn(*data_,data,columns,rows,minx,maxx,miny,maxy);
   calcNormals(*data_);  
-	
-	updateData();
-	updateNormals();
-	createCoordinateSystem();
+  
+  updateData();
+  updateNormals();
+  createCoordinateSystem();
 
-	return true;
+  return true;
 }	
 
 void GridPlot::data2Floor()
 {
-	if (actualData_p->empty())
-		return;
-	
-	int step = resolution();
+  if (actualData_p->empty())
+    return;
+  
+  int step = resolution();
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
-	
-	double zshift = actualData_p->hull().minVertex.z;
-	for (int i = 0; i < data_->columns() - step; i += step) 
-	{
-		glBegin(GL_TRIANGLE_STRIP);
-  		setColorFromVertex(i, 0);
-			glVertex3d(data_->vertices[i][0][0], data_->vertices[i][0][1], zshift);
-			
-			setColorFromVertex(i+step, 0);
-			glVertex3d(data_->vertices[i+step][0][0],data_->vertices[i+step][0][1], zshift);
-			for (int j = 0; j < data_->rows() - step; j += step) 
-			{
-				setColorFromVertex(i, j+step);
-				glVertex3d(data_->vertices[i][j+step][0],data_->vertices[i][j+step][1], zshift);
-				
-				setColorFromVertex(i+step, j+step);
-				glVertex3d(data_->vertices[i+step][j+step][0],data_->vertices[i+step][j+step][1], zshift);				
-			}
-		glEnd();
-	}
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
+  
+  double zshift = actualData_p->hull().minVertex.z;
+  for (int i = 0; i < data_->columns() - step; i += step) 
+  {
+    glBegin(GL_TRIANGLE_STRIP);
+      setColorFromVertex(i, 0);
+      glVertex3d(data_->vertices[i][0][0], data_->vertices[i][0][1], zshift);
+      
+      setColorFromVertex(i+step, 0);
+      glVertex3d(data_->vertices[i+step][0][0],data_->vertices[i+step][0][1], zshift);
+      for (int j = 0; j < data_->rows() - step; j += step) 
+      {
+        setColorFromVertex(i, j+step);
+        glVertex3d(data_->vertices[i][j+step][0],data_->vertices[i][j+step][1], zshift);
+        
+        setColorFromVertex(i+step, j+step);
+        glVertex3d(data_->vertices[i+step][j+step][0],data_->vertices[i+step][j+step][1], zshift);				
+      }
+    glEnd();
+  }
 }
 
 void GridPlot::isolines2Floor()
 {
-	if (isolines() <= 0 || actualData_p->empty())
-		return;
+  if (isolines() <= 0 || actualData_p->empty())
+    return;
 
-	double count = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
+  double count = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
   int step = resolution();
-	double zshift = actualData_p->hull().minVertex.z;
-	
-	int cols = data_->columns();
-	int rows = data_->rows();
-	
-	Triple t[4];
-	vector<Triple> intersection;
-	
-	double lambda = 0;
-	
-	GLStateBewarer sb2(GL_LINE_SMOOTH, false);
+  double zshift = actualData_p->hull().minVertex.z;
+  
+  int cols = data_->columns();
+  int rows = data_->rows();
+  
+  Triple t[4];
+  vector<Triple> intersection;
+  
+  double lambda = 0;
+  
+  GLStateBewarer sb2(GL_LINE_SMOOTH, false);
 
-	for (int k = 0; k != isolines(); ++k) 
-	{
-		double val = zshift + k * count;		
-				
-		for (int i = 0; i < cols-step; i += step) 
-		{
-			for (int j = 0; j < rows-step; j += step) 
-			{
-				t[0] =  Triple(	data_->vertices[i][j][0],
-												data_->vertices[i][j][1],
-												data_->vertices[i][j][2]);
-				
-				t[1] =  Triple(	data_->vertices[i+step][j][0],
-												data_->vertices[i+step][j][1],
-												data_->vertices[i+step][j][2]);
-				t[2] =  Triple(	data_->vertices[i+step][j+step][0],
-												data_->vertices[i+step][j+step][1],
-												data_->vertices[i+step][j+step][2]);
-				t[3] =  Triple(	data_->vertices[i][j+step][0],
-												data_->vertices[i][j+step][1],
-												data_->vertices[i][j+step][2]);
+  for (int k = 0; k != isolines(); ++k) 
+  {
+    double val = zshift + k * count;		
+        
+    for (int i = 0; i < cols-step; i += step) 
+    {
+      for (int j = 0; j < rows-step; j += step) 
+      {
+        t[0] =  Triple(	data_->vertices[i][j][0],
+                        data_->vertices[i][j][1],
+                        data_->vertices[i][j][2]);
+        
+        t[1] =  Triple(	data_->vertices[i+step][j][0],
+                        data_->vertices[i+step][j][1],
+                        data_->vertices[i+step][j][2]);
+        t[2] =  Triple(	data_->vertices[i+step][j+step][0],
+                        data_->vertices[i+step][j+step][1],
+                        data_->vertices[i+step][j+step][2]);
+        t[3] =  Triple(	data_->vertices[i][j+step][0],
+                        data_->vertices[i][j+step][1],
+                        data_->vertices[i][j+step][2]);
 
-				double diff = 0;
-				for (int m = 0; m!=4; ++m)
-				{
-					int mm = (m+1)%4;
-					if ((val>=t[m].z && val<=t[mm].z) || (val>=t[mm].z && val<=t[m].z))
-					{
-						diff = t[mm].z - t[m].z;
-						
-						if (isPracticallyZero(diff)) // degenerated
-						{
-							intersection.push_back(t[m]);
-							intersection.push_back(t[mm]);
-							continue;
-						}
-						
-						lambda =  (val - t[m].z) / diff;
-						intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), zshift));
-					}
-				}
-				
+        double diff = 0;
+        for (int m = 0; m!=4; ++m)
+        {
+          int mm = (m+1)%4;
+          if ((val>=t[m].z && val<=t[mm].z) || (val>=t[mm].z && val<=t[m].z))
+          {
+            diff = t[mm].z - t[m].z;
+            
+            if (isPracticallyZero(diff)) // degenerated
+            {
+              intersection.push_back(t[m]);
+              intersection.push_back(t[mm]);
+              continue;
+            }
+            
+            lambda =  (val - t[m].z) / diff;
+            intersection.push_back(Triple(t[m].x + lambda * (t[mm].x-t[m].x), t[m].y + lambda * (t[mm].y-t[m].y), zshift));
+          }
+        }
+        
         drawIntersection(intersection, (*datacolor_p)(t[0].x,t[0].y,t[0].z));
-				intersection.clear();
-			}
-		}
-	}
+        intersection.clear();
+      }
+    }
+  }
 }
 
 /*!
   Sets data resolution (res == 1 original resolution) and updates widget
-	If res < 1, the function does nothing
+  If res < 1, the function does nothing
 */
 void GridPlot::setResolution( int res )
 {
   if (!actualData_p || resolution_p == res || res < 1)
     return;
-	
-	resolution_p = res;
-	updateNormals();
-	updateData();
-	if (initializedGL())
+  
+  resolution_p = res;
+  updateNormals();
+  updateData();
+  if (initializedGL())
     updateGL();
 
-	emit resolutionChanged(res);
+  emit resolutionChanged(res);
 }
 
 void GridPlot::createOpenGlData()
 {
-	if (!actualData_p)
-		return;
+  if (!actualData_p)
+    return;
 
   createFloorOpenGlData();
 
