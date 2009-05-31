@@ -194,7 +194,7 @@ void ExtGLWidget::wheelEvent( QWheelEvent *e )
 
 /**
 	Sets the key/mousebutton combination for data/coordinatesystem moves inside the widget\n\n
-	default behaviour (Qt3 variant):\n
+	default behaviour:\n
 
 	\verbatim
 	rotate around x axis: Qt::LeftButton 
@@ -346,7 +346,7 @@ void ExtGLWidget::setShiftKeyboard(KeyboardState kseq, double speed)
 
 /**
 	Sets the keybutton combination for data/coordinatesystem moves inside the widget\n\n
-	default behaviour  (Qt3 variant):\n
+	default behaviour:\n
 
 	\verbatim
 	rotate around x axis: [Key_Down, Key_Up] 

@@ -7,7 +7,7 @@
 #include "qwt3d_openglhelper.h"
 #include "../3rdparty/gl2ps/gl2ps.h"
 #include "qwt3d_io_gl2ps.h"
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 
 using namespace Qwt3D;
 
@@ -53,7 +53,7 @@ void VectorWriter::setTextMode(TEXTMODE val, QString fname)
 }
 
   //! Turns compressed output on or off (no effect if zlib support has not been set)
-void VectorWriter::setCompressed(bool val)
+void VectorWriter::setCompressed(bool)
 {
 #ifdef GL2PS_HAVE_ZLIB
   compressed_ = val;

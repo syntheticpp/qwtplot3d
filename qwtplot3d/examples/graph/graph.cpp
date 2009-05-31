@@ -1,9 +1,9 @@
   #include <qapplication.h>
-  #include <qwt3d_staticgraphplot.h>
+  #include <qwt3d_graphplot.h>
   
   using namespace Qwt3D;
 
-  class Plot : public StaticGraphPlot
+  class Plot : public GraphPlot
   {
   public:
     Plot();

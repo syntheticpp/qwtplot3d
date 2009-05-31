@@ -1,7 +1,7 @@
 #ifndef axes_h__2004_06_07_10_38_begin_guarded_code
 #define axes_h__2004_06_07_10_38_begin_guarded_code
 
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 using namespace Qwt3D;
 
 /*****************************

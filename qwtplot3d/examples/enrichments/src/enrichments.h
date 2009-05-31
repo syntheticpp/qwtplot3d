@@ -1,7 +1,7 @@
 #ifndef enrichments_h__2004_02_25_13_58_begin_guarded_code
 #define enrichments_h__2004_02_25_13_58_begin_guarded_code
 
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 
 
 class Bar : public Qwt3D::VertexEnrichment

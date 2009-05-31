@@ -1,6 +1,6 @@
 #include "qwt3d_gridplot.h"
 #include "qwt3d_function.h"
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 #include "enrichments.h"
 
 

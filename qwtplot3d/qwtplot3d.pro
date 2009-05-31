@@ -11,8 +11,8 @@ QT               += opengl
 MOC_DIR           = tmp
 OBJECTS_DIR       = tmp
 INCLUDEPATH       = include
-#DESTDIR      			= ./lib
-DESTDIR      			= ./../../../../lib
+DESTDIR      			= ./lib
+#DESTDIR      			= ./../../../../../lib
 
 win32 {
   TEMPLATE    = vclib

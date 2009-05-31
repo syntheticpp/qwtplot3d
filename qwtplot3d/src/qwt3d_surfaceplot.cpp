@@ -7,7 +7,7 @@ using namespace Qwt3D;
 Initializes with dataNormals()==false //todo
 */
 SurfacePlot::SurfacePlot( QWidget * parent, const QGLWidget * shareWidget)
-    : CellPlot( parent, shareWidget) 
+    : Plot3D( parent, shareWidget) 
 {  
   floorstyle_ = NOFLOOR;
   datanormals_p = false;

@@ -3,7 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 #include "qwt3d_enrichment.h"
 
 

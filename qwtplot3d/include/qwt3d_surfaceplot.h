@@ -1,7 +1,7 @@
 #ifndef qwt3d_SurfacePlot_h__2004_03_05_11_36_begin_guarded_code
 #define qwt3d_SurfacePlot_h__2004_03_05_11_36_begin_guarded_code
 
-#include "qwt3d_cellplot.h"
+#include "qwt3d_plot3d.h"
 
 namespace Qwt3D
 {
@@ -10,7 +10,7 @@ namespace Qwt3D
 	A SurfacePlot ...
 	
 */
-class QWT3D_EXPORT SurfacePlot : public CellPlot
+class QWT3D_EXPORT SurfacePlot : public Plot3D
 {
   Q_OBJECT
 

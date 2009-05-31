@@ -7,8 +7,9 @@ namespace Qwt3D
 {
 //! A class representing plots based on points, edges, cells etc.
 /**
-	A MeshPlot ...
-	
+	A MeshPlot is more general compared with a GridPlot, in providing 
+  surface elements built not from a fixed rectangular grid. There is a cost, 
+  as usual. In this case, it means efficiency.
 */
 class QWT3D_EXPORT MeshPlot : public SurfacePlot
 {

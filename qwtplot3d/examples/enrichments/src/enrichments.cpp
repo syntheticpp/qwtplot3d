@@ -1,7 +1,7 @@
 #include "qbitmap.h"
 
 #include "qwt3d_color.h"
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 #include "enrichments.h"
 
 using namespace Qwt3D;

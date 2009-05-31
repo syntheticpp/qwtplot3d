@@ -1,6 +1,6 @@
 #include <math.h>
 #include "qwt3d_color.h"
-#include "qwt3d_plot.h"
+#include "qwt3d_plot3d.h"
 #include "qwt3d_enrichment_std.h"
 
 using namespace Qwt3D;
