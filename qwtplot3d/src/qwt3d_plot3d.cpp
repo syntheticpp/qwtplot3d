@@ -19,7 +19,8 @@ Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
 	plotstyle_ = FILLEDMESH;
   userplotstyle_p = 0;
 	shading_ = GOURAUD;
-	isolines_ = 10;
+  isolinesZ_p.resize(10);
+  delayisolinecalculation_p = true;
 	displaylegend_ = false;
 	smoothdatamesh_p = false;
   actualData_p = 0;
@@ -290,17 +291,6 @@ void Plot3D::setShading( SHADINGSTYLE val )
 			break;
 	}
 	updateGL();
-}
-
-/*!
-  Set number of isolines. The lines are equidistant between minimal and maximal Z value
-*/
-void Plot3D::setIsolines(int steps)
-{
-	if (steps < 0)
-		return;
-
-	isolines_ = steps;
 }
 
 /*!

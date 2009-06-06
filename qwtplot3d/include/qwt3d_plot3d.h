@@ -37,8 +37,11 @@ public:
   Qwt3D::Enrichment* userStyle() const { return userplotstyle_p; }
   void setShading( Qwt3D::SHADINGSTYLE val ); //!<Set shading style
 	Qwt3D::SHADINGSTYLE shading() const { return shading_; }//!< Returns shading style
-	void setIsolines(int isolines);
-	int isolines() const { return isolines_;} //!< Returns number of isolines
+  //! Set number of isolines. The lines are equidistant between minimal and maximal Z value
+  void setIsolines(unsigned steps) {isolinesZ_p.resize(steps); delayisolinecalculation_p = true;}
+  //! Set user-defined isoline vector; 
+  void setIsolines(const std::vector<double>& val) {isolinesZ_p = val; delayisolinecalculation_p = false;}
+  unsigned isolines() const { return isolinesZ_p.size();} //!< Returns number of isolines
 
   void setSmoothMesh(bool val) {smoothdatamesh_p = val;} //!< Enables/disables smooth data mesh lines. Default is false
   bool smoothDataMesh() const {return smoothdatamesh_p;} //!< True if mesh antialiasing is on
@@ -104,6 +107,8 @@ protected:
 	};
 	std::vector<GLuint> displaylists_p;
   Qwt3D::Data* actualData_p;
+  std::vector<double> isolinesZ_p;
+  bool delayisolinecalculation_p;
 
 
 private:
@@ -113,7 +118,6 @@ private:
 	Qwt3D::PLOTSTYLE plotstyle_;
 	Qwt3D::SHADINGSTYLE shading_;
 	double polygonOffset_;
-	int isolines_;
 	bool displaylegend_;
   bool smoothdatamesh_p;
 

@@ -79,8 +79,15 @@ void MeshPlot::isolines2Floor()
   if (isolines() <= 0 || actualData_p->empty())
     return;
 
-  double step = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
   double zshift = actualData_p->hull().minVertex.z;
+  if (delayisolinecalculation_p)
+  {
+    double step = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
+    for (unsigned k = 0; k != isolines(); ++k) 
+    {
+      isolinesZ_p[k] = zshift + k * step;		
+    }  
+  }
 
   TripleField nodes;
   TripleField intersection;
@@ -89,9 +96,11 @@ void MeshPlot::isolines2Floor()
 
   GLStateBewarer sb2(GL_LINE_SMOOTH, false);
 
-  for (int k = 0; k != isolines(); ++k) 
+  for (unsigned k = 0; k != isolines(); ++k) 
   {
-    double val = zshift + k * step;		
+    double val = isolinesZ_p[k];	
+    if (val > actualData_p->hull().maxVertex.z || val < actualData_p->hull().minVertex.z)
+      continue;
 
     for (unsigned i=0; i!=data_->cells.size(); ++i)
     {

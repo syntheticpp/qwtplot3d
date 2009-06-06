@@ -453,13 +453,20 @@ void GridPlot::data2Floor()
 
 void GridPlot::isolines2Floor()
 {
-  if (isolines() <= 0 || actualData_p->empty())
+  if (!isolines() || actualData_p->empty())
     return;
 
-  double count = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
-  int step = resolution();
   double zshift = actualData_p->hull().minVertex.z;
-  
+  if (delayisolinecalculation_p)
+  {
+    double step = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
+    for (unsigned k = 0; k != isolines(); ++k) 
+    {
+      isolinesZ_p[k] = zshift + k * step;		
+    }  
+  }
+
+  int step = resolution();
   int cols = data_->columns();
   int rows = data_->rows();
   
@@ -470,9 +477,11 @@ void GridPlot::isolines2Floor()
   
   GLStateBewarer sb2(GL_LINE_SMOOTH, false);
 
-  for (int k = 0; k != isolines(); ++k) 
+  for (unsigned k = 0; k != isolines(); ++k) 
   {
-    double val = zshift + k * count;		
+    double val = isolinesZ_p[k];	
+    if (val > actualData_p->hull().maxVertex.z || val < actualData_p->hull().minVertex.z)
+      continue;
         
     for (int i = 0; i < cols-step; i += step) 
     {

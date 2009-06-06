@@ -3,7 +3,7 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "qwt3d_plot3d.h"
+#include "qwt3d_visualtrait.h"
 
 using namespace std;
 using namespace Qwt3D;

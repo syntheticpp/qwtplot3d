@@ -12,7 +12,7 @@ class Plot3D;
 
 //! Abstract base class for data dependent visible user objects
 /**
-Enrichments provide a framework for user defined OPenGL objects. The base class has a pure virtuell 
+Enrichments provide a framework for user defined OPenGL objects. The base class has a pure virtual 
 function clone(). 2 additional functions are per default empty and could also get a new implementation
 in derived classes. They can be used for initialization issues or actions not depending on the related
 primitive. 
