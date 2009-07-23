@@ -177,7 +177,7 @@ void Curve::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigne
 {
 	gdata.setSize(columns,rows);
 	
-  ParallelEpiped range(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
+	ParallelEpiped range(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
 
 	/* fill out the vertex array for the mesh. */
 	for (unsigned i = 0; i != columns; ++i) 
@@ -203,14 +203,14 @@ void Curve::readIn(GridData& gdata, Triple** data, unsigned int columns, unsigne
 				range.minVertex.z = data[i][j].z;
  		}
 	}
-  gdata.setHull(range);
+	gdata.setHull(range);
+	emit readInFinished(title()->string());
 }
-
 
 void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigned int rows
             , double minx, double maxx, double miny, double maxy)
 {
-  gdata.setPeriodic(false,false);
+	gdata.setPeriodic(false,false);
 	gdata.setSize(columns,rows);
 	
 	double dx = (maxx - minx) / (gdata.columns() - 1);
@@ -227,7 +227,6 @@ void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigne
 			gdata.vertices[i][j][0] = minx + i*dx;
 			gdata.vertices[i][j][1] = miny + j*dy;
 			gdata.vertices[i][j][2] = data[i][j];
-//			qDebug() << "Curve: Data Values - " << data[i][j];
 
 			if (data[i][j] > tmax)
 				tmax = data[i][j];
@@ -244,6 +243,7 @@ void Curve::readIn(GridData& gdata, double** data, unsigned int columns, unsigne
 			);
 
 	gdata.setHull(hull);
+	emit readInFinished(title()->string());
 }
 
 void Curve::calcNormals(GridData& gdata)
@@ -356,11 +356,12 @@ void Curve::sewPeriodic(GridData& gdata)
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows, bool uperiodic, bool vperiodic)
+bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows, QString titlestr, bool uperiodic, bool vperiodic)
 {
 	actualDataC_->clear();
 	actualData_p = actualDataG_;
 
+	if (!titlestr.isEmpty())	setTitle(titlestr);
 	readIn(*actualDataG_, data, columns, rows);
 	calcNormals(*actualDataG_);
 	actualDataG_->datatype = Qwt3D::GRID;
@@ -375,13 +376,15 @@ bool Curve::loadFromData(Triple** data, unsigned int columns, unsigned int rows,
 	Convert user grid data to internal vertex structure.
 	See also NativeReader::read() and Function::create()
 */
-bool Curve::loadFromData(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy)
+bool Curve::loadFromData(double** data, unsigned int columns, unsigned int rows, double minx, double maxx, double miny, double maxy, QString titlestr)
 {
 	actualDataC_->clear();
 	actualData_p = actualDataG_;
 
 	actualDataG_->setPeriodic(false,false);
 	actualDataG_->setSize(columns,rows);
+
+	if (!titlestr.isEmpty())	setTitle(titlestr);
 	readIn(*actualDataG_,data,columns,rows,minx,maxx,miny,maxy);
 	calcNormals(*actualDataG_);  
 	
@@ -454,8 +457,8 @@ void Curve::DatamapG(unsigned int comp)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 	
-	Triple min = actualData_p->hull().minVertex;
-	double shift = min(comp);
+	Triple tmin = actualData_p->hull().minVertex;
+	double shift = tmin(comp);
 
 	for (int i = 0; i < actualDataG_->columns() - step; i += step) {
 		glBegin(GL_TRIANGLE_STRIP);
@@ -495,11 +498,11 @@ void Curve::IsolinesG(unsigned int comp, bool projected)
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
 
-	Triple max = actualData_p->hull().maxVertex;
-	Triple min = actualData_p->hull().minVertex;
+	Triple tmax = actualData_p->hull().maxVertex;
+	Triple tmin = actualData_p->hull().minVertex;
 	
-	double delta = max(comp) - min(comp);
-	double shift = min(comp);
+	double delta = tmax(comp) - tmin(comp);
+	double shift = tmin(comp);
 	double count = delta / isolines();
 
 	RGBA col;
@@ -517,16 +520,16 @@ void Curve::IsolinesG(unsigned int comp, bool projected)
 
 	for (unsigned int k = 0; k != isolines(); ++k) {
 		double val = shift + k * count;		
-				
+
 		for (int i = 0; i < cols-step; i += step) {
 			for (int j = 0; j < rows-step; j += step) {
 				t[0] =  Triple(	actualDataG_->vertices[i][j][0],
 								actualDataG_->vertices[i][j][1],
 								actualDataG_->vertices[i][j][2]);
-				
+
 				col = (*datacolor_p)(t[0].x,t[0].y,t[0].z);
 				glColor4d(col.r, col.g, col.b, col.a);
-				
+
 				t[1] =  Triple(	actualDataG_->vertices[i+step][j][0],
 								actualDataG_->vertices[i+step][j][1],
 								actualDataG_->vertices[i+step][j][2]);
@@ -599,11 +602,15 @@ void Curve::DataPointsG(unsigned int comp, bool projected)
 		break;
 	}
 
-	Triple max = actualData_p->hull().maxVertex;
-	double shift = max(comp);
+	Triple tmax = actualData_p->hull().maxVertex;
+	double shift = tmax(comp);
 
-	RGBA	col[rows/step];
-	Triple	t[rows/step];
+	vector<RGBA>	col;
+	vector<Triple>	t;
+
+	col.resize(rows/step);
+	t.resize(rows/step);
+
 	vector<Triple>	projection;
 
 	GLStateBewarer sb(GL_LINE_SMOOTH, false);
@@ -621,7 +628,7 @@ void Curve::DataPointsG(unsigned int comp, bool projected)
 			projection.push_back(t[inner]);
 		}
 
-		drawIntersections(projection, shift, comp, projected, col);
+		drawIntersections(projection, shift, comp, projected, &col);
 	}
 }
 
@@ -644,7 +651,7 @@ double** Curve::getData(int *columns, int *rows)
 	return data;
 }
 
-void Curve::deleteData(double**data, int columns)
+void Curve::deleteData(double** data, int columns)
 {
 	for ( int i = 0; i < columns; i++) 
 	{

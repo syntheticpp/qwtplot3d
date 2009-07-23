@@ -31,25 +31,26 @@ public:
 #endif
 	virtual ~Plot3D();
 
-	void setCurve(Curve* c)						{ curve_p = c; }
-	void setTitle(Label* l)						{ title_p = l; }
-	Curve* curve() const						{ return curve_p; }
-	Label* title() const						{ return title_p; }
+	void setCurve(Qwt3D::Curve* c)				{ curve_p = c; }
+	void setTitle(Qwt3D::Label* l)				{ title_p = l; }
+	Qwt3D::Curve* curve() const					{ return curve_p; }
+	Qwt3D::Label* title() const					{ return title_p; }
 	void manageConnect(bool connect, Qwt3D::Curve* curve = 0);
 	
 	QPixmap renderPixmap (int w = 0, int h = 0, bool useContext = false);	  
 	void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
 	
 	Qwt3D::CoordinateSystem* coordinates()		{ return &coordinates_p; }	//!< Returns pointer to CoordinateSystem object
-	Qwt3D::ColorLegend* legend()				{ return &legend_; }		//!< Returns pointer to ColorLegend object
 
 	void setBackgroundColor(Qwt3D::RGBA rgba)	{ bgcolor_ = rgba; }		//!< Sets widgets background color
 	Qwt3D::RGBA backgroundRGBAColor() const		{ return bgcolor_; }		//!< Returns the widgets background color
-	
+
+	void setDoubleLegend(bool mode = true)		{ doublelegend_ = mode; }	//!< Sets legend drawing mode
+	bool isDoubleLegend() const					{ return doublelegend_; }	//!< Returns the legend drawing mode
+
 	void calculateHull();
 	Qwt3D::ParallelEpiped hull() const			{ return hull_;}			//!< Returns rectangular hull   
-	
-	void showColorLegend(bool);	
+
 	void setCoordinateStyle(Qwt3D::COORDSTYLE st);							//!< Sets style of coordinate system.
 
 	//! Returns true if valid data available, else false
@@ -64,6 +65,7 @@ public:
 	bool removeTitle(Qwt3D::Label* label);
 	
 	void createCoordinateSystem();
+	void normaliseScale(Qwt3D::Curve* curve, Qwt3D::Plot3D* parentplot = 0, Qwt3D::ParallelEpiped* curvehull = 0);
 
 	typedef QVector<Qwt3D::Curve*> CurveList;
 	const CurveList& curveList() const			{ return curvelist_p; }
@@ -83,6 +85,7 @@ signals:
 	void setCurvePlotStyle(Qwt3D::Enrichment& val);				//!< Emits, user defined plotting style change to all connected curves
 	void setCurveFloorStyle(Qwt3D::FLOORSTYLE val);				//!< Emits, floor style change to all connected curves
 
+	void showCurveColorLegend(bool on);							//!< Emits, show colour legend mode to all connected curves
 	void showCurveNormals(bool on); 							//!< Emits, draw normals to every vertex to all connected curves
 	void setCurveNormalLength(double val);						//!< Emits, set length of normals in percent per hull diagonale to all connected curves
 	void setCurveNormalQuality(int val);						//!< Emits, increases plotting quality of normal arrows to all connected curves
@@ -105,7 +108,7 @@ signals:
 	void createData();
 
 public slots:
-	void updateData();									//!< Recalculate data
+	void updateData(bool coord = true);							//!< Recalculate data
 
 	void setResolution(int val)							{ emit setCurveResolution(val); }		//!< Set resolution for all attached curves
 	void setPolygonOffset(double d)						{ emit setCurvePolygonOffset(d); }		//!< Set polygon offset for all attached curves
@@ -115,9 +118,10 @@ public slots:
 	void setFloorStyle(Qwt3D::FLOORSTYLE val)			{ emit setCurveFloorStyle(val); }		//!< Set floor style for all attached curves
 	void setShading(Qwt3D::SHADINGSTYLE val)			{ emit setCurveShading(val); }			//!< Set shading modes for all attached curves
 
+	void showColorLegend(bool on) 						{ emit showCurveColorLegend(on); }		//!< Draw colour legend for all attached curves
 	void showNormals(bool on) 							{ emit showCurveNormals(on); }			//!< Draw normals to every vertex for all attached curves
 	void setNormalLength(double val)					{ emit setCurveNormalLength(val); }		//!< Set length of normals in percent per hull diagonale for all attached curves
-	void setNormalQuality(int val)						{ emit setNormalQuality(val); }			//!< Set plotting quality of normal arrows for all attached curves
+	void setNormalQuality(int val)						{ emit setCurveNormalQuality(val); }	//!< Set plotting quality of normal arrows for all attached curves
 
 	void setSmoothMesh(bool val)						{ emit setCurveSmoothMesh(val); } 		//!< Enable/disable smooth data mesh lines for all attached curves
 	void setMeshColor(Qwt3D::RGBA rgba)					{ emit setCurveMeshColor(rgba); }		//!< Set colour for data mesh for all attached curves
@@ -156,23 +160,23 @@ protected:
 
     Qwt3D::Curve*	curve_p;
 	Qwt3D::Label*	title_p;
+
     CurveList		curvelist_p;
     DrawableList	drawablelist_p;
     TitleList		titlelist_p;
 
 private:
 	void childConnect(bool connect);
+	inline void intScale(double& scale)		{ scale = (scale > 10) ? floor(scale + 0.5) : floor(10*scale + 0.5)/10; }
 
     bool			update_coordinate_sys_;
 	Qwt3D::RGBA		meshcolor_;
 	double			meshLineWidth_;
 	Qwt3D::RGBA		bgcolor_;
-
-	bool			displaylegend_;
 	bool			renderpixmaprequest_;
+	bool			doublelegend_;
     
 	Qwt3D::ParallelEpiped	hull_;
-    Qwt3D::ColorLegend		legend_; 
 };
 
 } // ns

@@ -222,8 +222,7 @@ void SurfacePlot::drawVertex(Triple& vertex, double shift, unsigned int comp)
 }
 
 void SurfacePlot::drawIntersections(vector<Triple>& intersection, double shift, unsigned int comp,
-									bool projected, RGBA colour[])
-//									bool projected, vector<RGBA>& col)
+									bool projected, vector<RGBA>* col)
 {
 	if (intersection.empty())
 		return;
@@ -231,7 +230,7 @@ void SurfacePlot::drawIntersections(vector<Triple>& intersection, double shift, 
 	if (intersection.size() > 2) {
 		glBegin(GL_LINE_STRIP);
 			for (unsigned dd = 0; dd!=intersection.size(); ++dd) {
-				if (colour)	glColor4d(colour[dd].r, colour[dd].g, colour[dd].b, colour[dd].a);
+				if (colour)	glColor4d((*colour)[dd].r, (*colour)[dd].g, (*colour)[dd].b, (*colour)[dd].a);
 				drawVertex(intersection[dd], shift, comp);
 			}
 		glEnd();

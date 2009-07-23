@@ -98,6 +98,19 @@
 
     setCoordinateStyle(BOX);
 
+	// comment out the next line to use default single legend mode
+	setDoubleLegend();		// setup the default colour legend mode
+
+	//setup the multi-curve colour legends
+	curve_p->setColorLegend(0, isDoubleLegend(),
+							isDoubleLegend() ? QSize(2,28)  : QSize(3,32),
+							isDoubleLegend() ? QPoint(7,10) : QPoint(3,10));
+	curve_p2->setColorLegend(1, isDoubleLegend(),
+							isDoubleLegend() ? QSize(2,28)  : QSize(3,32),
+							isDoubleLegend() ? QPoint(7,10) : QPoint(3,10));
+
+	showColorLegend(true);	// show the actual curve legends
+
     updateData();
     updateGL();
   }

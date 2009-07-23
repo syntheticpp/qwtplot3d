@@ -3,14 +3,28 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include <QtDebug>
+#include <QDebug>
 
 #include "qwt3d_plot.h"
 #include "qwt3d_enrichment.h"
 #include "qwt3d_curve.h"
 
 using namespace Qwt3D;
-	
+
+#ifdef QT_NO_DEBUG_STREAM
+	#define DEBUG		QNoDebug()
+#else
+	#define DEBUG		qDebug()
+#endif
+
+//! Non-member '<<' debug stream operator method used for 'Triple' types
+static QDebug operator<<(QDebug dbg, const Triple& t)
+{
+	dbg.nospace() << "Triple(" << t.x << ',' << t.y << ',' << t.z << ')';
+
+	return dbg.space();
+}
+
 /*!
   This should be the first call in your derived classes constructor.
 */
@@ -23,20 +37,14 @@ Plot3D::Plot3D(QWidget* parent, const QGLWidget* shareWidget)
 #endif
 {
 	renderpixmaprequest_ = false;
-	displaylegend_		 = false;
+	doublelegend_ 		 = false;
 
 	displaylists_p = std::vector<GLuint>(DisplayListSize);
-	for (unsigned k=0; k!=displaylists_p.size(); ++k)
-	{
+	for (unsigned k=0; k!=displaylists_p.size(); ++k) {
 		displaylists_p[k] = 0;
 	}
 
 	curve_p = 0;
-	legend_.setLimits(0, 100);
-	legend_.setMajors(10);
-	legend_.setMinors(2);
-	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
-
 	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 	update_coordinate_sys_ = true;
 }
@@ -98,14 +106,18 @@ void Plot3D::paintGL()
 	glRotatef( 0.0, 0.0, 1.0, 0.0 ); 
 	glRotatef( 0.0, 0.0, 0.0, 1.0 );
 
-	if (displaylegend_)		legend_.draw();
-
 	CurveList::const_iterator c = curvelist_p.begin();
-	for (i = 0; i != titlelist_p.size(); ++i) {
-		titlelist_p[i]->setRelPosition((*c)->titlerel_, (*c)->titleanchor_);
-		titlelist_p[i]->draw();
-		++c;
+
+	for (i = 0; i != curvelist_p.size(); ++i) {
+		if (curvelist_p[i]->isColorLegend())		curvelist_p[i]->legend()->draw();
 	}
+
+	for (i = 0; i != titlelist_p.size(); ++i)
+		if (c != curvelist_p.end() && (*c)) {
+			titlelist_p[i]->setRelPosition((*c)->titlerel_, (*c)->titleanchor_);
+			titlelist_p[i]->draw();
+			++c;
+		}
 
 	for (DrawableList::const_iterator itr = drawablelist_p.begin(); itr != drawablelist_p.end(); ++itr ) {
 		(*itr)->draw();
@@ -214,7 +226,6 @@ bool Plot3D::removeDrawable(Drawable* drawable)
 void Plot3D::addTitle(Label* label)
 {
 	if (!label || titlelist_p.contains(label))		return;
-//	if (label->string().isEmpty() || ((label->string() == TITLE) && titlelist_p.size()))	return;
 
 	if (title() != label)	setTitle(label);
 	titlelist_p.push_back(label);
@@ -242,7 +253,7 @@ bool Plot3D::removeTitle(Label* title)
 
 void Plot3D::manageConnect(bool connect, Qwt3D::Curve* curve)
 {
-	qDebug() << "Plot3D:" << (connect ? "Connecting" : "Disconnecting") << "Curve(s)";
+	DEBUG << "Plot3D:" << (connect ? "Connecting" : "Disconnecting") << "Curve(s)";
 
 	curve ? (connect ? curve->connects() : curve->disconnects()) :
 			childConnect(connect);
@@ -250,7 +261,7 @@ void Plot3D::manageConnect(bool connect, Qwt3D::Curve* curve)
 
 void Plot3D::childConnect(bool connect)
 {
-	qDebug() << "Plot3D:" << (connect ? "Connecting" : "Disconnecting") << "All Curves";
+	DEBUG << "Plot3D:" << (connect ? "Connecting" : "Disconnecting") << "All Curves";
 
 	foreach (Curve* curve, curvelist_p) {
 		if (curve)	connect ? curve->connects() : curve->disconnects();
@@ -321,25 +332,6 @@ void Plot3D::calculateHull()
 }
 
 /*!
-  Show a color legend
-*/
-void Plot3D::showColorLegend( bool show )
-{
-	displaylegend_ = show;
-	// TODO: not sure how to work the legend!
-	if (show) {
-		for ( int i = 0; i < curvelist_p.size(); ++i ) {
-			Color* color = const_cast<Color*>(curvelist_p[i]->dataColor());
-			if ( color ) {
-				color->createVector(legend_.colors);
-				break;
-			}
-		}
-	}
-	updateGL();
-}
-
-/*!
   Set style of coordinate system
 */
 void Plot3D::setCoordinateStyle(COORDSTYLE st)
@@ -351,8 +343,63 @@ void Plot3D::setCoordinateStyle(COORDSTYLE st)
 /*!
   Update OpenGL data representation
 */
-void Plot3D::updateData()
+void Plot3D::updateData(bool coord)
 {
-	update_coordinate_sys_ = true;
+	update_coordinate_sys_ = coord;
 	updateGL();
+}
+
+/*!
+  Square up the plot scale based on the loaded curve
+*/
+void Plot3D::normaliseScale(Curve* curve, Plot3D* parentplot, ParallelEpiped* curvehull)
+{
+	if (!parentplot) 	parentplot = this;
+
+	Triple range, scale(parentplot->xScale(), parentplot->yScale(), parentplot->zScale());
+	ParallelEpiped datahull;
+
+	do {
+#ifdef BUILTIN_CURVEFIT
+		datahull = curvehull ? *curvehull : curve->data()->hull();
+#else
+		datahull = curve->data()->hull();
+#endif
+		range = Triple(datahull.maxVertex.x - datahull.minVertex.x,
+					   datahull.maxVertex.y - datahull.minVertex.y,
+					   datahull.maxVertex.z - datahull.minVertex.z);
+
+		DEBUG << "Plot3D: Waiting for a valid hull -" << curve
+				 << "( Min =" << datahull.minVertex << ", Max =" << datahull.maxVertex << ") range =" << range;
+	} while (!range.length());	// Waiting for a valid hull
+
+	DEBUG << "Plot3D: Existing Scale - scale =" << scale << "range =" << range << curve
+		  << "( Min =" << datahull.minVertex << ", Max =" << datahull.maxVertex << zScale() << curvehull;
+
+	scale.z = qMax(range.x/range.z, range.y/range.z);
+
+	int height	= (int)floor((range.x/range.y) + 0.5);
+
+	if (height == 1)	scale.y = scale.x = height;
+	else				(height > 1) ? scale.y = height : scale.x = height;
+
+	intScale(scale.x); intScale(scale.y); intScale(scale.z); // Round scales to thier nearest integers.
+	double zoomFactor = 1.0;
+
+	if (!parentplot) {
+		if ((xScale() != 1) && (scale.x >= xScale()) &&
+			(yScale() != 1) && (scale.y >= yScale()) &&
+			(zScale() != 1) && (scale.z >= zScale()))
+			return;
+		zoomFactor = (scale.length() > 10) ? 8/scale.length() : 2/scale.length();
+	} else {
+		if (scale.z <= zScale())
+			return;
+	}
+
+	setZoom(0.9 * zoomFactor * parentplot->zoom());
+	setScale(scale.x, scale.y, scale.z);
+
+	DEBUG << "Plot3D: Normalised Scale - scale =" << scale << height
+		  << "( Min =" << datahull.minVertex << ", Max =" << datahull.maxVertex << "] zoom" << zoom() << zoomFactor << scale.length();
 }

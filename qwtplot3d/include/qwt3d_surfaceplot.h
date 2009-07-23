@@ -110,8 +110,7 @@ protected:
 
 	void drawVertex(Triple& vertex, double shift, unsigned int comp = 3);
 	virtual void drawIntersections(std::vector<Triple>& intersection, double shift, unsigned int comp,
-								   bool projected, RGBA colour[] = 0);
-//								   bool projected, std::vector<RGBA>& colour = 0);
+								   bool projected, std::vector<RGBA>* colour = 0);
 
 	void createNormals();
 	void createPoints();

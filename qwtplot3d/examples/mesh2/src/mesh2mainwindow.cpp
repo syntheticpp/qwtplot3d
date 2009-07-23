@@ -16,7 +16,7 @@
 #include <qtoolbar.h>
 #include <qimage.h>
 #include <qpixmap.h>
-#include <qfiledialog.h>       
+#include <qfiledialog.h>
 #include <qstatusbar.h>
 #include <qfileinfo.h>
 #include <qslider.h>
@@ -58,12 +58,12 @@ bool Mesh2MainWindow::connectAG (const QObject* sender, const char * slot)
 #endif
 }
 
-Mesh2MainWindow::~Mesh2MainWindow()      
+Mesh2MainWindow::~Mesh2MainWindow()
 {
     delete dataWidget;
 }
 
-Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )       
+Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 	: DummyBase( parent )
 {
 #if QT_VERSION < 0x040000
@@ -73,8 +73,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     setupWorkaround(this);
     setupUi(this);
     QGridLayout *grid = new QGridLayout( frame );
-#endif   
-  
+#endif
+
     col_ = 0;
     legend_ = false;
     redrawWait = 50;
@@ -191,7 +191,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 
     lightingdlg_ = new LightingDlg( this );
     lightingdlg_->assign( dataWidget);
-	
+
 #if QT_VERSION < 0x040000 //todo - restore, when Qt4 re-implements preview functionality
     datacolordlg_ = new QFileDialog( this );
     QDir dir("./../../data/colormaps");
@@ -205,7 +205,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     connect(datacolordlg_, SIGNAL(fileHighlighted(const QString&)), this, SLOT(adaptDataColors(const QString&)));
 #else
 	//connect(datacolordlg_, SIGNAL(filesSelected(const QStringList&)), this, SLOT(adaptDataColors4(const QStringList&)));
-#endif  
+#endif
     connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
 
   filetypeCB->clear();
@@ -215,7 +215,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
   filetypeCB->insertStringList(list);
 #else
   filetypeCB->insertItems(0,list);
-#endif 
+#endif
 
     filetype_ = filetypeCB->currentText();
     dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
@@ -314,7 +314,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 
     dataWidget->makeCurrent();
     dataWidget->setCurve(d_function);
-    dataWidget->legend()->setScale(LINEARSCALE);
+    d_function->legend()->setScale(LINEARSCALE);
     for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i){
         dataWidget->coordinates()->axes[i].setMajors(7);
         dataWidget->coordinates()->axes[i].setMinors(5);
@@ -331,7 +331,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
         dataWidget->coordinates()->axes[Z2].setScale(LOG10SCALE);
         dataWidget->coordinates()->axes[Z3].setScale(LOG10SCALE);
         dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
-        dataWidget->legend()->setScale(LOG10SCALE);
+        d_function->legend()->setScale(LOG10SCALE);
     } else if (name == QString("Hat")) {
         Hat hat(*d_function);
 
@@ -387,7 +387,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
         d_function->setFloorStyle(curve->floorStyle());
         d_function->setPlotStyle(curve->plotStyle());
     }
-       
+
     pickCoordSystem(activeCoordSystem);
     pickFloorStyle(activeFloorStyle);
     pickPlotStyle(activePlotStyle);
@@ -576,7 +576,7 @@ Mesh2MainWindow::pickFloorStyle( QAction* action )
 
     curve->setFloorStyle(style);
     dataWidget->updateGL();
-}	
+}
 
 void Mesh2MainWindow::setLeftGrid(bool b)
 {
@@ -690,7 +690,7 @@ void Mesh2MainWindow::pickNumberColor()
         return;
     RGBA rgb = Qt2GL(c);
     dataWidget->coordinates()->setNumberColor(rgb);
-    dataWidget->legend()->axis()->setNumberColor(rgb);
+    dataWidget->curve()->legend()->axis()->setNumberColor(rgb);
     dataWidget->updateGL();
 }
 
@@ -813,7 +813,7 @@ void Mesh2MainWindow::pickNumberFont()
         return;
 
     dataWidget->coordinates()->setNumberFont(font);
-    dataWidget->legend()->axis()->setNumberFont(font);
+    dataWidget->curve()->legend()->axis()->setNumberFont(font);
     dataWidget->updateGL();
 }
 void Mesh2MainWindow::pickLabelFont()
@@ -936,28 +936,28 @@ Mesh2MainWindow::setPolygonOffset(int val)
 }
 
 void
-Mesh2MainWindow::showRotate(double x, double y, double z)		
+Mesh2MainWindow::showRotate(double x, double y, double z)
 {
-	rotateLabel->setText(" Angles ("  + QString::number(x,'g',3) + " ," 
+	rotateLabel->setText(" Angles ("  + QString::number(x,'g',3) + " ,"
 																	+ QString::number(y,'g',3) + " ,"
 																	+ QString::number(z,'g',3) + ")");
 }
 void
-Mesh2MainWindow::showShift(double x, double y)		
+Mesh2MainWindow::showShift(double x, double y)
 {
-	shiftLabel->setText(" Shifts (" + QString::number(x,'g',3) + " ," 
+	shiftLabel->setText(" Shifts (" + QString::number(x,'g',3) + " ,"
 																	+ QString::number(y,'g',3) + " )"
 																	);
 }
 void
-Mesh2MainWindow::showScale(double x, double y, double z)		
+Mesh2MainWindow::showScale(double x, double y, double z)
 {
-	scaleLabel->setText(" Scales (" + QString::number(x,'g',3) + " ," 
+	scaleLabel->setText(" Scales (" + QString::number(x,'g',3) + " ,"
 																	+ QString::number(y,'g',3) + " ,"
 																	+ QString::number(z,'g',3) + ")");
 }
 void
-Mesh2MainWindow::showZoom(double z)		
+Mesh2MainWindow::showZoom(double z)
 {
     zoomLabel->setText(" Zoom "  + QString::number(z,'g',3));
 }
@@ -1036,20 +1036,20 @@ Mesh2MainWindow::setNormalQuality(int val)
 
 bool
 Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
-{	
+{
   if (fname.isEmpty())
     return false;
-  
+
   ifstream file(QWT3DLOCAL8BIT(fname));
 
 	if (!file)
 		return false;
-	
+
 	RGBA rgb;
 	cv.clear();
-	
-	while ( file ) 
-	{		
+
+	while ( file )
+	{
 		file >> rgb.r >> rgb.g >> rgb.b;
 		file.ignore(1000,'\n');
 		if (!file.good())
@@ -1060,22 +1060,22 @@ Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 			rgb.r /= 255;
 			rgb.g /= 255;
 			rgb.b /= 255;
-			cv.push_back(rgb);	
+			cv.push_back(rgb);
 		}
 	}
 
 	return true;
 }
 
-void 
+void
 Mesh2MainWindow::updateColorLegend(int majors, int minors)
 {
-    dataWidget->legend()->setMajors(majors);
-    dataWidget->legend()->setMinors(minors);
+    dataWidget->curve()->legend()->setMajors(majors);
+    dataWidget->curve()->legend()->setMinors(minors);
     double start, stop;
     dataWidget->coordinates()->axes[Z1].limits(start,stop);
-    dataWidget->legend()->setLimits(start, stop);
-}		
+    dataWidget->curve()->legend()->setLimits(start, stop);
+}
 
 void Mesh2MainWindow::setFileType(QString const& name)
 {
@@ -1122,11 +1122,11 @@ void Mesh2MainWindow::updateGridLineStyle(int style)
     Qwt3D::GridLine majGrid = dataWidget->coordinates()->majorGridLines()[X1];
     majGrid.style_ = (Qwt3D::LINESTYLE)style;
     majGrid.visible_ = true;
-    
+
     Qwt3D::GridLine minGrid = dataWidget->coordinates()->minorGridLines()[X1];
     minGrid.style_ = (Qwt3D::LINESTYLE)style;
     minGrid.visible_ = true;
-    
+
     static QVector<Qwt3D::AXIS> axes;
     axes << Qwt3D::X1 << Qwt3D::X2 << Qwt3D::X3 << Qwt3D::X4;
     axes << Qwt3D::Y1 << Qwt3D::Y2 << Qwt3D::Y3 << Qwt3D::Y4;

@@ -152,8 +152,8 @@ void Curve::DatamapC(unsigned int comp)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
-	Triple min = actualData_p->hull().minVertex;
-	double shift = min(comp);
+	Triple tmin = actualData_p->hull().minVertex;
+	double shift = tmin(comp);
 
 	for (unsigned i = 0; i!=actualDataC_->cells.size(); ++i) {
 		glBegin(GL_POLYGON);
@@ -173,11 +173,11 @@ void Curve::IsolinesC(unsigned comp, bool projected)
 	if (isolines() <= 0 || actualData_p->empty())
 		return;
 
-	Triple max = actualData_p->hull().maxVertex;
-	Triple min = actualData_p->hull().minVertex;
+	Triple tmax = actualData_p->hull().maxVertex;
+	Triple tmin = actualData_p->hull().minVertex;
 		
-	double delta = max(comp) - min(comp);
-	double shift = min(comp);
+	double delta = tmax(comp) - tmin(comp);
+	double shift = tmin(comp);
 	double step  = delta / isolines();
 	
 	RGBA col;
@@ -283,7 +283,7 @@ void Curve::createNormalsC()
 	Convert user (non-rectangular) mesh based data to internal structure.
 	See also Qwt3D::TripleField and Qwt3D::CellField
 */
-bool Curve::loadFromData(TripleField const& data, CellField const& poly)
+bool Curve::loadFromData(TripleField const& data, CellField const& poly, QString titlestr)
 {	
 	actualDataG_->clear();
 	actualData_p = actualDataC_;
@@ -292,6 +292,8 @@ bool Curve::loadFromData(TripleField const& data, CellField const& poly)
 	actualDataC_->nodes = data;
 	actualDataC_->cells = poly;
 	actualDataC_->normals = TripleField(actualDataC_->nodes.size());
+
+	if (!titlestr.isEmpty())	setTitle(titlestr);
 
 	unsigned i;
 
@@ -339,6 +341,7 @@ bool Curve::loadFromData(TripleField const& data, CellField const& poly)
 	}
 
 	actualDataC_->setHull(hull);
+	emit readInFinished(title()->string());
 
 	updateData();
 	return true;
@@ -374,12 +377,14 @@ CellField* Curve::getCellData(int *cells)
 
 void Curve::deleteData(TripleField* data)
 {
-	delete [] data;
+	data->clear();
+	delete data;
 }
 
 void Curve::deleteData(CellField* poly)
 {
-	delete [] poly;
+	poly->clear();
+	delete poly;
 }
 
 void Curve::animateData(TripleField* data)

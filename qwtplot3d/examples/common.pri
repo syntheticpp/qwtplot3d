@@ -7,8 +7,7 @@ INCLUDEPATH += ../../include
 DEPENDPATH   = $$INCLUDEPATH
 DESTDIR      = ../bin
 
-#unix:LIBS += -lqwtplot3d -L../../lib
-unix:LIBS += ../../lib/libqwtplot3d.a
+unix:LIBS += -lqwtplot3d -L../../lib
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions
 
 CONFIG(debug, debug|release) {
@@ -16,6 +15,9 @@ CONFIG(debug, debug|release) {
 } else {
   DESTDIR = ../bin/release
 }
+
+# Choose +/- on the following line to show/hide debug output relating to library branch code 
+DEFINES -= QT_NO_DEBUG_OUTPUT
 
 win32 {
   win32-g++ {

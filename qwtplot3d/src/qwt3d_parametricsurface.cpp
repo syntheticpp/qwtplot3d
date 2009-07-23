@@ -85,7 +85,7 @@ bool ParametricSurface::create()
 		}
 	}
 
-	plotwidget_p->loadFromData(data, umesh_p, vmesh_p, uperiodic_, vperiodic_);
+	plotwidget_p->loadFromData(data, umesh_p, vmesh_p, "", uperiodic_, vperiodic_);
 
 	for ( i = 0; i < umesh_p; i++) 
 	{

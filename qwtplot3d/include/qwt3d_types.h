@@ -402,7 +402,7 @@ class GridData : public Data
 public:
 	GridData();
 	GridData(unsigned int columns, unsigned int rows);		//!< see setSize()
-	~GridData() { clear();}
+	~GridData()							{ clear();}
 
 	int columns() const;
 	int rows() const;

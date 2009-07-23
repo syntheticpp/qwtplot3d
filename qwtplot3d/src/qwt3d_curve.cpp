@@ -52,6 +52,12 @@ Curve::Curve(QWidget* parent)
 	setTitlePosition(0.98 - (titlepos_ * titlespace_));
 
     update_displaylists_ = false;
+	displaylegend_		 = false;
+
+	legend_.setLimits(0, 100);
+	legend_.setMajors(10);
+	legend_.setMinors(2);
+	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
 }
 
 Curve::~Curve()
@@ -87,6 +93,7 @@ void Curve::connects()
 	connect(plot_p, SIGNAL(setCurveFloorStyle(Qwt3D::FLOORSTYLE)),		SLOT(setFloorStyle(Qwt3D::FLOORSTYLE)));
 	connect(plot_p, SIGNAL(setCurveShading(Qwt3D::SHADINGSTYLE)),		SLOT(setShading(Qwt3D::SHADINGSTYLE)));
 
+	connect(plot_p, SIGNAL(showCurveColorLegend(bool)),					SLOT(showColorLegend(bool)));
 	connect(plot_p, SIGNAL(showCurveNormals(bool)),						SLOT(showNormals(bool)));
 	connect(plot_p, SIGNAL(setCurveNormalLength(double)),				SLOT(setNormalLength(double)));
 	connect(plot_p, SIGNAL(setCurveNormalQuality(int)),					SLOT(setNormalQuality(int)));
@@ -108,7 +115,7 @@ void Curve::connects()
 	connect(plot_p, SIGNAL(createEnrichments()),						SLOT(createEnrichments()));
 
 	// Reverse relayed signals
-	connect(this, SIGNAL(updatePlotData()),								plot_p,	SLOT(updateData()));
+	connect(this, SIGNAL(updatePlotData(bool)),							plot_p,	SLOT(updateData(bool)));
 	connect(this, SIGNAL(updatePlot()),									plot_p,	SLOT(update()));
 }
 
@@ -175,14 +182,13 @@ void Curve::calculateHull()
 	setHull(actualData_p->hull());
 }
 
-void Curve::updateData()
+void Curve::updateData(bool coord)
 {
 	update_displaylists_ = true;
 
 	if ( plot_p ) {
 		calculateHull();
-//		plot_p->updateData();
-		emit updatePlotData();
+		emit updatePlotData(coord);
 	}
 }
 
@@ -373,8 +379,7 @@ void Curve::drawVertex(Triple& vertex, double shift, unsigned int comp)
 }
 
 void Curve::drawIntersections(vector<Triple>& intersection, double shift, unsigned int comp,
-							  bool projected, RGBA colour[])
-//							  bool projected, vector<RGBA>& col)
+							  bool projected, vector<RGBA>* colour)
 {
 	if (intersection.empty())
 		return;
@@ -382,7 +387,7 @@ void Curve::drawIntersections(vector<Triple>& intersection, double shift, unsign
 	if (intersection.size() > 2) {
 		glBegin(GL_LINE_STRIP);
 			for (unsigned dd = 0; dd!=intersection.size(); ++dd) {
-				if (colour)	glColor4d(colour[dd].r, colour[dd].g, colour[dd].b, colour[dd].a);
+				if (colour)	glColor4d((*colour)[dd].r, (*colour)[dd].g, (*colour)[dd].b, (*colour)[dd].a);
 				drawVertex(intersection[dd], shift, comp);
 			}
 		glEnd();
@@ -583,4 +588,152 @@ void Curve::setMeshLineWidth( double val )
 
 	meshLineWidth_ = val;
 	update_displaylists_ = true;
+}
+
+void Curve::showColorLegend(bool show)
+{
+	displaylegend_ = show;
+
+	if (show) {
+		Color* color = const_cast<Color*>(dataColor());
+		if (color)		color->createVector(legend_.colors);
+	}
+	updateData(false);
+}
+
+void Curve::updateColorLegend(int majors, int minors)
+{
+	if (legend_.axis()->majors() != majors)	legend_.setMajors(majors);
+	if (legend_.axis()->minors() != minors)	legend_.setMinors(minors);
+
+	ParallelEpiped hull = data()->hull();
+	pair<double, double> limits(hull.minVertex.z, hull.maxVertex.z);
+
+	legend_.setLimits(limits.first, limits.second);
+}
+
+void Curve::setColorLegend(int index, bool doublemode, QSize size, QPoint pos)
+{
+	double w = size.width()/100.0,	h = size.height()/100.0;	// legend color vector as screen size percentage
+	double x = pos.x()/100.0,		y = pos.y()/100.0;			// legend anchor as screen position percentage
+
+	switch(index) {
+	case 0:
+		legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+		legend_.setRelPosition(Tuple(1-x-w, 0.5+y),		Tuple(1-x, 0.5+y+h));
+		break;
+	case 1:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(1-x, 0.5+y),		Tuple(1-x+w, 0.5+y+h));
+		} else {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+			legend_.setRelPosition(Tuple(1-x-w, 0.5-y-h),	Tuple(1-x, 0.5-y));
+		}
+		break;
+	case 2:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+			legend_.setRelPosition(Tuple(1-x-w, 0.5-y-h),	Tuple(1-x, 0.5-y));
+		} else {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5+y, x),			Tuple(0.5+y+h, x+w));
+		}
+		break;
+	case 3:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(1-x, 0.5-y-h),		Tuple(1-x+w, 0.5-y));
+		} else {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5-y-h, x),		Tuple(0.5-y, x+w));
+		}
+		break;
+	case 4:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5+y, x),			Tuple(0.5+y+h, x+w));
+		} else {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(x, 0.5-y-h),		Tuple(x+w, 0.5-y));
+		}
+		break;
+	case 5:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5+y, x-w),		Tuple(0.5+y+h, x));
+		} else {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(x, 0.5+y),			Tuple(x+w, 0.5+y+h));
+		}
+		break;
+	case 6:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5-y-h, x),		Tuple(0.5-y, x+w));
+		} else {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5-y-h, 1-x-w),	Tuple(0.5-y, 1-x));
+		}
+		break;
+	case 7:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5-y-h, x-w),		Tuple(0.5-y, x));
+		} else {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5+y, 1-x-w),		Tuple(0.5+y+h, 1-x));
+		}
+		break;
+	case 8:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(x, 0.5-y-h),		Tuple(x+w, 0.5-y));
+		}
+		break;
+	case 9:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+			legend_.setRelPosition(Tuple(x-w, 0.5-y-h),		Tuple(x, 0.5-y));
+		}
+		break;
+	case 10:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Right);
+			legend_.setRelPosition(Tuple(x, 0.5+y),			Tuple(x+w, 0.5+y+h));
+		}
+		break;
+	case 11:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
+			legend_.setRelPosition(Tuple(x-w, 0.5+y),		Tuple(x, 0.5+y+h));
+		}
+		break;
+	case 12:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5-y-h, 1-x-w),	Tuple(0.5-y, 1-x));
+		}
+		break;
+	case 13:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5-y-h, 1-x),		Tuple(0.5-y, 1-x+w));
+		}
+		break;
+	case 14:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Bottom);
+			legend_.setRelPosition(Tuple(0.5+y, 1-x-w),		Tuple(0.5+y+h, 1-x));
+		}
+		break;
+	case 15:
+		if (doublemode) {
+			legend_.setOrientation(ColorLegend::LeftRight, ColorLegend::Top);
+			legend_.setRelPosition(Tuple(0.5+y, 1-x),		Tuple(0.5+y+h, 1-x+w));
+		}
+		break;
+	default:
+		break;
+	}
 }
