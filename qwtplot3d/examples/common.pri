@@ -1,9 +1,9 @@
 TEMPLATE     = app
-CONFIG      += qt warn_on thread release
+CONFIG      += qt warn_on thread debug
 UI_DIR       = tmp
 MOC_DIR      = tmp
 OBJECTS_DIR  = tmp
-INCLUDEPATH += ../../include 
+INCLUDEPATH += ../../include
 DEPENDPATH   = $$INCLUDEPATH
 DESTDIR      = ../bin
 
@@ -16,7 +16,7 @@ CONFIG(debug, debug|release) {
   DESTDIR = ../bin/release
 }
 
-# Choose +/- on the following line to show/hide debug output relating to library branch code 
+# Choose +/- on the following line to show/hide debug output relating to library branch code
 DEFINES -= QT_NO_DEBUG_OUTPUT
 
 win32 {
@@ -33,7 +33,7 @@ win32 {
   RC_FILE = ../icon.rc
 }
 
-MYVERSION = $$[QMAKE_VERSION] 
+MYVERSION = $$[QMAKE_VERSION]
 ISQT4 = $$find(MYVERSION, ^[2-9])
 
 !isEmpty( ISQT4 ) {

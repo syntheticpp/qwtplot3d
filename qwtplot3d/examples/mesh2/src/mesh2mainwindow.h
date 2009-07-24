@@ -17,19 +17,19 @@ using namespace Qwt3D;
   class DummyBase : public Mesh2MainWindowBase
   {
   public:
-    DummyBase(QWidget* parent = 0) 
-      : Mesh2MainWindowBase(parent) 
+    DummyBase(QWidget* parent = 0)
+      : Mesh2MainWindowBase(parent)
     {
-    } 
+    }
   };
 #else
   class DummyBase : public QMainWindow, protected Ui::MainWindow, protected DesignerWorkaround
   {
   public:
-    DummyBase(QWidget* parent = 0) 
-      : QMainWindow(parent) 
+    DummyBase(QWidget* parent = 0)
+      : QMainWindow(parent)
     {
-    } 
+    }
   };
 #endif
 //MOC_SKIP_END
@@ -49,7 +49,7 @@ public:
     ~Mesh2MainWindow();
 
     Qwt3D::Plot3D* dataWidget;
-	
+
 public slots:
     void open();
     void openMesh();
@@ -95,7 +95,7 @@ public slots:
     void setNormalLength(int);
     bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
     void adaptDataColors(const QString&);
-    void updateColorLegend(int majors, int minors);
+    void updateColorLegend(int majors = 4, int minors = 5);
 
     void setLeftGrid( bool b );
     void setRightGrid( bool b );

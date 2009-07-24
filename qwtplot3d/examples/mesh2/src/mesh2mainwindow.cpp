@@ -88,6 +88,8 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     activeFloorStyle->setChecked(true);
 
     dataWidget = new Plot3D(frame);
+    //dataWidget->setDoubleLegend();
+
     d_function = 0;
     d_parametric_surface = 0;
     functionRadioButton->hide();
@@ -170,6 +172,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
 
     connect(functionCB, SIGNAL(activated(const QString&)), this, SLOT(createFunction(const QString&)));
     connect(psurfaceCB, SIGNAL(activated(const QString&)), this, SLOT(createPSurface(const QString&)));
+
     connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
     connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
     connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
@@ -315,6 +318,8 @@ void Mesh2MainWindow::createFunction(QString const& name)
     dataWidget->makeCurrent();
     dataWidget->setCurve(d_function);
     d_function->legend()->setScale(LINEARSCALE);
+    d_function->legend()->setTitleString(name);
+
     for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i){
         dataWidget->coordinates()->axes[i].setMajors(7);
         dataWidget->coordinates()->axes[i].setMinors(5);
@@ -413,7 +418,6 @@ void Mesh2MainWindow::createPSurface(QString const& name)
         d_parametric_surface->setProjection(FACE, false);
         d_parametric_surface->setProjection(SIDE, false);
         d_parametric_surface->setResolution(resSlider->value());
-
         dataWidget->addCurve(d_parametric_surface);
     }
 
@@ -468,6 +472,7 @@ void Mesh2MainWindow::createPSurface(QString const& name)
     dimWidget->setText(QString("Cells ") + QString::number(a*b)
             + " (" + QString::number(a) + "x" + QString::number(b) +")" );
 
+	d_parametric_surface->legend()->setTitleString(name);
     updateColorLegend(7,5);
 
     dataWidget->coordinates()->axes[X1].setLabelString(QString("X1"));
@@ -1075,6 +1080,16 @@ Mesh2MainWindow::updateColorLegend(int majors, int minors)
     double start, stop;
     dataWidget->coordinates()->axes[Z1].limits(start,stop);
     dataWidget->curve()->legend()->setLimits(start, stop);
+
+    QVector<Qwt3D::Curve*> curves = dataWidget->curveList();
+    for(int i = 0; i < curves.size(); i++){
+    	Qwt3D::Curve* curve = curves[i];
+		curve->setColorLegend(i, dataWidget->isDoubleLegend(),
+			dataWidget->isDoubleLegend() ? QSize(2,28)  : QSize(3,32),
+			dataWidget->isDoubleLegend() ? QPoint(7,10) : QPoint(3,10));
+
+		curve->showColorLegend(colorlegend->isChecked());
+    }
 }
 
 void Mesh2MainWindow::setFileType(QString const& name)
