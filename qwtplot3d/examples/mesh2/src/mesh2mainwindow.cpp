@@ -875,8 +875,10 @@ void Mesh2MainWindow::dumpImage()
         IO::save(dataWidget, name.lower(), filetype_);
     #else
         VectorWriter* vw = (VectorWriter*)IO::outputHandler("PDF");
-        if (vw)
-            vw->setSortMode(VectorWriter::BSPSORT);
+		if (vw){
+			vw->setSortMode(VectorWriter::BSPSORT);
+			vw->setTextMode(VectorWriter::NATIVE);
+		}
         IO::save(dataWidget, name.toLower(), filetype_);
     #endif
 }

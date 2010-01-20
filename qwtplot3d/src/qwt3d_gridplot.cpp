@@ -67,19 +67,21 @@ void Curve::createDataG()
 				glNormal3dv(actualDataG_->normals[i][0]);
 				glVertex3dv(actualDataG_->vertices[i][0]);
 					
-				setColorFromVertexG(i+step, 0, hl);
-				glNormal3dv(actualDataG_->normals[i+step][0]);
-				glVertex3dv(actualDataG_->vertices[i+step][0]);
+				int ni = i + step;
+				setColorFromVertexG(ni, 0, hl);
+				glNormal3dv(actualDataG_->normals[ni][0]);
+				glVertex3dv(actualDataG_->vertices[ni][0]);
 
 				for (j = 0; j < lastrow - step; j += step) 
-				{				
-					setColorFromVertexG(i,j+step, hl);
-					glNormal3dv(actualDataG_->normals[i][j+step]);
-					glVertex3dv(actualDataG_->vertices[i][j+step]);
+				{
+					int nj = j + step;
+					setColorFromVertexG(i, nj, hl);
+					glNormal3dv(actualDataG_->normals[i][nj]);
+					glVertex3dv(actualDataG_->vertices[i][nj]);
 
-					setColorFromVertexG(i+step, j+step, hl);
-					glNormal3dv(actualDataG_->normals[i+step][j+step]);
-					glVertex3dv(actualDataG_->vertices[i+step][j+step]);
+					setColorFromVertexG(ni, nj, hl);
+					glNormal3dv(actualDataG_->normals[ni][nj]);
+					glVertex3dv(actualDataG_->vertices[ni][nj]);
 				}
 			glEnd();
 		}
@@ -462,12 +464,13 @@ void Curve::DatamapG(unsigned int comp)
 
 	for (int i = 0; i < actualDataG_->columns() - step; i += step) {
 		glBegin(GL_TRIANGLE_STRIP);
+			int ni = i + step;
 			Triple curr(actualDataG_->vertices[i][0][0],
 						actualDataG_->vertices[i][0][1],
 						actualDataG_->vertices[i][0][2]); 
-			Triple next(actualDataG_->vertices[i+step][0][0],
-						actualDataG_->vertices[i+step][0][1],
-						actualDataG_->vertices[i+step][0][2]); 
+			Triple next(actualDataG_->vertices[ni][0][0],
+						actualDataG_->vertices[ni][0][1],
+						actualDataG_->vertices[ni][0][2]);
 
 			setColorFromVertexG(i, 0);
 			drawVertex(curr, shift, comp);
@@ -476,17 +479,18 @@ void Curve::DatamapG(unsigned int comp)
 			drawVertex(next, shift, comp);
 
 			for (int j = 0; j < actualDataG_->rows() - step; j += step) {
-				Triple curr(actualDataG_->vertices[i][j+step][0],
-							actualDataG_->vertices[i][j+step][1],
-							actualDataG_->vertices[i][j+step][2]); 
-				Triple next(actualDataG_->vertices[i+step][j+step][0],
-							actualDataG_->vertices[i+step][j+step][1],
-							actualDataG_->vertices[i+step][j+step][2]); 
+				int nj = j + step;
+				Triple curr(actualDataG_->vertices[i][nj][0],
+							actualDataG_->vertices[i][nj][1],
+							actualDataG_->vertices[i][nj][2]);
+				Triple next(actualDataG_->vertices[ni][nj][0],
+							actualDataG_->vertices[ni][nj][1],
+							actualDataG_->vertices[ni][nj][2]);
 
-				setColorFromVertexG(i, j+step);
+				setColorFromVertexG(i, nj);
 				drawVertex(curr, shift, comp);
 
-				setColorFromVertexG(i+step, j+step);
+				setColorFromVertexG(ni, nj);
 				drawVertex(next, shift, comp);
 			}
 		glEnd();

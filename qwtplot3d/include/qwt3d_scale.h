@@ -27,6 +27,7 @@ class QWT3D_EXPORT Scale
     Scale();
     virtual ~Scale(){}
     virtual QString ticLabel(unsigned int idx) const;
+	double ticValue(unsigned int idx) const;
 
     virtual void setLimits(double start, double stop); 
     virtual void setMajors(int val) {majorintervals_p=val;} //!< Sets number of major intervals

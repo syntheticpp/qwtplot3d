@@ -1,5 +1,5 @@
 TEMPLATE     = app
-CONFIG      += qt warn_on thread debug
+CONFIG      += qt warn_on thread release
 UI_DIR       = tmp
 MOC_DIR      = tmp
 OBJECTS_DIR  = tmp

@@ -100,8 +100,6 @@ private:
 	Qwt3D::Triple drawTic(Qwt3D::Triple nadir, double length);
 	void drawLabel();
 	bool prepTicCalculation(Triple& startpoint);
-
-	Qwt3D::Triple biggestNumberString();
 	
 	Qwt3D::ANCHOR scaleNumberAnchor_;
 	Qwt3D::Label label_;

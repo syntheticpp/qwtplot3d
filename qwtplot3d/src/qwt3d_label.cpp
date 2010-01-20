@@ -1,5 +1,7 @@
 #include <qbitmap.h>
 #include "qwt3d_label.h"
+#include "qwt3d_plot.h"
+#include "../3rdparty/gl2ps/gl2ps.h"
 
 using namespace Qwt3D;
 
@@ -28,12 +30,11 @@ void Label::init()
 	end_ = beg_;
 	pos_ = beg_;
 	setColor(0,0,0);
-	pm_ = QPixmap(0, 0);
 	font_ = QFont();
 	anchor_ = BottomLeft;
 	gap_ = 0;
-    use_relpos_ = false;
-	flagforupdate_ = true;
+	width_ = 0.0;
+	height_ = 0.0;
 }
 
 void Label::useDeviceFonts(bool val)
@@ -47,7 +48,6 @@ void Label::setFont(const QFont& f)
         return;
     }
     font_ = f;
-	flagforupdate_ = true;
 }
 
 void Label::setFont(const QString & family, int pointSize, int weight, bool italic)
@@ -58,7 +58,6 @@ void Label::setFont(const QString & family, int pointSize, int weight, bool ital
 void Label::setString(QString const& s)
 {
   text_ = s;
-	flagforupdate_ = true;
 }
 
 const QString& Label::string() const
@@ -106,86 +105,63 @@ void Label::setRelPosition(Tuple rpos, ANCHOR a)
     use_relpos_ = true;
 }
 
-void Label::update()
+QImage Label::createImage(double angle)
 {
-	QPainter p;
-	QFontMetrics fm(font_);
+	QRect r = QRect(QPoint(0, 0), QFontMetrics(font_).size(Qwt3D::SingleLine, text_));
+	int textWidth = r.width();
+	int textHeight = r.height();
 
-  QFontInfo info(font_);
+	double aux_a = angle;
+	if (aux_a > 270)
+		aux_a -= 270;
+	if (aux_a >= 180)
+		aux_a -= 180;
+	if (aux_a > 90)
+		aux_a -= 90;
 
-  QRect r = 	QRect(QPoint(0,0),fm.size(Qwt3D::SingleLine, text_));//fm.boundingRect(text_)  misbehaviour under linux;
-  
-#if QT_VERSION < 0x040000
- 		r.moveBy(0, -r.top());
-#else
- 		r.translate(0, -r.top());
-#endif
-	
-	pm_ = QPixmap(r.width(), r.bottom());
+	double rad = aux_a*M_PI/180.0;
 
-	if (pm_.isNull()) // else crash under linux
-	{
-		r = 	QRect(QPoint(0,0),fm.size(Qwt3D::SingleLine, QString(" "))); // draw empty space else //todo
-#if QT_VERSION < 0x040000
- 		r.moveBy(0, -r.top());
-#else
- 		r.translate(0, -r.top());
-#endif
-		pm_ = QPixmap(r.width(), r.bottom());		
+	int w = 0, h = 0;
+	if ((angle >= 0 && angle <= 90) || (angle >= 180 && angle <= 270)){
+		w = qRound(fabs(textWidth*cos(rad) + textHeight*sin(rad)));
+		h = qRound(fabs(textWidth*sin(rad) + textHeight*cos(rad)));
+	} else {
+		w = qRound(fabs(textWidth*sin(rad) + textHeight*cos(rad)));
+		h = qRound(fabs(textWidth*cos(rad) + textHeight*sin(rad)));
 	}
-	
-	QBitmap bm(pm_.width(),pm_.height());
-#if QT_VERSION >= 0x040000 && defined(Q_WS_X11)
-  bm.fill(Qt::white);
-  p.begin( &bm );
-    p.setPen(Qt::black);
-    p.setFont(font_);
-    p.drawText(0,r.height() - fm.descent() -1 , text_);
-  p.end();
 
-  pm_.setMask(bm);
-  
-  // avoids uninitialized areas in some cases
-  pm_.fill(Qt::white);
-  p.begin( &pm_ );
-    p.setFont( font_ );
-    p.setPen( Qt::SolidLine );
-    p.setPen( GL2Qt(color.r, color.g, color.b) );
+	width_ = w;
+	height_ = h;
 
-    p.drawText(0,r.height() - fm.descent() -1 , text_);
-  p.end();
+	QPixmap pm_ = QPixmap(w, h);
 
-  buf_ = pm_.toImage();
-#else
-  bm.fill(Qt::color0);
-	p.begin( &bm );
-		p.setPen(Qt::color1);
-		p.setFont(font_);
-		p.drawText(0,r.height() - fm.descent() -1 , text_);
+	if (plot() && plot()->isExportingVector() && plot()->vectorExportFormat() != GL2PS_PDF){
+		Qwt3D::RGBA rgba = plot()->backgroundRGBAColor();
+		pm_.fill(GL2Qt(rgba.r, rgba.g, rgba.b));
+	} else
+		pm_.fill(Qt::transparent);
+
+	QPainter p(&pm_);
+
+	if (angle >= 270)
+		p.translate(textHeight*cos(rad), 0.0);
+	else if (angle >= 180)
+		p.translate(w, textHeight*cos(rad));
+	else if (angle > 90)
+		p.translate(textWidth*sin(rad), h);
+	else
+		p.translate(0.0, textWidth*sin(rad));
+
+	p.rotate(-angle);
+	p.translate(0.0, textHeight - QFontMetrics(font_).descent());
+
+	p.setFont( font_ );
+	p.setPen(Qt::SolidLine);
+	p.setPen(GL2Qt(color.r, color.g, color.b));
+	p.drawText(0, 0, text_);
 	p.end();
 
-	pm_.setMask(bm);
-  
-  // avoids uninitialized areas in some cases
-#if QT_VERSION < 0x040000
-	pm_.fill();
-#endif
-	p.begin( &pm_ );
-	  p.setFont( font_ );
-	  p.setPen( Qt::SolidLine );
-	  p.setPen( GL2Qt(color.r, color.g, color.b) );
-
-	  p.drawText(0,r.height() - fm.descent() -1 , text_);
-	p.end();     
-#endif	       
-
-#if QT_VERSION < 0x040000
-  buf_ = pm_.convertToImage();
-#else
-  buf_ = pm_.toImage();
-#endif
-	
-	tex_ = QGLWidget::convertToGLFormat( buf_ );	  // flipped 32bit RGBA ?		
+	return QGLWidget::convertToGLFormat(pm_.toImage());
 }
 
 /**
@@ -246,63 +222,98 @@ void Label::convert2screen()
 	end_ = ViewPort2World(start + Triple(width(), height(), 0));	
 }
 
-void Label::draw()
+const char * Label::fontname()
 {
-    if ( use_relpos_ ) {
-        getMatrices(modelMatrix, projMatrix, viewport);
-        beg_ = relativePosition(relpos_);
-        setPosition(beg_, anchor_);
-        use_relpos_ = true;// reset the flag
-    }
-
-	if (flagforupdate_)
-	{
-		update();
-		flagforupdate_ = false;
+	const char *name = "Helvetica";
+	if (font_.family() == "Times New Roman"){
+		name = "Times";
+		if (font_.bold() && font_.italic ())
+			name = "Times-BoldItalic";
+		else if (font_.italic())
+			name = "Times-Italic";
+		else if (font_.bold())
+			name = "Times-Bold";
+	} else if (font_.family() == "Courier" || font_.family() == "Courier New"){
+		name = "Courier";
+		if (font_.bold() && font_.italic ())
+			name = "Courier-BoldOblique";
+		else if (font_.italic())
+			name = "Courier-Oblique";
+		else if (font_.bold())
+			name = "Courier-Bold";
+	} else {
+		if (font_.bold() && font_.italic ())
+			name = "Helvetica-BoldOblique";
+		else if (font_.italic())
+			name = "Helvetica-Oblique";
+		else if (font_.bold())
+			name = "Helvetica-Bold";
 	}
 
-	if (buf_.isNull())
+	return (const char*) name;
+}
+
+void Label::draw(double angle)
+{
+	if (!plot() || !plot()->isVisible())
 		return;
-		
+
+	if (text_.isEmpty())
+		return;
+
 	GLboolean b;
 	GLint func;
 	GLdouble v;
 	glGetBooleanv(GL_ALPHA_TEST, &b);
 	glGetIntegerv(GL_ALPHA_TEST_FUNC, &func);
 	glGetDoublev(GL_ALPHA_TEST_REF, &v);
-	
+
 	glEnable (GL_ALPHA_TEST);
-  glAlphaFunc (GL_NOTEQUAL, 0.0);
-	
+	glAlphaFunc (GL_NOTEQUAL, 0.0);
+
 	convert2screen();
 	glRasterPos3d(beg_.x, beg_.y, beg_.z);
- 
-	
-	int w = tex_.width();
-	int h = tex_.height();
- 
-	if (devicefonts_)
-	{		
-		drawDeviceText(QWT3DLOCAL8BIT(text_), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
-	}
-	else
-	{
-		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-//    glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());	
-	}
 
+	if (plot()->isExportingVector()){
+		if (devicefonts_)
+			drawDeviceText(QWT3DLOCAL8BIT(text_), fontname(), font_.pointSize(), pos_, color, anchor_, gap_, angle);
+		else {
+			QImage tex_ = createImage(angle);
+			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
+		}
+	} else {
+		if (!angle){
+			Triple start = World2ViewPort(beg_);
+			start = ViewPort2World(start + Triple(0, QFontMetrics(font_).descent(), 0));
+			plot()->qglColor(GL2Qt(color.r, color.g, color.b));
+			plot()->renderText(start.x, start.y, start.z, text_, font_);
+		} else {
+			QImage tex_ = createImage(angle);
+			drawDevicePixels(tex_.width(), tex_.height(), GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
+		}
+	}
 
 	glAlphaFunc(func,v);
 	Enable(GL_ALPHA_TEST, b);
 }
 
+double Label::width() const
+{
+	if (width_ > 0.0 && height_ > 0.0)
+		return width_;
 
-double Label::width() const 
-{ 
-	return pm_.width(); 
+	return QRect(QPoint(0, 0), QFontMetrics(font_).size(Qwt3D::SingleLine, text_)).width();
 }
 
-double Label::height() const 
-{ 
-	return pm_.height(); 
-}	
+double Label::height() const
+{
+	if (width_ > 0.0 && height_ > 0.0)
+		return height_;
+
+	return QRect(QPoint(0, 0), QFontMetrics(font_).size(Qwt3D::SingleLine, text_)).height();
+}
+
+double Label::textHeight() const
+{
+	return QRect(QPoint(0, 0), QFontMetrics(font_).size(Qwt3D::SingleLine, text_)).height();
+}

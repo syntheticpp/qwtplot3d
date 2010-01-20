@@ -36,6 +36,7 @@ Plot3D::Plot3D(QWidget* parent, const QGLWidget* shareWidget)
 	: ExtGLWidget(parent, shareWidget) 
 #endif
 {
+	d_exporting_vector = false;
 	renderpixmaprequest_ = false;
 	doublelegend_ 		 = false;
 
@@ -198,6 +199,7 @@ void Plot3D::addDrawable(Drawable* drawable)
 {
 	if (!drawable || drawablelist_p.contains(drawable))		return;
 
+	drawable->setPlot(this);
     drawablelist_p.push_back(drawable);
 }
 
@@ -228,6 +230,7 @@ void Plot3D::addTitle(Label* label)
 	if (!label || titlelist_p.contains(label))		return;
 
 	if (title() != label)	setTitle(label);
+	label->setPlot(this);
 	titlelist_p.push_back(label);
 }
 
@@ -273,8 +276,10 @@ void Plot3D::childConnect(bool connect)
 */
 void Plot3D::createCoordinateSystem( Triple beg, Triple end )
 {
-	if (beg != coordinates_p.first() || end != coordinates_p.second())
+	if (beg != coordinates_p.first() || end != coordinates_p.second()){
+		coordinates_p.setPlot(this);
 		coordinates_p.init(beg, end);
+	}
 }
 
 /*!

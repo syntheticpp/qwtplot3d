@@ -26,6 +26,14 @@ QString Scale::ticLabel(unsigned int idx) const
   return QString("");
 }
 
+double Scale::ticValue(unsigned int idx) const
+{
+	if (idx < majors_p.size())
+		return majors_p[idx];
+
+	return 0.0;
+}
+
 //! Sets start and stop value for the scale;
 void Scale::setLimits(double start, double stop) 
 {

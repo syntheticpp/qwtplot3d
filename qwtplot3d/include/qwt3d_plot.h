@@ -76,6 +76,10 @@ public:
 	typedef QVector<Qwt3D::Label*> TitleList;
 	const TitleList& titleList() const			{ return titlelist_p; }
 
+	bool isExportingVector(){return d_exporting_vector;};
+	GLint vectorExportFormat(){return gl2ps_export_format_;};
+	void setExportingVector(bool on = true, GLint format = 0){d_exporting_vector = on; gl2ps_export_format_ = format;};
+
 signals:
 	// Internally sent signals through signal slot mechanism
 	void setCurveResolution(int);								//!< Emits, resolution change to all connected curves
@@ -175,7 +179,9 @@ private:
 	Qwt3D::RGBA		bgcolor_;
 	bool			renderpixmaprequest_;
 	bool			doublelegend_;
-    
+	bool			d_exporting_vector;
+	GLint			gl2ps_export_format_;
+
 	Qwt3D::ParallelEpiped	hull_;
 };
 

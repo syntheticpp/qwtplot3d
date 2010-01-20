@@ -57,8 +57,8 @@ void Drawable::Enable(GLenum what, GLboolean val)
 void Drawable::attach(Drawable* dr)
 {
 	if ( dlist.end() == std::find( dlist.begin(), dlist.end(), dr ) )
-		if (dr)
-		{
+		if (dr){
+			dr->setPlot(d_plot);
 			dlist.push_back(dr);
 		}
 }

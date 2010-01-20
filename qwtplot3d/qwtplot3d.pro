@@ -3,7 +3,7 @@
 
 include (qwtplot3d.pri)
 
-CONFIG          += qt warn_on opengl thread zlib
+CONFIG          += qt warn_on opengl thread zlib release
 MOC_DIR          = tmp
 OBJECTS_DIR      = tmp
 INCLUDEPATH      = include
@@ -29,7 +29,7 @@ unix:VERSION     = 0.3.0
 CONFIG(debug, debug|release) {
     BUILD_SUBDIR = lib/debug
 } else {
-    BUILD_SUBDIR = lib/release
+	BUILD_SUBDIR = lib/release
 }
 
 win32 {

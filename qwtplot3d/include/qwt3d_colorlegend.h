@@ -58,6 +58,7 @@ public:
     void setTitleFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
     Qwt3D::ColorVector colors; //!< The color vector
+	virtual void setPlot(Plot3D *plot);
 
     private:
 

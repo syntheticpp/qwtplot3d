@@ -54,6 +54,7 @@ Curve::Curve(QWidget* parent)
     update_displaylists_ = false;
 	displaylegend_		 = false;
 
+	legend_.setPlot(plot_p);
 	legend_.setLimits(0, 100);
 	legend_.setMajors(10);
 	legend_.setMinors(2);

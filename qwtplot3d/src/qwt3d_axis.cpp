@@ -1,4 +1,5 @@
 #include "qwt3d_axis.h"
+#include "qwt3d_plot.h"
 
 using namespace Qwt3D;
 
@@ -139,41 +140,45 @@ void Axis::drawLabel()
 	if (!drawLabel_)
 		return;
 
-	Triple diff = end() - begin();
-	Triple center = begin() + diff/2;
-	
-	Triple bnumber = biggestNumberString(); 
-//	double fac = 6*(second()-first()).length() / 100;
-	
-	switch (scaleNumberAnchor_) 
-	{
-		case BottomLeft:
-		case TopLeft:
-		case CenterLeft:
-			bnumber.y = 0;
-			break;
-		case BottomRight:
-		case TopRight:
-		case CenterRight:
-			bnumber.x = -bnumber.x;
-			bnumber.y = 0;
-			break;
-		case TopCenter:
-			bnumber.x = 0;
-			bnumber.y = -bnumber.y;
-			break;
-		case BottomCenter:
-			bnumber.x = 0;
-			break;
-		default:
-			break;
-	}
-	
-	Triple pos = ViewPort2World(World2ViewPort(center + ticOrientation() * lmaj_) + bnumber);
-	setLabelPosition(pos, scaleNumberAnchor_);
+	label_.setPlot(plot());
 
-	label_.adjust(labelgap_);
-	label_.draw();
+	double width = 0.0;
+	for (unsigned i = 0; i != markerLabel_.size(); i++){
+		double aux = markerLabel_[i].width();
+		if (aux > width)
+			width = aux;
+	}
+
+	Triple center = begin() + (end_ - beg_)/2;
+	Triple ticEnd = ViewPort2World(World2ViewPort(center + ticOrientation() * lmaj_));
+
+	double rap = (width + labelgap_ + label_.textHeight())/(World2ViewPort(ticEnd) - World2ViewPort(center)).length();
+
+	Triple pos = ViewPort2World(World2ViewPort(center + ticOrientation() * lmaj_*(1 + rap)));
+	setLabelPosition(pos, Center);
+
+	Triple end = World2ViewPort(end_);
+	Triple beg = World2ViewPort(beg_);
+	double angle = 360 - fabs(QLineF(beg.x, beg.y, end.x, end.y).angle());
+
+	int ax = 0;
+	Qwt3D::CoordinateSystem *coords = plot()->coordinates();
+		for (int i = 0; i < (int)coords->axes.size(); i++){
+		Qwt3D::Axis axis = coords->axes[i];
+		if (axis.begin() == beg_ && axis.end() == end_){
+			ax = i;
+			break;
+		}
+	}
+
+	if (ax != Qwt3D::Z1 && ax != Qwt3D::Z2 && ax != Qwt3D::Z3 && ax != Qwt3D::Z4){
+		if (angle > 90 && angle < 180)
+			angle += 180;
+		if (angle > 180 && angle < 270)
+			angle -= 180;
+			}
+
+	label_.draw(angle);
 }
 
 void Axis::drawBase()
@@ -269,8 +274,9 @@ void Axis::drawTicLabel(Triple pos, int mtic)
 	
 	markerLabel_[mtic].setFont(numberfont_.family(), numberfont_.pointSize(), numberfont_.weight(), numberfont_.italic());
 	markerLabel_[mtic].setColor(numbercolor_);
-	markerLabel_[mtic].setString(scale_->ticLabel(mtic));	  
+	markerLabel_[mtic].setString(scale_->ticLabel(mtic));
 	markerLabel_[mtic].setPosition(pos, scaleNumberAnchor_);
+	markerLabel_[mtic].setPlot(plot());
 	markerLabel_[mtic].adjust(numbergap_);
 	markerLabel_[mtic].draw();
 }
@@ -280,12 +286,13 @@ Triple Axis::drawTic(Triple nadir, double length)
 	double ilength = (symtics_) ? -length : 0.0;
 
 	glBegin( GL_LINES );
+	glColor4d(color.r,color.g,color.b,color.a);
 	glVertex3d( nadir.x  + ilength * orientation_.x,
-				nadir.y  + ilength * orientation_.y,
-				nadir.z  + ilength * orientation_.z) ; 
+					  nadir.y  + ilength * orientation_.y,
+							nadir.z  + ilength * orientation_.z) ;
 	glVertex3d( nadir.x  + length * orientation_.x,
-				nadir.y  + length * orientation_.y,
-				nadir.z  + length * orientation_.z);
+							nadir.y  + length * orientation_.y,
+							nadir.z  + length * orientation_.z);
 	glEnd();
 	return nadir;
 }
@@ -333,25 +340,6 @@ void Axis::setLabelPosition(const Triple& pos,Qwt3D::ANCHOR an)
 void Axis::setLabelColor(RGBA col)
 {
 	label_.setColor(col);
-}
-
-Triple Axis::biggestNumberString()
-{
-	Triple ret;
-	unsigned size = markerLabel_.size();
-
-	double width, height;
-
-	for (unsigned i=0; i!=size; ++i) {
-		width = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).x );
-		height = fabs( (World2ViewPort(markerLabel_[i].second())-World2ViewPort(markerLabel_[i].first())).y );
-
-		if (width > ret.x)
-			ret.x = width + markerLabel_[i].gap();
-		if (height > ret.y)
-			ret.y = height + markerLabel_[i].gap();;
-	}
-	return ret;
 }
 
 /*! 

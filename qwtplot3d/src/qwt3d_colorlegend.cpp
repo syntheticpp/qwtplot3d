@@ -221,3 +221,10 @@ void ColorLegend::draw()
 	
 	caption_.draw();
 }
+
+void ColorLegend::setPlot(Plot3D *plot)
+{
+	d_plot = plot;
+	axis_.setPlot(plot);
+	caption_.setPlot(plot);
+}

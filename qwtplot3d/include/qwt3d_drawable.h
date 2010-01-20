@@ -15,6 +15,7 @@ class QWT3D_EXPORT Drawable
 {
 
 public:
+	Drawable(Plot3D *plot = 0){d_plot = plot;};
 	virtual ~Drawable() = 0;
 	virtual void draw();
 
@@ -27,9 +28,13 @@ public:
 
 	virtual void setColor(double r, double g, double b, double a = 1);	
 	virtual void setColor(Qwt3D::RGBA rgba);	
-	Qwt3D::Triple relativePosition(Qwt3D::Triple rel); 
+	Qwt3D::Triple relativePosition(Qwt3D::Triple rel);
+
+	Plot3D *plot(){return d_plot;};
+	virtual void setPlot(Plot3D *plot){d_plot = plot;};
 
 protected:
+	Plot3D *d_plot;
 	Qwt3D::RGBA color;
 	void Enable(GLenum what, GLboolean val);
 	Qwt3D::Triple ViewPort2World(Qwt3D::Triple win, bool* err = 0);

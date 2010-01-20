@@ -45,41 +45,40 @@ public:
 	void setString(QString const& s);
         //! the label's string
         const QString& string() const;
-	void draw(); //!< Actual drawing
+	void draw(double angle = 0.0); //!< Actual drawing
 
 	/**
 		\brief Decides about use of PDF standard fonts for PDF output 
 		If true, Label can use one of the PDF standard fonts (unprecise positioning for now), 
 		otherwise it dumps  pixmaps in the PDF stream (poor quality) 
 	*/
-	static void useDeviceFonts(bool val); 
-	
+	static void useDeviceFonts(bool val);
+	double width() const;
+	double height() const;
+	double textHeight() const;
 
 private:
 
-        bool use_relpos_;
+	bool use_relpos_;
 	Qwt3D::Triple relpos_;
 	Qwt3D::Triple beg_, end_, pos_;
-	QPixmap pm_;
-	QImage  buf_, tex_;
 	QFont font_;
 	QString text_;
 
 	ANCHOR anchor_;
-	
+
 	void init();
-  void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void update(); //!< Enforces an update of the internal pixmap
+	void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
+	QImage createImage(double angle);//!< Creates an internal bitmap used only for axis labels
+	const char * fontname(); //!< Try to guess an appropriate font name from the 14 standard Type 1 fonts available
 	void convert2screen();
-	double width() const;
-	double height() const;
 
 	int gap_;
 
 	bool flagforupdate_;
 
 	static bool devicefonts_;
-
+	double width_, height_;
 };
 
 } // ns
