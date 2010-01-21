@@ -261,6 +261,13 @@ void Label::draw(double angle)
 	if (text_.isEmpty())
 		return;
 
+	if ( use_relpos_ ) {
+		getMatrices(modelMatrix, projMatrix, viewport);
+		beg_ = relativePosition(relpos_);
+		setPosition(beg_, anchor_);
+		use_relpos_ = true;// reset the flag
+	}
+
 	GLboolean b;
 	GLint func;
 	GLdouble v;
