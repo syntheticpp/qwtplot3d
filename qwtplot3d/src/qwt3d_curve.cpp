@@ -66,6 +66,8 @@ Curve::~Curve()
 	delete actualDataG_;
 	delete actualDataC_;
 
+	glDeleteLists(displaylists_p[DataObject], 1);
+
 	for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
 		delete (*it);
 
