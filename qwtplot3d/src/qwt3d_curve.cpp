@@ -131,8 +131,7 @@ void Curve::disconnects()
 void Curve::draw()
 {
     // if the display list needs to be updated
-    if ( update_displaylists_ ) {
-
+	if ( update_displaylists_ ) {
         // create display list if necessary
         if ( 0 == displaylists_p[DataObject] ) {
             displaylists_p[DataObject] = glGenLists(1);
@@ -152,7 +151,7 @@ void Curve::draw()
         update_displaylists_ = false;
 
         updateNormals();
-    }
+	}
 
     // glGenLists returns 0 on error. So, if displaylists_p[DataObject] is still 0,
     // then just call drawImplementation()

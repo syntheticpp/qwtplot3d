@@ -52,14 +52,17 @@ public:
 	void adjustLabels(int val); //!< Fine tunes distance between axis label and axis body
 
 	//! Sets color for the grid lines
-        void setGridLinesColor(Qwt3D::RGBA val){gridlinecolor_ = val;}
+	void setGridLinesColor(Qwt3D::RGBA val){gridlinecolor_ = val;}
 
-        QMap<Qwt3D::AXIS, Qwt3D::GridLine> majorGridLines(){return gridmajors_;};
-        void setMajorGridLines(Qwt3D::AXIS axis, Qwt3D::GridLine val) {gridmajors_[axis] = val;}
+	QMap<Qwt3D::AXIS, Qwt3D::GridLine> majorGridLines(){return gridmajors_;};
+	void setMajorGridLines(Qwt3D::AXIS axis, Qwt3D::GridLine val) {gridmajors_[axis] = val;}
 
-        QMap<Qwt3D::AXIS, Qwt3D::GridLine> minorGridLines(){return gridminors_;};
+	QMap<Qwt3D::AXIS, Qwt3D::GridLine> minorGridLines(){return gridminors_;};
 	void setMinorGridLines(Qwt3D::AXIS axis, Qwt3D::GridLine val) {gridminors_[axis] = val;}
 	
+	Qwt3D::GridLine majorGridLine(Qwt3D::AXIS axis) {return gridmajors_[axis];};
+	Qwt3D::GridLine minorGridLine(Qwt3D::AXIS axis) {return gridminors_[axis];};
+
 	//! Set common font for all axis labels
 	void setLabelFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	//! Set common font for all axis labels

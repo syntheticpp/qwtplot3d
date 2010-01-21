@@ -86,6 +86,9 @@ void Plot3D::initializeGL()
 QPixmap Plot3D::renderPixmap(int w/* =0 */, int h/* =0 */, bool useContext/* =false */)
 {
 	renderpixmaprequest_ = true;
+	for (int i = 0; i != curvelist_p.size(); ++i)
+		curvelist_p[i]->queueUpdate();
+
 	return QGLWidget::renderPixmap(w, h, useContext);
 }
 
