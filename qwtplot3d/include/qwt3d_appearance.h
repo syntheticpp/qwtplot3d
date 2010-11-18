@@ -37,7 +37,7 @@ public:
   hull prior to the call. Standard behavior provides the contained StandardColor
   with the new hulls 'z' range.
   */
-  virtual void update(const Plot3D&);
+  virtual void update(const Plot3D& plot);
   
   void setPlotStyle(Qwt3D::PLOTSTYLE val); //!< Set plotting style
   Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val); //!< Set user-defined plot style

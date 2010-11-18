@@ -328,7 +328,7 @@ So - for example - the Appearance's color part can adapt himself to new z ranges
 void Qwt3D::Plot3D::updateAppearances()
 {
   for (unsigned i=0; i!=plotlets_p.size(); ++i)
-    appearance(i).update(this);
+    appearance(i).update(*this);
 }
 
 void Qwt3D::Plot3D::createOpenGlData()
