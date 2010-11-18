@@ -1,5 +1,5 @@
-cd mesh2
-qmake mesh2.pro -o mesh2.vcproj
+cd mesh
+qmake mesh.pro -o mesh.vcproj
 cd ../simpleplot
 qmake simpleplot.pro -o simpleplot.vcproj
 cd ../freemesh

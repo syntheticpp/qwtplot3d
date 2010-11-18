@@ -27,7 +27,7 @@
 #include <qwt3d_io_gl2ps.h>
 #include <qwt3d_io_reader.h>
 
-#include "mesh2mainwindow.h"
+#include "meshmainwindow.h"
 
 #include "functions.h"
 #include "colormapreader.h"
@@ -37,12 +37,12 @@ using namespace Qwt3D;
 using namespace std;
 
 
-Mesh2MainWindow::~Mesh2MainWindow()      
+MeshMainWindow::~MeshMainWindow()      
 {
 	delete dataWidget;
 }
 
-Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )       
+MeshMainWindow::MeshMainWindow( QWidget* parent )       
 	: DummyBase( parent )
 {
   setupWorkaround(this);
@@ -174,7 +174,7 @@ Mesh2MainWindow::Mesh2MainWindow( QWidget* parent )
     handler->setTextMode(VectorWriter::TEX);
 }
 
-void Mesh2MainWindow::open()
+void MeshMainWindow::open()
 {
   QString s = QFileDialog::getOpenFileName( this, "", "../../data", "GridData Files (*.mes *.MES)");
 
@@ -210,7 +210,7 @@ void Mesh2MainWindow::open()
 	dataWidget->showColorLegend(legend_);
 }
 
-void Mesh2MainWindow::createFunction(QString const& name)
+void MeshMainWindow::createFunction(QString const& name)
 {
 	dataWidget->makeCurrent();
   
@@ -297,7 +297,7 @@ void Mesh2MainWindow::createFunction(QString const& name)
 	pickCoordSystem(activeCoordSystem);
 }
 
-void Mesh2MainWindow::createPSurface(QString const& name)
+void MeshMainWindow::createPSurface(QString const& name)
 {
 	dataWidget->makeCurrent();
 	if (name == QString("Torus")) 
@@ -353,7 +353,7 @@ void Mesh2MainWindow::createPSurface(QString const& name)
 }
 
 
-void Mesh2MainWindow::pickCoordSystem( QAction* action)
+void MeshMainWindow::pickCoordSystem( QAction* action)
 {
 	if (!action || !dataWidget)
 		return;
@@ -389,7 +389,7 @@ void Mesh2MainWindow::pickCoordSystem( QAction* action)
 	}
 }
 
-void Mesh2MainWindow::pickPlotStyle( QAction* action )
+void MeshMainWindow::pickPlotStyle( QAction* action )
 {
 	if (!action || !dataWidget)
 		return;
@@ -427,7 +427,7 @@ void Mesh2MainWindow::pickPlotStyle( QAction* action )
 }
 
 void
-Mesh2MainWindow::pickFloorStyle( QAction* action )
+MeshMainWindow::pickFloorStyle( QAction* action )
 {
 	if (!action || !dataWidget)
 		return;
@@ -449,32 +449,32 @@ Mesh2MainWindow::pickFloorStyle( QAction* action )
 	dataWidget->updateGL();
 }	
 
-void Mesh2MainWindow::setLeftGrid(bool b)
+void MeshMainWindow::setLeftGrid(bool b)
 {
   setGrid(Qwt3D::LEFT,b);
 }
-void Mesh2MainWindow::setRightGrid(bool b)
+void MeshMainWindow::setRightGrid(bool b)
 {
   setGrid(Qwt3D::RIGHT,b);
 }
-void Mesh2MainWindow::setCeilGrid(bool b)
+void MeshMainWindow::setCeilGrid(bool b)
 {
   setGrid(Qwt3D::CEIL,b);
 }
-void Mesh2MainWindow::setFloorGrid(bool b)
+void MeshMainWindow::setFloorGrid(bool b)
 {
   setGrid(Qwt3D::FLOOR,b);
 }
-void Mesh2MainWindow::setFrontGrid(bool b)
+void MeshMainWindow::setFrontGrid(bool b)
 {
   setGrid(Qwt3D::FRONT,b);
 }
-void Mesh2MainWindow::setBackGrid(bool b)
+void MeshMainWindow::setBackGrid(bool b)
 {
   setGrid(Qwt3D::BACK,b);
 }
 
-void Mesh2MainWindow::setGrid(Qwt3D::SIDE s, bool b)
+void MeshMainWindow::setGrid(Qwt3D::SIDE s, bool b)
 {
   if (!dataWidget)
 		return;
@@ -490,7 +490,7 @@ void Mesh2MainWindow::setGrid(Qwt3D::SIDE s, bool b)
   dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::resetColors()
+void MeshMainWindow::resetColors()
 {
 	if (!dataWidget)
 		return;
@@ -510,15 +510,14 @@ void Mesh2MainWindow::resetColors()
 	dataWidget->coordinates()->setLabelColor(lbc);
   dataWidget->setTitleColor(tc);
 
-	col_ = new StandardColor(dataWidget);
-	dataWidget->setDataColor(col_);
+	dataWidget->setDataColor(StandardColor());
 	dataWidget->updateData();	
 	dataWidget->updateNormals();
 	dataWidget->updateGL();
 }
 
 
-void Mesh2MainWindow::pickAxesColor()
+void MeshMainWindow::pickAxesColor()
 {
   
   QColor c = QColorDialog::getColor( Qt::white, this );
@@ -529,7 +528,7 @@ void Mesh2MainWindow::pickAxesColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickBgColor()
+void MeshMainWindow::pickBgColor()
 {
   
 	QColor c = QColorDialog::getColor( Qt::white, this );
@@ -540,7 +539,7 @@ void Mesh2MainWindow::pickBgColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickMeshColor()
+void MeshMainWindow::pickMeshColor()
 {
   
 	QColor c = QColorDialog::getColor( Qt::white, this );
@@ -552,7 +551,7 @@ void Mesh2MainWindow::pickMeshColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickNumberColor()
+void MeshMainWindow::pickNumberColor()
 {
   
 	QColor c = QColorDialog::getColor( Qt::white, this );
@@ -563,7 +562,7 @@ void Mesh2MainWindow::pickNumberColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickLabelColor()
+void MeshMainWindow::pickLabelColor()
 {
  	QColor c = QColorDialog::getColor( Qt::white, this );
   if ( !c.isValid() )
@@ -572,7 +571,7 @@ void Mesh2MainWindow::pickLabelColor()
 	dataWidget->coordinates()->setLabelColor(rgb);
 	dataWidget->updateGL();
 }
-void Mesh2MainWindow::pickTitleColor()
+void MeshMainWindow::pickTitleColor()
 {
  	QColor c = QColorDialog::getColor( Qt::white, this );
   if ( !c.isValid() )
@@ -582,26 +581,26 @@ void Mesh2MainWindow::pickTitleColor()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickLighting()
+void MeshMainWindow::pickLighting()
 {
 	lightingdlg_->show();
 }
 
-void Mesh2MainWindow::pickDataColor()
+void MeshMainWindow::pickDataColor()
 {
   QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
   adaptDataColors(s);
 }
 
-void Mesh2MainWindow::adaptDataColors(const QString& fileName)
+void MeshMainWindow::adaptDataColors(const QString& fileName)
 {
   ColorVector cv;
 	
 	if (!openColorMap(cv, fileName))
 		return;
 	
-	col_ = new StandardColor(dataWidget);
-	col_->setColorVector(cv);
+	StandardColor col_;
+	col_.setColorVector(cv);
 	
 	dataWidget->setDataColor(col_);
 	dataWidget->updateData();
@@ -610,7 +609,7 @@ void Mesh2MainWindow::adaptDataColors(const QString& fileName)
   dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::pickNumberFont()
+void MeshMainWindow::pickNumberFont()
 {
 	bool ok;
 	QFont font = QFontDialog::getFont(&ok, this );
@@ -621,7 +620,7 @@ void Mesh2MainWindow::pickNumberFont()
 	dataWidget->coordinates()->setNumberFont(font);
 	dataWidget->updateGL();
 }
-void Mesh2MainWindow::pickLabelFont()
+void MeshMainWindow::pickLabelFont()
 {
 	bool ok;
 	QFont font = QFontDialog::getFont(&ok, this );
@@ -632,7 +631,7 @@ void Mesh2MainWindow::pickLabelFont()
 	dataWidget->coordinates()->setLabelFont(font);
 	dataWidget->updateGL();
 }
-void Mesh2MainWindow::pickTitleFont()
+void MeshMainWindow::pickTitleFont()
 {
 	bool ok;
 	QFont font = QFontDialog::getFont(&ok, this );
@@ -643,7 +642,7 @@ void Mesh2MainWindow::pickTitleFont()
 	dataWidget->setTitleFont(font.family(), font.pointSize(), font.weight(), font.italic());
 }
 
-void Mesh2MainWindow::resetFonts()
+void MeshMainWindow::resetFonts()
 {
 	dataWidget->coordinates()->setNumberFont(QFont("Courier", 12));
 	dataWidget->coordinates()->setLabelFont(QFont("Courier", 14, QFont::Bold));
@@ -651,7 +650,7 @@ void Mesh2MainWindow::resetFonts()
 	dataWidget->updateGL();
 }
 
-void Mesh2MainWindow::setStandardView()
+void MeshMainWindow::setStandardView()
 {
 	dataWidget->setRotation(30,0,15);
 	dataWidget->setViewportShift(0.05,0);
@@ -659,7 +658,7 @@ void Mesh2MainWindow::setStandardView()
 	dataWidget->setZoom(0.95);
 }
 
-void Mesh2MainWindow::dumpImage()
+void MeshMainWindow::dumpImage()
 {
 	static int counter = 0;
 	if (!dataWidget)
@@ -681,7 +680,7 @@ void Mesh2MainWindow::dumpImage()
 /*!
   Turns animation on or off
 */
-void Mesh2MainWindow::toggleAnimation(bool val)
+void MeshMainWindow::toggleAnimation(bool val)
 {
 	if ( val )
 	{
@@ -693,7 +692,7 @@ void Mesh2MainWindow::toggleAnimation(bool val)
 	}
 }
 
-void Mesh2MainWindow::rotate()
+void MeshMainWindow::rotate()
 {
 	if (!dataWidget)
 		return;
@@ -706,27 +705,27 @@ void Mesh2MainWindow::rotate()
 }
 
 void
-Mesh2MainWindow::toggleProjectionMode(bool val)
+MeshMainWindow::toggleProjectionMode(bool val)
 {
 	dataWidget->setOrtho(val);
 }
 
 void
-Mesh2MainWindow::toggleColorLegend(bool val)
+MeshMainWindow::toggleColorLegend(bool val)
 {
 	legend_ = val;
 	dataWidget->showColorLegend(val);
 }
 
 void
-Mesh2MainWindow::toggleAutoScale(bool val)
+MeshMainWindow::toggleAutoScale(bool val)
 {
 	dataWidget->coordinates()->setAutoScale(val);
 	dataWidget->updateGL();
 }
 
 void
-Mesh2MainWindow::toggleShader(bool val)
+MeshMainWindow::toggleShader(bool val)
 {
 	if (val)
 		dataWidget->setShading(GOURAUD);
@@ -735,7 +734,7 @@ Mesh2MainWindow::toggleShader(bool val)
 }
 
 void
-Mesh2MainWindow::setPolygonOffset(int val)
+MeshMainWindow::setPolygonOffset(int val)
 {
 	dataWidget->setPolygonOffset(val / 10.0);
 	dataWidget->updateData();
@@ -743,34 +742,34 @@ Mesh2MainWindow::setPolygonOffset(int val)
 }
 
 void
-Mesh2MainWindow::showRotate(double x, double y, double z)		
+MeshMainWindow::showRotate(double x, double y, double z)		
 {
 	rotateLabel->setText(" Angles ("  + QString::number(x,'g',3) + " ," 
 																	+ QString::number(y,'g',3) + " ,"
 																	+ QString::number(z,'g',3) + ")");
 }
 void
-Mesh2MainWindow::showShift(double x, double y)		
+MeshMainWindow::showShift(double x, double y)		
 {
 	shiftLabel->setText(" Shifts (" + QString::number(x,'g',3) + " ," 
 																	+ QString::number(y,'g',3) + " )"
 																	);
 }
 void
-Mesh2MainWindow::showScale(double x, double y, double z)		
+MeshMainWindow::showScale(double x, double y, double z)		
 {
 	scaleLabel->setText(" Scales (" + QString::number(x,'g',3) + " ," 
 																	+ QString::number(y,'g',3) + " ,"
 																	+ QString::number(z,'g',3) + ")");
 }
 void
-Mesh2MainWindow::showZoom(double z)		
+MeshMainWindow::showZoom(double z)		
 {
 	zoomLabel->setText(" Zoom "  + QString::number(z,'g',3)); 
 }
 
 void
-Mesh2MainWindow::showNormals(bool val)
+MeshMainWindow::showNormals(bool val)
 {
 	dataWidget->showNormals(val);
 	dataWidget->updateNormals();
@@ -778,7 +777,7 @@ Mesh2MainWindow::showNormals(bool val)
 }
 
 void
-Mesh2MainWindow::setNormalLength(int val)
+MeshMainWindow::setNormalLength(int val)
 {
 	dataWidget->setNormalLength(val / 400.);
 	dataWidget->updateNormals();
@@ -786,7 +785,7 @@ Mesh2MainWindow::setNormalLength(int val)
 }
 
 void
-Mesh2MainWindow::setNormalQuality(int val)
+MeshMainWindow::setNormalQuality(int val)
 {
 	dataWidget->setNormalQuality(val);
 	dataWidget->updateNormals();
@@ -794,7 +793,7 @@ Mesh2MainWindow::setNormalQuality(int val)
 }
 
 bool
-Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
+MeshMainWindow::openColorMap(ColorVector& cv, QString fname)
 {	
   if (fname.isEmpty())
     return false;
@@ -827,7 +826,7 @@ Mesh2MainWindow::openColorMap(ColorVector& cv, QString fname)
 }
 
 void 
-Mesh2MainWindow::updateColorLegend(int majors, int minors)
+MeshMainWindow::updateColorLegend(int majors, int minors)
 {
 	dataWidget->legend()->setMajors(majors);
 	dataWidget->legend()->setMinors(minors);
@@ -836,12 +835,12 @@ Mesh2MainWindow::updateColorLegend(int majors, int minors)
 	dataWidget->legend()->setLimits(start, stop);
 }		
 
-void Mesh2MainWindow::setFileType(QString const& name)
+void MeshMainWindow::setFileType(QString const& name)
 {
 	filetype_ = name;	
 }
 
-void Mesh2MainWindow::enableLighting(bool val)
+void MeshMainWindow::enableLighting(bool val)
 {
   dataWidget->enableLighting(val);
   dataWidget->illuminate(0);

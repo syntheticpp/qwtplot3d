@@ -6,7 +6,7 @@
 *********************************************************************/
 
 #include <qapplication.h>
-#include "mesh2mainwindow.h"
+#include "meshmainwindow.h"
 
 int main( int argc, char **argv )
 {
@@ -19,7 +19,7 @@ int main( int argc, char **argv )
 		return -1;
   }
     
-  Mesh2MainWindow mainwindow;
+  MeshMainWindow mainwindow;
   mainwindow.resize(1024,768);
 	mainwindow.show();
 

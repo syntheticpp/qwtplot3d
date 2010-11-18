@@ -114,7 +114,7 @@ void Plot::showCone()
   TripleField pos;
   CellField poly;
   createCone(pos, poly);
-  appendDataSet(pos, poly);
+  createDataset(pos, poly);
   setSomeThings();
 }
 void Plot::showTetrahedron()
@@ -122,7 +122,7 @@ void Plot::showTetrahedron()
   TripleField pos;
   CellField poly;
   createTetrahedron(pos, poly);
-  appendDataSet(pos, poly);    
+  createDataset(pos, poly);    
   setSomeThings();
 }
 
@@ -153,7 +153,7 @@ void Plot::openMesh()
   readNodes(vdata, QWT3DLOCAL8BIT(data), NodeFilter());
   readConnections(vpoly, QWT3DLOCAL8BIT(edges), CellFilter());
 
-  appendDataSet(vdata, vpoly);
+  createDataset(vdata, vpoly);
 
   for (unsigned i=0; i!=coordinates()->axes.size(); ++i)
   {

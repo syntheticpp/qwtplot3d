@@ -25,12 +25,12 @@ class QFileDialog;
 class LightingDlg;
 class ColorMapPreview;
 
-class Mesh2MainWindow : public DummyBase
+class MeshMainWindow : public DummyBase
 {
 	Q_OBJECT
 public:
-	Mesh2MainWindow( QWidget* parent = 0 );
-	~Mesh2MainWindow();
+	MeshMainWindow( QWidget* parent = 0 );
+	~MeshMainWindow();
 
   Qwt3D::GridPlot* dataWidget;
 	

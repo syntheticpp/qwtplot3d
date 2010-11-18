@@ -4,7 +4,7 @@
 
 #include "qwt3d_types.h"
 #include "qwt3d_valueptr.h"
-#include "qwt3d_color.h"
+#include "qwt3d_color_std.h"
 
 
 namespace Qwt3D

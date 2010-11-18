@@ -92,14 +92,13 @@ void SurfacePlot::createFloorOpenGlData()
 {
   for (unsigned k=0; k!=plotlets_p.size(); ++k)
   {
-    const Appearance& app = *plotlets_p[k].appearance;
 	  switch (floorStyle())
 	  {
 	  case FLOORDATA:
-		  this->data2Floor(app);
+		  this->data2Floor(plotlets_p[k]);
 		  break;
 	  case FLOORISO:
-		  this->isolines2Floor(app);
+		  this->isolines2Floor(plotlets_p[k]);
 		  break;
 	  default:
 		  break;

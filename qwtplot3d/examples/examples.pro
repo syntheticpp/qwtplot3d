@@ -5,7 +5,7 @@ SUBDIRS = \
 	autoswitch \
 	enrichments \
 	axes \
-	mesh2
+	mesh
 	
 
 	

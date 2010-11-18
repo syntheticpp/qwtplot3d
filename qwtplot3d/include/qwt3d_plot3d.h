@@ -49,12 +49,14 @@ public:
   void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
   Qwt3D::RGBA backgroundRGBAColor() const {return bgcolor_;} //!< Returns the widgets background color
 
-  //! Returns number of datasets
-  unsigned datasets() const;
-  //! Returns appearance for dataset
-  inline Appearance& appearance(unsigned dataset);
-  //! Returns appearance for dataset
-  inline const Appearance& appearance(unsigned dataset) const;
+  //! Returns number of Plotlets
+  unsigned plotlets() const {return plotlets_p.size();}
+  //! Returns false, if at leat one valid datset exists.
+  inline bool hasData() const;
+  //! Returns appearance for Plotlet at position idx
+  inline Appearance& appearance(unsigned idx);
+  //! Returns appearance for Plotlet at position idx
+  inline const Appearance& appearance(unsigned idx) const;
   //! Delete Plotlet with index idx.
   inline bool removePlotlet(unsigned idx);
 
@@ -147,7 +149,7 @@ protected:
     Plotlet* pl = 0;
     int ret = -1;
 
-    assert (!plotlets_p.empty());
+    assert(!plotlets_p.empty());
 
     if (!append)
     {
@@ -158,10 +160,7 @@ protected:
     {
       plotlets_p.push_back(Plotlet(new DATATYPE));
     }
-    
-    if (ret<0)
-      return ret;
-    
+        
     pl = &plotlets_p.back();
     ret = plotlets_p.size()-1;
 
@@ -190,30 +189,36 @@ private:
 
 // Inline functions
 
-/**
-The function returns the Appearance object for dataset 'dataset'.
-For invalid arguments the return value contains the standard appearance 
-(equivalent to dataset==0) is returned
-*/
-Appearance& Plot3D::appearance( unsigned dataset )
+bool Plot3D::hasData() const 
 {
-  assert(plotlets_p.empty());
-  if (dataset >= plotlets_p.size())
+  return plotlets() > 0 && !plotlets_p[0].data->empty();
+}
+
+
+/**
+The function returns the Appearance object for the Plotlet at idx.
+For invalid arguments the return value contains the standard appearance 
+(equivalent to idx==0) is returned
+*/
+Appearance& Plot3D::appearance( unsigned idx )
+{
+  assert(!plotlets_p.empty());
+  if (idx >= plotlets_p.size())
     return *plotlets_p[0].appearance;
-  return *plotlets_p[dataset].appearance;
+  return *plotlets_p[idx].appearance;
 }
 
 /**
-The function returns the Appearance object for dataset 'dataset'.
+The function returns the Appearance object for the Plotlet at idx.
 For invalid arguments the return value contains the standard appearance 
-(equivalent to dataset==0) is returned
+(equivalent to idx==0) is returned
 */
-const Appearance& Plot3D::appearance( unsigned dataset ) const
+const Appearance& Plot3D::appearance( unsigned idx ) const
 {
-  assert(plotlets_p.empty());
-  if (dataset >= plotlets_p.size())
+  assert(!plotlets_p.empty());
+  if (idx >= plotlets_p.size())
     return *plotlets_p[0].appearance;
-  return *plotlets_p[dataset].appearance;
+  return *plotlets_p[idx].appearance;
 }
 
 /**

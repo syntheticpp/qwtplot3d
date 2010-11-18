@@ -85,7 +85,7 @@
           //if (!(i==1 && j==1 && k==1))
           createCube(1, Triple(i,j,k) * stretch);
         }
-        appendDataSet(nodes, edges);
+        createDataset(nodes, edges);
   }
 
   void Plot::createCubic2()
@@ -104,7 +104,7 @@
     {
       edges.push_back(Edge(i,i+1));
     } 
-    appendDataSet(nodes, edges);
+    createDataset(nodes, edges);
   }
   
   void Plot::createCubic3()
@@ -119,7 +119,7 @@
     edges.push_back(Edge(5, 13));
     edges.push_back(Edge(6, 14));
     edges.push_back(Edge(7, 15));
-    appendDataSet(nodes, edges);
+    createDataset(nodes, edges);
   }
 
 

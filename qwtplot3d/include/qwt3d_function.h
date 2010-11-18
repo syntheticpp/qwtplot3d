@@ -28,7 +28,7 @@ public:
 	//! Assigns a new GridPlot and creates a data representation for it.
 	virtual bool create(Qwt3D::GridPlot& plotWidget);
 	//! Creates/appends data representation for/to the actual assigned GridPlot.
-	virtual bool create(bool append = true);
+	virtual bool create(bool append = false);
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
   void assign(Qwt3D::GridPlot& plotWidget); 
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().

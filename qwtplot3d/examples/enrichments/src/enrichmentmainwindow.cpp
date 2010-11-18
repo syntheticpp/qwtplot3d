@@ -109,8 +109,8 @@ void EnrichmentMainWindow::setColor()
       step=4;
     }
   }
-	StandardColor* col = new StandardColor(plot);
-	col->setColorVector(cv);
+	StandardColor col;
+	col.setColorVector(cv);
 	
 	plot->setDataColor(col);
 }

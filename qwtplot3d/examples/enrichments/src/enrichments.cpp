@@ -59,8 +59,8 @@ void Bar::draw(Qwt3D::Triple const& pos)
   
   GLdouble minz = plot_p->hull().minVertex.z;
 
-  RGBA rgbat = (*plot_p->dataColor())(pos);
-	RGBA rgbab = (*plot_p->dataColor())(pos.x, pos.y, minz);
+  RGBA rgbat = plot_p->dataColor()->rgba(pos);
+	RGBA rgbab = plot_p->dataColor()->rgba(pos.x, pos.y, minz);
 	
   glBegin(GL_QUADS);
     glColor4d(rgbab.r,rgbab.g,rgbab.b,rgbab.a);
