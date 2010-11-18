@@ -4,19 +4,6 @@
 #include <qwt3d_gridplot.h>
 
 #include "ui_meshmainwindowbase.h"
-//#include "designerworkaround.h"
-
-
-//MOC_SKIP_BEGIN
-  class DummyBase : public QMainWindow, protected Ui::MainWindow//, protected DesignerWorkaround
-  {
-  public:
-    DummyBase(QWidget* parent = 0) 
-      : QMainWindow(parent) 
-    {
-    } 
-  };
-//MOC_SKIP_END
 
 class QLabel;
 class QTimer;
@@ -25,7 +12,7 @@ class QFileDialog;
 class LightingDlg;
 class ColorMapPreview;
 
-class MeshMainWindow : public DummyBase
+class MeshMainWindow : public QMainWindow, protected Ui::MainWindow
 {
 	Q_OBJECT
 public:
@@ -39,7 +26,6 @@ public slots:
 
 	void createFunction(QString const& name);
 	void createPSurface(QString const& name);
-	void setFileType(QString const& name);
 
 	void pickCoordSystem( QAction* );
 	void pickPlotStyle( QAction* );
@@ -58,7 +44,6 @@ public slots:
 	void pickTitleFont();
 	void resetFonts();
  	void setStandardView();
-	void dumpImage();
 	void toggleAnimation(bool);
 	void toggleProjectionMode(bool);
 	void toggleColorLegend(bool);
@@ -102,7 +87,7 @@ private:
 
 	QFileDialog* datacolordlg_;
   LightingDlg* lightingdlg_;
-	QString filetype_;
+  QActionGroup* grids;
 };
 
 #endif /* include guarded */

@@ -10,8 +10,6 @@ HEADERS =  src/meshmainwindow.h \
 		src/colormapreader.h \
 		src/lightingdlg.h 
 
-SOURCES += src/designerworkaround.cpp
-HEADERS += src/designerworkaround.h 
 FORMS =  src/meshmainwindowbase.ui \
          src/lightingdlgbase.ui
 

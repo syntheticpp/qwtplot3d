@@ -43,10 +43,79 @@ MeshMainWindow::~MeshMainWindow()
 }
 
 MeshMainWindow::MeshMainWindow( QWidget* parent )       
-	: DummyBase( parent )
+	: QMainWindow( parent )
 {
-  setupWorkaround(this);
 	setupUi(this);
+
+  QActionGroup* coord = new QActionGroup(this);
+  coord->addAction(Box);
+  coord->addAction(Frame);
+  coord->addAction(None);
+
+  grids = new QActionGroup(this);
+  grids->addAction(front); 
+  grids->addAction(back);
+  grids->addAction(right); 
+  grids->addAction(left);
+  grids->addAction(ceil);
+  grids->addAction(floor); 
+  grids->setExclusive(false);
+
+  QActionGroup* plotstyle = new QActionGroup(this);
+  plotstyle->addAction(pointstyle);
+  plotstyle->addAction(wireframe);
+  plotstyle->addAction(hiddenline);
+  plotstyle->addAction(polygon);
+  plotstyle->addAction(filledmesh);
+  plotstyle->addAction(nodata);
+
+  QActionGroup* floorstyle = new QActionGroup(this);
+  floorstyle->addAction(floordata);
+  floorstyle->addAction(flooriso);
+  floorstyle->addAction(floornone);
+
+  QActionGroup* color = new QActionGroup(this);
+  color->addAction(axescolor);
+  color->addAction(backgroundcolor);
+  color->addAction(meshcolor);
+  color->addAction(numbercolor);
+  color->addAction(labelcolor);
+  color->addAction(titlecolor);
+  color->addAction(datacolor);
+  color->addAction(resetcolor);
+
+  QActionGroup* font = new QActionGroup(this);
+  font->addAction(numberfont);
+  font->addAction(labelfont);
+  font->addAction(titlefont);
+  font->addAction(resetfont);
+
+
+  // toolbars
+
+  QComboBox* functionCB = new QComboBox;
+  QComboBox* psurfaceCB = new QComboBox;
+  functionCB->clear();
+  functionCB->addItem( tr( "---" ) );
+  functionCB->addItem( tr( "Hat" ) );
+  functionCB->addItem( tr( "Rosenbrock" ) );
+  functionCB->addItem( tr( "Saddle" ) );
+  functionCB->addItem( tr( "Sombrero" ) );
+  functionCB->addItem( tr( "Ripple" ) );
+  functionCB->setToolTip(tr( "Display function" ) );
+  psurfaceCB->clear();
+  psurfaceCB->addItem( tr( "---" ) );
+  psurfaceCB->addItem( tr( "Torus" ) );
+  psurfaceCB->addItem( tr( "Seashell" ) );
+  psurfaceCB->addItem( tr( "Boy" ) );
+  psurfaceCB->addItem( tr( "Dini" ) );
+  psurfaceCB->addItem( tr( "Cone" ) );
+  psurfaceCB->setToolTip(tr( "Display parametric surface. Turn Lighting on for better quality."));
+  mainToolbar->addWidget(functionCB);
+  mainToolbar->addWidget(psurfaceCB);
+
+  QObject::connect(Exit, SIGNAL(triggered()), SLOT(close()));
+
   QGridLayout *grid = new QGridLayout( frame );
 
   col_ = 0;
@@ -75,7 +144,6 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
 	connect( titlefont, SIGNAL( triggered() ), this, SLOT( pickTitleFont() ) );
 	connect( resetfont, SIGNAL( triggered() ), this, SLOT( resetFonts() ) );
 	connect( animation, SIGNAL( toggled(bool) ) , this, SLOT( toggleAnimation(bool) ) );
-  connect( dump, SIGNAL( triggered() ) , this, SLOT( dumpImage() ) );
 	connect( openFile, SIGNAL( triggered() ) , this, SLOT( open() ) );
 	
   // only EXCLUSIVE groups emit selected :-/
@@ -143,35 +211,11 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
   dataWidget->setKeySpeed(15,20,20);
 
   lightingdlg_ = new LightingDlg( this );
-  lightingdlg_->assign( dataWidget);
-	connect(filetypeCB, SIGNAL(activated(const QString&)), this, SLOT(setFileType(const QString&)));
+  lightingdlg_->assign( dataWidget);  
 
-  filetypeCB->clear();
-
-  QStringList list = IO::outputFormatList();
-#if QT_VERSION < 0x040000
-  filetypeCB->insertStringList(list);
-#else
-  filetypeCB->insertItems(0,list);
-#endif
-  
-
-
-	filetype_ = filetypeCB->currentText();
   dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
 
   grids->setEnabled(false);
-
-  PixmapWriter* pmhandler = (PixmapWriter*)IO::outputHandler("JPEG");
-  if (pmhandler)
-    pmhandler->setQuality(70);
-  VectorWriter* handler = (VectorWriter*)IO::outputHandler("PDF");
-  handler->setTextMode(VectorWriter::TEX);
-  handler = (VectorWriter*)IO::outputHandler("EPS");
-  handler->setTextMode(VectorWriter::TEX);
-  handler = (VectorWriter*)IO::outputHandler("EPS_GZ");
-  if (handler) // with zlib support only
-    handler->setTextMode(VectorWriter::TEX);
 }
 
 void MeshMainWindow::open()
@@ -658,25 +702,6 @@ void MeshMainWindow::setStandardView()
 	dataWidget->setZoom(0.95);
 }
 
-void MeshMainWindow::dumpImage()
-{
-	static int counter = 0;
-	if (!dataWidget)
-		return;
-	QString name;
-	
-	name = QString("dump_") + QString::number(counter++) + ".";
-  
-  if (filetype_ == "PS_GZ")
-    name += "ps.gz";
-  else if (filetype_ == "EPS_GZ")
-    name += "eps.gz";
-  else
-	  name += filetype_;
-  
-  IO::save(dataWidget, name.toLower(), filetype_);
-}
-
 /*!
   Turns animation on or off
 */
@@ -834,11 +859,6 @@ MeshMainWindow::updateColorLegend(int majors, int minors)
 	dataWidget->coordinates()->axes[Z1].limits(start,stop);
 	dataWidget->legend()->setLimits(start, stop);
 }		
-
-void MeshMainWindow::setFileType(QString const& name)
-{
-	filetype_ = name;	
-}
 
 void MeshMainWindow::enableLighting(bool val)
 {
