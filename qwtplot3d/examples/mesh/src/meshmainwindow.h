@@ -3,12 +3,12 @@
 
 #include <qwt3d_gridplot.h>
 
-#include "ui_mesh2mainwindowbase.h"
-#include "designerworkaround.h"
+#include "ui_meshmainwindowbase.h"
+//#include "designerworkaround.h"
 
 
 //MOC_SKIP_BEGIN
-  class DummyBase : public QMainWindow, protected Ui::MainWindow, protected DesignerWorkaround
+  class DummyBase : public QMainWindow, protected Ui::MainWindow//, protected DesignerWorkaround
   {
   public:
     DummyBase(QWidget* parent = 0) 
