@@ -338,3 +338,22 @@ void Qwt3D::Plot3D::createOpenGlData()
     this->createOpenGlData(plotlets_p[i]);
   }
 }
+
+/**
+ Removes Plotlet at position idx. All data and the Appearance object are destroyed.
+ You cannot remove the last remaining plotlet (the function returns false for this attempt)
+ Semantically, removing an entry is like erasing a vector element. Subsequent elements 
+ will change their respective position/index. Associated internal copies are cheap, though 
+ (by utilizing smart pointers).  
+ \return true for success, false else.
+*/
+bool Qwt3D::Plot3D::removePlotlet(unsigned idx)
+{
+  if (idx >= plotlets_p.size() || 1 == plotlets_p.size())
+    return false;
+
+  plotlets_p.erase(plotlets_p.begin() + idx);
+  updateData();
+  createCoordinateSystem();
+  return true;
+}

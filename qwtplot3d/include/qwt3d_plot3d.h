@@ -58,7 +58,7 @@ public:
   //! Returns appearance for Plotlet at position idx
   inline const Appearance& appearance(unsigned idx) const;
   //! Delete Plotlet with index idx.
-  inline bool removePlotlet(unsigned idx);
+  virtual bool removePlotlet(unsigned idx);
 
   // Convenience/compatibility member for appearance(0) properties
 
@@ -209,20 +209,6 @@ const Appearance& Plot3D::appearance( unsigned idx ) const
   if (idx >= plotlets_p.size())
     return *plotlets_p[0].appearance;
   return *plotlets_p[idx].appearance;
-}
-
-/**
- Removes Plotlet at position idx. All data and the Appearance object are destroyed.
- You cannot remove the last remaining plotlet (the function returns false for this attempt)
- \return true for success, false else.
-*/
-bool Plot3D::removePlotlet(unsigned idx)
-{
-  if (idx >= plotlets_p.size() || 1 == plotlets_p.size())
-    return false;
-
-  plotlets_p.erase(plotlets_p.begin() + idx);
-  return true;
 }
 
 } // ns

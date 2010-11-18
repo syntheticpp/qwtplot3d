@@ -105,3 +105,12 @@ void SurfacePlot::createFloorOpenGlData()
 	  }
   }
 }
+
+bool SurfacePlot::removePlotlet(unsigned idx)
+{
+  if (!Plot3D::removePlotlet(idx))
+    return false;
+
+  updateData();
+  return true;
+}

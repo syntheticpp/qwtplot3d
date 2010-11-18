@@ -27,7 +27,9 @@ public:
   void updateNormals(); //!< Recalculates surface normals;
   Qwt3D::FLOORSTYLE floorStyle() const { return floorstyle_;} //!< Return floor style
   void	setFloorStyle( Qwt3D::FLOORSTYLE val ) {floorstyle_ = val;} //!< Sets floor style
-  
+  //! Delete Plotlet with index idx.
+  bool removePlotlet(unsigned idx);
+
 protected:  
   bool datanormals_p;
   double normalLength_p;
