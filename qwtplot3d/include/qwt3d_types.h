@@ -289,9 +289,9 @@ inline ParallelEpiped sum(const ParallelEpiped& a, const ParallelEpiped& b)
   mi.z = (mi.z<0) ? a.minVertex.z : b.minVertex.z; 
   
   Triple ma = a.maxVertex - b.maxVertex;
-  mi.x = (ma.x>0) ? a.maxVertex.x : b.maxVertex.x; 
-  mi.y = (ma.y>0) ? a.maxVertex.y : b.maxVertex.y; 
-  mi.z = (ma.z>0) ? a.maxVertex.z : b.maxVertex.z; 
+  ma.x = (ma.x>0) ? a.maxVertex.x : b.maxVertex.x; 
+  ma.y = (ma.y>0) ? a.maxVertex.y : b.maxVertex.y; 
+  ma.z = (ma.z>0) ? a.maxVertex.z : b.maxVertex.z; 
 
   return ParallelEpiped(mi, ma);
 }

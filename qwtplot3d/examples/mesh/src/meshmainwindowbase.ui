@@ -494,6 +494,9 @@
    </property>
   </action>
   <action name="Box">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images.qrc">
      <normaloff>:/images/box.png</normaloff>:/images/box.png</iconset>
@@ -503,6 +506,9 @@
    </property>
   </action>
   <action name="Frame">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images.qrc">
      <normaloff>:/images/frame.png</normaloff>:/images/frame.png</iconset>
