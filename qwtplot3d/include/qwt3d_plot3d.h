@@ -155,9 +155,7 @@ protected:
     }
     else
     {
-      Plotlet& pl = Plotlet(new DATA);
-      plotlets_p.push_back(pl);
-      int dummy = 12;
+      plotlets_p.push_back(Plotlet(new DATA));
     }
     return plotlets_p.size()-1;
   }
@@ -215,13 +213,14 @@ const Appearance& Plot3D::appearance( unsigned idx ) const
 
 /**
  Removes Plotlet at position idx. All data and the Appearance object are destroyed.
- It is not possible, to remove Plotlet 0. 
- \return true for success, false else (removePlotlet(0) will always return false.
+ You cannot remove the last remaining plotlet (the function returns false for this attempt)
+ \return true for success, false else.
 */
 bool Plot3D::removePlotlet(unsigned idx)
 {
-  if (!idx || idx >= plotlets_p.size())
+  if (idx >= plotlets_p.size() || 1 == plotlets_p.size())
     return false;
+
   plotlets_p.erase(plotlets_p.begin() + idx);
   return true;
 }

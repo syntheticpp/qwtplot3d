@@ -55,7 +55,7 @@ RGBA StandardColor::rgba(double, double, double z) const
     return RGBA(0.0,0.0,0.0);
 
   unsigned index = 0;
-  double fac = (z - zmin_) / zmax_;
+  double fac = (z - zmin_) / (zmax_-zmin_);
   if (fac<0)
     return RGBA(0.0,0.0,0.0);
 
