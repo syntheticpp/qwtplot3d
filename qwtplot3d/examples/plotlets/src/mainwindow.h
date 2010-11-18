@@ -22,27 +22,19 @@ public:
   Qwt3D::GridPlot* dataWidget;
 	
 public slots:
-	void open();
-
 	int createFunction(QString const& name, bool append = true);
-
-	void pickCoordSystem( QAction* );
 	void setPlotStyle();
 	void pickFloorStyle( QAction* );
 	void setMeshColor();
 	void setDataColor();
-	void resetColors();
  	void setStandardView();
 	void toggleProjectionMode(bool);
 	void toggleColorLegend(bool);
 	void toggleAutoScale(bool val);
-	void toggleShader(bool val);
-	void rotate();
 
 	void showNormals(bool val);
 	void setNormalQuality(int);
 	void setNormalLength(int);
-	bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
 	void updateColorLegend(int majors, int minors);
 
   void togglePlotlet(bool val);

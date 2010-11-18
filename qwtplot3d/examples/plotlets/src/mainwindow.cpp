@@ -46,31 +46,10 @@ MainWindow::MainWindow( QWidget* parent )
 {
 	setupUi(this);
 
- // QActionGroup* plotstyle = new QActionGroup(this);
- // plotstyle->addAction(pointstyle);
- // plotstyle->addAction(wireframe);
- // plotstyle->addAction(hiddenline);
- // plotstyle->addAction(polygon);
- // plotstyle->addAction(filledmesh);
- // plotstyle->addAction(nodata);
-
  // QActionGroup* floorstyle = new QActionGroup(this);
  // floorstyle->addAction(floordata);
  // floorstyle->addAction(flooriso);
  // floorstyle->addAction(floornone);
-
- // QActionGroup* color = new QActionGroup(this);
- // color->addAction(axescolor);
- // color->addAction(backgroundcolor);
- // color->addAction(meshcolor);
- // color->addAction(numbercolor);
- // color->addAction(labelcolor);
- // color->addAction(titlecolor);
- // color->addAction(datacolor);
- // color->addAction(resetcolor);
-
-
- // QObject::connect(Exit, SIGNAL(triggered()), SLOT(close()));
 
  QGridLayout *grid = new QGridLayout( frame );
 
@@ -81,9 +60,6 @@ MainWindow::MainWindow( QWidget* parent )
  grid->addWidget( dataWidget, 0, 0 );
 
 
-	//connect( coord, SIGNAL( triggered( QAction* ) ), this, SLOT( pickCoordSystem( QAction* ) ) );
-	//connect( plotstyle, SIGNAL( triggered( QAction* ) ), this, SLOT( pickPlotStyle( QAction* ) ) );
-	//connect( axescolor, SIGNAL( triggered() ), this, SLOT( pickAxesColor() ) );
 	//connect( backgroundcolor, SIGNAL( triggered() ), this, SLOT( pickBgColor() ) );
 	//connect( floorstyle, SIGNAL( triggered( QAction* ) ), this, SLOT( pickFloorStyle( QAction* ) ) );
 	//connect( meshcolor, SIGNAL( triggered() ), this, SLOT( pickMeshColor() ) );
@@ -99,8 +75,6 @@ MainWindow::MainWindow( QWidget* parent )
  pmanager["hatn"] = PlotletItem(cbHatn, cfgHatn);
  pmanager["boy"] = PlotletItem(cbBoy, cfgBoy);
  pmanager["ripple"] = PlotletItem(cbRipple, cfgRipple);
-
- //connect(cfgsignalmapper_, SIGNAL(mapped(const QString &)), this, SIGNAL(plotstyleChanged(const QString &)));
 
 
  PM_IT i = pmanager.begin();
@@ -123,23 +97,21 @@ MainWindow::MainWindow( QWidget* parent )
 	//
 	//connect( offsSlider, SIGNAL(valueChanged(int)), this, SLOT(setPolygonOffset(int)) );
 
-	//connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
+	connect(normButton, SIGNAL(clicked()), this, SLOT(setStandardView()));  
 	//
  // QString qwtstr(" qwtplot3d ");
  // qwtstr += QString::number(QWT3D_MAJOR_VERSION) + ".";
  // qwtstr += QString::number(QWT3D_MINOR_VERSION) + ".";
  // qwtstr += QString::number(QWT3D_PATCH_VERSION) + " ";
 
-	//connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
+	connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 	//connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
-	//connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
-	//connect(shader, SIGNAL( toggled(bool) ), this, SLOT( toggleShader(bool)));
+	connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
 	//connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
 	//		
 	setStandardView();
 
 	dataWidget->coordinates()->setLineSmooth(true);
-  //dataWidget->coordinates()->setGridLinesColor(RGBA(0.35,0.35,0.35,1));
 	dataWidget->enableMouse(true);
   dataWidget->setKeySpeed(15,20,20);
 
@@ -168,10 +140,6 @@ MainWindow::MainWindow( QWidget* parent )
   createFunction("hat", false);
   dataWidget->enableLighting(true);
   dataWidget->illuminate(0);
-}
-
-void MainWindow::open()
-{
 }
 
 int MainWindow::createFunction(QString const& name, bool append /*= true*/)
@@ -213,44 +181,6 @@ int MainWindow::createFunction(QString const& name, bool append /*= true*/)
   return 0;
 }
 
-
-
-void MainWindow::pickCoordSystem( QAction* action)
-{
-	if (/*!action ||*/ !dataWidget)
-		return;
-
-	activeCoordSystem = action;
-	
-	dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
-
-	if (!dataWidget->hasData())
-	{
-		double l = 0.6;
-		dataWidget->createCoordinateSystem(Triple(-l,-l,-l), Triple(l,l,l));
-		for (unsigned i=0; i!=dataWidget->coordinates()->axes.size(); ++i)
-		{
-			dataWidget->coordinates()->axes[i].setMajors(4);
-			dataWidget->coordinates()->axes[i].setMinors(5);
-		}
-	}			
-
-	//if (action == Box || action == Frame)
-	//{
-	//	if (action == Box)
-		dataWidget->setCoordinateStyle(BOX);
-	//	if (action == Frame)
-	//		dataWidget->setCoordinateStyle(FRAME);
-		grids->setEnabled(true);
-	//}
-	//else if (action == None)
-	//{
-	//  dataWidget->setTitle("QwtPlot3D (Use Ctrl-Alt-Shift-LeftBtn-Wheel or keyboard)");
-	//	dataWidget->setCoordinateStyle(NOCOORD);
-	//	grids->setEnabled(false);
-	//}
-}
-
 void MainWindow::setPlotStyle()
 {
   ConfigFrame* w = (ConfigFrame*)sender();
@@ -284,33 +214,6 @@ void MainWindow::pickFloorStyle( QAction* action )
 	//dataWidget->updateGL();
 }	
 
-void MainWindow::resetColors()
-{
-	//if (!dataWidget)
-	//	return;
-
-	//const RGBA axc = RGBA(0,0,0,1);
-	//const RGBA bgc = RGBA(1.0,1.0,1.0,1.0);
-	//const RGBA msc = RGBA(0,0,0,1);
-	//const RGBA nuc = RGBA(0,0,0,1);
-	//const RGBA lbc = RGBA(0,0,0,1);
-	//const RGBA tc = RGBA(0,0,0,1);
-
-	//dataWidget->coordinates()->setAxesColor(axc);
-	//dataWidget->setBackgroundColor(bgc);
-	//dataWidget->setMeshColor(msc);
-	//dataWidget->updateData();
-	//dataWidget->coordinates()->setNumberColor(nuc);
-	//dataWidget->coordinates()->setLabelColor(lbc);
- // dataWidget->setTitleColor(tc);
-
-	//dataWidget->setDataColor(StandardColor());
-	//dataWidget->updateData();	
-	//dataWidget->updateNormals();
-	//dataWidget->updateGL();
-}
-
-
 void MainWindow::setMeshColor()
 {
   ConfigFrame* w = (ConfigFrame*)sender();
@@ -343,21 +246,9 @@ void MainWindow::setStandardView()
 	dataWidget->setZoom(0.95);
 }
 
-void MainWindow::rotate()
-{
-	//if (!dataWidget)
-	//	return;
-
-	//dataWidget->setRotation(
-	//	int(dataWidget->xRotation() + 1) % 360,
-	//	int(dataWidget->yRotation() + 1) % 360,
-	//	int(dataWidget->zRotation() + 1) % 360
-	//	);
-}
-
 void MainWindow::toggleProjectionMode(bool val)
 {
-	//dataWidget->setOrtho(val);
+	dataWidget->setOrtho(val);
 }
 
 void MainWindow::toggleColorLegend(bool val)
@@ -368,16 +259,8 @@ void MainWindow::toggleColorLegend(bool val)
 
 void MainWindow::toggleAutoScale(bool val)
 {
-	//dataWidget->coordinates()->setAutoScale(val);
-	//dataWidget->updateGL();
-}
-
-void MainWindow::toggleShader(bool val)
-{
-	//if (val)
-	//	dataWidget->setShading(GOURAUD);
-	//else
-	//	dataWidget->setShading(FLAT);
+	dataWidget->coordinates()->setAutoScale(val);
+	dataWidget->updateGL();
 }
 
 void MainWindow::showNormals(bool val)
@@ -399,38 +282,6 @@ void MainWindow::setNormalQuality(int val)
 	//dataWidget->setNormalQuality(val);
 	//dataWidget->updateNormals();
 	//dataWidget->updateGL();
-}
-
-bool MainWindow::openColorMap(ColorVector& cv, QString fname)
-{	
- // if (fname.isEmpty())
- //   return false;
- // 
- // ifstream file(QWT3DLOCAL8BIT(fname));
-
-	//if (!file)
-	//	return false;
-	//
-	//RGBA rgb;
-	//cv.clear();
-	//
-	//while ( file ) 
-	//{		
-	//	file >> rgb.r >> rgb.g >> rgb.b;
-	//	file.ignore(1000,'\n');
-	//	if (!file.good())
-	//		break;
-	//	else
-	//	{
-	//		rgb.a = 1;
-	//		rgb.r /= 255;
-	//		rgb.g /= 255;
-	//		rgb.b /= 255;
-	//		cv.push_back(rgb);	
-	//	}
-	//}
-
-	return true;
 }
 
 void MainWindow::updateColorLegend(int majors, int minors)
