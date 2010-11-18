@@ -1,5 +1,4 @@
-# pro file for building the makefile for qwtplot3d
-#
+system("qmake -project -nopwd -o qwtplot3d.pri -r ./src ./include")
 
 include (qwtplot3d.pri)
 
