@@ -14,8 +14,8 @@
     void createCubic2();
     void createCubic3();
 
-    TripleField nodes;
-    EdgeField edges;
+    TripleVector nodes;
+    EdgeVector edges;
   };
 
   Plot::Plot()

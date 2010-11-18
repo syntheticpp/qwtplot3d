@@ -87,8 +87,8 @@ void MeshPlot::isolines2Floor(const Plotlet& pl)
     }  
   }
 
-  TripleField nodes;
-  TripleField intersection;
+  TripleVector nodes;
+  TripleVector intersection;
 
   double lambda = 0;
 
@@ -173,13 +173,13 @@ void MeshPlot::createNormals(const Plotlet& pl)
 
 /*! 
 Convert user (non-rectangular) mesh based data to internal structure.
-See also Qwt3D::TripleField and Qwt3D::CellField
+See also Qwt3D::TripleVector and Qwt3D::CellVector
 
 \param append For append==true the new dataset will be appended. If false (default), all data  will
 be replaced by the new data. This includes destruction of possible additional datasets/Plotlets.
 \return Index of new entry in dataset array (append == true), 0 (append == false) or -1 for errors
 */
-int MeshPlot::createDataset(TripleField const& data, CellField const& poly, bool append /*= false*/)
+int MeshPlot::createDataset(TripleVector const& data, CellVector const& poly, bool append /*= false*/)
 {	
   int ret = prepareDatasetCreation<MeshData>(append);
   if (ret < 0)
@@ -188,7 +188,7 @@ int MeshPlot::createDataset(TripleField const& data, CellField const& poly, bool
   MeshData& plotdata = dynamic_cast<MeshData&>(*plotlets_p[ret].data);
   plotdata.nodes = data;
   plotdata.cells = poly;
-  plotdata.normals = TripleField(plotdata.nodes.size());
+  plotdata.normals = TripleVector(plotdata.nodes.size());
 
   unsigned i;
 

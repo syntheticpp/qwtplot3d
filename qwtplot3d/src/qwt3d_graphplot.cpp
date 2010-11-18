@@ -126,13 +126,13 @@ void GraphPlot::createOpenGlData(const Plotlet& pl)
 
 /*! 
 Convert user defined graph data to internal structure.
-See also Qwt3D::TripleField and Qwt3D::EdgeField
+See also Qwt3D::TripleVector and Qwt3D::EdgeVector
 
 \param append For append==true the new dataset will be appended. If false (default), all data  will
 be replaced by the new data. This includes destruction of possible additional datasets/Plotlets.
 \return Index of new entry in dataset array (append == true), 0 (append == false) or -1 for errors
 */
-int GraphPlot::createDataset(TripleField const& nodes, EdgeField const& edges, bool append /*= false*/)
+int GraphPlot::createDataset(TripleVector const& nodes, EdgeVector const& edges, bool append /*= false*/)
 {	
 
   int ret = prepareDatasetCreation<GraphData>(append);

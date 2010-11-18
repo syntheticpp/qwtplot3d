@@ -407,8 +407,8 @@ bool vperiodic=false)</td>
     </tr>
     <tr>
       <td class="memItemLeft" align="right" nowrap="nowrap" valign="top">bool&nbsp;</td>
-      <td class="memItemRight" valign="bottom"><span class="el">loadFromData</span>(<span class="el">Qwt3D::TripleField</span>
-const &amp;data, <span class="el">Qwt3D::CellField</span>
+      <td class="memItemRight" valign="bottom"><span class="el">loadFromData</span>(<span class="el">Qwt3D::TripleVector</span>
+const &amp;data, <span class="el">Qwt3D::CellVector</span>
 const &amp;poly)</td>
     </tr>
   </tbody>
@@ -423,8 +423,8 @@ plane grids:&nbsp; z=f(x,y) ;</li>
 y=g(u,v), z=h(u,v)&nbsp;&nbsp; u and v can be periodic&nbsp; - both or
 one of them.</li>
   <li>The last variant eventually provides
-support for more free formed meshs, divided in a node- (the TripleField
-argument) and a&nbsp; polygon- (the CellField) &nbsp;part. This kind of
+support for more free formed meshs, divided in a node- (the TripleVector
+argument) and a&nbsp; polygon- (the CellVector) &nbsp;part. This kind of
 data is common for FEM and CAD applications but not limited to them. It
 is the 'swiss knife' because it is of course able to represent all the
 other variants. The question here is performance (still not too bad).<br>

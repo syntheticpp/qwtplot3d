@@ -18,7 +18,7 @@ public:
   MeshPlot( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
   virtual ~MeshPlot() {}
 
-  int createDataset(Qwt3D::TripleField const& data, Qwt3D::CellField const& poly, bool append = false);
+  int createDataset(Qwt3D::TripleVector const& data, Qwt3D::CellVector const& poly, bool append = false);
   int facets(unsigned idx = 0) const;
   //virtual int cells(unsigned dimension) const
 
@@ -40,9 +40,9 @@ private:
   	
 	  Triple const& operator()(unsigned cellnumber, unsigned vertexnumber);
   	
-	  CellField cells;   //!< polygon/cell mesh 
-	  TripleField    nodes; //!< point cloud
-	  TripleField    normals; //!< mesh normals
+	  CellVector cells;   //!< polygon/cell mesh 
+	  TripleVector    nodes; //!< point cloud
+	  TripleVector    normals; //!< mesh normals
   };
  
   FLOORSTYLE floorstyle_;

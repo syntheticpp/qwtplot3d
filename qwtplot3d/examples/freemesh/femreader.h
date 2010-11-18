@@ -45,7 +45,7 @@ class CellFilter
 
 
 template <typename FILTER>
-bool readNodes(Qwt3D::TripleField& v, const char* fname, FILTER fil)
+bool readNodes(Qwt3D::TripleVector& v, const char* fname, FILTER fil)
 {
 	std::ifstream file(fname);
 	
@@ -63,7 +63,7 @@ bool readNodes(Qwt3D::TripleField& v, const char* fname, FILTER fil)
 }
 
 template <typename FILTER>
-bool readConnections(Qwt3D::CellField& v, const char* fname, FILTER fil)
+bool readConnections(Qwt3D::CellVector& v, const char* fname, FILTER fil)
 {
 	std::ifstream file(fname);
 

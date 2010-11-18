@@ -40,7 +40,7 @@ void SurfacePlot::setNormalQuality(int val)
   normalQuality_p = val;
 }
 
-void SurfacePlot::drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col)
+void SurfacePlot::drawIntersection(const Qwt3D::TripleVector& intersection, Qwt3D::RGBA col)
 {
   if (intersection.empty())
     return;

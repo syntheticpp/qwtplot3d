@@ -155,7 +155,9 @@ protected:
     }
     else
     {
-      plotlets_p.push_back(Plotlet(new DATA));
+      Plotlet& pl = Plotlet(new DATA);
+      plotlets_p.push_back(pl);
+      int dummy = 12;
     }
     return plotlets_p.size()-1;
   }

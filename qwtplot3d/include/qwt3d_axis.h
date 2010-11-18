@@ -73,8 +73,8 @@ public:
 	void setMinors(int val); //!< Requests minor intervals
 	int majors() const { return majorintervals_; } //!< Returns number of major intervals
 	int minors() const { return minorintervals_; } //!< Returns number of minor intervals
-	Qwt3D::TripleField const& majorPositions() const {return majorpos_;} //!< Returns positions for actual major tics (also if invisible)
-	Qwt3D::TripleField const& minorPositions() const {return minorpos_;} //!< Returns positions for actual minor tics (also if invisible)
+	Qwt3D::TripleVector const& majorPositions() const {return majorpos_;} //!< Returns positions for actual major tics (also if invisible)
+	Qwt3D::TripleVector const& minorPositions() const {return minorpos_;} //!< Returns positions for actual minor tics (also if invisible)
 	
 	//! Sets line width for axis components
 	void setLineWidth(double val, double majfac = 0.9, double minfac = 0.5);
@@ -105,7 +105,7 @@ private:
 	std::vector<Qwt3D::Label> markerLabel_;
 
 	Qwt3D::Triple beg_, end_;
-	Qwt3D::TripleField majorpos_, minorpos_; //! vectors, holding major resp. minor tic positions;
+	Qwt3D::TripleVector majorpos_, minorpos_; //! vectors, holding major resp. minor tic positions;
 
 	Qwt3D::Triple ncube_beg_, ncube_end_; //!< enclosing parallelepiped for axis numbering
 

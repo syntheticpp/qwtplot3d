@@ -35,7 +35,7 @@ protected:
 
   virtual void createNormals(const Plotlet& pl) = 0;
   virtual void createFloorOpenGlData();
-  void drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col);
+  void drawIntersection(const Qwt3D::TripleVector& intersection, Qwt3D::RGBA col);
   virtual void data2Floor(const Plotlet& app) = 0;
   virtual void isolines2Floor(const Plotlet& app) = 0;
 

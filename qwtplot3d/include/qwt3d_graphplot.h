@@ -16,7 +16,7 @@ class QWT3D_EXPORT GraphPlot : public Plot3D
 public:
   GraphPlot( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
  
-	int createDataset(Qwt3D::TripleField const& nodes, Qwt3D::EdgeField const& edges, bool append = false);
+	int createDataset(Qwt3D::TripleVector const& nodes, Qwt3D::EdgeVector const& edges, bool append = false);
 
 protected:
    void createOpenGlData(const Plotlet& pl);
@@ -30,8 +30,8 @@ private:
     GraphData* clone() const {return new GraphData(*this);}
     bool empty() const; 
 
-    TripleField nodes;
-    EdgeField edges;
+    TripleVector nodes;
+    EdgeVector edges;
   };
 };
 

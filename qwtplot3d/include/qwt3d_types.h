@@ -324,19 +324,19 @@ struct QWT3D_EXPORT FreeVector
 typedef std::vector<FreeVector> FreeVectorField;
 
 //! A point field in R^3
-typedef std::vector<Triple> TripleField;
-//! Holds indices in a TripleField interpreted as an oriented (first->second) Edge
+typedef std::vector<Triple> TripleVector;
+//! Holds indices in a TripleVector interpreted as an oriented (first->second) Edge
 typedef std::pair<unsigned,unsigned> Edge;
-//! Vector of Edges for a graph or cell complex. You need a TripleField as base for the node data
-typedef std::vector<Edge> EdgeField;
-//! Holds indices in a TripleField interpreted as counterclockwise node numbering for a convex polygon
+//! Vector of Edges for a graph or cell complex. You need a TripleVector as base for the node data
+typedef std::vector<Edge> EdgeVector;
+//! Holds indices in a TripleVector interpreted as counterclockwise node numbering for a convex polygon
 typedef std::vector<unsigned> Cell;
-//! Vector of convex polygons. You need a TripleField as base for the node data
-typedef std::vector<Cell> CellField;
+//! Vector of convex polygons. You need a TripleVector as base for the node data
+typedef std::vector<Cell> CellVector;
 //! Returns the sum over the sizes of the single cells
-unsigned tesselationSize(Qwt3D::CellField const& t);
+unsigned tesselationSize(Qwt3D::CellVector const& t);
 //! Rectangular hull for point cloud
-QWT3D_EXPORT Qwt3D::ParallelEpiped hull(TripleField const& data);
+QWT3D_EXPORT Qwt3D::ParallelEpiped hull(TripleVector const& data);
 
 //! Red-Green-Blue-Alpha value
 struct QWT3D_EXPORT RGBA

@@ -24,7 +24,6 @@
 #include <qfontdialog.h>
 
 #include <qwt3d_io.h>
-#include <qwt3d_io_gl2ps.h>
 #include <qwt3d_io_reader.h>
 
 #include "meshmainwindow.h"
@@ -51,6 +50,7 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
   coord->addAction(Box);
   coord->addAction(Frame);
   coord->addAction(None);
+  //coord->setExclusive(true);
 
   grids = new QActionGroup(this);
   grids->addAction(front); 
@@ -191,8 +191,8 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
 	connect(dataWidget, SIGNAL(scaleChanged(double,double,double)),this,SLOT(showScale(double,double,double)));
 	connect(dataWidget, SIGNAL(zoomChanged(double)),this,SLOT(showZoom(double)));
 
-	connect(functionCB, SIGNAL(activated(const QString&)), this, SLOT(createFunction(const QString&)));
-	connect(psurfaceCB, SIGNAL(activated(const QString&)), this, SLOT(createPSurface(const QString&)));
+	connect(functionCB, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(createFunction(const QString&)));
+	connect(psurfaceCB, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(createPSurface(const QString&)));
 	connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 	connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 	connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
@@ -216,6 +216,10 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
   dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
 
   grids->setEnabled(false);
+
+  functionCB->setCurrentIndex(1);
+  Box->setChecked(true);
+  pickCoordSystem(Box);
 }
 
 void MeshMainWindow::open()
@@ -280,6 +284,13 @@ void MeshMainWindow::createFunction(QString const& name)
     dataWidget->coordinates()->axes[Z3].setScale(LOG10SCALE);
     dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
     dataWidget->legend()->setScale(LOG10SCALE);
+
+    Hat hat(*dataWidget);
+
+    hat.setMesh(51,72);
+    hat.setDomain(-1.5,1.5,-1.5,1.5);
+    hat.create(true);	
+
 	}
 	else if (name == QString("Hat")) 
 	{

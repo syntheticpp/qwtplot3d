@@ -114,7 +114,7 @@ void Qwt3D::convexhull2d( std::vector<unsigned>& idx, const std::vector<Tuple>& 
 		delete [] P;
 }
 
-unsigned Qwt3D::tesselationSize(CellField const& t)
+unsigned Qwt3D::tesselationSize(CellVector const& t)
 {
 	unsigned ret = 0;
 	
@@ -124,7 +124,7 @@ unsigned Qwt3D::tesselationSize(CellField const& t)
 	return ret;
 }
 
-Qwt3D::ParallelEpiped Qwt3D::hull(TripleField const& data)
+Qwt3D::ParallelEpiped Qwt3D::hull(TripleVector const& data)
 {
   ParallelEpiped hull(Triple(DBL_MAX,DBL_MAX,DBL_MAX),Triple(-DBL_MAX,-DBL_MAX,-DBL_MAX));
   for (unsigned i = 0; i!=data.size(); ++i)

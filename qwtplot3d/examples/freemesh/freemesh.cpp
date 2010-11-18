@@ -10,7 +10,7 @@
   
 using namespace Qwt3D;
 
-void createTetrahedron(TripleField& pos, CellField& poly)
+void createTetrahedron(TripleVector& pos, CellVector& poly)
 {
   pos.clear(); poly.clear();
   Cell cell(3);
@@ -41,7 +41,7 @@ void createTetrahedron(TripleField& pos, CellField& poly)
   poly.push_back(cell); 
 }
 
-void createCone(TripleField& conepos, CellField& conecell)
+void createCone(TripleVector& conepos, CellVector& conecell)
 {
   conepos.clear(); conecell.clear();
   Cell cell;
@@ -111,16 +111,16 @@ void Plot::contextMenuEvent( QContextMenuEvent * )
 
 void Plot::showCone()
 {
-  TripleField pos;
-  CellField poly;
+  TripleVector pos;
+  CellVector poly;
   createCone(pos, poly);
   createDataset(pos, poly);
   setSomeThings();
 }
 void Plot::showTetrahedron()
 {
-  TripleField pos;
-  CellField poly;
+  TripleVector pos;
+  CellVector poly;
   createTetrahedron(pos, poly);
   createDataset(pos, poly);    
   setSomeThings();
@@ -147,8 +147,8 @@ void Plot::openMesh()
     return;
 
 
-  TripleField vdata;
-  CellField vpoly;
+  TripleVector vdata;
+  CellVector vpoly;
 
   readNodes(vdata, QWT3DLOCAL8BIT(data), NodeFilter());
   readConnections(vpoly, QWT3DLOCAL8BIT(edges), CellFilter());
