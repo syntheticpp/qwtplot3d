@@ -8,6 +8,10 @@ CoordinateSystem::CoordinateSystem(Qwt3D::Triple first, Qwt3D::Triple second, Qw
 {
 	autodecoration_ = true;
 	axes = std::vector<Axis>(12);
+  axes[Z1].setZ(true);
+  axes[Z2].setZ(true);
+  axes[Z3].setZ(true);
+  axes[Z4].setZ(true);
   setStyle(st);
 	setLineSmooth(true);
 	init(first,second);

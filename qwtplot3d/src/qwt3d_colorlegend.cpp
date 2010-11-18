@@ -13,6 +13,7 @@ and has no caption. Scale numbering is shown.
 */
 ColorLegend::ColorLegend()
 {
+  axis_.setZ(true);
 	axis_.setNumbers(true);
 	axis_.setScaling(true);
 	axis_.setNumberColor(RGBA(0,0,0,1));

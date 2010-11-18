@@ -14,8 +14,8 @@ using namespace Qwt3D;
 
 GraphPlot::GraphData::GraphData() 
 {
-  //datatype_p=Qwt3D::GRAPH;
-  //setHull(ParallelEpiped());
+  datatype_p=Qwt3D::GRAPH;
+  setHull(ParallelEpiped());
 }
 
 GraphPlot::GraphData::~GraphData()

@@ -524,7 +524,7 @@
   <customwidget>
    <class>ConfigFrame</class>
    <extends>QFrame</extends>
-   <header>configframe.h</header>
+   <header>../src/configframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -126,8 +126,12 @@
   void Plot::create()
   {
     enableLighting();
-    createCubic3();
+    //createCubic3();
     //createCubic2();
+    createCubic1();
+    Triple dim = hull().maxVertex - hull().minVertex;
+    setTitle(QString("x length: %1, y length: %2, z length: %3").arg(dim.x).arg(dim.y).arg(dim.z));
+    setCoordinateStyle(BOX);
     //setTitle(QString("Nodes: %1, Edges: %2").arg(nodes.size()).arg(edges.size()));
     illuminate(0);
   }

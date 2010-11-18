@@ -24,6 +24,7 @@ public:
 	Label(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
 	
 	//! Sets the labels font
+  void setFont(const QFont&);
 	void setFont(QString const& family, int pointSize, int weight = QFont::Normal, bool italic = false);
 
 	void adjust(int gap); //!< Fine tunes label;
@@ -41,28 +42,32 @@ public:
 	For unicode labeling (<tt> QChar(0x3c0) </tt> etc.) please look at <a href="http://www.unicode.org/charts/">www.unicode.org</a>.
 	*/
 	void setString(QString const& s);
-	void draw(); //!< Actual drawing	
+  const QString& string() const;
+  void draw(double angle = 0.0); //!< Actual drawing
+
+	double width() const;
+	double height() const;
+	double textHeight() const;
 
 private:
-
+	bool use_relpos_;
+	Qwt3D::Triple relpos_;
 	Qwt3D::Triple beg_, end_, pos_;
-	QPixmap pm_;
-	QImage  buf_, tex_;
 	QFont font_;
 	QString text_;
 
 	ANCHOR anchor_;
-	
+
 	void init();
-  void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void update(); //!< Enforces an update of the internal pixmap
+	void init(const QString & family, int pointSize, int weight = QFont::Normal, bool italic = false);
+	QImage createImage(double angle);//!< Creates an internal bitmap used only for axis labels
+	const char * fontname(); //!< Try to guess an appropriate font name from the 14 standard Type 1 fonts available
 	void convert2screen();
-	double width() const;
-	double height() const;
 
 	int gap_;
 
 	bool flagforupdate_;
+	double width_, height_;
 };
 
 } // ns
