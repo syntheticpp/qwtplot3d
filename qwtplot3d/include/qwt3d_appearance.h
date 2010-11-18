@@ -24,7 +24,7 @@ namespace Qwt3D
 class QWT3D_EXPORT Appearance
 {
 public:
-  explicit Appearance(unsigned colors = 1);
+  explicit Appearance(unsigned colors = 100);
   virtual Appearance* clone() const {return new Appearance(*this);}
   Appearance(const Appearance& val); 
   Appearance& operator=(const Appearance& val); 

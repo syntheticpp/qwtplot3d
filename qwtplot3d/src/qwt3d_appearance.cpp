@@ -32,7 +32,7 @@ Instantiate a Standard Appearance object.
 - Polygon offset:  0.5
 - Data color:      StandardColor(colors) 
 */
-Qwt3D::Appearance::Appearance(unsigned colors /* = 1 */)
+Qwt3D::Appearance::Appearance(unsigned colors /* = 100 */)
 {
   datacolor_p = ValuePtr<Color>(new StandardColor(colors));
   userplotstyle_p = 0;
