@@ -1,5 +1,6 @@
-#ifndef QWT3D_GLOBAL_H
-#define QWT3D_GLOBAL_H
+#pragma once
+#ifndef qwt3d_global_h__2009_10_11_14_19_14_begin_guarded_code
+#define qwt3d_global_h__2009_10_11_14_19_14_begin_guarded_code
 
 #include <qglobal.h>
 
@@ -51,5 +52,4 @@
   #define QWT3D_EXPORT
 #endif
 
-
-#endif
+#endif /* include guard */

@@ -1,5 +1,6 @@
-#ifndef qwt3d_reader_h__2004_03_07_14_03_begin_guarded_code
-#define qwt3d_reader_h__2004_03_07_14_03_begin_guarded_code
+#pragma once
+#ifndef qwt3d_io_reader_h__2009_10_11_14_21_43_begin_guarded_code
+#define qwt3d_io_reader_h__2009_10_11_14_21_43_begin_guarded_code
 
 #include "qwt3d_io.h"
 
@@ -22,7 +23,7 @@ private:
   //! Provides new NativeReader object. 
   IO::Functor* clone() const{return new NativeReader(*this);}
   //! Performs actual input
-  bool operator()(Plot3D* plot, QString const& fname);
+  bool operator()(Plot3D* plot, QString const& fname, bool append = false);
 	static const char* magicstring;
   double minz_, maxz_;
 	bool collectInfo(FILE*& file, QString const& fname, unsigned& xmesh, unsigned& ymesh, 
@@ -32,4 +33,4 @@ private:
 
 } // ns
 
-#endif
+#endif /* include guard */

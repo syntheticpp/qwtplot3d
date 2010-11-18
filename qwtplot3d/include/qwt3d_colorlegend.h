@@ -1,5 +1,6 @@
-#ifndef __PLANE_H__
-#define __PLANE_H__
+#pragma once
+#ifndef qwt3d_colorlegend_h__2009_10_11_14_15_54_begin_guarded_code
+#define qwt3d_colorlegend_h__2009_10_11_14_15_54_begin_guarded_code
 
 #include "qwt3d_global.h"
 #include "qwt3d_drawable.h"
@@ -74,4 +75,4 @@ private:
 
 } // ns
 
-#endif
+#endif /* include guard */

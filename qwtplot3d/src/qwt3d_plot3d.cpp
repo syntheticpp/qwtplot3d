@@ -3,32 +3,30 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include "qwt3d_color_std.h"
 #include "qwt3d_plot3d.h"
-#include "qwt3d_enrichment.h"
-
 
 using namespace Qwt3D;
 	
+Qwt3D::Plot3D::Plotlet::Plotlet( Data* d, const Appearance& a )
+{
+  data = ValuePtr<Data>(d);
+  appearance = ValuePtr<Appearance>(new Appearance(a));
+}
+
 /*!
   This should be the first call in your derived classes constructors.  
 */
 Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
     : ExtGLWidget( parent, shareWidget) 
 {  
+  plotlets_p.push_back(Plotlet(0));
   renderpixmaprequest_ = false;
-	plotstyle_ = FILLEDMESH;
-  userplotstyle_p = 0;
-	shading_ = GOURAUD;
   isolinesZ_p.resize(10);
   delayisolinecalculation_p = true;
 	displaylegend_ = false;
-	smoothdatamesh_p = false;
-  actualData_p = 0;
 
-	setPolygonOffset(0.5);
-	setMeshColor(RGBA(0.0,0.0,0.0));
-	setMeshLineWidth(1);
-	setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
+  setBackgroundColor(RGBA(1.0,1.0,1.0,1.0));
 
 	displaylists_p = std::vector<GLuint>(DisplayListSize);
 	for (unsigned k=0; k!=displaylists_p.size(); ++k)
@@ -36,7 +34,7 @@ Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
 		displaylists_p[k] = 0;
 	}
 
-	datacolor_p = new StandardColor(this, 100);
+	datacolor_p = new StandardColor(100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -56,12 +54,6 @@ Plot3D::~Plot3D()
 {
 	makeCurrent();
   SaveGlDeleteLists( displaylists_p[0], displaylists_p.size() );
-	datacolor_p->destroy();
-  delete userplotstyle_p;
-  for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
-    delete (*it);
-
-  elist_p.clear();
 }
 
 void Plot3D::initializeGL()
@@ -173,9 +165,14 @@ void Plot3D::resizeGL( int w, int h )
 */
 void Plot3D::calculateHull()
 {
-	if (!actualData_p || actualData_p->empty())
-		return;
-	setHull(actualData_p->hull());
+  if (plotlets_p.empty())
+    return;
+
+  ParallelEpiped hull = plotlets_p[0].data->hull();
+  for (unsigned i=1; i!=plotlets_p.size(); ++i)
+    hull = sum(hull, plotlets_p[i].data->hull());  
+  
+  setHull(hull);
 }
 
 /*!
@@ -211,7 +208,7 @@ void Plot3D::showColorLegend( bool show )
 
 void Plot3D::setMeshColor(RGBA rgba)
 {
-	meshcolor_ = rgba;
+  appearance(0).setMeshColor(rgba);
 }
 
 void Plot3D::setBackgroundColor(RGBA rgba)
@@ -221,16 +218,11 @@ void Plot3D::setBackgroundColor(RGBA rgba)
 
 
 /*!
-	assign a new coloring object for the data.
+	Assign a new coloring object for the data.
 */
-void Plot3D::setDataColor( Color* col )
+void Plot3D::setDataColor( const Qwt3D::Color& col )
 {
-	Q_ASSERT(datacolor_p);
-
-	datacolor_p->destroy();
-	datacolor_p = col;
-//  if ( displaylegend_ )
-//    datacolor_p->createVector(legend_.colors);
+  appearance(0).setDataColor(col);
 }
 
 /*!
@@ -248,11 +240,7 @@ void Plot3D::setCoordinateStyle(COORDSTYLE st)
 */
 void Plot3D::setPlotStyle( PLOTSTYLE val )
 {
-  if (val == Qwt3D::USER)
-    return;
-  delete userplotstyle_p;
-  userplotstyle_p = 0;
-  plotstyle_ = val;
+  appearance(0).setPlotStyle(val);
 }
 
 /*!
@@ -260,13 +248,7 @@ void Plot3D::setPlotStyle( PLOTSTYLE val )
 */
 Qwt3D::Enrichment* Plot3D::setPlotStyle( Qwt3D::Enrichment const& obj )
 {
-  if (&obj == userplotstyle_p)
-    return userplotstyle_p;
-  
-  delete userplotstyle_p;
-  userplotstyle_p = obj.clone();
-  plotstyle_ = Qwt3D::USER;
-  return userplotstyle_p;
+  return appearance(0).setPlotStyle(obj);
 }
 
 /*!
@@ -274,22 +256,7 @@ Qwt3D::Enrichment* Plot3D::setPlotStyle( Qwt3D::Enrichment const& obj )
 */
 void Plot3D::setShading( SHADINGSTYLE val )
 {
-	if (val == shading_)
-		return;
-	
-	shading_ = val;
-	
-	switch (shading_)
-	{
-		case FLAT:
-			glShadeModel(GL_FLAT);
-			break;
-		case GOURAUD:
-			glShadeModel(GL_SMOOTH);
-			break;
-		default:
-			break;
-	}
+  appearance(0).setShading(val);
 	updateGL();
 }
 
@@ -299,17 +266,12 @@ void Plot3D::setShading( SHADINGSTYLE val )
 */
 void Plot3D::setPolygonOffset( double val )
 {
-	polygonOffset_ = val;
+	appearance(0).setPolygonOffset(val);
 }
 
 void Plot3D::setMeshLineWidth( double val )
 {
-	Q_ASSERT(val>=0);
-
-	if (val < 0)
-		return;
-	
-	meshLineWidth_ = val;
+  appearance(0).setMeshLineWidth(val);
 }
 
 
@@ -332,34 +294,6 @@ void Plot3D::setTitleFont(const QString& family, int pointSize, int weight, bool
 	title_.setFont(family, pointSize, weight, italic);
 }
 
-Enrichment* Plot3D::addEnrichment(Enrichment const& e)
-{
-  if ( elist_p.end() == std::find( elist_p.begin(), elist_p.end(), &e ) )
-    elist_p.push_back(e.clone());
-  return elist_p.back();
-}
-
-bool Plot3D::degrade(Enrichment* e)
-{
-	ELIT it = std::find(elist_p.begin(), elist_p.end(), e);
-	
-	if ( it != elist_p.end() )
-	{
-		delete (*it);
-    elist_p.erase(it);
-    return true;
-	}
-  return false;
-}
-
-void Plot3D::drawEnrichments()
-{
-  for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
-  {
-    this->drawEnrichment(**it);
-  } 
-}
-
 /*!
   Update OpenGL data representation
 */
@@ -373,11 +307,32 @@ void Plot3D::updateData()
 
 	SaveGlDeleteLists(displaylists_p[DataObject], 1); // nur Daten
 	
+  this->updateAppearances();
+
 	displaylists_p[DataObject] = glGenLists(1);
 	glNewList(displaylists_p[DataObject], GL_COMPILE);
 	
-  this->drawEnrichments();
-	this->createOpenGlData();
+	createOpenGlData();
 		
 	glEndList();
+}
+
+/** 
+The function is called from updateData before a new internal OpenGL representations 
+will be recreated, but after the new hull has been calculated. The update() function 
+for every Appearance list member is called by this function. 
+So - for example - the Appearance's color part can adapt himself to new z ranges.
+*/
+void Qwt3D::Plot3D::updateAppearances()
+{
+  for (unsigned i=0; i!=plotlets_p.size(); ++i)
+    appearance(i).update(this);
+}
+
+void Qwt3D::Plot3D::createOpenGlData()
+{
+  for (unsigned i=0; i!= plotlets_p.size(); ++i)
+  {
+    this->createOpenGlData(plotlets_p[i]);
+  }
 }

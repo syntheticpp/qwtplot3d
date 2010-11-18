@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_parametricsurface_h__2004_03_05_23_43_begin_guarded_code
 #define qwt3d_parametricsurface_h__2004_03_05_23_43_begin_guarded_code
 
@@ -27,7 +28,7 @@ public:
 	//! Assigns a new GridPlot and creates a data representation for it.
 	virtual bool create(Qwt3D::GridPlot& plotWidget);
 	//! Creates data representation for the actual assigned GridPlot.
-	virtual bool create();
+	virtual bool create(bool append = false);
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
   void assign(Qwt3D::GridPlot& plotWidget);
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().

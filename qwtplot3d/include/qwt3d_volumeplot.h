@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_volumeplot_h__2004_03_06_01_52_begin_guarded_code
 #define qwt3d_volumeplot_h__2004_03_06_01_52_begin_guarded_code
 
@@ -13,12 +14,8 @@ class QWT3D_EXPORT VolumePlot : public Plot3D
 
 public:
   VolumePlot( QWidget* parent = 0, const char* name = 0 ){}
-
-protected:
-	virtual void createOpenGlData() = 0;
 };
 
 } // ns
 
-
-#endif
+#endif /* include guard */

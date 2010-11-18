@@ -1,5 +1,6 @@
-#ifndef __HELPER_H__
-#define __HELPER_H__
+#pragma once
+#ifndef qwt3d_helper_h__2009_10_11_14_20_35_begin_guarded_code
+#define qwt3d_helper_h__2009_10_11_14_20_35_begin_guarded_code
 
 #include <math.h>
 #include <float.h>
@@ -33,4 +34,4 @@ inline int round(double d)
 
 } //ns
 
-#endif
+#endif /* include guard */

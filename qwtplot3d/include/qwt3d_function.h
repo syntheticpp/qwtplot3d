@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_function_h__2004_03_05_13_51_begin_guarded_code
 #define qwt3d_function_h__2004_03_05_13_51_begin_guarded_code
 
@@ -15,9 +16,7 @@ class GridPlot;
 */
 class QWT3D_EXPORT Function : public GridMapping
 {
-
 public:
-	
   Function(); //!< Constructs Function object w/o assigned GridPlot.
   explicit Function(Qwt3D::GridPlot& plotWidget); //!< Constructs Function object and assigns a GridPlot
   explicit Function(Qwt3D::GridPlot* plotWidget); //!< Constructs Function object and assigns a GridPlot
@@ -28,8 +27,8 @@ public:
 
 	//! Assigns a new GridPlot and creates a data representation for it.
 	virtual bool create(Qwt3D::GridPlot& plotWidget);
-	//! Creates data representation for the actual assigned GridPlot.
-	virtual bool create();
+	//! Creates/appends data representation for/to the actual assigned GridPlot.
+	virtual bool create(bool append = true);
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().
   void assign(Qwt3D::GridPlot& plotWidget); 
   //! Assigns the object to another widget. To see the changes, you have to call this function before create().

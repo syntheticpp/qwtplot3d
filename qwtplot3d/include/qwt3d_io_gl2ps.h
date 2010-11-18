@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_io_gl2ps_h__2004_05_07_01_16_begin_guarded_code
 #define qwt3d_io_gl2ps_h__2004_05_07_01_16_begin_guarded_code
 
@@ -63,7 +64,7 @@ public:
 
 private:
   IO::Functor* clone() const;
-  bool operator()(Plot3D* plot, QString const& fname);
+  bool operator()(Plot3D* plot, QString const& fname, bool = false);
 
   GLint gl2ps_format_;
   bool formaterror_;

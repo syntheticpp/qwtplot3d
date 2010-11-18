@@ -1,5 +1,6 @@
-#ifndef qwt3d_SurfacePlot_h__2004_03_05_11_36_begin_guarded_code
-#define qwt3d_SurfacePlot_h__2004_03_05_11_36_begin_guarded_code
+#pragma once
+#ifndef qwt3d_surfaceplot_h__2009_10_11_14_25_06_begin_guarded_code
+#define qwt3d_surfaceplot_h__2009_10_11_14_25_06_begin_guarded_code
 
 #include "qwt3d_plot3d.h"
 
@@ -32,11 +33,11 @@ protected:
   double normalLength_p;
   int normalQuality_p;
 
-  virtual void createNormals() = 0;
+  virtual void createNormals(const Qwt3D::Appearance& app) = 0;
   virtual void createFloorOpenGlData();
   void drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col);
-  virtual void data2Floor() = 0;
-  virtual void isolines2Floor() = 0;
+  virtual void data2Floor(const Qwt3D::Appearance& app) = 0;
+  virtual void isolines2Floor(const Qwt3D::Appearance& app) = 0;
 
 private:
   FLOORSTYLE floorstyle_;
@@ -44,5 +45,4 @@ private:
 
 } // ns
 
-
-#endif
+#endif /* include guard */

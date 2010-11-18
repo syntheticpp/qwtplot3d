@@ -1,5 +1,6 @@
-#ifndef __openglhelper_2003_06_06_15_49__
-#define __openglhelper_2003_06_06_15_49__
+#pragma once
+#ifndef qwt3d_openglhelper_h__2009_10_11_14_23_25_begin_guarded_code
+#define qwt3d_openglhelper_h__2009_10_11_14_23_25_begin_guarded_code
 
 #include <qglobal.h>
 #include <QtOpenGL/qgl.h>
@@ -123,4 +124,5 @@ inline bool World2ViewPort(double& winx, double& winy, double& winz, double objx
 
 } // ns
 
-#endif
+
+#endif /* include guard */

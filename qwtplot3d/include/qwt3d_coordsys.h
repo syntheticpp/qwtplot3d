@@ -1,5 +1,6 @@
-#ifndef __COORDSYS_H__
-#define __COORDSYS_H__
+#pragma once
+#ifndef qwt3d_coordsys_h__2009_10_11_14_16_20_begin_guarded_code
+#define qwt3d_coordsys_h__2009_10_11_14_16_20_begin_guarded_code
 
 #include "qwt3d_axis.h"
 #include "qwt3d_colorlegend.h"
@@ -97,4 +98,4 @@ private:
 
 } // ns
 
-#endif
+#endif /* include guard */

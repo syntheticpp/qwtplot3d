@@ -1,5 +1,6 @@
-#ifndef __AXIS_H__
-#define __AXIS_H__
+#pragma once
+#ifndef qwt3d_axis_h__2009_10_11_14_14_18_begin_guarded_code
+#define qwt3d_axis_h__2009_10_11_14_14_18_begin_guarded_code
 
 #include "qwt3d_autoptr.h"
 #include "qwt3d_label.h"
@@ -128,4 +129,4 @@ private:
 
 } // ns 
 
-#endif
+#endif /* include guard */

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_gridmapping_h__2004_03_06_12_31_begin_guarded_code
 #define qwt3d_gridmapping_h__2004_03_06_12_31_begin_guarded_code
 

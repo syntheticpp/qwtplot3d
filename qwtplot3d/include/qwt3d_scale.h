@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_scale_h__2004_06_02_22_02_begin_guarded_code
 #define qwt3d_scale_h__2004_06_02_22_02_begin_guarded_code
 

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_data_h__2004_12_20_02_55_begin_guarded_code
 #define qwt3d_data_h__2004_12_20_02_55_begin_guarded_code
 
@@ -31,8 +32,9 @@ class Data
 {
 public:
   Data() {datatype_p= Qwt3D::POLYGON;}
+  //virtual Data* clone() const = 0;
   virtual ~Data() {}
-  virtual bool empty() const = 0; //!< no data
+  virtual bool empty() const {return true;} //!< no data
   void setHull(Qwt3D::ParallelEpiped const& h) {hull_p = h;}
   Qwt3D::ParallelEpiped const& hull() const {return hull_p;} 
   Qwt3D::DATATYPE dataType() const {return datatype_p;}

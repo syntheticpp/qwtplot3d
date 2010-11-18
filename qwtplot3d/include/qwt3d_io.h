@@ -1,5 +1,6 @@
-#ifndef __qwt3d_io_2003_07_04_23_27__
-#define __qwt3d_io_2003_07_04_23_27__
+#pragma once
+#ifndef qwt3d_io_h__2009_10_11_14_20_56_begin_guarded_code
+#define qwt3d_io_h__2009_10_11_14_20_56_begin_guarded_code
 
 #include <vector>
 #include <algorithm>
@@ -27,7 +28,7 @@ public:
     The function type that can be processed by the define... members.
     An extension is the IO::Functor.
   */
-  typedef bool (*Function)(Plot3D*, QString const& fname);
+  typedef bool (*Function)(Plot3D*, QString const& fname, bool append);
   
   
   /*! 
@@ -47,7 +48,7 @@ public:
     /*! The workhorse of the user-defined implementation. Eventually, the 
     framework will call this operator.
     */
-    virtual bool operator()(Plot3D* plot, QString const& fname) = 0;
+    virtual bool operator()(Plot3D* plot, QString const& fname, bool append = false) = 0;
   };
   
   static bool defineInputHandler( QString const& format, Function func);
@@ -73,9 +74,9 @@ private:
     //! Creates a Wrapper object from a function pointer
     explicit Wrapper(Function h) : hdl(h) {}
     //! Returns a pointer to the wrapped function
-    bool operator()(Plot3D* plot, QString const& fname)
+    bool operator()(Plot3D* plot, QString const& fname, bool append = false)
     {
-      return (hdl) ? (*hdl)(plot, fname) : false;
+      return (hdl) ? (*hdl)(plot, fname, append) : false;
     }
   private: 
     Function hdl;
@@ -131,11 +132,11 @@ public:
   void setQuality(int val);
 private:
   IO::Functor* clone() const {return new PixmapWriter(*this);}
-  bool operator()(Plot3D* plot, QString const& fname);
+  bool operator()(Plot3D* plot, QString const& fname, bool = false);
   QString fmt_;
   int quality_;
 };
 
 } //ns
 
-#endif
+#endif /* include guard */

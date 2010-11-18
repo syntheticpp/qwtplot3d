@@ -1,5 +1,6 @@
-#ifndef __qwt3d_autoscaler_2003_08_18_12_05__
-#define __qwt3d_autoscaler_2003_08_18_12_05__
+#pragma once
+#ifndef qwt3d_autoscaler_h__2009_10_11_14_15_04_begin_guarded_code
+#define qwt3d_autoscaler_h__2009_10_11_14_15_04_begin_guarded_code
 
 #include <vector>
 #include "qwt3d_global.h"
@@ -47,5 +48,4 @@ private:
 
 } // ns
 
-
-#endif
+#endif /* include guard */

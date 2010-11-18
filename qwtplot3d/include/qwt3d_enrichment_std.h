@@ -1,5 +1,6 @@
-#ifndef qwt3d_enrichment_std_h__2004_02_23_19_25_begin_guarded_code
-#define qwt3d_enrichment_std_h__2004_02_23_19_25_begin_guarded_code
+#pragma once
+#ifndef qwt3d_enrichment_std_h__2009_10_11_14_18_10_begin_guarded_code
+#define qwt3d_enrichment_std_h__2009_10_11_14_18_10_begin_guarded_code
 
 #include "qwt3d_enrichment.h"
 
@@ -173,4 +174,4 @@ private:
 
 } // ns
 
-#endif
+#endif /* include guard */

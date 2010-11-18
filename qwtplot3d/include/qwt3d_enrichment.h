@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_enrichment_h__2004_02_23_19_24_begin_guarded_code
 #define qwt3d_enrichment_h__2004_02_23_19_24_begin_guarded_code
 
@@ -92,4 +93,4 @@ public:
 
 } // ns
 
-#endif
+#endif /* include guard */

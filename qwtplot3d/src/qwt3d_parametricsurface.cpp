@@ -45,7 +45,7 @@ void ParametricSurface::assign(GridPlot* plotWidget)
 /**
 For plotWidget != 0 the function permanently assigns her argument (In fact, assign(plotWidget) is called)
 */
-bool ParametricSurface::create()
+bool ParametricSurface::create(bool append /*= false*/)
 {
 	if ((umesh_p<=2) || (vmesh_p<=2) || !plotwidget_p)
 		return false;
@@ -85,7 +85,7 @@ bool ParametricSurface::create()
 		}
 	}
 
-	((GridPlot*)plotwidget_p)->appendDataSet(data, umesh_p, vmesh_p, uperiodic_, vperiodic_);
+	((GridPlot*)plotwidget_p)->createDataset(data, umesh_p, vmesh_p, uperiodic_, vperiodic_, append);
 
 	for ( i = 0; i < umesh_p; i++) 
 	{

@@ -50,7 +50,7 @@ Functions and Parametric Surfaces</a></li>
       <li><a href="#files">Files</a></li>
     </ul>
     <li><a href="#dataoutput">Output</a></li>
-  </ul>
+  </ul><li><a href="#technicalities">Technicalities/Helper Structures etc.<br></a><ul><li><a href="#smartpointer">Smart Pointer</a></li></ul></li>
   <li><a href="#examples">Examples</a> <span style="color: rgb(255, 0, 0);"></span><br>
   </li>
   <ol>
@@ -479,7 +479,9 @@ appropriate data for loadFromData.<br>
 </p>
 <h4><a name="dataoutput"></a>Data Output</h4>
 // todo<br>
-<br>
+<br><h4><a name="technicalities"></a>Technicalities/Helper Structures etc.</h4><h4 style="font-weight: normal;"><em><em><a name="smartpointer"></a>Smart Pointer:</em></em></h4><code>Qwt3D::ValuePtr</code>,
+a ValuePtr class from Sutter's "More Exceptional C++" allows assignment
+and copy construction, even for different but related classes.<br><br>Semantics:<br><br><code>ValuePtr&lt;T&gt; t(new T); </code><code><span style="color: rgb(0, 102, 0);">// OK</span></code><br><code><br></code><code>ValuePtr&lt;Base&gt; b; <br></code><code>ValuePtr&lt;Derived&gt; d;<br><br>b = d; &nbsp;</code><code><span style="color: rgb(0, 102, 0);">// OK</span></code><br><code>&nbsp;<br>ValuePtr&lt;Base&gt; bb; <br>bb = b; <span style="color: rgb(0, 102, 0);">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// No slicing, b is cloned</span></code><br><code>ValuePtr&lt;Base&gt; bbb(b);&nbsp;</code><code><span style="color: rgb(0, 102, 0);">// Same</span></code><code><br></code><br><br><br>Examples inside the library include&nbsp;ValuePtr&lt;Color&gt; rtc..<br>&nbsp; <br>
 <h4><a name="examples"></a>Examples</h4>
 All the examples can be found in the <code>examples </code>subdirectory,
 executables are gathered in the<code> examples/bin</code> directory.<br>

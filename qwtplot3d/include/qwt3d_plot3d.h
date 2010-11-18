@@ -1,14 +1,17 @@
+#pragma once
 #ifndef __plot3d_2003_06_09_12_14__
 #define __plot3d_2003_06_09_12_14__
+
+#include <cassert>
 
 #include "qwt3d_data.h"
 #include "qwt3d_extglwidget.h"
 #include "qwt3d_coordsys.h"
 #include "qwt3d_enrichment_std.h"
+#include "qwt3d_appearance.h"
 
 namespace Qwt3D
 {
-  
 //! Base class for all plotting widgets
 /*!
   Plot3D handles all the common features for plotting widgets beyond the low-level extensions of 
@@ -24,107 +27,162 @@ public:
   Plot3D ( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
   virtual ~Plot3D();
 
+  
   QPixmap renderPixmap (int w=0, int h=0, bool useContext=false);	  
-	void updateData(); //!< Recalculate data
-	void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
-	Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
-	Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
-	
-	void setPlotStyle( Qwt3D::PLOTSTYLE val); //!< Set plotting style
-	Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val);
-	Qwt3D::PLOTSTYLE plotStyle() const { return plotstyle_; }//!< Returns plotting style
-  //! Returns current Enrichment object used for plotting styles (if set, zero else)
-  Qwt3D::Enrichment* userStyle() const { return userplotstyle_p; }
-  void setShading( Qwt3D::SHADINGSTYLE val ); //!<Set shading style
-	Qwt3D::SHADINGSTYLE shading() const { return shading_; }//!< Returns shading style
+  void updateData(); //!< Recalculate data
+  void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
+  Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
+  Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
+  void showColorLegend(bool);
+  void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system.
+  void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
+  void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
+  void setTitleColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
+  void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
+  Qwt3D::ParallelEpiped hull() const { return hull_;} //!< Returns rectangular hull   
   //! Set number of isolines. The lines are equidistant between minimal and maximal Z value
   void setIsolines(unsigned steps) {isolinesZ_p.resize(steps); delayisolinecalculation_p = true;}
   //! Set user-defined isoline vector; 
   void setIsolines(const std::vector<double>& val) {isolinesZ_p = val; delayisolinecalculation_p = false;}
   unsigned isolines() const { return isolinesZ_p.size();} //!< Returns number of isolines
 
-  void setSmoothMesh(bool val) {smoothdatamesh_p = val;} //!< Enables/disables smooth data mesh lines. Default is false
-  bool smoothDataMesh() const {return smoothdatamesh_p;} //!< True if mesh antialiasing is on
-	void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
-	Qwt3D::RGBA backgroundRGBAColor() const {return bgcolor_;} //!< Returns the widgets background color
-	void setMeshColor(Qwt3D::RGBA rgba); //!< Sets color for data mesh
-	Qwt3D::RGBA meshColor() const {return meshcolor_;} //!< Returns color for data mesh
-	void setMeshLineWidth(double lw); //!< Sets line width for data mesh
-	double meshLineWidth() const {return meshLineWidth_;} //!< Returns line width for data mesh
-	void setDataColor(Color* col); //!< Sets new data color object
-  const Color* dataColor() const {return datacolor_p;} //!< Returns data color object
+  void setBackgroundColor(Qwt3D::RGBA rgba); //!< Sets widgets background color
+  Qwt3D::RGBA backgroundRGBAColor() const {return bgcolor_;} //!< Returns the widgets background color
 
-  virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const&); //!< Add an Enrichment
-  virtual bool degrade(Qwt3D::Enrichment*); //!< Remove an Enrichment
+  //! Returns number of datasets
+  unsigned datasets() const;
+  //! Returns appearance for dataset
+  inline Appearance& appearance(unsigned dataset);
+  //! Returns appearance for dataset
+  inline const Appearance& appearance(unsigned dataset) const;
+  //! Delete Plotlet with index idx.
+  inline bool removePlotlet(unsigned idx);
 
-	Qwt3D::ParallelEpiped hull() const { return hull_;} //!< Returns rectangular hull   
+  // Convenience/compatibility member for appearance(0) properties
 
-	void showColorLegend(bool);
-	
-	void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system.
-	void setPolygonOffset(double d);
-	double polygonOffset() const {return polygonOffset_;} //!< Returns relative value for polygon offset [0..1]
-	
-	void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
-	void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
-	void setTitleColor(Qwt3D::RGBA col) {title_.setColor(col);} //!< Set caption color
-	void setTitle(const QString& title) {title_.setString(title);} //!< Set caption text (one row only)
+  void setPlotStyle( Qwt3D::PLOTSTYLE val ); //!< Set plotting style
+  Qwt3D::Enrichment* setPlotStyle( Qwt3D::Enrichment const& val );
+  Qwt3D::PLOTSTYLE plotStyle() const { return appearance(0).plotStyle(); }//!< Returns plotting style
+  //! Returns current Enrichment object used for plotting styles (if set, zero else)
+  Qwt3D::Enrichment* userStyle() const { return appearance(0).userStyle(); }
 
-	
-  //! Returns true if valid data available, false else
-  bool hasData() const { return (actualData_p) ? !actualData_p->empty() : false;}
+  void setShading( Qwt3D::SHADINGSTYLE val  ); //!<Set shading style
+  Qwt3D::SHADINGSTYLE shading() const { return appearance(0).shading(); }//!< Returns shading style
+
+  void setSmoothMesh(bool val ) {appearance(0).setSmoothMesh(val);} //!< Enables/disables smooth data mesh lines. Default is false
+  bool smoothDataMesh() const {return appearance(0).smoothDataMesh();} //!< True if mesh antialiasing is on
+  void setMeshColor(Qwt3D::RGBA rgba ); //!< Sets color for data mesh
+  Qwt3D::RGBA meshColor() const {return appearance(0).meshColor();} //!< Returns color for data mesh
+  void setMeshLineWidth(double lw ); //!< Sets line width for data mesh
+  double meshLineWidth() const {return appearance(0).meshLineWidth();} //!< Returns line width for data mesh
+  void setDataColor(const Qwt3D::Color& col ); //!< Sets new data color object
+  const Qwt3D::ValuePtr<Qwt3D::Color>& dataColor() const {return appearance(0).dataColor();} //!< Returns data color object
+  
+  // tweaks
+  void setPolygonOffset(double d );
+  double polygonOffset() const {return appearance(0).polygonOffset();} //!< Returns relative value for polygon offset [0..1]
+  
+  //!< Add an Enrichment
+  virtual Qwt3D::Enrichment* addEnrichment(Qwt3D::Enrichment const& val){return appearance(0).addEnrichment(val);}
+  virtual bool degrade(Qwt3D::Enrichment* val){return appearance(0).degrade(val);} //!< Remove an Enrichment
+  
 
 public slots:
 	virtual bool save(QString const& fileName, QString const& format); //!<  Saves content
 
-protected:
-  typedef std::list<Qwt3D::Enrichment*> EnrichmentList;
-  typedef EnrichmentList::iterator ELIT;
-  
-	void initializeGL();
+protected:   
+  enum OBJECTS
+  {
+    DataObject,
+    LegendObject,
+    NormalObject,
+    DisplayListSize // only to have a vector length ...
+  };
+
+  //! Combines data with their visual appearance
+  /**
+  A Plotlet describes the plot's part related to a single dataset. In this respect, it has
+  no own coordinate system (but a hull) and other plot-wide properties. A single 
+  data- and the associated Appearance object form a Plotlet.
+  */
+  struct Plotlet
+  {
+  public:
+    explicit Plotlet(Data* d = 0, const Appearance& a = Appearance());
+    ValuePtr<Data> data;
+    ValuePtr<Appearance> appearance;
+  };
+
+  void initializeGL();
   void paintGL();
   void resizeGL( int w, int h );
 
   Qwt3D::CoordinateSystem coordinates_p;
+  
   Qwt3D::Color* datacolor_p;
-  Qwt3D::Enrichment* userplotstyle_p;
-  EnrichmentList elist_p;
-
+  
   virtual	void calculateHull();
-  virtual void createOpenGlData() = 0;
-  virtual void drawEnrichment(Qwt3D::Enrichment&){}
-  virtual void drawEnrichments();
+  virtual void updateAppearances();
+  virtual void createOpenGlData();
+  virtual void createOpenGlData(const Plotlet& pl) = 0;
 
 	void createCoordinateSystem();
 	void setHull(Qwt3D::ParallelEpiped const& h) {hull_ = h;}
+  
+  std::vector<Plotlet> plotlets_p;
 
-	enum OBJECTS
-	{
-		DataObject,
-		LegendObject,
-		NormalObject,
-		DisplayListSize // only to have a vector length ...
-	};
 	std::vector<GLuint> displaylists_p;
-  Qwt3D::Data* actualData_p;
+
   std::vector<double> isolinesZ_p;
   bool delayisolinecalculation_p;
 
+  /**
+  Utilized from createDataset members in inherited plot types.
+  Following different strategies (depending on append) in modifying the 
+  Plotlet vector, the function returns assigns ne data of type DATATYPE to
+  a Plotlets data member. It returns a reference to the new content and the 
+  position in the Plotlet vector (or -1 for errors)
+  */
+  template<typename DATATYPE> 
+  int prepareDatasetCreation(DATATYPE& result, bool append)
+  {
+    Plotlet* pl = 0;
+    int ret = -1;
+
+    assert (!plotlets_p.empty());
+
+    if (!append)
+    {
+      plotlets_p.erase(plotlets_p.begin()+1, plotlets_p.end());
+      plotlets_p[0].data = ValuePtr<Data>(new DATATYPE);
+    }
+    else
+    {
+      plotlets_p.push_back(Plotlet(new DATATYPE));
+    }
+    
+    if (ret<0)
+      return ret;
+    
+    pl = &plotlets_p.back();
+    ret = plotlets_p.size()-1;
+
+    assert(pl);
+
+    result = dynamic_cast<DATATYPE&> (*pl->data);
+    return ret;
+  }
+
 
 private:
-	Qwt3D::RGBA meshcolor_;
-	double meshLineWidth_;
-	Qwt3D::RGBA bgcolor_;
-	Qwt3D::PLOTSTYLE plotstyle_;
-	Qwt3D::SHADINGSTYLE shading_;
-	double polygonOffset_;
-	bool displaylegend_;
-  bool smoothdatamesh_p;
+  Appearance appearance_;
 
 	Qwt3D::ParallelEpiped hull_;
 
+  bool displaylegend_;
   Qwt3D::ColorLegend legend_;
 
+  Qwt3D::RGBA bgcolor_;
 	Label title_;
 	Qwt3D::Tuple titlerel_;
 	Qwt3D::ANCHOR titleanchor_;
@@ -132,7 +190,47 @@ private:
 };
 
 
+// Inline functions
+
+/**
+The function returns the Appearance object for dataset 'dataset'.
+For invalid arguments the return value contains the standard appearance 
+(equivalent to dataset==0) is returned
+*/
+Appearance& Plot3D::appearance( unsigned dataset )
+{
+  assert(plotlets_p.empty());
+  if (dataset >= plotlets_p.size())
+    return *plotlets_p[0].appearance;
+  return *plotlets_p[dataset].appearance;
+}
+
+/**
+The function returns the Appearance object for dataset 'dataset'.
+For invalid arguments the return value contains the standard appearance 
+(equivalent to dataset==0) is returned
+*/
+const Appearance& Plot3D::appearance( unsigned dataset ) const
+{
+  assert(plotlets_p.empty());
+  if (dataset >= plotlets_p.size())
+    return *plotlets_p[0].appearance;
+  return *plotlets_p[dataset].appearance;
+}
+
+/**
+ Removes Plotlet at position idx. All data and the Appearance object are destroyed.
+ It is not possible, to remove Plotlet 0. 
+ \return true for success, false else (removePlotlet(0) will always return false.
+*/
+bool Plot3D::removePlotlet(unsigned idx)
+{
+  if (!idx || idx >= plotlets_p.size())
+    return false;
+  plotlets_p.erase(plotlets_p.begin() + idx);
+  return true;
+}
+
 } // ns
  
-
-#endif
+#endif /* include guarded */

@@ -21,7 +21,7 @@ namespace
 		FILE* file = fopen(QWT3DLOCAL8BIT(fname), "r");
 		if (!file) 
 		{
-			fprintf(stderr, "NativeReader::read: cannot open data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
+			fprintf(stderr, "NativeReader::operator(): cannot open data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
 		}
 		return file;
 	}
@@ -185,7 +185,11 @@ bool NativeReader::collectInfo(FILE*& file, QString const& fname, unsigned& xmes
 }
 
 
-bool NativeReader::operator()(Plot3D* plot, QString const& fname)
+/**
+\param append For append==true the new dataset will be appended. If false (default), all data  will
+be replaced by the new data. This includes destruction of possible additional datasets/Plotlets.
+*/
+bool NativeReader::operator()(Plot3D* plot, QString const& fname, bool append /*= false*/)
 {
 	
 	FILE* file;
@@ -204,7 +208,7 @@ bool NativeReader::operator()(Plot3D* plot, QString const& fname)
 		{
       if (fscanf(file, "%lf", &data[i][j]) != 1) 
 			{
-				fprintf(stderr, "NativeReader::read: error in data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
+				fprintf(stderr, "NativeReader::operator(): error in data file \"%s\"\n", QWT3DLOCAL8BIT(fname));
 				return false;
       }
 
@@ -218,7 +222,7 @@ bool NativeReader::operator()(Plot3D* plot, QString const& fname)
   /* close the file */
   fclose(file);
 
-	((GridPlot*)plot)->appendDataSet(data, xmesh, ymesh, minx, maxx, miny, maxy);
+	((GridPlot*)plot)->createDataset(data, xmesh, ymesh, minx, maxx, miny, maxy, append);
 	deleteData(data,xmesh);
 
 	return true;

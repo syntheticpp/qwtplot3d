@@ -1,6 +1,6 @@
-#ifndef __DRAWABLE_H__
-#define __DRAWABLE_H__
-
+#pragma once
+#ifndef qwt3d_drawable_h__2009_10_11_14_17_08_begin_guarded_code
+#define qwt3d_drawable_h__2009_10_11_14_17_08_begin_guarded_code
 
 #include <list>
 #include "qwt3d_global.h"
@@ -63,4 +63,4 @@ private:
 
 } // ns
 
-#endif
+#endif /* include guard */

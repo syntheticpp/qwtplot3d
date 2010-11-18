@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_portability_h__2005_07_02_11_55_begin_guarded_code
 #define qwt3d_portability_h__2005_07_02_11_55_begin_guarded_code
 
@@ -69,4 +70,4 @@ namespace Qwt3D
   };
 } // ns
 
-#endif
+#endif /* include guarded */

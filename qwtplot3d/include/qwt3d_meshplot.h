@@ -1,3 +1,4 @@
+#pragma once
 #ifndef qwt3d_meshplot_h__2005_7_10_begin_guarded_code
 #define qwt3d_meshplot_h__2005_7_10_begin_guarded_code
 
@@ -15,16 +16,16 @@ class QWT3D_EXPORT MeshPlot : public SurfacePlot
 {
 public:
   MeshPlot( QWidget * parent = 0, const QGLWidget * shareWidget = 0 );
-  virtual ~MeshPlot();
+  virtual ~MeshPlot() {}
 
-  bool appendDataSet(Qwt3D::TripleField const& data, Qwt3D::CellField const& poly);
-  int facets() const;
+  int createDataset(Qwt3D::TripleField const& data, Qwt3D::CellField const& poly, bool append = false);
+  int facets(unsigned idx = 0) const;
   //virtual int cells(unsigned dimension) const
 
 protected:
-  void createNormals();
-  void drawEnrichment(Qwt3D::Enrichment& p);
-  void createOpenGlData();
+  void createNormals(unsigned idx);
+  void drawEnrichment(const Plotlet& pl, Enrichment& p);
+  void createOpenGlData(const Plotlet& pl);
 
 private:
   class MeshData : public Data
@@ -41,13 +42,12 @@ private:
 	  TripleField    nodes; //!< point cloud
 	  TripleField    normals; //!< mesh normals
   };
-  MeshData* data_;
-
+ 
   FLOORSTYLE floorstyle_;
   
-  void data2Floor();
-  void isolines2Floor();
-  void setColorFromVertex(int node, bool skip = false);
+  void data2Floor(const Plotlet& pl);
+  void isolines2Floor(const Plotlet& pl);
+  void setColorFromVertex(const Plotlet& pl, int node, bool skip = false);
 };
 
 } // ns

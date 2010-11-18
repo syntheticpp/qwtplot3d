@@ -76,26 +76,34 @@ void SurfacePlot::updateNormals()
   makeCurrent();
   SaveGlDeleteLists(displaylists_p[NormalObject], 1); 
 
-  if (plotStyle() == NOPLOT && !normals() || !actualData_p)
+  if (plotStyle() == NOPLOT && !normals())
     return;
 
   displaylists_p[NormalObject] = glGenLists(1);
   glNewList(displaylists_p[NormalObject], GL_COMPILE);
-  createNormals();
+  for (unsigned k=0; k!=plotlets_p.size(); ++k)
+  {
+    const Appearance& app = *plotlets_p[k].appearance;
+    createNormals(app);
+  }
   glEndList();
 }
 
 void SurfacePlot::createFloorOpenGlData()
 {
-	switch (floorStyle())
-	{
-	case FLOORDATA:
-		this->data2Floor();
-		break;
-	case FLOORISO:
-		this->isolines2Floor();
-		break;
-	default:
-		break;
-	}
+  for (unsigned k=0; k!=plotlets_p.size(); ++k)
+  {
+    const Appearance& app = *plotlets_p[k].appearance;
+	  switch (floorStyle())
+	  {
+	  case FLOORDATA:
+		  this->data2Floor(app);
+		  break;
+	  case FLOORISO:
+		  this->isolines2Floor(app);
+		  break;
+	  default:
+		  break;
+	  }
+  }
 }

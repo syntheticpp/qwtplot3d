@@ -36,19 +36,15 @@ bool GraphPlot::GraphData::empty() const
 GraphPlot::GraphPlot( QWidget * parent, const QGLWidget * shareWidget)
 : Plot3D( parent, shareWidget) 
 {
-  data_ = new GraphData();
-  actualData_p = data_;
+  plotlets_p[0].data = ValuePtr<Data>(new GraphData);
 }
 
-GraphPlot::~GraphPlot()
+void GraphPlot::createOpenGlData(const Plotlet& pl)
 {
-  delete data_;
-}
-
-void GraphPlot::createOpenGlData()
-{
-  if (plotStyle() == NOPLOT)
+  if (pl.appearance->plotStyle() == NOPLOT)
     return;
+
+  const GraphData& data = dynamic_cast<const GraphData&>(*pl.data);
 
   //todo
   //if (plotStyle() == Qwt3D::USER)
@@ -105,10 +101,10 @@ void GraphPlot::createOpenGlData()
   glEnable(GL_LINE_SMOOTH);
   Stick s((hull().maxVertex-hull().minVertex).length() / 150, 16);
   s.setColor(RGBA(0.5,0.5,0.5)) ;
-  for (unsigned i=0; i!=data_->edges.size(); ++i)
+  for (unsigned i=0; i!=data.edges.size(); ++i)
   {
-    Triple& beg = data_->nodes[data_->edges[i].first];
-    Triple& end = data_->nodes[data_->edges[i].second];
+    const Triple& beg = data.nodes[data.edges[i].first];
+    const Triple& end = data.nodes[data.edges[i].second];
     s.draw(beg,end);
   }
 
@@ -120,9 +116,9 @@ void GraphPlot::createOpenGlData()
   //  b.setColor(RGBA(0,0.5,0));
   //ff = !ff;
 
-  for (unsigned j=0; j!=data_->nodes.size(); ++j)
+  for (unsigned j=0; j!=data.nodes.size(); ++j)
   {
-    b.draw(data_->nodes[j]);
+    b.draw(data.nodes[j]);
   }
 
   //	}
@@ -131,18 +127,24 @@ void GraphPlot::createOpenGlData()
 /*! 
 Convert user defined graph data to internal structure.
 See also Qwt3D::TripleField and Qwt3D::EdgeField
-*/
-bool GraphPlot::appendDataSet(TripleField const& nodes, EdgeField const& edges)
-{	
-  delete data_;
-  data_ = new GraphData;
-  actualData_p = data_;
 
-  data_->nodes = nodes;
-  data_->edges = edges;
-  data_->setHull(Qwt3D::hull(nodes));
+\param append For append==true the new dataset will be appended. If false (default), all data  will
+be replaced by the new data. This includes destruction of possible additional datasets/Plotlets.
+\return Index of new entry in dataset array (append == true), 0 (append == false) or -1 for errors
+*/
+int GraphPlot::createDataset(TripleField const& nodes, EdgeField const& edges, bool append /*= false*/)
+{	
+  GraphData data;
+
+  int ret = prepareDatasetCreation(data, append);
+  if (ret < 0)
+    return -1;
+
+  data.nodes = nodes;
+  data.edges = edges;
+  data.setHull(Qwt3D::hull(nodes));
   updateData();
   createCoordinateSystem();
 
-  return true;
+  return ret;
 }	

@@ -51,12 +51,19 @@ void StandardColor::setAlpha(double a)
 
 RGBA StandardColor::rgba(double, double, double z) const
 {
-	int index = (int)((colors_.size()-1) * (z - zmin_) / zmax_);
-	if (index < 0)
-		index = 0;
-	if ((unsigned int)index > colors_.size() - 1)
-		index = (int)(colors_.size() - 1);
-	return colors_[index];
+  if (colors_.empty())
+    return RGBA(0.0,0.0,0.0);
+
+  unsigned index = 0;
+  double fac = (z - zmin_) / zmax_;
+  if (fac<0)
+    return RGBA(0.0,0.0,0.0);
+
+	index = unsigned((colors_.size()-1) * fac);
+	if (index > colors_.size() - 1)
+		index = colors_.size() - 1;
+	
+  return colors_[index];
 }
 
 void StandardColor::update(const Qwt3D::Plot3D &val)

@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "qwt3d_gridplot.h"
 #include "qwt3d_function.h"
 
@@ -42,7 +43,7 @@ void Function::setMaxZ(double val)
 	range_p.maxVertex.z = val;
 }
 
-bool Function::create()
+bool Function::create(bool append /*= false*/)
 {
 	if ((umesh_p<=2) || (vmesh_p<=2) || !plotwidget_p)
 		return false;
@@ -81,7 +82,7 @@ bool Function::create()
 	}
 	else
 	{
-		((GridPlot*)plotwidget_p)->appendDataSet(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p);
+		((GridPlot*)plotwidget_p)->createDataset(data, umesh_p, vmesh_p, minu_p, maxu_p, minv_p, maxv_p, append);
 	}
 
 	for ( i = 0; i < umesh_p; i++) 

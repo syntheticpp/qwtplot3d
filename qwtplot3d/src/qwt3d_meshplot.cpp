@@ -29,60 +29,58 @@ Initializes with dataNormals()==false, NOFLOOR, resolution() == 1
 MeshPlot::MeshPlot( QWidget * parent, const QGLWidget * shareWidget)
     : SurfacePlot( parent, shareWidget) 
 {
-  data_ = new MeshData();
-
-  actualData_p = data_;
-}
-
-MeshPlot::~MeshPlot()
-{
-  delete data_;
+  plotlets_p[0].data = ValuePtr<Data>(new MeshData);
 }
 
 // ci = cell index
 // cv = vertex index in cell ci
-void MeshPlot::setColorFromVertex(int node, bool skip)
+void MeshPlot::setColorFromVertex(const Plotlet& pl, int node, bool skip)
 {
   if (skip)
     return;
 
-  RGBA col = (*datacolor_p)(
-    data_->nodes[node].x, data_->nodes[node].y, data_->nodes[node].z);
+  const MeshData& data = dynamic_cast<const MeshData&>(*pl.data); 
+
+  RGBA col = pl.appearance->dataColor()->rgba(
+    data.nodes[node].x, data.nodes[node].y, data.nodes[node].z);
 
   glColor4d(col.r, col.g, col.b, col.a);
 }
 
 
-void MeshPlot::data2Floor()
+void MeshPlot::data2Floor(const Plotlet& pl)
 {	
+  const MeshData& data = dynamic_cast<const MeshData&>(*pl.data); 
+
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  double zshift = data_->hull().minVertex.z;
+  double zshift = data.hull().minVertex.z;
   int idx;
-
-  for (unsigned i = 0; i!=data_->cells.size(); ++i)
+  for (unsigned i = 0; i!=data.cells.size(); ++i)
   {
     glBegin(GL_POLYGON);
-    for (unsigned j=0; j!=data_->cells[i].size(); ++j)
+    for (unsigned j=0; j!=data.cells[i].size(); ++j)
     {
-      idx = data_->cells[i][j];
-      setColorFromVertex(idx);
-      glVertex3d( data_->nodes[idx].x, data_->nodes[idx].y, zshift );
+      idx = data.cells[i][j];
+      setColorFromVertex(pl, idx);
+      glVertex3d( data.nodes[idx].x, data.nodes[idx].y, zshift );
     }
     glEnd();
   }
 }
 
-void MeshPlot::isolines2Floor()
+void MeshPlot::isolines2Floor(const Plotlet& pl)
 {
-  if (isolines() <= 0 || actualData_p->empty())
+  if (isolines() <= 0)
     return;
 
-  double zshift = actualData_p->hull().minVertex.z;
+  const MeshData& data = dynamic_cast<const MeshData&>(*pl.data); 
+
+  double zshift = data.hull().minVertex.z;
   if (delayisolinecalculation_p)
   {
-    double step = (actualData_p->hull().maxVertex.z - actualData_p->hull().minVertex.z) / isolines();		
+    double step = (data.hull().maxVertex.z - data.hull().minVertex.z) / isolines();		
     for (unsigned k = 0; k != isolines(); ++k) 
     {
       isolinesZ_p[k] = zshift + k * step;		
@@ -99,16 +97,16 @@ void MeshPlot::isolines2Floor()
   for (unsigned k = 0; k != isolines(); ++k) 
   {
     double val = isolinesZ_p[k];	
-    if (val > actualData_p->hull().maxVertex.z || val < actualData_p->hull().minVertex.z)
+    if (val > data.hull().maxVertex.z || val < data.hull().minVertex.z)
       continue;
 
-    for (unsigned i=0; i!=data_->cells.size(); ++i)
+    for (unsigned i=0; i!=data.cells.size(); ++i)
     {
       nodes.clear();
-      unsigned cellnodes = data_->cells[i].size();
+      unsigned cellnodes = data.cells[i].size();
       for (unsigned j=0; j!=cellnodes; ++j)
       {
-        nodes.push_back(data_->nodes[data_->cells[i][j]]);
+        nodes.push_back(data.nodes[data.cells[i][j]]);
       }
 
       double diff = 0;
@@ -131,40 +129,42 @@ void MeshPlot::isolines2Floor()
           intersection.push_back(Triple(nodes[m].x + lambda * (nodes[mm].x-nodes[m].x), nodes[m].y + lambda * (nodes[mm].y-nodes[m].y), zshift));
         }
       }
-      drawIntersection(intersection, (*datacolor_p)(nodes[0].x,nodes[0].y,nodes[0].z));
+      drawIntersection(intersection, datacolor_p->rgba(nodes[0].x,nodes[0].y,nodes[0].z));
       intersection.clear();
     }
   }
 }
 
-void MeshPlot::createNormals()
+void MeshPlot::createNormals(unsigned idx)
 {
-  if (!normals() || actualData_p->empty())
+  if (!normals())
     return;
 
-  if (data_->nodes.size() != data_->normals.size())
+  const MeshData& data = dynamic_cast<const MeshData&>(*plotlets_p[idx].data); 
+
+  if (data.nodes.size() != data.normals.size())
     return;
   Arrow arrow;
   arrow.setQuality(normalQuality());
 
   Triple basev, topv, norm;	
 
-  double diag = (actualData_p->hull().maxVertex-actualData_p->hull().minVertex).length() * normalLength();
+  double diag = (data.hull().maxVertex-data.hull().minVertex).length() * normalLength();
 
   RGBA col;
   arrow.assign(*this);
   arrow.drawBegin();
-  for (unsigned i = 0; i != data_->normals.size(); ++i) 
+  for (unsigned i = 0; i != data.normals.size(); ++i) 
   {
-    basev = data_->nodes[i];
-    topv = basev + data_->normals[i];
+    basev = data.nodes[i];
+    topv = basev + data.normals[i];
 
     norm = topv-basev;
     norm.normalize();
     norm	*= diag;
 
     arrow.setTop(basev+norm);
-    arrow.setColor((*datacolor_p)(basev.x,basev.y,basev.z));
+    arrow.setColor(datacolor_p->rgba(basev.x,basev.y,basev.z));
     arrow.draw(basev);
   }
   arrow.drawEnd();
@@ -173,16 +173,22 @@ void MeshPlot::createNormals()
 /*! 
 Convert user (non-rectangular) mesh based data to internal structure.
 See also Qwt3D::TripleField and Qwt3D::CellField
-*/
-bool MeshPlot::appendDataSet(TripleField const& data, CellField const& poly)
-{	
-  delete actualData_p;
-  data_ = new MeshData;
-  actualData_p = data_;
 
-  data_->nodes = data;
-  data_->cells = poly;
-  data_->normals = TripleField(data_->nodes.size());
+\param append For append==true the new dataset will be appended. If false (default), all data  will
+be replaced by the new data. This includes destruction of possible additional datasets/Plotlets.
+\return Index of new entry in dataset array (append == true), 0 (append == false) or -1 for errors
+*/
+int MeshPlot::createDataset(TripleField const& data, CellField const& poly, bool append /*= false*/)
+{	
+  MeshData plotdata;
+
+  int ret = prepareDatasetCreation(plotdata, append);
+  if (ret < 0)
+    return -1;
+
+  plotdata.nodes = data;
+  plotdata.cells = poly;
+  plotdata.normals = TripleField(plotdata.nodes.size());
 
   unsigned i;
 
@@ -198,91 +204,96 @@ bool MeshPlot::appendDataSet(TripleField const& data, CellField const& poly)
       {
         unsigned jj = (j+1) % poly[i].size(); 
         unsigned pjj = (j) ? j-1 : poly[i].size()-1;
-        u = data_->nodes[poly[i][jj]]-data_->nodes[poly[i][j]];		
-        v = data_->nodes[poly[i][pjj]]-data_->nodes[poly[i][j]];
+        u = plotdata.nodes[poly[i][jj]]-plotdata.nodes[poly[i][j]];		
+        v = plotdata.nodes[poly[i][pjj]]-plotdata.nodes[poly[i][j]];
         n = normalizedcross(u,v);
-        data_->normals[poly[i][j]] += n;
+        plotdata.normals[poly[i][j]] += n;
       }
     }
   }
-  for ( i = 0; i != data_->normals.size(); ++i) 
+  for ( i = 0; i != plotdata.normals.size(); ++i) 
   {
-    data_->normals[i].normalize();
+    plotdata.normals[i].normalize();
   }  
 
-  data_->setHull(Qwt3D::hull(data));
+  plotdata.setHull(Qwt3D::hull(data));
 
   updateData();
   updateNormals();
   createCoordinateSystem();
 
-  return true;
+  return ret;
 }	
 
-void MeshPlot::createOpenGlData()
+void MeshPlot::createOpenGlData(const Plotlet& pl)
 {
-  if (!actualData_p)
-    return;
-    
   createFloorOpenGlData();
 
-  if (plotStyle() == NOPLOT)
+  const MeshData& data = dynamic_cast<const MeshData&>(*pl.data);
+  const Appearance& app = *pl.appearance;
+  
+  if (app.plotStyle() == NOPLOT)
     return;
+   
+  for (Appearance::ELCIT it = app.elist.begin(); it!=app.elist.end(); ++it)
+  {
+    drawEnrichment(pl, **it);
+  }
 
-  if (plotStyle() == Qwt3D::POINTS)
+  if (app.plotStyle() == Qwt3D::POINTS)
   {
     Dot dot;
-    drawEnrichment(dot);
+    drawEnrichment(pl, dot);
     return;
   }
-  else if (plotStyle() == Qwt3D::USER)
+  else if (app.plotStyle() == Qwt3D::USER)
   {
-    if (userplotstyle_p)
-      drawEnrichment(*userplotstyle_p);
+    if (app.userStyle())
+      drawEnrichment(pl, *app.userStyle());
     return;
   }
 
-  setDeviceLineWidth(meshLineWidth());
+  setDeviceLineWidth(app.meshLineWidth());
   GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
-  setDevicePolygonOffset(polygonOffset(),1.0);
+  setDevicePolygonOffset(app.polygonOffset(),1.0);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   int idx = 0;
-  if (plotStyle() != WIREFRAME)
+  if (app.plotStyle() != WIREFRAME)
   {
     glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 
-    bool hl = (plotStyle() == HIDDENLINE);
+    bool hl = (app.plotStyle() == HIDDENLINE);
     if (hl)
     {
       RGBA col = backgroundRGBAColor();
       glColor4d(col.r, col.g, col.b, col.a);
     }
 
-    for (unsigned i=0; i!=data_->cells.size(); ++i)
+    for (unsigned i=0; i!=data.cells.size(); ++i)
     {
       glBegin(GL_POLYGON);
-      for (unsigned j=0; j!=data_->cells[i].size(); ++j)
+      for (unsigned j=0; j!=data.cells[i].size(); ++j)
       {
-        idx = data_->cells[i][j];
-        setColorFromVertex(idx, hl);
-        glVertex3d( data_->nodes[idx].x, data_->nodes[idx].y, data_->nodes[idx].z );
-        glNormal3d( data_->normals[idx].x, data_->normals[idx].y, data_->normals[idx].z );
+        idx = data.cells[i][j];
+        setColorFromVertex(pl, idx, hl);
+        glVertex3d( data.nodes[idx].x, data.nodes[idx].y, data.nodes[idx].z );
+        glNormal3d( data.normals[idx].x, data.normals[idx].y, data.normals[idx].z );
       }
       glEnd();
     }
   }
 
-  if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
+  if (app.plotStyle() == FILLEDMESH || app.plotStyle() == WIREFRAME || app.plotStyle() == HIDDENLINE)
   {
-    glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
+    glColor4d(app.meshColor().r, app.meshColor().g, app.meshColor().b, app.meshColor().a);
     {
-      for (unsigned i=0; i!=data_->cells.size(); ++i)
+      for (unsigned i=0; i!=data.cells.size(); ++i)
       {
         glBegin(GL_LINE_LOOP);
-        for (unsigned j=0; j!=data_->cells[i].size(); ++j)
+        for (unsigned j=0; j!=data.cells[i].size(); ++j)
         {
-          idx = data_->cells[i][j];
-          glVertex3d( data_->nodes[idx].x, data_->nodes[idx].y, data_->nodes[idx].z );
+          idx = data.cells[i][j];
+          glVertex3d( data.nodes[idx].x, data.nodes[idx].y, data.nodes[idx].z );
         }
         glEnd();
       }
@@ -290,11 +301,8 @@ void MeshPlot::createOpenGlData()
   }
 }
 
-void MeshPlot::drawEnrichment(Enrichment& p)
+void MeshPlot::drawEnrichment(const Plotlet& pl, Enrichment& p)
 {
-  if (!actualData_p)
-    return;  
-
   switch(p.type()) {
   case Enrichment::USERENRICHMENT:
     {
@@ -310,8 +318,9 @@ void MeshPlot::drawEnrichment(Enrichment& p)
       p.assign(*this);
       VertexEnrichment* ve = (VertexEnrichment*)&p; 
       ve->drawBegin();
-      for (unsigned i = 0; i != data_->normals.size(); ++i) 
-        ve->draw(data_->nodes[i]);
+      const MeshData& data = dynamic_cast<const MeshData&>(*pl.data);
+      for (unsigned i = 0; i != data.normals.size(); ++i) 
+        ve->draw(data.nodes[i]);
       ve->drawEnd(); 
     }
     break;
@@ -325,10 +334,8 @@ void MeshPlot::drawEnrichment(Enrichment& p)
 /**
 \return Number of cells
 */
-int MeshPlot::facets() const
+int MeshPlot::facets(unsigned idx /*=0*/) const
 {
-  if (!hasData())
-    return 0;
-
-  return int(data_->cells.size());
+  const MeshData& data = dynamic_cast<const MeshData&>(*plotlets_p[idx].data);
+  return int(data.cells.size());
 }

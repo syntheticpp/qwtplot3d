@@ -53,7 +53,7 @@ void CrossHair::drawEnd()
 
 void CrossHair::draw(Qwt3D::Triple const& pos)
 {
-	RGBA rgba = (*plot_p->dataColor())(pos);
+	RGBA rgba = plot_p->dataColor()->rgba(pos);
 	glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
 
   double diag = (plot_p->hull().maxVertex-plot_p->hull().minVertex).length() * radius_;
@@ -151,7 +151,7 @@ void Dot::drawEnd()
 
 void Dot::draw(Qwt3D::Triple const& pos)
 {
-	const RGBA& rgba = (*plot_p->dataColor())(pos);
+	RGBA rgba = plot_p->dataColor()->rgba(pos);
   glColor4d(rgba.r,rgba.g,rgba.b,rgba.a);
   glVertex3d( pos.x, pos.y, pos.z);   
 }

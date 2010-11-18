@@ -1,9 +1,10 @@
-#if defined(_MSC_VER) /* MSVC Compiler */
-#pragma warning ( disable : 4786 )
-#endif
+#pragma once
+#ifndef qwt3d_types_h__2009_10_11_14_25_46_begin_guarded_code
+#define qwt3d_types_h__2009_10_11_14_25_46_begin_guarded_code
 
-#ifndef __DATATYPES_H__
-#define __DATATYPES_H__
+#if defined(_MSC_VER) /* MSVC Compiler */
+  #pragma warning ( disable : 4786 )
+#endif
 
 #include <string>
 
@@ -280,6 +281,21 @@ struct QWT3D_EXPORT ParallelEpiped
 	Triple maxVertex;
 };
 
+inline ParallelEpiped sum(const ParallelEpiped& a, const ParallelEpiped& b)
+{
+  Triple mi = a.minVertex - b.minVertex;
+  mi.x = (mi.x<0) ? a.minVertex.x : b.minVertex.x; 
+  mi.y = (mi.y<0) ? a.minVertex.y : b.minVertex.y; 
+  mi.z = (mi.z<0) ? a.minVertex.z : b.minVertex.z; 
+  
+  Triple ma = a.maxVertex - b.maxVertex;
+  mi.x = (ma.x>0) ? a.maxVertex.x : b.maxVertex.x; 
+  mi.y = (ma.y>0) ? a.maxVertex.y : b.maxVertex.y; 
+  mi.z = (ma.z>0) ? a.maxVertex.z : b.maxVertex.z; 
+
+  return ParallelEpiped(mi, ma);
+}
+
 //! Free vector
 /**
 	FreeVectors represent objects like normal vectors and other vector fields inside R^3 
@@ -377,4 +393,4 @@ void convexhull2d( std::vector<unsigned>& idx, const std::vector<Qwt3D::Tuple>& 
 
 } // ns
 
-#endif
+#endif /* include guard */

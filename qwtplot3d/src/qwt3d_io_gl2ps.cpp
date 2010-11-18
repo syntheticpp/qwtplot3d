@@ -114,7 +114,7 @@ bool VectorWriter::setFormat(QString const& format)
 }
 
 //! Performs actual output
-bool VectorWriter::operator()(Plot3D* plot, QString const& fname)
+bool VectorWriter::operator()(Plot3D* plot, QString const& fname, bool /* = unused */)
 {
   if (formaterror_)
     return false;

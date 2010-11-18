@@ -241,7 +241,7 @@ IO::Functor* IO::outputHandler(QString const& format)
   return it->iofunc;
 }
 
-bool PixmapWriter::operator()(Plot3D* plot, QString const& fname)
+bool PixmapWriter::operator()(Plot3D* plot, QString const& fname, bool /*= unused */)
 {
 //  QImage im = plot->grabFrameBuffer(true);
   

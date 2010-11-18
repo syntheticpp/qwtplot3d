@@ -18,7 +18,8 @@ public:
   explicit StandardColor(unsigned size = 100);
   Color* clone() const {return new StandardColor(*this);}
 
-  Qwt3D::RGBA rgba(double x, double y, double z) const; //!< Receives z-dependend color from ColorVector
+  //! Returns z-dependent color from ColorVector (black == RGBA(0,0,0), for values out of range)
+  Qwt3D::RGBA rgba(double x, double y, double z) const; 
 	void setColorVector(Qwt3D::ColorVector const& cv);
 	void reset(unsigned size=100); //!< Resets the standard colors; 
 	void setAlpha(double a); //!< Sets unitary alpha value for all colors
