@@ -9,8 +9,14 @@ DEPENDPATH	= $$INCLUDEPATH
 DESTDIR = ../bin
 
 win32{
-contains (CONFIG, debug)  {
-	  QMAKE_LFLAGS += /NODEFAULTLIB:msvcrt
+  win32-msvc2008{
+    !build_pass {
+       message(Ignore warnings regarding parsing problems for /MP switch)
+    }
+    QMAKE_CXXFLAGS += /MP
+  }
+  
+  contains (CONFIG, debug)  {
 	  DESTDIR = ../bin/debug
 	}
 	!contains (CONFIG, release)  {
