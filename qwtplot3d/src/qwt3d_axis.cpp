@@ -173,7 +173,7 @@ void Axis::drawLabel()
 
 void Axis::drawBase()
 {
-	setDeviceLineWidth( lineWidth_ );
+	setLineWidth( lineWidth_ );
 	glBegin( GL_LINES );
 		glVertex3d( beg_.x, beg_.y, beg_.z); 
 		glVertex3d( end_.x, end_.y, end_.z);
@@ -244,7 +244,7 @@ void Axis::drawTics()
   Triple nadir;
 	
   markerLabel_.resize(scale_->majors_p.size());
-	setDeviceLineWidth(majLineWidth_);
+	setLineWidth(majLineWidth_);
 	for (i = 0; i != scale_->majors_p.size(); ++i) 
 	{
 		double t = (scale_->majors_p[i] - start_) / (stop_-start_);
@@ -252,7 +252,7 @@ void Axis::drawTics()
     majorpos_.push_back(drawTic(nadir, lmaj_));
 		drawTicLabel(nadir + 1.2 * lmaj_ * orientation_, i);
   }
-	setDeviceLineWidth(minLineWidth_);
+	setLineWidth(minLineWidth_);
 	for (i = 0; i != scale_->minors_p.size(); ++i) 
 	{
 		double t = (scale_->minors_p[i] - start_) / (stop_-start_);

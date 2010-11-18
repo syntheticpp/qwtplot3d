@@ -253,9 +253,9 @@ void MeshPlot::createOpenGlData(const Plotlet& pl)
     return;
   }
 
-  setDeviceLineWidth(app.meshLineWidth());
+  setLineWidth(app.meshLineWidth());
   GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
-  setDevicePolygonOffset(app.polygonOffset(),1.0);
+  glPolygonOffset(app.polygonOffset(),1.0);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   int idx = 0;
   if (app.plotStyle() != WIREFRAME)

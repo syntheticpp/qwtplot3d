@@ -119,8 +119,20 @@ inline bool World2ViewPort(double& winx, double& winy, double& winz, double objx
 	return (res == GL_FALSE) ? false : true;
 }
 
+inline void setLineWidth(GLfloat val)
+{
+  GLfloat lw[2];
+  glGetFloatv(GL_LINE_WIDTH_RANGE, lw);
 
+  if (val < lw[0])
+    val = lw[0];
+  else if (val > lw[1])
+    val = lw[1];
+
+  glLineWidth(val);
+}
 #endif // QWT3D_NOT_FOR_DOXYGEN
+
 
 } // ns
 

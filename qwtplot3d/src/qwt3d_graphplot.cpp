@@ -56,7 +56,7 @@ void GraphPlot::createOpenGlData(const Plotlet& pl)
 
   // 	setDeviceLineWidth(meshLineWidth());
   //   GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
-  // 	setDevicePolygonOffset(polygonOffset(),1.0);
+  // 	glPolygonOffset(polygonOffset(),1.0);
   // 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   //	int idx = 0;
   // 	if (plotStyle() != WIREFRAME)

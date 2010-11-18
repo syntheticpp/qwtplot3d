@@ -32,7 +32,7 @@ void CrossHair::configure(double rad, double linewidth, bool smooth, bool boxed)
 
 void CrossHair::drawBegin()
 {
-  setDeviceLineWidth( linewidth_ );
+  setLineWidth( linewidth_ );
   oldstate_ = glIsEnabled(GL_LINE_SMOOTH);
   if (smooth_)
     glEnable(GL_LINE_SMOOTH);
@@ -128,7 +128,16 @@ void Dot::configure(double pointsize, bool smooth)
 
 void Dot::drawBegin()
 {
-  setDevicePointSize( pointsize_ );
+  GLfloat lw[2];
+  glGetFloatv(GL_POINT_SIZE_RANGE, lw);
+
+  if (pointsize_ < lw[0])
+    pointsize_ = lw[0];
+  else if (pointsize_ > lw[1])
+    pointsize_ = lw[1];
+
+  glPointSize(pointsize_);
+
   oldstate_ = glIsEnabled(GL_POINT_SMOOTH);
   if (smooth_)
     glEnable(GL_POINT_SMOOTH);

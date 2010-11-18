@@ -31,7 +31,7 @@ void Drawable::restoreGLState()
 	Enable(GL_LINE_SMOOTH, ls);
 	Enable(GL_POLYGON_SMOOTH, pols);
 	
-	setDeviceLineWidth(lw);
+	setLineWidth(lw);
 	glBlendFunc(blsrc, bldst);
 	glColor4dv(col);
 
@@ -41,7 +41,7 @@ void Drawable::restoreGLState()
 	glPolygonMode(polmode[0], polmode[1]);
 	glMatrixMode(matrixmode);
 	glPolygonOffset(poloffs[0], poloffs[1]);
-	setDevicePolygonOffset(poloffs[0], poloffs[1]);
+	glPolygonOffset(poloffs[0], poloffs[1]);
 
 	Enable(GL_POLYGON_OFFSET_FILL, poloffsfill);
 }

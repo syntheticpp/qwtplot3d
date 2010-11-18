@@ -2,7 +2,6 @@
 #include <QImageWriter>
 
 #include "qwt3d_plot3d.h"
-#include "qwt3d_io_gl2ps.h"
 #include "qwt3d_io_reader.h"
 
 using namespace Qwt3D;
@@ -271,30 +270,6 @@ void IO::setupHandler()
     defineOutputHandler(*it, qtw);
     ++it;
   }
-  VectorWriter vecfunc; 
-  vecfunc.setCompressed(false);
-  vecfunc.setFormat("EPS");
-  defineOutputHandler("EPS", vecfunc);
-  vecfunc.setFormat("PS");
-  defineOutputHandler("PS", vecfunc);
-  
-#ifdef GL2PS_HAVE_ZLIB
-  vecfunc.setCompressed(true);
-  vecfunc.setFormat("EPS_GZ");
-  defineOutputHandler("EPS_GZ", vecfunc);
-  vecfunc.setFormat("PS_GZ");
-  defineOutputHandler("PS_GZ", vecfunc);
-#endif
-  vecfunc.setFormat("PDF");
-  defineOutputHandler("PDF", vecfunc);
-  vecfunc.setFormat("SVG");
-  defineOutputHandler("SVG", vecfunc);
-  vecfunc.setFormat("PGF");
-  defineOutputHandler("PGF", vecfunc);
-#ifdef GL2PS_HAVE_ZLIB
-  vecfunc.setFormat("SVG_GZ");
-  defineOutputHandler("SVG_GZ", vecfunc);
-#endif
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());
@@ -302,7 +277,7 @@ void IO::setupHandler()
 
 /*! 
   Saves content in one of the registered output formats. To modify the 
-  behaviour for more complex output handling use IO::outputHandler.
+  behavior for more complex output handling use IO::outputHandler.
 */
 bool Plot3D::save(QString const& fileName, QString const& format)
 {

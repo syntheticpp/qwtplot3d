@@ -586,10 +586,10 @@ void GridPlot::createOpenGlData(const Plotlet& pl)
     return;
   }
 
-  setDeviceLineWidth(app.meshLineWidth());
+  setLineWidth(app.meshLineWidth());
 
   GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
-  setDevicePolygonOffset(app.polygonOffset(),1.0);
+  glPolygonOffset(app.polygonOffset(),1.0);
 
   GLStateBewarer sb2(GL_LINE_SMOOTH, app.smoothDataMesh());
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

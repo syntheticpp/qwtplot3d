@@ -3,8 +3,6 @@
 
 using namespace Qwt3D;
 
-bool Label::devicefonts_ = false;
-
 Label::Label()
 {
 	init();
@@ -33,11 +31,6 @@ void Label::init()
 	anchor_ = BottomLeft;
 	gap_ = 0;
 	flagforupdate_ = true;
-}
-
-void Label::useDeviceFonts(bool val)
-{
-	devicefonts_ = val;
 }
 
 void Label::setFont(const QString & family, int pointSize, int weight, bool italic)
@@ -218,16 +211,7 @@ void Label::draw()
 	int w = tex_.width();
 	int h = tex_.height();
  
-	if (devicefonts_)
-	{		
-		drawDeviceText(QWT3DLOCAL8BIT(text_), "Courier", font_.pointSize(), pos_, color, anchor_, gap_);
-	}
-	else
-	{
-		drawDevicePixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
-//    glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());	
-	}
-
+	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, tex_.bits());
 
 	glAlphaFunc(func,v);
 	Enable(GL_ALPHA_TEST, b);

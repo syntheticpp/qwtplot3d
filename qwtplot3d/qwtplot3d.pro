@@ -26,8 +26,6 @@ win32 {
     CONFIG     += dll exceptions
     dll:DEFINES    += QT_DLL QWT3D_DLL QWT3D_MAKEDLL
     QMAKE_CXXFLAGS += $$QMAKE_CFLAGS_STL
-    # Comment the next line, if you have zlib on your windows system
-    # CONFIG -= zlib
     win32-msvc2008{
       !build_pass {
          message(Ignore warnings regarding parsing problems for /MP switch)
@@ -39,11 +37,3 @@ win32 {
 
 linux-g++:QMAKE_CXXFLAGS += -fno-exceptions
 unix:VERSION = 0.3.0
-
-
-# zlib support for gl2ps
-zlib {
-  DEFINES += GL2PS_HAVE_ZLIB
-  win32:LIBS += zlib.lib
-	unix:LIBS  += -lz
-}

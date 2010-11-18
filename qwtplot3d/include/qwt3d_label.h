@@ -41,15 +41,7 @@ public:
 	For unicode labeling (<tt> QChar(0x3c0) </tt> etc.) please look at <a href="http://www.unicode.org/charts/">www.unicode.org</a>.
 	*/
 	void setString(QString const& s);
-	void draw(); //!< Actual drawing
-
-	/**
-		\brief Decides about use of PDF standard fonts for PDF output 
-		If true, Label can use one of the PDF standard fonts (unprecise positioning for now), 
-		otherwise it dumps  pixmaps in the PDF stream (poor quality) 
-	*/
-	static void useDeviceFonts(bool val); 
-	
+	void draw(); //!< Actual drawing	
 
 private:
 
@@ -71,9 +63,6 @@ private:
 	int gap_;
 
 	bool flagforupdate_;
-
-	static bool devicefonts_;
-
 };
 
 } // ns

@@ -535,7 +535,7 @@ void CoordinateSystem::drawMajorGridLines()
 {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
-	setDeviceLineWidth(axes[X1].majLineWidth());
+	setLineWidth(axes[X1].majLineWidth());
 
   glBegin( GL_LINES );
   if (sides_ & Qwt3D::FLOOR)  
@@ -575,7 +575,7 @@ void CoordinateSystem::drawMinorGridLines()
 {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4d(gridlinecolor_.r,gridlinecolor_.g,gridlinecolor_.b,gridlinecolor_.a);		
-	setDeviceLineWidth(axes[X1].minLineWidth());
+	setLineWidth(axes[X1].minLineWidth());
 
   glBegin( GL_LINES );
   if (sides_ & Qwt3D::FLOOR)  
