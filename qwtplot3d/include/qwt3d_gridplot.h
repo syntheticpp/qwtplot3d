@@ -43,7 +43,6 @@ private:
   public:
     GridData();
     GridData(unsigned int columns, unsigned int rows);//!< see setSize()
-    ~GridData();
 
     GridData* clone() const {return new GridData(*this);}
 
@@ -58,10 +57,6 @@ private:
     void setPeriodic(bool u, bool v) {uperiodic_ = u; vperiodic_ = v;}
     bool uperiodic() const {return uperiodic_;} 
     bool vperiodic() const {return vperiodic_;} 
-    Triple point(unsigned int col, unsigned int row) const
-    {
-      return Triple(vertices[col][row][0],vertices[col][row][1],vertices[col][row][2]);
-    }
 
   private:
     bool uperiodic_, vperiodic_;

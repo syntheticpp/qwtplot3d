@@ -23,8 +23,7 @@ enum DATATYPE
   CELLCOMPLEX //todo
 };	
 
-typedef double *Vertex;
-typedef std::vector<Vertex> DataColumn;
+typedef TripleVector DataColumn;
 typedef std::vector<DataColumn> DataMatrix;
 
 
