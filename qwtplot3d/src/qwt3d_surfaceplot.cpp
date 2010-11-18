@@ -83,8 +83,7 @@ void SurfacePlot::updateNormals()
   glNewList(displaylists_p[NormalObject], GL_COMPILE);
   for (unsigned k=0; k!=plotlets_p.size(); ++k)
   {
-    const Appearance& app = *plotlets_p[k].appearance;
-    createNormals(app);
+    createNormals(plotlets_p[k]);
   }
   glEndList();
 }

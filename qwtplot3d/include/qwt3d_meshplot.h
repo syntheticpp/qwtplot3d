@@ -23,7 +23,7 @@ public:
   //virtual int cells(unsigned dimension) const
 
 protected:
-  void createNormals(unsigned idx);
+  void createNormals(const Plotlet& pl);
   void drawEnrichment(const Plotlet& pl, Enrichment& p);
   void createOpenGlData(const Plotlet& pl);
 

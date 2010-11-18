@@ -34,7 +34,6 @@ Plot3D::Plot3D( QWidget * parent, const QGLWidget * shareWidget)
 		displaylists_p[k] = 0;
 	}
 
-	datacolor_p = new StandardColor(100);
 	title_.setFont("Courier", 16, QFont::Bold);
 	title_.setString("");
 
@@ -198,11 +197,14 @@ void Plot3D::createCoordinateSystem()
 /*!
   Show a color legend
 */
-void Plot3D::showColorLegend( bool show )
+void Plot3D::showColorLegend( bool show, unsigned idx /* = 0 */ )
 {
- 	displaylegend_ = show;
-	if (show)
-    datacolor_p->createVector(legend_.colors);
+  displaylegend_ = show;
+  
+  if (idx >= plotlets_p.size())
+    return;
+  if (show)
+    plotlets_p[idx].appearance->dataColor()->createVector(legend_.colors);
 	updateGL();
 }
 

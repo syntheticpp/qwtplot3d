@@ -133,6 +133,7 @@ void GridPlot::createNormals(const Plotlet& pl)
   int step = resolution();
 
   const GridData& data = dynamic_cast<const GridData&>(*pl.data);
+  const Color& color = *pl.appearance->dataColor(); 
   double diag = (data.hull().maxVertex-data.hull().minVertex).length() * normalLength();
 
   arrow.assign(*this);
@@ -151,7 +152,7 @@ void GridPlot::createNormals(const Plotlet& pl)
       norm	*= diag;
 
       arrow.setTop(basev+norm);
-      arrow.setColor(datacolor_p->rgba(basev.x,basev.y,basev.z));
+      arrow.setColor(color.rgba(basev.x,basev.y,basev.z));
       arrow.draw(basev);
     }
   }
@@ -463,6 +464,7 @@ void GridPlot::isolines2Floor(const Plotlet& pl)
     return;
 
   const GridData& data = dynamic_cast<const GridData&>(*pl.data);
+  const Color& color = *pl.appearance->dataColor(); 
 
   double zshift = data.hull().minVertex.z;
   if (delayisolinecalculation_p)
@@ -529,7 +531,7 @@ void GridPlot::isolines2Floor(const Plotlet& pl)
           }
         }
         
-        drawIntersection(intersection, datacolor_p->rgba(t[0].x,t[0].y,t[0].z));
+        drawIntersection(intersection, color.rgba(t[0].x,t[0].y,t[0].z));
         intersection.clear();
       }
     }

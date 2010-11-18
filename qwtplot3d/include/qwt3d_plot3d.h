@@ -33,7 +33,7 @@ public:
   void createCoordinateSystem(Qwt3D::Triple beg, Qwt3D::Triple end);
   Qwt3D::CoordinateSystem* coordinates() { return &coordinates_p; } //!< Returns pointer to CoordinateSystem object
   Qwt3D::ColorLegend* legend() { return &legend_;} //!< Returns pointer to ColorLegend object
-  void showColorLegend(bool);
+  void showColorLegend(bool show, unsigned idx = 0);
   void setCoordinateStyle(Qwt3D::COORDSTYLE st); //!< Sets style of coordinate system.
   void setTitlePosition(double rely, double relx = 0.5, Qwt3D::ANCHOR = Qwt3D::TopCenter);
   void setTitleFont(const QString& family, int pointSize, int weight = QFont::Normal, bool italic = false);
@@ -118,9 +118,7 @@ protected:
   void resizeGL( int w, int h );
 
   Qwt3D::CoordinateSystem coordinates_p;
-  
-  Qwt3D::Color* datacolor_p;
-  
+    
   virtual	void calculateHull();
   virtual void updateAppearances();
   virtual void createOpenGlData();

@@ -33,7 +33,7 @@ protected:
   double normalLength_p;
   int normalQuality_p;
 
-  virtual void createNormals(const Qwt3D::Appearance& app) = 0;
+  virtual void createNormals(const Plotlet& pl) = 0;
   virtual void createFloorOpenGlData();
   void drawIntersection(const Qwt3D::TripleField& intersection, Qwt3D::RGBA col);
   virtual void data2Floor(const Qwt3D::Appearance& app) = 0;

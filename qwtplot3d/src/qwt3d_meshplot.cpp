@@ -129,18 +129,19 @@ void MeshPlot::isolines2Floor(const Plotlet& pl)
           intersection.push_back(Triple(nodes[m].x + lambda * (nodes[mm].x-nodes[m].x), nodes[m].y + lambda * (nodes[mm].y-nodes[m].y), zshift));
         }
       }
-      drawIntersection(intersection, datacolor_p->rgba(nodes[0].x,nodes[0].y,nodes[0].z));
+      drawIntersection(intersection, pl.appearance->dataColor()->rgba(nodes[0].x,nodes[0].y,nodes[0].z));
       intersection.clear();
     }
   }
 }
 
-void MeshPlot::createNormals(unsigned idx)
+void MeshPlot::createNormals(const Plotlet& pl)
 {
   if (!normals())
     return;
 
-  const MeshData& data = dynamic_cast<const MeshData&>(*plotlets_p[idx].data); 
+  const MeshData& data = dynamic_cast<const MeshData&>(*pl.data); 
+  const Color& color = *pl.appearance->dataColor(); 
 
   if (data.nodes.size() != data.normals.size())
     return;
@@ -164,7 +165,7 @@ void MeshPlot::createNormals(unsigned idx)
     norm	*= diag;
 
     arrow.setTop(basev+norm);
-    arrow.setColor(datacolor_p->rgba(basev.x,basev.y,basev.z));
+    arrow.setColor(color.rgba(basev.x,basev.y,basev.z));
     arrow.draw(basev);
   }
   arrow.drawEnd();
