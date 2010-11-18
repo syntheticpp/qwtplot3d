@@ -37,6 +37,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mesh", "mesh\mesh.vcproj", 
 		{6F774629-17E2-35C6-A777-FCA63A91A924} = {6F774629-17E2-35C6-A777-FCA63A91A924}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "plotlets", "plotlets\plotlets.vcproj", "{14F52250-93B1-389B-873C-402F1808A7BD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6F774629-17E2-35C6-A777-FCA63A91A924} = {6F774629-17E2-35C6-A777-FCA63A91A924}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -68,6 +73,10 @@ Global
 		{A6DF0CA7-CA10-3C84-BA80-6E075490E076}.Debug|Win32.Build.0 = Debug|Win32
 		{A6DF0CA7-CA10-3C84-BA80-6E075490E076}.Release|Win32.ActiveCfg = Release|Win32
 		{A6DF0CA7-CA10-3C84-BA80-6E075490E076}.Release|Win32.Build.0 = Release|Win32
+		{14F52250-93B1-389B-873C-402F1808A7BD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{14F52250-93B1-389B-873C-402F1808A7BD}.Debug|Win32.Build.0 = Debug|Win32
+		{14F52250-93B1-389B-873C-402F1808A7BD}.Release|Win32.ActiveCfg = Release|Win32
+		{14F52250-93B1-389B-873C-402F1808A7BD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

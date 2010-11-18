@@ -1,3 +1,2 @@
-include( ../common.pro )
-
-SOURCES = graph.cpp
+include( tmp.pri )
+include( ../common.pro ) 

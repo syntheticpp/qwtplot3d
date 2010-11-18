@@ -30,7 +30,7 @@
 
 #include "functions.h"
 #include "colormapreader.h"
-#include "lightingdlg.h"
+#include "lightingdialog.h"
 
 using namespace Qwt3D;
 using namespace std;
@@ -109,7 +109,6 @@ MeshMainWindow::MeshMainWindow( QWidget* parent )
   psurfaceCB->addItem( tr( "Seashell" ) );
   psurfaceCB->addItem( tr( "Boy" ) );
   psurfaceCB->addItem( tr( "Dini" ) );
-  psurfaceCB->addItem( tr( "Cone" ) );
   psurfaceCB->setToolTip(tr( "Display parametric surface. Turn Lighting on for better quality."));
   mainToolbar->addWidget(functionCB);
   mainToolbar->addWidget(psurfaceCB);
@@ -284,13 +283,6 @@ void MeshMainWindow::createFunction(QString const& name)
     dataWidget->coordinates()->axes[Z3].setScale(LOG10SCALE);
     dataWidget->coordinates()->axes[Z4].setScale(LOG10SCALE);
     dataWidget->legend()->setScale(LOG10SCALE);
-
-    Hat hat(*dataWidget);
-
-    hat.setMesh(51,72);
-    hat.setDomain(-1.5,1.5,-1.5,1.5);
-    hat.create(true);	
-
 	}
 	else if (name == QString("Hat")) 
 	{
@@ -467,11 +459,7 @@ void MeshMainWindow::pickPlotStyle( QAction* action )
 	}
 	else if (action == pointstyle)
 	{
-
     dataWidget->setPlotStyle(Qwt3D::POINTS);
-//    Cone d(len,32);
-//    CrossHair d(0.003,0,true,false);
-//    dataWidget->setPlotStyle(d);
 	}
 	else
 	{
@@ -643,7 +631,7 @@ void MeshMainWindow::pickLighting()
 
 void MeshMainWindow::pickDataColor()
 {
-  QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
+  QString s =  QFileDialog::getOpenFileName( this, "", "./../colormaps", "Colormap files (*.map *.MAP)");
   adaptDataColors(s);
 }
 

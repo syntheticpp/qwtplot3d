@@ -5,6 +5,7 @@ SUBDIRS = \
 	autoswitch \
 	enrichments \
 	axes \
+  plotlets \
 	mesh
 	
 
