@@ -27,10 +27,10 @@ public slots:
 	int createFunction(QString const& name, bool append = true);
 
 	void pickCoordSystem( QAction* );
-	void pickPlotStyle( QAction* );
+	void setPlotStyle();
 	void pickFloorStyle( QAction* );
-	void pickMeshColor();
-	void pickDataColor();
+	void setMeshColor();
+	void setDataColor();
 	void resetColors();
  	void setStandardView();
 	void toggleProjectionMode(bool);
@@ -43,7 +43,6 @@ public slots:
 	void setNormalQuality(int);
 	void setNormalLength(int);
 	bool openColorMap(Qwt3D::ColorVector& cv, QString fname);
-	void adaptDataColors(const QString&);
 	void updateColorLegend(int majors, int minors);
 
   void togglePlotlet(bool val);
@@ -69,16 +68,19 @@ private:
   class PlotletItem
   {
   public:
-    PlotletItem(QCheckBox* cb = 0, int position = -1) 
-      : cbox(cb), pos(position) 
+    PlotletItem(QCheckBox* cb = 0, ConfigFrame* cframe = 0, int position = -1) 
+      : cbox(cb), cfgframe(cframe), pos(position) 
     {}
     QCheckBox* cbox; // associated checkbox
+    ConfigFrame* cfgframe; // config dialog
     int pos; // maintains pos in plotlet vector
   };
 
   QMap<QString, PlotletItem> pmanager;
   typedef QMap<QString, PlotletItem>::const_iterator PM_CIT;
   typedef QMap<QString, PlotletItem>::iterator PM_IT;
+
+  int findPlotletPosition(const ConfigFrame* val) const;
 };
 
 #endif /* include guarded */

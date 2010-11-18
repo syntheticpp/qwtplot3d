@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>288</width>
-    <height>208</height>
+    <width>289</width>
+    <height>184</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
-   <item>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="nameBox">
      <property name="title">
       <string>---</string>
@@ -50,6 +56,12 @@
             <iconset resource="../../images.qrc">
              <normaloff>:/images/scattered.png</normaloff>:/images/scattered.png</iconset>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -76,6 +88,12 @@
             <iconset resource="../../images.qrc">
              <normaloff>:/images/wireframe.png</normaloff>:/images/wireframe.png</iconset>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -101,6 +119,12 @@
            <property name="icon">
             <iconset resource="../../images.qrc">
              <normaloff>:/images/hiddenline.png</normaloff>:/images/hiddenline.png</iconset>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -129,7 +153,10 @@
              <normaloff>:/images/polygon.png</normaloff>:/images/polygon.png</iconset>
            </property>
            <property name="checkable">
-            <bool>false</bool>
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -157,6 +184,15 @@
             <iconset resource="../../images.qrc">
              <normaloff>:/images/filledmesh.png</normaloff>:/images/filledmesh.png</iconset>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item>
@@ -183,6 +219,12 @@
             <iconset resource="../../images.qrc">
              <normaloff>:/images/nodata.png</normaloff>:/images/nodata.png</iconset>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -191,44 +233,40 @@
       <item>
        <widget class="QGroupBox" name="groupBox_2">
         <property name="title">
-         <string>Color</string>
+         <string>Other</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QPushButton" name="meshcolorBtn">
            <property name="text">
-            <string>Mesh</string>
+            <string>Mesh Col.</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="datacolorBtn">
+           <property name="toolTip">
+            <string>Check the examples colormaps directory</string>
+           </property>
            <property name="text">
-            <string>Data</string>
+            <string>Data Col.</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="QCheckBox" name="normalsCB">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>53</width>
-             <height>20</height>
-            </size>
+           <property name="text">
+            <string>Normals</string>
            </property>
-          </spacer>
+          </widget>
          </item>
         </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="normalsCB">
-        <property name="text">
-         <string>Normals</string>
-        </property>
        </widget>
       </item>
      </layout>

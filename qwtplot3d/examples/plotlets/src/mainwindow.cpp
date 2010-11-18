@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qcheckbox.h>
 #include <qcolordialog.h>
+#include <qsignalmapper.h>
 
 #include <qwt3d_io.h>
 #include <qwt3d_io_reader.h>
@@ -94,15 +95,21 @@ MainWindow::MainWindow( QWidget* parent )
 	//connect( openFile, SIGNAL( triggered() ) , this, SLOT( open() ) );
 	//
 
- pmanager["hat"] = PlotletItem(cbHat, 0);
- pmanager["hatn"] = PlotletItem(cbHatn, -1);
- pmanager["boy"] = PlotletItem(cbBoy, -1);
- pmanager["ripple"] = PlotletItem(cbRipple, -1);
+ pmanager["hat"] = PlotletItem(cbHat, cfgHat, 0);
+ pmanager["hatn"] = PlotletItem(cbHatn, cfgHatn);
+ pmanager["boy"] = PlotletItem(cbBoy, cfgBoy);
+ pmanager["ripple"] = PlotletItem(cbRipple, cfgRipple);
+
+ //connect(cfgsignalmapper_, SIGNAL(mapped(const QString &)), this, SIGNAL(plotstyleChanged(const QString &)));
+
 
  PM_IT i = pmanager.begin();
  while (i != pmanager.end()) 
  {
    connect( i->cbox, SIGNAL( toggled( bool ) ), this, SLOT( togglePlotlet( bool ) ) );
+   connect(i->cfgframe, SIGNAL(meshColorChanged()), this, SLOT(setMeshColor()));
+   connect(i->cfgframe, SIGNAL(dataColorChanged()), this, SLOT(setDataColor()));
+   connect(i->cfgframe, SIGNAL(plotStyleChanged()), this, SLOT(setPlotStyle()));
    ++i;
  }
 
@@ -123,37 +130,11 @@ MainWindow::MainWindow( QWidget* parent )
  // qwtstr += QString::number(QWT3D_MINOR_VERSION) + ".";
  // qwtstr += QString::number(QWT3D_PATCH_VERSION) + " ";
 
-	//QLabel* info = new QLabel(qwtstr, statusBar());       
- // statusBar()->addWidget(info, 0);
-	//filenameWidget = new QLabel("                                  ", statusBar());
-	//statusBar()->addWidget(filenameWidget,0);
-	//dimWidget = new QLabel("", statusBar());
-	//statusBar()->addWidget(dimWidget,0);
-	//rotateLabel = new QLabel("", statusBar());
-	//statusBar()->addWidget(rotateLabel,0);
-	//shiftLabel = new QLabel("", statusBar());
-	//statusBar()->addWidget(shiftLabel,0);
-	//scaleLabel = new QLabel("", statusBar());
-	//statusBar()->addWidget(scaleLabel,0);
-	//zoomLabel = new QLabel("", statusBar());
-	//statusBar()->addWidget(zoomLabel,0);
-	//
-	//connect(dataWidget, SIGNAL(rotationChanged(double,double,double)),this,SLOT(showRotate(double,double,double)));
-	//connect(dataWidget, SIGNAL(vieportShiftChanged(double,double)),this,SLOT(showShift(double,double)));
-	//connect(dataWidget, SIGNAL(scaleChanged(double,double,double)),this,SLOT(showScale(double,double,double)));
-	//connect(dataWidget, SIGNAL(zoomChanged(double)),this,SLOT(showZoom(double)));
-
-	//connect(functionCB, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(createFunction(const QString&)));
-	//connect(psurfaceCB, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(createPSurface(const QString&)));
 	//connect(projection, SIGNAL( toggled(bool) ), this, SLOT( toggleProjectionMode(bool)));
 	//connect(colorlegend, SIGNAL( toggled(bool) ), this, SLOT( toggleColorLegend(bool)));
 	//connect(autoscale, SIGNAL( toggled(bool) ), this, SLOT( toggleAutoScale(bool)));
 	//connect(shader, SIGNAL( toggled(bool) ), this, SLOT( toggleShader(bool)));
-	//connect(mouseinput, SIGNAL( toggled(bool) ), dataWidget, SLOT( enableMouse(bool)));
-	//connect(lightingswitch, SIGNAL( toggled(bool) ), this, SLOT( enableLighting(bool)));
 	//connect(normals, SIGNAL( toggled(bool) ), this, SLOT( showNormals(bool)));
-	//connect(normalsquality,  SIGNAL(valueChanged(int)), this, SLOT(setNormalQuality(int)) );
-	//connect(normalslength,  SIGNAL(valueChanged(int)), this, SLOT(setNormalLength(int)) );
 	//		
 	setStandardView();
 
@@ -161,9 +142,6 @@ MainWindow::MainWindow( QWidget* parent )
   //dataWidget->coordinates()->setGridLinesColor(RGBA(0.35,0.35,0.35,1));
 	dataWidget->enableMouse(true);
   dataWidget->setKeySpeed(15,20,20);
-
- // lightingdlg_ = new ConfigFrame( this );
- // lightingdlg_->assign( dataWidget);  
 
   dataWidget->setTitleFont( "Arial", 14, QFont::Normal );
   //dataWidget->legend()->setScale(LINEARSCALE);
@@ -273,37 +251,15 @@ void MainWindow::pickCoordSystem( QAction* action)
 	//}
 }
 
-void MainWindow::pickPlotStyle( QAction* action )
+void MainWindow::setPlotStyle()
 {
-	//if (!action || !dataWidget)
-	//	return;
-
-	//if (action == polygon)
-	//{
-	//	dataWidget->setPlotStyle(FILLED);
-	//}
-	//else if (action == filledmesh)
-	//{
-	//	dataWidget->setPlotStyle(FILLEDMESH);
-	//}
-	//else if (action == wireframe)
-	//{
-	//	dataWidget->setPlotStyle(WIREFRAME);
-	//}
-	//else if (action == hiddenline)
-	//{
-	//	dataWidget->setPlotStyle(HIDDENLINE);
-	//}
-	//else if (action == pointstyle)
-	//{
- //   dataWidget->setPlotStyle(Qwt3D::POINTS);
-	//}
-	//else
-	//{
-	//	dataWidget->setPlotStyle(NOPLOT);
-	//}
-	//dataWidget->updateData();
-	//dataWidget->updateGL();
+  ConfigFrame* w = (ConfigFrame*)sender();
+  int pos = findPlotletPosition(w);
+  if (pos < 0)
+    return;
+  dataWidget->appearance(pos).setPlotStyle(w->plotstyle());
+  dataWidget->updateData();
+  dataWidget->updateGL();
 }
 
 void MainWindow::pickFloorStyle( QAction* action )
@@ -355,42 +311,28 @@ void MainWindow::resetColors()
 }
 
 
-void MainWindow::pickMeshColor()
+void MainWindow::setMeshColor()
 {
- // 
-	//QColor c = QColorDialog::getColor( Qt::white, this );
- // if ( !c.isValid() )
-	//	return;
-	//RGBA rgb = Qt2GL(c);
-	//dataWidget->setMeshColor(rgb);
-	//dataWidget->updateData();
-	//dataWidget->updateGL();
+  ConfigFrame* w = (ConfigFrame*)sender();
+  int pos = findPlotletPosition(w);
+  if (pos < 0)
+    return;
+	dataWidget->appearance(pos).setMeshColor(w->meshColor());
+	dataWidget->updateData();
+	dataWidget->updateGL();
 }
 
-
-
-
-void MainWindow::pickDataColor()
+void MainWindow::setDataColor()
 {
-  //QString s =  QFileDialog::getOpenFileName( this, "", "./../../data/colormaps", "Colormap files (*.map *.MAP)");
-  //adaptDataColors(s);
-}
-
-void MainWindow::adaptDataColors(const QString& fileName)
-{
- // ColorVector cv;
-	//
-	//if (!openColorMap(cv, fileName))
-	//	return;
-	//
-	//StandardColor col_;
-	//col_.setColorVector(cv);
-	//
-	//dataWidget->setDataColor(col_);
-	//dataWidget->updateData();
-	//dataWidget->updateNormals();
-	//dataWidget->showColorLegend(legend_);
- // dataWidget->updateGL();
+  ConfigFrame* w = (ConfigFrame*)sender();
+  int pos = findPlotletPosition(w);
+  if (pos < 0)
+    return;
+  dataWidget->appearance(pos).setDataColor(w->dataColor());
+  dataWidget->updateData();
+  dataWidget->updateNormals();
+  //dataWidget->showColorLegend(legend_);
+  dataWidget->updateGL();
 }
 
 void MainWindow::setStandardView()
@@ -519,6 +461,7 @@ void MainWindow::togglePlotlet(bool val)
       }
     }
 
+    // ... remove the plotlet
     int deleted = -1;
     i = pmanager.begin();
     while (i != pmanager.end()) 
@@ -533,7 +476,7 @@ void MainWindow::togglePlotlet(bool val)
       ++i;
     }
     
-    // adapt plotlet vector idx observer
+    // ... recalculate indexes
     if (deleted>=0)
     {
       i = pmanager.begin();
@@ -541,7 +484,7 @@ void MainWindow::togglePlotlet(bool val)
       {
         if (i->pos >= deleted)
         {
-          --i->pos;
+          --i->pos; // cannot be < 1 prior to decr.
         }      
         ++i;
       }
@@ -558,10 +501,29 @@ void MainWindow::togglePlotlet(bool val)
       if (sender() == i->cbox)
       {
         i->pos = createFunction(i.key());
+        if (i->pos>=0)
+        {
+          dataWidget->appearance(i->pos).setMeshColor(i->cfgframe->meshColor());
+          dataWidget->appearance(i->pos).setDataColor(i->cfgframe->dataColor());
+          dataWidget->appearance(i->pos).setPlotStyle(i->cfgframe->plotstyle());
+          dataWidget->updateData();	
+          dataWidget->updateNormals();
+       }
       }
       ++i;
     }
   }
-  dataWidget->updateData();
   dataWidget->updateGL();
+}
+
+int MainWindow::findPlotletPosition( const ConfigFrame* val ) const
+{
+  PM_CIT i = pmanager.begin();
+  while (i != pmanager.end()) 
+  {
+    if (i->cfgframe == val)
+      return i->pos;
+    ++i;
+  }
+  return -1;
 }
