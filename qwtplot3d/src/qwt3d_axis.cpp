@@ -21,7 +21,7 @@ void Axis::init()
 {
 	detachAll();
 
-  scale_ = qwt3d_ptr<Scale>(new LinearScale);
+  scale_ = ValuePtr<Scale>(new LinearScale);
 
   beg_ = Triple(0.0, 0.0, 0.0);  
   end_ = beg_;
@@ -361,7 +361,7 @@ Triple Axis::biggestNumberString()
 */
 void Axis::setScale(Qwt3D::Scale* val)
 {
-  scale_ = qwt3d_ptr<Scale>(val); 
+  scale_ = ValuePtr<Scale>(val); 
 }
 
 /*!

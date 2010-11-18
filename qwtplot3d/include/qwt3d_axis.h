@@ -2,7 +2,7 @@
 #ifndef qwt3d_axis_h__2009_10_11_14_14_18_begin_guarded_code
 #define qwt3d_axis_h__2009_10_11_14_14_18_begin_guarded_code
 
-#include "qwt3d_autoptr.h"
+#include "qwt3d_valueptr.h"
 #include "qwt3d_label.h"
 #include "qwt3d_scale.h"
 #include "qwt3d_autoscaler.h"
@@ -124,7 +124,7 @@ private:
 
 	int numbergap_, labelgap_; 
 
-  Qwt3D::qwt3d_ptr<Qwt3D::Scale> scale_;
+  Qwt3D::ValuePtr<Qwt3D::Scale> scale_;
 };
 
 } // ns 

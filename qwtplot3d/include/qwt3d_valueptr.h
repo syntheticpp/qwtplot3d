@@ -19,16 +19,6 @@ struct ValuePtrTraits
   }
 };
 
-template<>
-struct ValuePtrTraits<Color>  
-{
-  static  Color* clone( const Color* p )  
-  { 
-    return p->clone(); 
-  }
-};
-
-
 // Copyable smart pointer, taken from Sutter's "More exceptional C++"
 
 template<typename T>

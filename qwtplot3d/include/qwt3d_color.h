@@ -5,6 +5,7 @@
 #include <qstring.h>
 #include "qwt3d_global.h"
 #include "qwt3d_types.h"
+#include "qwt3d_valueptr.h"
 
 namespace Qwt3D
 {
@@ -27,6 +28,15 @@ public:
   virtual Qwt3D::ColorVector& createVector(Qwt3D::ColorVector& vec) { return vec; }
   //! Called from Appearance::update(). The default implementation is empty.
   virtual void update(const Plot3D&) {} 
+};
+
+template<>
+struct ValuePtrTraits<Color>  
+{
+  static  Color* clone( const Color* p )  
+  { 
+    return p->clone(); 
+  }
 };
 
 } // ns

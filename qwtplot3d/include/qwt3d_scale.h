@@ -5,7 +5,7 @@
 #include <qstring.h>
 #include "qwt3d_types.h"
 #include "qwt3d_autoscaler.h"
-#include "qwt3d_autoptr.h"
+#include "qwt3d_valueptr.h"
 
 namespace Qwt3D
 {
@@ -22,7 +22,8 @@ interface. User-defined axes can be derived from Scale, LinearScale et al.
 class QWT3D_EXPORT Scale
 {
   friend class Axis;
-  friend class qwt3d_ptr<Scale>;
+  friend class ValuePtr<Scale>;
+  friend struct ValuePtrTraits<Scale>;
 
   protected:
     Scale();
@@ -47,19 +48,16 @@ class QWT3D_EXPORT Scale
     double start_p, stop_p;
     int majorintervals_p, minorintervals_p;
     double mstart_p, mstop_p;
-  
-  private:
-    void destroy() const {delete this;} //!< Used by qwt3d_ptr   
 };
 
 //! The standard (1:1) mapping class for axis numbering
 class QWT3D_EXPORT LinearScale : public Scale
 {
   friend class Axis;
-  friend class qwt3d_ptr<Scale>;
+  friend struct ValuePtrTraits<Scale>;
 protected:
   int autoscale(double& a, double& b, double start, double stop, int ivals);
-  //! Returns a new heap based object utilized from qwt3d_ptr
+  //! For smart pointer
   Scale* clone() const {return new LinearScale(*this);}
   void calculate();
   LinearAutoScaler autoscaler_p;
@@ -69,17 +67,26 @@ protected:
 class QWT3D_EXPORT LogScale : public Scale
 {
   friend class Axis;
-  friend class qwt3d_ptr<Scale>;
+  friend struct ValuePtrTraits<Scale>;
 protected:
   QString ticLabel(unsigned int idx) const;
   void setMinors(int val);
   //! Standard ctor
   LogScale();
-  //! Returns a new heap based object utilized from qwt3d_ptr
+  //! For smart pointer
   Scale* clone() const {return new LogScale;}
   void calculate();
 private:
   void setupCounter(double& k, int& step);
+};
+
+template<>
+struct ValuePtrTraits<Scale>  
+{
+  static  Scale* clone( const Scale* p )  
+  { 
+    return p->clone(); 
+  }
 };
 
 } // namespace Qwt3D

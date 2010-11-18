@@ -4,7 +4,7 @@
 
 #include <vector>
 #include "qwt3d_global.h"
-#include "qwt3d_autoptr.h"
+#include "qwt3d_valueptr.h"
 
 namespace Qwt3D
 {
@@ -12,16 +12,13 @@ namespace Qwt3D
 //! ABC for autoscaler
 class QWT3D_EXPORT AutoScaler
 {
-friend class qwt3d_ptr<AutoScaler>;
+friend struct ValuePtrTraits<AutoScaler>;
 protected:
   //! Returns a new heap based object of the derived class.  
   virtual AutoScaler* clone() const = 0;
   //! To implement from subclasses
   virtual int execute(double& a, double& b, double start, double stop, int ivals) = 0;
   virtual ~AutoScaler(){}
-
-private:
-  void destroy() const {delete this;} //!< Used by qwt3d_ptr      
 };
 
 //! Automatic beautifying of linear scales
@@ -31,7 +28,7 @@ friend class LinearScale;
 protected:
   LinearAutoScaler();
   explicit LinearAutoScaler(std::vector<double>& mantisses);
-  //! Returns a new heap based object utilized from qwt3d_ptr
+  //! For smart pointer
   AutoScaler* clone() const {return new LinearAutoScaler(*this);}
 	int execute(double& a, double& b, double start, double stop, int ivals);
 
@@ -44,6 +41,15 @@ private:
 	double anchorvalue(double start, double mantisse, int exponent);
 	int segments(int& l_intervals, int& r_intervals, double start, double stop, double anchor, double mantissa, int exponent);
   std::vector<double> mantissi_;
+};
+
+template<>
+struct ValuePtrTraits<AutoScaler>  
+{
+  static  AutoScaler* clone( const AutoScaler* p )  
+  { 
+    return p->clone(); 
+  }
 };
 
 } // ns
