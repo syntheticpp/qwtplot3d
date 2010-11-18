@@ -34,6 +34,8 @@ public:
   Data() {datatype_p= Qwt3D::POLYGON;}
   //virtual Data* clone() const = 0;
   virtual ~Data() {}
+  //! For smart pointer
+  virtual Data* clone() const = 0;
   virtual bool empty() const {return true;} //!< no data
   void setHull(Qwt3D::ParallelEpiped const& h) {hull_p = h;}
   Qwt3D::ParallelEpiped const& hull() const {return hull_p;} 

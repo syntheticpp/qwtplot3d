@@ -382,12 +382,11 @@ void GridPlot::sewPeriodic(GridData& gdata)
 int GridPlot::createDataset(Triple** data, unsigned int columns, unsigned int rows, 
                              bool uperiodic /*=false*/, bool vperiodic /*=false*/, bool append /*= false*/)
 {
-  GridData plotdata;
-
-  int ret = prepareDatasetCreation(plotdata, append);
+  int ret = prepareDatasetCreation<GridData>(append);
   if (ret < 0)
     return -1;
 
+  GridData& plotdata = dynamic_cast<GridData&>(*plotlets_p[ret].data);
   readIn(plotdata, data, columns, rows);
   calcNormals(plotdata);
   plotdata.setPeriodic(uperiodic,vperiodic);
@@ -411,12 +410,11 @@ int GridPlot::createDataset(Triple** data, unsigned int columns, unsigned int ro
 int GridPlot::createDataset(double** data, unsigned int columns, unsigned int rows,
                              double minx, double maxx, double miny, double maxy, bool append /*= false*/)
 {	
-  GridData plotdata;
-
-  int ret = prepareDatasetCreation(plotdata, append);
+  int ret = prepareDatasetCreation<GridData>(append);
   if (ret < 0)
     return -1;
   
+  GridData& plotdata = dynamic_cast<GridData&>(*plotlets_p[ret].data);  
   plotdata.setPeriodic(false,false);
   plotdata.setSize(columns,rows);
   readIn(plotdata,data,columns,rows,minx,maxx,miny,maxy);

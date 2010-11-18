@@ -23,7 +23,11 @@ class QWT3D_EXPORT Scale
 {
   friend class Axis;
   friend class ValuePtr<Scale>;
-  friend struct ValuePtrTraits<Scale>;
+  //friend struct ValuePtrTraits<Scale>;
+  
+  public:
+    //! Derived classes should return a new heap based object here.  
+    virtual Scale* clone() const = 0;
 
   protected:
     Scale();
@@ -38,8 +42,6 @@ class QWT3D_EXPORT Scale
     int majors() const {return majorintervals_p;} //!< Returns major intervals
     int minors() const {return minorintervals_p;} //!< Returns minor intervals
 
-    //! Derived classes should return a new heap based object here.  
-    virtual Scale* clone() const = 0;
     //! This function should setup the 2 vectors for major and minor positions;
     virtual void calculate() = 0;
     virtual int autoscale(double& a, double& b, double start, double stop, int ivals);
@@ -54,40 +56,42 @@ class QWT3D_EXPORT Scale
 class QWT3D_EXPORT LinearScale : public Scale
 {
   friend class Axis;
-  friend struct ValuePtrTraits<Scale>;
-protected:
-  int autoscale(double& a, double& b, double start, double stop, int ivals);
-  //! For smart pointer
-  Scale* clone() const {return new LinearScale(*this);}
-  void calculate();
-  LinearAutoScaler autoscaler_p;
+  //friend struct ValuePtrTraits<Scale>;
+  public:
+    //! For smart pointer
+    Scale* clone() const {return new LinearScale(*this);}
+  protected:
+    int autoscale(double& a, double& b, double start, double stop, int ivals);
+    void calculate();
+    LinearAutoScaler autoscaler_p;
 };
 
 //! log10 scale
 class QWT3D_EXPORT LogScale : public Scale
 {
   friend class Axis;
-  friend struct ValuePtrTraits<Scale>;
-protected:
-  QString ticLabel(unsigned int idx) const;
-  void setMinors(int val);
-  //! Standard ctor
-  LogScale();
-  //! For smart pointer
-  Scale* clone() const {return new LogScale;}
-  void calculate();
-private:
-  void setupCounter(double& k, int& step);
+  //friend struct ValuePtrTraits<Scale>;
+  public:  
+    //! For smart pointer
+    Scale* clone() const {return new LogScale;}
+  protected:
+    QString ticLabel(unsigned int idx) const;
+    void setMinors(int val);
+    //! Standard ctor
+    LogScale();
+    void calculate();
+  private:
+    void setupCounter(double& k, int& step);
 };
 
-template<>
-struct ValuePtrTraits<Scale>  
-{
-  static  Scale* clone( const Scale* p )  
-  { 
-    return p->clone(); 
-  }
-};
+//template<>
+//struct ValuePtrTraits<Scale>  
+//{
+//  static  Scale* clone( const Scale* p )  
+//  { 
+//    return p->clone(); 
+//  }
+//};
 
 } // namespace Qwt3D
 

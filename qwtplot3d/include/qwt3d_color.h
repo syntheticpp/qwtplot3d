@@ -30,14 +30,14 @@ public:
   virtual void update(const Plot3D&) {} 
 };
 
-template<>
-struct ValuePtrTraits<Color>  
-{
-  static  Color* clone( const Color* p )  
-  { 
-    return p->clone(); 
-  }
-};
+//template<>
+//struct ValuePtrTraits<Color>  
+//{
+//  static  Color* clone( const Color* p )  
+//  { 
+//    return p->clone(); 
+//  }
+//};
 
 } // ns
 

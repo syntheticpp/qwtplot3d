@@ -34,7 +34,9 @@ private:
     MeshData() {datatype_p=Qwt3D::POLYGON;}
     ~MeshData();
 
-	  bool empty() const { return cells.empty();}
+    MeshData* clone() const {return new MeshData(*this);}
+
+    bool empty() const { return cells.empty();}
   	
 	  Triple const& operator()(unsigned cellnumber, unsigned vertexnumber);
   	

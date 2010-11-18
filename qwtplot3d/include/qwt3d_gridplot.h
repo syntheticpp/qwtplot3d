@@ -45,6 +45,8 @@ private:
     GridData(unsigned int columns, unsigned int rows);//!< see setSize()
     ~GridData();
 
+    GridData* clone() const {return new GridData(*this);}
+
     int columns() const;
     int rows() const;
 

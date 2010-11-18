@@ -181,12 +181,11 @@ be replaced by the new data. This includes destruction of possible additional da
 */
 int MeshPlot::createDataset(TripleField const& data, CellField const& poly, bool append /*= false*/)
 {	
-  MeshData plotdata;
-
-  int ret = prepareDatasetCreation(plotdata, append);
+  int ret = prepareDatasetCreation<MeshData>(append);
   if (ret < 0)
     return -1;
 
+  MeshData& plotdata = dynamic_cast<MeshData&>(*plotlets_p[ret].data);
   plotdata.nodes = data;
   plotdata.cells = poly;
   plotdata.normals = TripleField(plotdata.nodes.size());

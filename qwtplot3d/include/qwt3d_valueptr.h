@@ -14,8 +14,8 @@ struct ValuePtrTraits
 {
   static  T* clone( const T* p )  
   { 
-    return new T(*p); 
-    //return p->clone(); 
+    //return new T(*p); 
+    return p->clone(); 
   }
 };
 
@@ -43,22 +43,23 @@ public:
     return *this;
   }
 
+  //// templated assignment  
+  //template< class U >
+  //ValuePtr( const ValuePtr<U>& orig )
+  //  : rawptr_( createFrom( orig.operator->() ) )
+  //{}
+
+  //template< class U >
+  //ValuePtr &  operator= ( const ValuePtr<U>& orig )  
+  //{
+  //  ValuePtr<T>  temp( orig );
+  //  std::swap(rawptr_, temp.rawptr_);
+  //  return *this;
+  //}
 
   T&  operator*  () const  { return *rawptr_; }
   T*  operator-> () const  { return  rawptr_; }
 
-  template< class U >
-  ValuePtr( const ValuePtr<U>& orig )
-    : rawptr_( createFrom( orig.operator->() ) )
-  {}
-
-  template< class U >
-  ValuePtr &  operator = ( const ValuePtr<U>& orig )  
-  {
-    ValuePtr<T>  temp( orig );
-    std::swap(rawptr_, temp.rawptr_);
-    return *this;
-  }
 
 private:
   template<typename U>

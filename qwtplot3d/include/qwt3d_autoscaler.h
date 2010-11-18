@@ -12,7 +12,7 @@ namespace Qwt3D
 //! ABC for autoscaler
 class QWT3D_EXPORT AutoScaler
 {
-friend struct ValuePtrTraits<AutoScaler>;
+//friend struct ValuePtrTraits<AutoScaler>;
 protected:
   //! Returns a new heap based object of the derived class.  
   virtual AutoScaler* clone() const = 0;
@@ -43,14 +43,14 @@ private:
   std::vector<double> mantissi_;
 };
 
-template<>
-struct ValuePtrTraits<AutoScaler>  
-{
-  static  AutoScaler* clone( const AutoScaler* p )  
-  { 
-    return p->clone(); 
-  }
-};
+//template<>
+//struct ValuePtrTraits<AutoScaler>  
+//{
+//  static  AutoScaler* clone( const AutoScaler* p )  
+//  { 
+//    return p->clone(); 
+//  }
+//};
 
 } // ns
 

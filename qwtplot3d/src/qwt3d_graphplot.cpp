@@ -134,11 +134,12 @@ be replaced by the new data. This includes destruction of possible additional da
 */
 int GraphPlot::createDataset(TripleField const& nodes, EdgeField const& edges, bool append /*= false*/)
 {	
-  GraphData data;
 
-  int ret = prepareDatasetCreation(data, append);
+  int ret = prepareDatasetCreation<GraphData>(append);
   if (ret < 0)
     return -1;
+
+  GraphData& data = dynamic_cast<GraphData&>(*plotlets_p[ret].data);
 
   data.nodes = nodes;
   data.edges = edges;

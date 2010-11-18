@@ -139,35 +139,25 @@ protected:
   /**
   Utilized from createDataset members in inherited plot types.
   Following different strategies (depending on append) in modifying the 
-  Plotlet vector, the function returns assigns ne data of type DATATYPE to
+  Plotlet vector, the function assigns data of type DATA to
   a Plotlets data member. It returns a reference to the new content and the 
-  position in the Plotlet vector (or -1 for errors)
+  position in the Plotlet vector
   */
-  template<typename DATATYPE> 
-  int prepareDatasetCreation(DATATYPE& result, bool append)
+  template<typename DATA> 
+  int prepareDatasetCreation(bool append)
   {
-    Plotlet* pl = 0;
-    int ret = -1;
-
     assert(!plotlets_p.empty());
 
     if (!append)
     {
       plotlets_p.erase(plotlets_p.begin()+1, plotlets_p.end());
-      plotlets_p[0].data = ValuePtr<Data>(new DATATYPE);
+      plotlets_p[0].data = ValuePtr<Data>(new DATA);
     }
     else
     {
-      plotlets_p.push_back(Plotlet(new DATATYPE));
+      plotlets_p.push_back(Plotlet(new DATA));
     }
-        
-    pl = &plotlets_p.back();
-    ret = plotlets_p.size()-1;
-
-    assert(pl);
-
-    result = dynamic_cast<DATATYPE&> (*pl->data);
-    return ret;
+    return plotlets_p.size()-1;
   }
 
 

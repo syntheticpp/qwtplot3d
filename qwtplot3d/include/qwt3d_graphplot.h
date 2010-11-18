@@ -27,6 +27,7 @@ private:
   public:
     GraphData();
     virtual ~GraphData();
+    GraphData* clone() const {return new GraphData(*this);}
     bool empty() const; 
 
     TripleField nodes;
