@@ -61,6 +61,15 @@ Curve::Curve(QWidget* parent)
 	legend_.setOrientation(ColorLegend::BottomTop, ColorLegend::Left);
 }
 
+/*!
+  Deletes any data pointers, including enrichment data pointers
+  Deletes data display list from OpenGL.
+
+  (TODO: I believe we are leaving some display lists in OpenGL.)
+
+  Disconnects signals and slots as appropriate.
+  Removes the curve from any plot object to which is was connected.
+ */
 Curve::~Curve()
 {
 	delete actualDataG_;
@@ -82,6 +91,12 @@ Curve::~Curve()
 	delete title_p;
 }
 
+/*!
+ Connects the appropriate signals and slots to and from
+ the plot object.
+ This method is called automatically for you in most cases.
+ \sa disconnects()
+ */
 void Curve::connects()
 {
 	qDebug() << "Curve: Connecting Curve" << this;
@@ -122,6 +137,12 @@ void Curve::connects()
 	connect(this, SIGNAL(updatePlot()),									plot_p,	SLOT(update()));
 }
 
+/*!
+ Disconnects the appropriate signals and slots to and from
+ the plot object.
+ This method is called automatically for you in most cases.
+ \sa connects()
+ */
 void Curve::disconnects()
 {
 	qDebug() << "Curve: Disconnecting Data Curve" << this;
@@ -130,6 +151,14 @@ void Curve::disconnects()
 	disconnect(this, 0, plot_p, 0);
 }
 
+/*!
+ Issues the OpenGL commands to draw this object by calling drawImplementation().
+ This method tries to cache the drawing commands in a display list when possible.
+ While this method is virtual so that subclasses can have maximum flexibility,
+ most of the time subclasses should override the drawImplementation() method
+ instead of this one.
+ \sa drawImplementation()
+ */
 void Curve::draw()
 {
     // if the display list needs to be updated
@@ -167,6 +196,11 @@ void Curve::draw()
     }
 }
 
+/*!
+ Calls createEnrichments() and createData() to issue the OpenGL to draw
+ the Curve.
+ \sa createEnrichments(), createData(), draw()
+ */
 void Curve::drawImplementation()
 {
     createEnrichments();
@@ -174,8 +208,8 @@ void Curve::drawImplementation()
 }
 
 /*!
-	Calculates the smallest x-y-z parallelepiped enclosing the data.
-	It can be accessed by hull();
+  Calculates the smallest x-y-z parallelepiped enclosing the data.
+  It can be accessed by hull();
 */
 void Curve::calculateHull()
 {
@@ -184,6 +218,12 @@ void Curve::calculateHull()
 	setHull(actualData_p->hull());
 }
 
+/*!
+ Marks the curve as needing an update to its display lists.
+ Re-calculates the hull.
+ Emits the updatePlotData() signal if attached to a plot.
+ \sa queueUpdate()
+ */
 void Curve::updateData(bool coord)
 {
 	update_displaylists_ = true;
@@ -194,6 +234,18 @@ void Curve::updateData(bool coord)
 	}
 }
 
+/*!
+
+ TODO: John isn't sure of the subtle differences between
+ updateData() and queueUpdate().
+
+ Similar to updateData() except that this method should be called
+ when something other than the data itself has changed, for example
+ the color object.
+ Marks the curve as needing an update to its display lists.
+ Emits the updatePlot() signal if attached to a plot.
+ \sa updateData()
+ */
 void Curve::queueUpdate()
 {
 	update_displaylists_ = true;
@@ -202,6 +254,12 @@ void Curve::queueUpdate()
 	}
 }
 
+/*!
+ Update the display list for the normals.
+ Calls either the createNormalsC() for polygon (mesh) data
+ or createNormalsG() for grid data.
+ \sa createNormalsC(), createNormalsG().
+ */
 void Curve::updateNormals()
 {
 	SaveGlDeleteLists(displaylists_p[NormalObject], 1); 
@@ -219,6 +277,14 @@ void Curve::updateNormals()
 	glEndList();
 }
 
+/*!
+ Sets the shading mode and then calls either
+ createDataC() for polygon (mesh) data or
+ createDataG() for grid data.
+ Those two methods issue the actual OpenGL commands
+ to draw the data.
+ \sa createDataC(), createDataG()
+ */
 void Curve::createData()
 {
 	if (!actualData_p)	return;
@@ -240,6 +306,14 @@ void Curve::createData()
 		createDataG();
 }
 
+/*!
+  Calls either
+  createFloorDataC() for polygon (mesh) data or
+  createFloorDataG() for grid data.
+  Those methods actually issue the OpenGL commands to draw a data
+  projection on the floor of the coordinate system.
+  \sa createFloorDataC(), createFloorDataG()
+ */
 void Curve::createFloorData()
 {
 	if (!actualData_p)	return;
@@ -250,6 +324,17 @@ void Curve::createFloorData()
 		createFloorDataG();  
 }
 
+/*!
+  Calls either
+  createSideDataC() for polygon (mesh) data or
+  createSideDataG() for grid data.
+  Those methods actually issue the OpenGL commands to draw a data
+  projection on the side of the coordinate system.
+
+  TODO: John isn't sure what exactly those methods are doing.
+
+  \sa createSideDataC(), createSideDataG()
+ */
 void Curve::createSideData()
 {
 	if (!actualData_p)	return;
@@ -260,6 +345,17 @@ void Curve::createSideData()
 		createSideDataG();  
 }
 
+/*!
+  Calls either
+  createFaceDataC() for polygon (mesh) data or
+  createFaceDataG() for grid data.
+  Those methods actually issue the OpenGL commands to draw a data
+  projection on the side of the coordinate system.
+
+  TODO: John isn't sure what exactly those methods are doing.
+
+  \sa createFaceDataC(), createFaceDataG()
+ */
 void Curve::createFaceData()
 {
 	if (!actualData_p)	return;
@@ -271,8 +367,11 @@ void Curve::createFaceData()
 }
 
 /*!
-	The returned value is not affected by resolution(). The pair gives (columns,rows) for grid data,
-	(number of cells,1) for free formed data (datatype() == POLYGON) and (0,0) else
+   The returned value is not affected by resolution().
+   Returns a pair as follows:
+      - For grid data, returns (columns,rows).
+      - For polygon (mesh or free form) data, returns (numbers of cells, 1)
+      - (0,0) otherwise.
 */
 pair<int,int> Curve::facets() const
 {
@@ -294,6 +393,9 @@ pair<int,int> Curve::facets() const
 		return pair<int,int>(0,0);    
 }
 
+/*!
+ Creates an Enrichment of type Dot.
+ */
 void Curve::createPoints()
 {
 //	Dot pt;
@@ -304,6 +406,14 @@ void Curve::createPoints()
 	createEnrichment(pt);
 }
 
+/*!
+ Add an enrichment object to the curve if it is
+ not already in the enrichment list.
+ Creates a clone of the object and adds it to the list
+ of enrichments.
+ \return pointer to the object in the enrichment list
+ \sa degrade(), clearEnrichments()
+ */
 Enrichment* Curve::addEnrichment(Enrichment const& e)
 {
 	ELIT it = std::find( elist_p.begin(), elist_p.end(), &e );
@@ -315,6 +425,11 @@ Enrichment* Curve::addEnrichment(Enrichment const& e)
 	return elist_p.back();
 }
 
+/*!
+ Remove an enrichment from the enrichment list.
+ \return true if removed, false otherwise.
+ \sa addEnrichment(), clearEnrichments()
+ */
 bool Curve::degrade(Enrichment* e)
 {
 	ELIT it = std::find(elist_p.begin(), elist_p.end(), e);
@@ -328,18 +443,30 @@ bool Curve::degrade(Enrichment* e)
 	return false;
 }
 
+/*!
+ Remove all enrichments from the list.
+ \sa degrade(), addEnrichment()
+ */
 void Curve::clearEnrichments()
 {
     for (ELIT it = elist_p.begin(); it != elist_p.end(); ++it)
         this->degrade(*it);
 }
 
+/*!
+ Calls createEnrichment for all enrichments in the list
+ to allow them to 
+ how and why.
+ */
 void Curve::createEnrichments()
 {
 	for (ELIT it = elist_p.begin(); it!=elist_p.end(); ++it)
 		this->createEnrichment(**it);
 }
 
+/*!
+ Call the draw method for the given enrichment.
+ */
 void Curve::createEnrichment(Enrichment& p)
 {
 	if (!actualData_p)	return;
@@ -366,6 +493,11 @@ void Curve::createEnrichment(Enrichment& p)
 	p.drawEnd(); 
 }
 
+/*!
+ Issues a glVertex3d, with optionally one component changed
+ to the shift. If comp is 0, X is changed, if 1 then Y is changed,
+ if 3 then Z is changed. Otherwise, the vertex is unchanged.
+ */
 void Curve::drawVertex(Triple& vertex, double shift, unsigned int comp)
 {
 	switch (comp) {
@@ -380,6 +512,13 @@ void Curve::drawVertex(Triple& vertex, double shift, unsigned int comp)
 	}
 }
 
+/*!
+ TODO: John cannot remember what this one does.
+
+ In broad terms, it draws a series of lines or points as
+ specificied by the intersection parameter. I'm just not sure
+ the purpose behind it.
+ */
 void Curve::drawIntersections(vector<Triple>& intersection, double shift, unsigned int comp,
 							  bool projected, vector<RGBA>* colour)
 {
@@ -443,8 +582,14 @@ void Curve::setTitleFont(const QString& family, int pointSize, int weight, bool 
 }
 
 /*!
-	Sets data resolution (res == 1 original resolution) and updates widget
-	If res < 1, the function does nothing
+  Sets data resolution (res == 1 original resolution) and emits
+  the resolutionChanged() signal if necessary.
+  The resolution setting controls how much of the data is displayed.
+  - A resolution < 1 is meaningless and is silently ignored.
+  - A resolution of 1 indicates that all the data is shown.
+  - A resolution of 2 indicates that every other point is shown.
+  - A resolution of 3 indicates that every third point is show.
+  - Etc.
 */
 void Curve::setResolution(int res)
 {
@@ -461,6 +606,10 @@ void Curve::setResolution(int res)
 	emit resolutionChanged(res);
 }
 
+/*!
+ Toggle the data display on or off for the given projection mode.
+ \sa PROJECTMODE
+ */
 void Curve::setProjection(Qwt3D::PROJECTMODE val, bool toggle)
 {
 	switch(val) {
@@ -473,6 +622,14 @@ void Curve::setProjection(Qwt3D::PROJECTMODE val, bool toggle)
 	}
 }
 
+/*!
+ Set the mesh color.
+ Note that a color object overrides this setting.
+
+ TODO: John isn't sure about the color object overriding this behavior.
+
+ \sa setDataColor()
+ */
 void Curve::setMeshColor(RGBA rgba)
 {
 	meshcolor_ = rgba;
@@ -480,7 +637,7 @@ void Curve::setMeshColor(RGBA rgba)
 }
 
 /*!
-    Assign a new coloring object for the data.
+    Assign a new Color object for the data.
 */
 void Curve::setDataColor(Color* col)
 {
@@ -493,6 +650,9 @@ void Curve::setDataColor(Color* col)
 	update_displaylists_ = true;
 }
 
+/*!
+ Show or hide the normal vectors.
+ */
 void Curve::showNormals(bool b)
 {
 	datanormals_p = b;
@@ -500,7 +660,9 @@ void Curve::showNormals(bool b)
 }
 
 /*!
-	Values < 0 or > 1 are ignored
+ Set how long the normal vector should be.
+ Values < 0 or > 1 are ignored
+ Default value is 0.02.
 */
 void Curve::setNormalLength(double val)
 {
@@ -511,7 +673,10 @@ void Curve::setNormalLength(double val)
 }
 
 /*!
-	Values < 3 are ignored 
+  Values < 3 are ignored 
+
+  TODO: John is not sure what this controls.
+
 */
 void Curve::setNormalQuality(int val) 
 {
@@ -522,7 +687,7 @@ void Curve::setNormalQuality(int val)
 }
 
 /*!
-	Set plotstyle for the standard plotting types. An argument of value Qwt3D::USER is ignored.
+  Set plotstyle for the standard plotting types. An argument of value Qwt3D::USER is ignored.
 */
 void Curve::setPlotStyle( PLOTSTYLE val )
 {
@@ -537,7 +702,7 @@ void Curve::setPlotStyle( PLOTSTYLE val )
 }
 
 /*!
-	Set plotstyle to Qwt3D::USER and an associated enrichment object.
+  Set plotstyle to Qwt3D::USER and an associated enrichment object.
 */
 void Curve::setPlotStyle( Qwt3D::Enrichment& obj )
 {
@@ -549,7 +714,7 @@ void Curve::setPlotStyle( Qwt3D::Enrichment& obj )
 }
 
 /*!
-	Set shading style
+  Set shading style
 */
 void Curve::setShading( SHADINGSTYLE val )
 {
@@ -560,7 +725,7 @@ void Curve::setShading( SHADINGSTYLE val )
 }
 
 /*!
-	Set number of isolines. The lines are equidistant between minimal and maximal Z value
+  Set number of isolines. The lines are equidistant between minimal and maximal Z value
 */
 void Curve::setIsolines(unsigned int steps)
 {
@@ -571,8 +736,8 @@ void Curve::setIsolines(unsigned int steps)
 }
 
 /*!
-	Set Polygon offset. The function affects the OpenGL rendering process. 
-	Try different values for surfaces with polygons only and with mesh and polygons
+  Set Polygon offset. The function affects the OpenGL rendering process. 
+  Try different values for surfaces with polygons only and with mesh and polygons.
 */
 void Curve::setPolygonOffset( double val )
 {
@@ -582,6 +747,12 @@ void Curve::setPolygonOffset( double val )
 	update_displaylists_ = true;
 }
 
+/*!
+ The default is 1.
+
+ TODO: John isn't sure that this value is used anywhere.
+
+ */
 void Curve::setMeshLineWidth( double val )
 {
 	Q_ASSERT(val >= 0);
@@ -592,6 +763,9 @@ void Curve::setMeshLineWidth( double val )
 	update_displaylists_ = true;
 }
 
+/*!
+ Show or hide the legend.
+ */
 void Curve::showColorLegend(bool show)
 {
 	displaylegend_ = show;
@@ -603,6 +777,10 @@ void Curve::showColorLegend(bool show)
 	updateData(false);
 }
 
+/*!
+ Update the number of major and minro tick markers
+ on the color legend.
+ */
 void Curve::updateColorLegend(int majors, int minors)
 {
 	if (legend_.axis()->majors() != majors)	legend_.setMajors(majors);
@@ -614,6 +792,17 @@ void Curve::updateColorLegend(int majors, int minors)
 	legend_.setLimits(limits.first, limits.second);
 }
 
+/*!
+ Adjusts the size and position of the legend.
+
+ TODO: John hasn't figured out what each of the parameters means yet,
+
+ although here is a start:
+ \parameter index      I think we are limited to 16 legends on the screen.
+ \parameter doublemode
+ \parameter size
+ \parameter pos
+ */
 void Curve::setColorLegend(int index, bool doublemode, QSize size, QPoint pos)
 {
 	double w = size.width()/100.0,	h = size.height()/100.0;	// legend color vector as screen size percentage

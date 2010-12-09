@@ -13,10 +13,12 @@
 namespace Qwt3D
 {
 
-//! A class representing Curved Surfaces
+//! A class representing any 3D Curve or Surface
 /**
-    A Curved Surface ...
-    
+    Curve manages the appearance, data and drawing of a 3D curve or surface plot.  
+    A Curve object must be attached to a Plot object for it to be drawn.
+
+    \sa Plot3D
 */
 class QWT3D_EXPORT Curve : public QObject
 {
@@ -26,10 +28,11 @@ public:
 	Curve(QWidget* parent = 0);
 	virtual ~Curve();
 
-	void setPlot(Qwt3D::Plot3D* p)				{ plot_p = p; }
-	Qwt3D::Plot3D* plot() const					{ return plot_p; }			//!< Returns pointer to parent Plot3D object
-	Qwt3D::Label* title() const					{ return title_p; }			//!< Returns pointer to title Label object
-	Qwt3D::ColorLegend* legend()				{ return &legend_; }		//!< Returns pointer to key ColorLegend object
+        
+	void setPlot(Qwt3D::Plot3D* p) { plot_p = p; }     //!< attach the curve to a given plot
+	Qwt3D::Plot3D* plot() const    { return plot_p; }  //!< Returns pointer to parent Plot3D object
+	Qwt3D::Label* title() const    { return title_p; } //!< Returns pointer to title Label object
+	Qwt3D::ColorLegend* legend()   { return &legend_; }//!< Returns pointer to the ColorLegend object
 	virtual void draw();
 
 	void connects();
@@ -90,9 +93,17 @@ public:
 	unsigned int	titlepos_;
 
 signals:
-    void resolutionChanged(int);
+    void resolutionChanged(int); //!< emitted when the data resolution changes
+    /*!
+     Emitted when the data changes.
+     The bool indicates whether or not ...
+
+     TODO: John isn't sure of what the bool indicates
+
+     */
     void updatePlotData(bool);
-    void updatePlot();
+    void updatePlot();//!< emitted when the curve needs to be redrawn
+        //! TODO: John needs to fill this one in.
 	void readInFinished(const QString&);
 
 public slots:

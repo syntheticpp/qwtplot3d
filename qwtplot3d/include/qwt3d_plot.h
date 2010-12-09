@@ -11,12 +11,19 @@ namespace Qwt3D
 {
     class Curve;
   
-//! Base class for all plotting widgets
+//! Base class for all plot containers.
 /*!
-  Plot3D handles all the common features for plotting widgets beyond the low-level extensions of 
-  ExtGLWidget - coordinate system, labeling and more. It contains some pure virtual functions and is,
-  in this respect, an abstract base class. It's nevertheless no pure interface.
-	The class provides interfaces for data handling and implements basic data controlled color allocation.
+  Plot3D handles all the common features for plot containers beyond the low-level extensions of 
+  ExtGLWidget. Specifically, Plot3D adds a coordinate system, labeling and more.
+  It contains some pure virtual functions and is, in this respect, an abstract base class.
+  However, it should not be considered simply an interface class.
+
+  Plot3D also serves as a container class for Curve objects. That is,
+  Curve objects may be added or removed from this class.
+  Note that data handling and basic data controlled color allocation are
+  now handled in the Curve class.
+
+  \sa Curve
 */
 class QWT3D_EXPORT Plot3D : public ExtGLWidget
 {
