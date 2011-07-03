@@ -171,8 +171,6 @@ void Curve::draw()
         drawImplementation();
         glEndList();
 
-        update_displaylists_ = false;
-
         updateNormals();
 	}
 
