@@ -21,67 +21,55 @@ void Curve::createDataC()
 	if (facemode_)	createFaceData();
 	if (sidemode_)	createSideData();
 	if (floormode_)	createFloorData();
-  
-  if (plotStyle() == NOPLOT)
-    return;
 
-  if (plotStyle() == Qwt3D::POINTS)
-  {
-    createPoints();
-    return;
-  }
-  else if (plotStyle() == Qwt3D::USER)
-  {
-    if (userplotstyle_p)
-      createEnrichment(*userplotstyle_p);
-    return;
-  }
+	if (plotStyle() == NOPLOT)
+		return;
 
-    glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT|GL_COLOR_BUFFER_BIT);
+	if (plotStyle() == Qwt3D::POINTS){
+		createPoints();
+		return;
+	} else if (plotStyle() == Qwt3D::USER) {
+		if (userplotstyle_p)
+			createEnrichment(*userplotstyle_p);
+		return;
+	}
+
+	glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT|GL_COLOR_BUFFER_BIT);
 	setDeviceLineWidth(meshLineWidth());
-  GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
+	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	setDevicePolygonOffset(polygonOffset(),1.0);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	int idx = 0;
-	if (plotStyle() != WIREFRAME)
-	{
+	if (plotStyle() != WIREFRAME){
 		glPolygonMode(GL_FRONT_AND_BACK, GL_QUADS);
 
 		bool hl = (plotStyle() == HIDDENLINE);
-		if (hl)
-		{
-            RGBA col = plot_p->backgroundRGBAColor();
+		if (hl){
+			RGBA col = plot_p->backgroundRGBAColor();
 			glColor4d(col.r, col.g, col.b, col.a);
 		}
 		
-		for (unsigned i=0; i!=actualDataC_->cells.size(); ++i)
-		{
+		for (unsigned i = 0; i != actualDataC_->cells.size(); ++i){
 			glBegin(GL_POLYGON);
-			for (unsigned j=0; j!=actualDataC_->cells[i].size(); ++j)
-			{
+			for (unsigned j = 0; j != actualDataC_->cells[i].size(); ++j){
 				idx = actualDataC_->cells[i][j];
 				setColorFromVertexC(idx, hl);
-				glVertex3d( actualDataC_->nodes[idx].x, actualDataC_->nodes[idx].y, actualDataC_->nodes[idx].z );
-				glNormal3d( actualDataC_->normals[idx].x, actualDataC_->normals[idx].y, actualDataC_->normals[idx].z );
+				glVertex3d(actualDataC_->nodes[idx].x, actualDataC_->nodes[idx].y, actualDataC_->nodes[idx].z);
+				glNormal3d(actualDataC_->normals[idx].x, actualDataC_->normals[idx].y, actualDataC_->normals[idx].z);
 			}
 			glEnd();
 		}
 	}
 
-	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
-	{
+	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE){
 		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
-		{
-			for (unsigned i=0; i!=actualDataC_->cells.size(); ++i)
-			{
-				glBegin(GL_LINE_LOOP);
-				for (unsigned j=0; j!=actualDataC_->cells[i].size(); ++j)
-				{
-					idx = actualDataC_->cells[i][j];
-					glVertex3d( actualDataC_->nodes[idx].x, actualDataC_->nodes[idx].y, actualDataC_->nodes[idx].z );
-				}
-				glEnd();
+		for (unsigned i = 0; i != actualDataC_->cells.size(); ++i){
+			glBegin(GL_LINE_LOOP);
+			for (unsigned j = 0; j != actualDataC_->cells[i].size(); ++j){
+				idx = actualDataC_->cells[i][j];
+				glVertex3d(actualDataC_->nodes[idx].x, actualDataC_->nodes[idx].y, actualDataC_->nodes[idx].z);
 			}
+			glEnd();
 		}
 	}
     glPopAttrib();

@@ -13,115 +13,103 @@ using namespace Qwt3D;
 
 void Curve::createDataG()
 {
-  if (facemode_)	createFaceData();
-  if (sidemode_)	createSideData();
-  if (floormode_)	createFloorData();
-  
-  if (plotStyle() == NOPLOT)
+	if (facemode_)	createFaceData();
+	if (sidemode_)	createSideData();
+	if (floormode_)	createFloorData();
+
+	if (plotStyle() == NOPLOT)
 		return;
 
 	int i, j;
 	RGBA col;
 	int step = resolution();
 
-  if (plotStyle() == Qwt3D::POINTS)
-  {
-    createPoints();
-    return;
-  }
-  else if (plotStyle() == Qwt3D::USER)
-  {
-    if (userplotstyle_p)
-      createEnrichment(*userplotstyle_p);
-    return;
-  }
-    glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT);
+	if (plotStyle() == Qwt3D::POINTS){
+		createPoints();
+		return;
+	} else if (plotStyle() == Qwt3D::USER){
+		if (userplotstyle_p)
+			createEnrichment(*userplotstyle_p);
+		return;
+	}
+	glPushAttrib(GL_POLYGON_BIT|GL_LINE_BIT);
 
 	setDeviceLineWidth(meshLineWidth());
-  
-  GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
+
+	GLStateBewarer sb(GL_POLYGON_OFFSET_FILL,true);
 	setDevicePolygonOffset(polygonOffset(),1.0);
 
 	GLStateBewarer sb2(GL_LINE_SMOOTH, smoothDataMesh());
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-  int lastcol =  actualDataG_->columns();
-  int lastrow =  actualDataG_->rows(); 
+	int lastcol = actualDataG_->columns();
+	int lastrow = actualDataG_->rows();
  
-	if (plotStyle() != WIREFRAME)
-	{
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (plotStyle() != WIREFRAME){
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		
 		bool hl = (plotStyle() == HIDDENLINE);
-		if (hl)
-		{
-            col = plot_p->backgroundRGBAColor();
+		if (hl){
+			col = plot_p->backgroundRGBAColor();
 			glColor4d(col.r, col.g, col.b, col.a);
 		}
 
-		for (i = 0; i < lastcol - step; i += step) 
-		{
-		  glBegin(GL_TRIANGLE_STRIP);
-				setColorFromVertexG(i, 0, hl);
-				glNormal3dv(actualDataG_->normals[i][0]);
-				glVertex3dv(actualDataG_->vertices[i][0]);
-					
-				int ni = i + step;
-				setColorFromVertexG(ni, 0, hl);
-				glNormal3dv(actualDataG_->normals[ni][0]);
-				glVertex3dv(actualDataG_->vertices[ni][0]);
+		for (i = 0; i < lastcol - step; i += step){
+			glBegin(GL_TRIANGLE_STRIP);
+			setColorFromVertexG(i, 0, hl);
+			glNormal3dv(actualDataG_->normals[i][0]);
+			glVertex3dv(actualDataG_->vertices[i][0]);
 
-				for (j = 0; j < lastrow - step; j += step) 
-				{
-					int nj = j + step;
-					setColorFromVertexG(i, nj, hl);
-					glNormal3dv(actualDataG_->normals[i][nj]);
-					glVertex3dv(actualDataG_->vertices[i][nj]);
+			int ni = i + step;
+			setColorFromVertexG(ni, 0, hl);
+			glNormal3dv(actualDataG_->normals[ni][0]);
+			glVertex3dv(actualDataG_->vertices[ni][0]);
 
-					setColorFromVertexG(ni, nj, hl);
-					glNormal3dv(actualDataG_->normals[ni][nj]);
-					glVertex3dv(actualDataG_->vertices[ni][nj]);
-				}
+			for (j = 0; j < lastrow - step; j += step){
+				int nj = j + step;
+				setColorFromVertexG(i, nj, hl);
+				glNormal3dv(actualDataG_->normals[i][nj]);
+				glVertex3dv(actualDataG_->vertices[i][nj]);
+
+				setColorFromVertexG(ni, nj, hl);
+				glNormal3dv(actualDataG_->normals[ni][nj]);
+				glVertex3dv(actualDataG_->vertices[ni][nj]);
+			}
 			glEnd();
 		}
-  }
+	}
 
-	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE)
-	{
-		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);		
+	if (plotStyle() == FILLEDMESH || plotStyle() == WIREFRAME || plotStyle() == HIDDENLINE){
+		glColor4d(meshColor().r, meshColor().g, meshColor().b, meshColor().a);
 
-		if (step < actualDataG_->columns() && step < actualDataG_->rows())
-		{
+		if (step < actualDataG_->columns() && step < actualDataG_->rows()){
 			glBegin(GL_LINE_LOOP);
 				for (i = 0; i < actualDataG_->columns() - step; i += step) 
-					glVertex3dv(actualDataG_->vertices[i][0]);		
+					glVertex3dv(actualDataG_->vertices[i][0]);
 				for (j = 0; j < actualDataG_->rows() - step; j += step) 
-					glVertex3dv(actualDataG_->vertices[i][j]);						
+					glVertex3dv(actualDataG_->vertices[i][j]);
 				for (; i >= 0; i -= step) 
-					glVertex3dv(actualDataG_->vertices[i][j]);			
+					glVertex3dv(actualDataG_->vertices[i][j]);
 				for (; j >= 0; j -= step) 
-					glVertex3dv(actualDataG_->vertices[0][j]);			
+					glVertex3dv(actualDataG_->vertices[0][j]);
 			glEnd();
 		}
 
 		// weaving
-		for (i = step; i < actualDataG_->columns() - step; i += step) 
-		{		
+		for (i = step; i < actualDataG_->columns() - step; i += step){
 			glBegin(GL_LINE_STRIP);
 				for (j = 0; j < actualDataG_->rows(); j += step) 
-					glVertex3dv(actualDataG_->vertices[i][j]);			
+					glVertex3dv(actualDataG_->vertices[i][j]);
 			glEnd();
 		}
-		for (j = step; j < actualDataG_->rows() - step; j += step) 
-		{		
+		for (j = step; j < actualDataG_->rows() - step; j += step){
 			glBegin(GL_LINE_STRIP);
 				for (i = 0; i < actualDataG_->columns(); i += step) 
-					glVertex3dv(actualDataG_->vertices[i][j]);			
+					glVertex3dv(actualDataG_->vertices[i][j]);
 			glEnd();
 		}
 	}
-    glPopAttrib();
+	glPopAttrib();
 }
 
 void Curve::setColorFromVertexG(int ix, int iy, bool skip)
@@ -133,7 +121,7 @@ void Curve::setColorFromVertexG(int ix, int iy, bool skip)
 		actualDataG_->vertices[ix][iy][0],
 		actualDataG_->vertices[ix][iy][1],
 		actualDataG_->vertices[ix][iy][2]);
-		
+
 	glColor4d(col.r, col.g, col.b, col.a);
 }
 
@@ -638,7 +626,8 @@ void Curve::DataPointsG(unsigned int comp, bool projected)
 
 double** Curve::getData(int *columns, int *rows)
 {
-	if (!actualDataG_)	return 0;
+	if (!actualDataG_)
+		return 0;
 	
 	*columns = actualDataG_->columns();
 	*rows	 = actualDataG_->rows();
