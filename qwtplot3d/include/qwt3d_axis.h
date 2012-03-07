@@ -56,6 +56,7 @@ public:
 	Qwt3D::RGBA labelColor() const			{ return label_.color(); }			//!< Returns the color of the axis title
 	void setLabel(bool d)					{ drawLabel_ = d; }					//!< Turns label drawing on or off
 	bool label() const						{ return drawLabel_; }				//!< Whether label drawing is on or off
+	double labelGap() const					{ return labelgap_; }				//!< Returns label shift
 	void adjustLabel(int val)				{ labelgap_ = val; }				//!< Shifts label in device coordinates dependent on anchor;
 
 	void setScaling(bool d)					{ drawTics_ = d; }					//!< Turns scale drawing on or off
