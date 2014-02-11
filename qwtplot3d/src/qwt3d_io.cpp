@@ -302,6 +302,14 @@ void IO::setupHandler()
 #endif
   vecfunc.setFormat("PDF");
   defineOutputHandler("PDF", vecfunc);
+  vecfunc.setFormat("SVG");
+  defineOutputHandler("SVG", vecfunc);
+  vecfunc.setFormat("PGF");
+  defineOutputHandler("PGF", vecfunc);
+#ifdef GL2PS_HAVE_ZLIB
+  vecfunc.setFormat("SVG_GZ");
+  defineOutputHandler("SVG_GZ", vecfunc);
+#endif
 
   defineInputHandler("mes", NativeReader());
   defineInputHandler("MES", NativeReader());
@@ -310,21 +318,22 @@ void IO::setupHandler()
 /*!
 	\deprecated  Use Plot3D::save or IO::save instead.
 	
-  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS"or "PDF".
-  If zlib has been configured this will be extended by "EPS_GZ" and "PS_GZ". 
+  Writes vector data supported by gl2ps. The corresponding format types are "EPS","PS", "PDF", "SVG", or "PGF".
+  If zlib has been configured this will be extended by "EPS_GZ", "PS_GZ" and "SVG_GZ". 
 	\b Beware: BSPSORT turns out to behave very slowly and memory consuming, especially in cases where
 	many polygons appear. It is still more exact than SIMPLESORT.
 */
-bool Plot3D::saveVector(QString const& fileName, QString const& format, VectorWriter::TEXTMODE text, VectorWriter::SORTMODE sortmode)
+bool Plot3D::saveVector(QString const& fileName, QString const& format, VectorWriter::TEXTMODE textmode, VectorWriter::SORTMODE sortmode)
 {
   if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF")
+       || format == "PS_GZ" || format == "PDF" || format == "SVG"
+       || format == "SVG_GZ" || format == "PGF")
   {  
     VectorWriter* gl2ps = (VectorWriter*)IO::outputHandler(format);
     if (gl2ps)
     {
       gl2ps->setSortMode(sortmode);
-      gl2ps->setTextMode(text);
+      gl2ps->setTextMode(textmode);
     }
     return IO::save(this, fileName, format);
   }
@@ -338,7 +347,8 @@ bool Plot3D::saveVector(QString const& fileName, QString const& format, VectorWr
 bool Plot3D::savePixmap(QString const& fileName, QString const& format)
 {
   if (format == "EPS" || format == "EPS_GZ" || format == "PS" 
-    || format == "PS_GZ" || format == "PDF")
+      || format == "PS_GZ" || format == "PDF" || format == "SVG"
+      || format == "SVG_GZ" || format == "PGF")
     return false;
   
   return IO::save(this, fileName, format);
